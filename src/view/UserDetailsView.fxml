@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+
+<AnchorPane xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <VBox VBox.vgrow="ALWAYS">
+               <children>
+                  <GridPane hgap="5.0" vgap="5.0">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="ALWAYS" />
+                      <ColumnConstraints hgrow="ALWAYS" />
+                        <ColumnConstraints halignment="CENTER" hgrow="NEVER" />
+                        <ColumnConstraints halignment="CENTER" hgrow="NEVER" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <Label fx:id="firstNameLabel" text="%UserFirstName" />
+                        <Label fx:id="lastNameLabel" text="%UserLastName" GridPane.rowIndex="1" />
+                        <Label fx:id="loginLabel" text="%UserLogin" GridPane.rowIndex="2" />
+                        <Label fx:id="passwordLabel" text="%UserPassword" GridPane.rowIndex="3" />
+                        <Label fx:id="vacationLeftLabel" text="%UserVacationLeft" GridPane.rowIndex="4" />
+                        <Label fx:id="contractNameLabel" text="%UserContractName" GridPane.rowIndex="5" />
+                        <Label fx:id="roleNameLabel" text="%UserRoleName" GridPane.rowIndex="6" />
+                        <Label fx:id="addressLabel" maxHeight="-Infinity" minHeight="-Infinity" text="%UserAddress" GridPane.rowIndex="7" />
+                        <TextField fx:id="firstNameTextFieldValue" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" />
+                        <TextField fx:id="lastNameTextFieldValue" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="1" />
+                        <TextField fx:id="loginTextFieldValue" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="2" />
+                        <PasswordField fx:id="hiddenPasswordFieldValue" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                        <TextField fx:id="shownPasswordFieldValue" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                        <TextField fx:id="vacationLeftTextFieldValue" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                        <ChoiceBox fx:id="contractChoiceBoxValue" prefWidth="900.0" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="5" />
+                        <ChoiceBox fx:id="roleChoiceBoxValue" prefWidth="900.0" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="6" />
+                        <ChoiceBox fx:id="addressChoiceBoxValue" prefWidth="900.0" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="7" />
+                        <ToggleButton fx:id="togglePasswordButton" contentDisplay="CENTER" mnemonicParsing="false" onAction="#togglePasswordVisibilityAction" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                        <Label fx:id="vacationLeftUnitLabel" text="%Days" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                     </children>
+                     <VBox.margin>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </VBox.margin>
+                  </GridPane>
+               </children>
+            </VBox>
+            <HBox alignment="TOP_RIGHT" spacing="5.0">
+               <children>
+                  <Button fx:id="acceptButton" mnemonicParsing="false" onAction="#acceptAction" text="%Accept" />
+                  <Button fx:id="cancelButton" mnemonicParsing="false" onAction="#cancelAction" text="%Cancel" />
+               </children>
+               <VBox.margin>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </VBox.margin>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

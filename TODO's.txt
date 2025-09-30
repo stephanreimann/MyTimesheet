@@ -1,0 +1,18 @@
+Here bugs that are found, topics that may can be implemented and ideas are documented!
+=======================================================================================
+
+1. Bugs:
+
+
+2. Topic to consider:
+    - May something like error information at work record details.
+    - May some tool tips for input controls where valid input is not obvious.
+    - Add input validation for other input text fields.
+
+3. Implementation ideas:
+    - Functionality that creates a new Db for a new year (deleted work records, but keep overall overtime).
+    - Improve command texts for undo/redo
+    - Replace Text Input Fields for Durations by Duration Time Spinner
+    - Create data export and import functionality 
+    - Create a Setup with all dependencies
+        https://github.com/edvin/fxlauncher

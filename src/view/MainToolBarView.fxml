@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.SplitMenuButton?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.GridPane?>
+
+<ToolBar xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
+    <items>
+        <Button fx:id="undoButton" onAction="#undoAction" text="">
+            <graphic>
+                <ImageView fitHeight="36.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="@../icons/edit-undo-8.png" />
+                    </image>
+                </ImageView>
+            </graphic>
+            <tooltip>
+                <Tooltip fx:id="undoTooltip" text="Undo (Ctrl +Z)" />
+            </tooltip>
+        </Button>
+        <Button fx:id="redoButton" onAction="#redoAction" text="">
+            <graphic>
+                <ImageView fitHeight="36.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="@../icons/edit-redo-8.png" />
+                    </image>
+                </ImageView>
+            </graphic>
+            <tooltip>
+                <Tooltip fx:id="redoTooltip" text="Redo (Ctrl + Y)" />
+            </tooltip>
+        </Button>
+        <Separator orientation="VERTICAL" />
+        <SplitMenuButton fx:id="languageSelectorButton" mnemonicParsing="false" prefHeight="44.0" text="%languageSelectorButton" GridPane.columnIndex="3">
+            <items>
+                <MenuItem id="changeToGerman" fx:id="languageDE" mnemonicParsing="false" onAction="#changeLanguageAction" text="Undef">
+                    <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@../icons/flag-de.png" />
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </MenuItem>
+                <MenuItem id="changeToEnglish" fx:id="languageEN" mnemonicParsing="false" onAction="#changeLanguageAction" text="Undef">
+                    <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@../icons/flag-gb.png" />
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </MenuItem>
+                <MenuItem id="changeToSpanish" fx:id="languageES" mnemonicParsing="false" onAction="#changeLanguageAction" text="Undef">
+                    <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@../icons/flag-es.png" />
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </MenuItem>
+                <MenuItem id="changeToFrench" fx:id="languageFR" mnemonicParsing="false" onAction="#changeLanguageAction" text="Undef">
+                    <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@../icons/flag-fr.png" />
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </MenuItem>
+                <MenuItem id="changeToItalian" fx:id="languageIT" mnemonicParsing="false" onAction="#changeLanguageAction" text="Undef">
+                    <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@../icons/flag-it.png" />
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </MenuItem>
+            </items>
+            <graphic>
+                <ImageView fitHeight="40.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="@../icons/language.png" />
+                    </image>
+                </ImageView>
+            </graphic>
+        </SplitMenuButton>
+    </items>
+</ToolBar>

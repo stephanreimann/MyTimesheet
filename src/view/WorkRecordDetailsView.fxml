@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <VBox VBox.vgrow="ALWAYS">
+         <children>
+            <GridPane fx:id="workrecordDetailsGridPane" VBox.vgrow="NEVER">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" />
+                  <ColumnConstraints halignment="CENTER" hgrow="NEVER" />
+                <ColumnConstraints hgrow="SOMETIMES" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                  <RowConstraints vgrow="NEVER" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <Label fx:id="workrecordDetailsHeaderLabel" alignment="CENTER" contentDisplay="CENTER" text="%WorkrecordDetailsHeader" textAlignment="CENTER" GridPane.columnSpan="2">
+                     <GridPane.margin>
+                        <Insets bottom="10.0" left="5.0" right="5.0" top="10.0" />
+                     </GridPane.margin>
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="workrecordDateLabel" text="%Date" GridPane.rowIndex="1">
+                     <GridPane.margin>
+                        <Insets left="5.0" right="5.0" />
+                     </GridPane.margin></Label>
+                  <Label fx:id="workrecordStartTimeLabel" text="%StartTime" GridPane.rowIndex="2">
+                     <GridPane.margin>
+                        <Insets left="5.0" right="5.0" />
+                     </GridPane.margin></Label>
+                  <Label fx:id="workrecordEndTimeLabel" text="%EndTime" GridPane.rowIndex="3">
+                     <GridPane.margin>
+                        <Insets left="5.0" right="5.0" />
+                     </GridPane.margin></Label>
+                  <Label fx:id="workrecordWorkTimeLabel" text="%WorkTime" GridPane.rowIndex="4">
+                     <GridPane.margin>
+                        <Insets left="5.0" right="5.0" />
+                     </GridPane.margin></Label>
+                  <Label fx:id="workrecordOverTimeLabel" text="%OverTime" GridPane.rowIndex="5">
+                     <GridPane.margin>
+                        <Insets left="5.0" right="5.0" />
+                     </GridPane.margin></Label>
+                  <Label fx:id="workrecordOverTimeCorrectionLabel" text="%OverallOverTimeCorrection" GridPane.rowIndex="6">
+                     <GridPane.margin>
+                        <Insets left="5.0" right="5.0" />
+                     </GridPane.margin></Label>
+                  <Label fx:id="workrecordLocationLabel" text="%Location" GridPane.rowIndex="8">
+                     <GridPane.margin>
+                        <Insets left="5.0" right="5.0" />
+                     </GridPane.margin></Label>
+                  <Label fx:id="workrecordProjectLabel" text="%Project" GridPane.rowIndex="9">
+                     <GridPane.margin>
+                        <Insets left="5.0" right="5.0" />
+                     </GridPane.margin></Label>
+                  <Label fx:id="workrecordDescriptionLabel" text="%Description" GridPane.rowIndex="10">
+                     <GridPane.margin>
+                        <Insets left="5.0" right="5.0" />
+                     </GridPane.margin></Label>
+                  <Button fx:id="workrecordStartTimeButton" mnemonicParsing="false" onAction="#handleOnSetStartTimeButtonClickAction" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                     <GridPane.margin>
+                        <Insets left="5.0" right="5.0" />
+                     </GridPane.margin></Button>
+                  <ChoiceBox fx:id="workrecordLocationChoiceBox" prefWidth="190.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="8" />
+                  <ChoiceBox fx:id="workrecordProjectChoiceBox" prefWidth="190.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="9">
+                     <GridPane.margin>
+                        <Insets />
+                     </GridPane.margin></ChoiceBox>
+                  <TextArea fx:id="workrecordDescriptionValue" prefHeight="41.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="10">
+                     <GridPane.margin>
+                        <Insets bottom="5.0" top="5.0" />
+                     </GridPane.margin>
+                  </TextArea>
+                  <Label fx:id="workrecordDateValue" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                     <GridPane.margin>
+                        <Insets left="5.0" right="5.0" />
+                     </GridPane.margin>
+                     <padding>
+                        <Insets left="3.0" />
+                     </padding>
+                  </Label>
+                  <Label fx:id="workrecordWorkTimeValue" GridPane.columnIndex="2" GridPane.rowIndex="4">
+                     <GridPane.margin>
+                        <Insets left="5.0" right="5.0" />
+                     </GridPane.margin>
+                     <padding>
+                        <Insets left="3.0" />
+                     </padding></Label>
+                  <Label fx:id="workrecordOverTimeValue" contentDisplay="RIGHT" GridPane.columnIndex="2" GridPane.rowIndex="5">
+                     <GridPane.margin>
+                        <Insets left="5.0" right="5.0" />
+                     </GridPane.margin>
+                     <padding>
+                        <Insets left="3.0" />
+                     </padding></Label>
+                  <Button fx:id="workrecordTodayButton" mnemonicParsing="false" onAction="#handleOnSetTodayButtonClickAction" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <Label fx:id="workrecordVacationCorrectionLabel" text="%OverallVacationCorrection" GridPane.rowIndex="7">
+                     <GridPane.margin>
+                        <Insets left="5.0" right="5.0" />
+                     </GridPane.margin>
+                  </Label>
+               </children>
+            </GridPane>
+         </children></VBox>
+      <HBox alignment="TOP_RIGHT" spacing="5.0">
+         <children>
+          <Button fx:id="newButton" mnemonicParsing="false" onAction="#newAction" text="%New" />
+            <Button fx:id="editButton" mnemonicParsing="false" onAction="#editAction" text="%Edit" />
+          <Button fx:id="deleteButton" mnemonicParsing="false" onAction="#deleteAction" text="%Delete" />
+         </children>
+         <VBox.margin>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </VBox.margin>
+      </HBox>
+   </children>
+   <padding>
+      <Insets left="5.0" right="5.0" />
+   </padding>
+</VBox>

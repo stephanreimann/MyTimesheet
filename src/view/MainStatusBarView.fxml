@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.image.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<GridPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+    <columnConstraints>
+        <ColumnConstraints hgrow="ALWAYS" />
+        <ColumnConstraints halignment="RIGHT" hgrow="NEVER" />
+        <ColumnConstraints hgrow="NEVER" />
+        <ColumnConstraints halignment="CENTER" hgrow="NEVER" />
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints valignment="CENTER" vgrow="NEVER" />
+    </rowConstraints>
+    <children>
+        <Label fx:id="messageLabel" text="Label">
+            <padding>
+                <Insets left="5.0" />
+            </padding>
+        </Label>
+        <ImageView fx:id="actualLanguage" fitHeight="32.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+            <image>
+                <Image url="@../icons/flag-gb.png" />
+            </image>
+            <GridPane.margin>
+                <Insets left="5.0" right="5.0" />
+            </GridPane.margin>
+        </ImageView>
+    </children>
+</GridPane>

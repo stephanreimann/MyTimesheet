@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.input.KeyCodeCombination?>
+
+<MenuBar xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
+    <menus>
+      <Menu fx:id="fileMenu" mnemonicParsing="false" text="%File">
+        <items>
+            <Menu fx:id="exportMenu" mnemonicParsing="false" text="%Export">
+              <items>
+                  <MenuItem fx:id="exportReferencedataMenuItem" mnemonicParsing="false" onAction="#exportReferencedata" text="Referencedata" />
+                <MenuItem fx:id="exportWorkrecordsMenuItem" mnemonicParsing="false" onAction="#exportWorkrecords" text="Workrecord" />
+              </items>
+            </Menu>
+            <Menu fx:id="importMenu" mnemonicParsing="false" text="%Import">
+              <items>
+                <MenuItem fx:id="importReferencedataMenuItem" mnemonicParsing="false" onAction="#importReferencedata" text="Referencedata" />
+                  <MenuItem fx:id="importWorkrecordsMenuItem" mnemonicParsing="false" onAction="#importWorkrecords" text="Workrecord" />
+              </items>
+            </Menu>
+            <SeparatorMenuItem mnemonicParsing="false" />
+          <MenuItem fx:id="exitMenuItem" mnemonicParsing="false" onAction="#exitAction" text="Exit">
+               <accelerator>
+                  <KeyCodeCombination alt="UP" code="X" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+               </accelerator>
+            </MenuItem>
+        </items>
+      </Menu>
+        <Menu fx:id="editMenu" mnemonicParsing="false" text="%Edit">
+            <items>
+                <MenuItem fx:id="undoMenuItem" mnemonicParsing="false" onAction="#undoAction" text="Undo">
+                    <accelerator>
+                        <KeyCodeCombination alt="UP" code="Z" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                    </accelerator>
+                    <graphic>
+                        <ImageView fitHeight="15.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@../icons/edit-undo-8.png" />
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </MenuItem>
+                <MenuItem fx:id="redoMenuItem" mnemonicParsing="false" onAction="#redoAction" text="Redo">
+                    <accelerator>
+                        <KeyCodeCombination alt="UP" code="Y" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                    </accelerator>
+                    <graphic>
+                        <ImageView fitHeight="15.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@../icons/edit-redo-8.png" />
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </MenuItem>
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem fx:id="settingsMenuItem" mnemonicParsing="false" onAction="#openSettingsDialog" text="Settings">
+               <graphic>
+                  <ImageView fitHeight="15.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../icons/preferences.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+               <accelerator>
+                  <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+               </accelerator>
+            </MenuItem>
+            </items>
+        </Menu>
+      <Menu fx:id="dataMenu" mnemonicParsing="false" text="%Referencedata">
+        <items>
+            <MenuItem fx:id="addressMenuItem" mnemonicParsing="false" onAction="#openAddressDialog" text="%Address" />
+            <MenuItem fx:id="contractMenuItem" mnemonicParsing="false" onAction="#openContractDialog" text="%Contract" />
+            <MenuItem fx:id="holydayMenuItem" mnemonicParsing="false" onAction="#openHolydayDialog" text="%Holyday" />
+            <MenuItem fx:id="projectMenuItem" mnemonicParsing="false" onAction="#openProjectDialog" text="%Project" />
+            <MenuItem fx:id="roleMenuItem" mnemonicParsing="false" onAction="#openRoleDialog" text="%Role" />
+            <MenuItem fx:id="userMenuItem" mnemonicParsing="false" onAction="#openUserDialog" text="%User" />
+            <MenuItem fx:id="worklocationMenuItem" mnemonicParsing="false" onAction="#openWorklocationDialog" text="%Worklocation" />
+        </items>
+      </Menu>
+    </menus>
+</MenuBar>

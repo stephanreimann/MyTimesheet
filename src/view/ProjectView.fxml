@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <SplitPane dividerPositions="0.39464882943143814" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <items>
+            <TableView fx:id="projectTableView">
+              <columns>
+                <TableColumn fx:id="projectNameTableColumn" prefWidth="75.0" text="%ProjectName" />
+              </columns>
+               <columnResizePolicy>
+                  <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+               </columnResizePolicy>
+            </TableView>
+            <VBox>
+               <children>
+                  <Label fx:id="projectDetailsLabel" text="%ProjectDetailsLabel">
+                     <padding>
+                        <Insets left="5.0" />
+                     </padding>
+                     <VBox.margin>
+                        <Insets bottom="10.0" top="5.0" />
+                     </VBox.margin>
+                  </Label>
+                  <GridPane hgap="5.0" vgap="5.0" VBox.vgrow="SOMETIMES">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+                    </rowConstraints>
+                     <VBox.margin>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </VBox.margin>
+                     <children>
+                        <Label fx:id="projectNameLabel" text="%ProjectName" />
+                        <Label fx:id="projectCostUnitLabel" text="%ProjectCostUnit" GridPane.rowIndex="1" />
+                        <Label fx:id="projectIsWorktimeRelevantLabel" text="%ProjectIsWorktimeRelevant" GridPane.rowIndex="2" />
+                        <Label fx:id="projectIsVacationRelevantLabel" text="%ProjectIsVacationRelevant" GridPane.rowIndex="3" />
+                        <Label fx:id="projectIsComptimeRelevantLabel" text="%ProjectIsComptimeRelevant" GridPane.rowIndex="4" />
+                        <Label fx:id="projectDescriptionLabel" text="%ProjectDescription" GridPane.rowIndex="5" />
+                        <Label fx:id="projectNameLabelValue" GridPane.columnIndex="1" />
+                        <Label fx:id="projectCostUnitLabelValue" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <Label fx:id="projectIsWorktimeRelevantLabelValue" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <Label fx:id="projectIsVacationRelevantLabelValue" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                        <Label fx:id="projectIsComptimeRelevantLabelValue" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                        <Label fx:id="projectDescriptionLabelValue" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                     </children>
+                  </GridPane>
+                  <ToolBar nodeOrientation="RIGHT_TO_LEFT">
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                     <items>
+                        <Button fx:id="deleteButton" mnemonicParsing="false" onAction="#deleteProjectAction" text="%Delete" />
+                        <Button fx:id="editButton" mnemonicParsing="false" onAction="#editProjectAction" text="%Edit" />
+                        <Button fx:id="newButton" mnemonicParsing="false" onAction="#newProjectAction" text="%New" />
+                     </items>
+                  </ToolBar>
+               </children>
+            </VBox>
+         </items>
+      </SplitPane>
+   </children>
+</AnchorPane>

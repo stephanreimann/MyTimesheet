@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="450.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <SplitPane dividerPositions="0.29264214046822745" prefHeight="160.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <items>
+            <TableView fx:id="contractTableView">
+              <columns>
+                <TableColumn fx:id="contractNameTableColumn" prefWidth="75.0" text="%ContractName" />
+              </columns>
+               <columnResizePolicy>
+                  <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+               </columnResizePolicy>
+            </TableView>
+            <VBox>
+               <children>
+                  <Label fx:id="contractDetailsLabel" text="%ContractDetails">
+                     <VBox.margin>
+                        <Insets bottom="10.0" top="5.0" />
+                     </VBox.margin>
+                     <padding>
+                        <Insets left="5.0" />
+                     </padding></Label>
+                  <GridPane hgap="5.0" vgap="5.0" VBox.vgrow="SOMETIMES">
+                     <children>
+                        <Label fx:id="contractNameLabel" text="%ContractName" />
+                        <Label fx:id="contractNameLabelValue" GridPane.columnIndex="1" />
+                        <Label fx:id="workhoursLabel" text="%Workhours" GridPane.rowIndex="1" />
+                        <Label fx:id="workhoursLabelValue" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <Label fx:id="maxWorkhoursLabel" text="%MaxWorkhours" GridPane.rowIndex="2" />
+                        <Label fx:id="maxWorkhoursLabelValue" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <Label fx:id="vacationdaysLabel" text="%Vacationdays" GridPane.rowIndex="3" />
+                        <Label fx:id="vacationdaysLabelValue" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                        <Label fx:id="vacationReconciliationDateLabel" text="%VacationReconciliationDate" GridPane.rowIndex="4" />
+                        <Label fx:id="vacationReconciliationDateLabelValue" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                        <Label fx:id="breakfastOfftimeStartLabel" text="%BreakfastOfftimeStart" GridPane.rowIndex="5" />
+                        <Label fx:id="breakfastOfftimeStartLabelValue" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                        <Label fx:id="breakfastOfftimeEndLabel" text="%BreakfastOfftimeEnd" GridPane.rowIndex="6" />
+                        <Label fx:id="breakfastOfftimeEndLabelValue" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                        <Label fx:id="lunchOfftimeStartLabel" text="%LunchOfftimeStart" GridPane.rowIndex="7" />
+                        <Label fx:id="lunchOfftimeStartLabelValue" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                        <Label fx:id="lunchOfftimeEndLabel" text="%LunchOfftimeEnd" GridPane.rowIndex="8" />
+                        <Label fx:id="lunchOfftimeEndLabelValue" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                        <Label fx:id="earliestWorktimeStartLabel" text="%EarliestWorktimeStart" GridPane.rowIndex="9" />
+                        <Label fx:id="earliestWorktimeStartLabelValue" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+                        <Label fx:id="latestWorktimeEndLabel" text="%LatestWorktimeEnd" GridPane.rowIndex="10" />                        
+                        <Label fx:id="latestWorktimeEndLabelValue" GridPane.columnIndex="1" GridPane.rowIndex="10" />
+                     </children>
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="50.0" />
+                        <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+                     </rowConstraints>
+                     <VBox.margin>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </VBox.margin>
+                  </GridPane>
+                  <ToolBar nodeOrientation="RIGHT_TO_LEFT">
+                     <items>
+                        <Button fx:id="deleteButton" mnemonicParsing="false" onAction="#deleteContractAction" text="%Delete" />
+                        <Button fx:id="editButton" mnemonicParsing="false" onAction="#editContractAction" text="%Edit" />
+                        <Button fx:id="newButton" mnemonicParsing="false" onAction="#newContractAction" text="%New" />
+                     </items>
+                  </ToolBar>
+               </children>
+            </VBox>
+        </items>
+      </SplitPane>
+   </children>
+</AnchorPane>

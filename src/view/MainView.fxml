@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane fx:id="borderPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
+    <top>
+        <VBox fx:id="topBorderPaneVBox" />
+    </top>
+   <bottom>
+      <VBox fx:id="bottomBorderPaneVBox" BorderPane.alignment="CENTER" />
+   </bottom>
+   <center>
+      <SplitPane fx:id="centerBorderPaneSplitPane" orientation="VERTICAL" BorderPane.alignment="CENTER" />
+   </center>
+   <right>
+      <VBox fx:id="rightBorderPaneVBox" BorderPane.alignment="CENTER" />
+   </right>
+   <left>
+      <VBox fx:id="leftBorderPaneVBox" BorderPane.alignment="CENTER" />
+   </left>
+</BorderPane>

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <SplitPane dividerPositions="0.5" prefHeight="160.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <items>
+            <TableView fx:id="addressTableView">
+              <columns>
+                <TableColumn fx:id="addressTableColumn" prefWidth="75.0" text="%Address" />
+              </columns>
+               <columnResizePolicy>
+                  <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+               </columnResizePolicy>
+            </TableView>
+            <VBox>
+               <children>
+                  <Label fx:id="addressDetailsLabel" text="%AddressDetailsLabel">
+                     <padding>
+                        <Insets left="5.0" />
+                     </padding>
+                     <VBox.margin>
+                        <Insets bottom="10.0" top="5.0" />
+                     </VBox.margin>
+                  </Label>
+                  <GridPane hgap="5.0" vgap="5.0" VBox.vgrow="SOMETIMES">
+                     <children>
+                        <Label fx:id="streetNameLabel" text="%StreetName" />
+                        <Label fx:id="houseNumberLabel" text="%HouseNumber" GridPane.rowIndex="1" />
+                        <Label fx:id="unitNameLabel" text="%UnitName" GridPane.rowIndex="2" />
+                        <Label fx:id="unitNumberLabel" text="%UnitNumber" GridPane.rowIndex="3" />
+                        <Label fx:id="unitLocationLabel" text="%UnitLocation" GridPane.rowIndex="4" />
+                        <Label fx:id="cityLabel" text="%City" GridPane.rowIndex="5" />
+                        <Label fx:id="stateLabel" text="%State" GridPane.rowIndex="6" />
+                        <Label fx:id="zipCodeLabel" text="%ZipCode" GridPane.rowIndex="7" />
+                        <Label fx:id="countryLabel" text="%Country" GridPane.rowIndex="8" />
+                        <Label fx:id="streetNameLabelValue" GridPane.columnIndex="1" />
+                        <Label fx:id="houseNumberLabelValue" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <Label fx:id="unitNameLabelValue" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <Label fx:id="unitNumberLabelValue" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                        <Label fx:id="unitLocationLabelValue" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                        <Label fx:id="cityLabelValue" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                        <Label fx:id="stateLabelValue" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                        <Label fx:id="zipCodeLabelValue" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                        <Label fx:id="countryLabelValue" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                     </children>
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="50.0" />
+                        <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+                     </rowConstraints>
+                     <VBox.margin>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </VBox.margin>
+                  </GridPane>
+                  <ToolBar nodeOrientation="RIGHT_TO_LEFT">
+                     <items>
+                        <Button fx:id="deleteButton" mnemonicParsing="false" onAction="#deleteAddressAction" text="%Delete" />
+                        <Button fx:id="editButton" mnemonicParsing="false" onAction="#editAddressAction" text="%Edit" />
+                        <Button fx:id="newButton" mnemonicParsing="false" onAction="#newAddressAction" text="%New" />
+                     </items>
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+                  </ToolBar>
+               </children>
+            </VBox>
+        </items>
+      </SplitPane>
+   </children>
+</AnchorPane>

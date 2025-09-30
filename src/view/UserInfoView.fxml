@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Accordion?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <GridPane>
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints vgrow="NEVER" />
+          <RowConstraints vgrow="SOMETIMES" />
+          <RowConstraints vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <Label fx:id="userInfoHeaderLabel" text="%UserInfoHeader" textAlignment="CENTER" GridPane.columnSpan="2147483647">
+               <GridPane.margin>
+                  <Insets bottom="10.0" left="5.0" right="5.0" top="10.0" />
+               </GridPane.margin>
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Accordion fx:id="userAccordion" GridPane.columnSpan="2147483647" GridPane.rowIndex="1">
+              <panes>
+                <TitledPane id="UserGeneralInfoPane" fx:id="userGeneralInfoTitledPane" animated="false" text="%UserGeneralInfo">
+                  <content>
+                        <GridPane hgap="5.0" vgap="5.0">
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="ALWAYS" />
+                              <ColumnConstraints hgrow="ALWAYS" />
+                              <ColumnConstraints halignment="RIGHT" hgrow="NEVER" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="30.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <children>
+                              <Label fx:id="firstNameLabel" text="%UserFirstName" GridPane.hgrow="ALWAYS" />
+                              <Label fx:id="lastNameLabel" text="%UserLastName" GridPane.rowIndex="1" />
+                              <Label fx:id="loginLabel" text="%UserLogin" GridPane.rowIndex="2" />
+                              <Label fx:id="contractNameLabel" text="%UserContractName" GridPane.rowIndex="3" />
+                              <Label fx:id="roleNameLabel" text="%UserRoleName" GridPane.rowIndex="4" />
+                              <Label fx:id="addressLabel" minHeight="-Infinity" text="%UserAddress" GridPane.rowIndex="5" GridPane.valignment="TOP">
+                                 <GridPane.margin>
+                                    <Insets top="5.0" />
+                                 </GridPane.margin>
+                              </Label>
+                              <Label fx:id="firstNameLabelValue" GridPane.columnIndex="1" />
+                              <Label fx:id="lastNameLabelValue" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <Label fx:id="loginLabelValue" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <Label fx:id="contractNameLabelValue" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                              <Label fx:id="roleNameLabelValue" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                              <Label fx:id="addressLabelValue" minHeight="-Infinity" minWidth="-Infinity" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                                 <GridPane.margin>
+                                    <Insets top="5.0" />
+                                 </GridPane.margin>
+                              </Label>
+                           </children>
+                        </GridPane>
+                  </content>
+                </TitledPane>
+                <TitledPane id="UserWorktimelInfoPane" fx:id="userWorktimeInfoTitledPane" animated="false" text="%UserWorktimeInfo">
+                  <content>
+                        <GridPane fx:id="userWorktimeInfoGridPane">
+                          <columnConstraints>
+                            <ColumnConstraints />
+                            <ColumnConstraints />
+                              <ColumnConstraints maxWidth="95.0" minWidth="21.0" prefWidth="82.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints minHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <Label fx:id="workhoursLabel" text="%Workhours">
+                                 <GridPane.margin>
+                                    <Insets right="5.0" />
+                                 </GridPane.margin></Label>
+                              <Label fx:id="maxWorkhoursLabel" text="%MaxWorkhours" GridPane.rowIndex="1">
+                                 <GridPane.margin>
+                                    <Insets right="5.0" />
+                                 </GridPane.margin></Label>
+                              <Separator GridPane.columnSpan="2147483647" GridPane.rowIndex="2" />
+                              <Label fx:id="breakfastOfftimeStartLabel" text="%BreakfastOfftimeStart" GridPane.rowIndex="3">
+                                 <GridPane.margin>
+                                    <Insets right="5.0" />
+                                 </GridPane.margin></Label>
+                              <Label fx:id="breakfastOfftimeEndLabel" text="%BreakfastOfftimeEnd" GridPane.rowIndex="4">
+                                 <GridPane.margin>
+                                    <Insets right="5.0" />
+                                 </GridPane.margin></Label>
+                              <Separator GridPane.columnSpan="2147483647" GridPane.rowIndex="5" />
+                              <Label fx:id="lunchOfftimeStartLabel" text="%LunchOfftimeStart" GridPane.rowIndex="6">
+                                 <GridPane.margin>
+                                    <Insets right="5.0" />
+                                 </GridPane.margin></Label>
+                              <Label fx:id="lunchOfftimeEndLabel" text="%LunchOfftimeEnd" GridPane.rowIndex="7">
+                                 <GridPane.margin>
+                                    <Insets right="5.0" />
+                                 </GridPane.margin></Label>
+                              <Separator GridPane.columnSpan="2147483647" GridPane.rowIndex="8" />
+                              <Label fx:id="earliestWorktimeStartLabel" text="%EarliestWorktimeStart" GridPane.rowIndex="9">
+                                 <GridPane.margin>
+                                    <Insets right="5.0" />
+                                 </GridPane.margin></Label>
+                              <Label fx:id="latestWorktimeEndLabel" text="%LatestWorktimeEnd" GridPane.rowIndex="10">
+                                 <GridPane.margin>
+                                    <Insets right="5.0" />
+                                 </GridPane.margin></Label>
+                              <Separator GridPane.columnSpan="2147483647" GridPane.rowIndex="11" />
+                              <Label fx:id="regularWorktimeCurrentMonthLabel" text="%RegularWorktimeCurrentMonth" GridPane.rowIndex="12">
+                                 <GridPane.margin>
+                                    <Insets right="5.0" />
+                                 </GridPane.margin></Label>
+                              <Label fx:id="worktimeCurrentMonthLabel" text="%WorktimeCurrentMonth" GridPane.rowIndex="13">
+                                 <GridPane.margin>
+                                    <Insets right="5.0" />
+                                 </GridPane.margin></Label>
+                              <Label fx:id="overtimeCurrentMonthLabel" text="%OvertimeCurrentMonth" GridPane.rowIndex="14">
+                                 <GridPane.margin>
+                                    <Insets right="5.0" />
+                                 </GridPane.margin></Label>
+                              <Label fx:id="overallOvertimeLabel" text="%OverallOvertime" GridPane.rowIndex="15">
+                                 <GridPane.margin>
+                                    <Insets right="5.0" />
+                                 </GridPane.margin></Label>
+                              <ImageView fx:id="overallOvertimeImageView" fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="15" GridPane.valignment="CENTER">
+                                 <GridPane.margin>
+                                    <Insets />
+                                 </GridPane.margin>
+                                 <image>
+                                    <Image url="@../icons/warning.png" />
+                                 </image>
+                              </ImageView>
+                              <Label fx:id="workhoursLabelValue" GridPane.columnIndex="1" />
+                              <Label fx:id="maxWorkhoursLabelValue" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <Label fx:id="breakfastOfftimeStartLabelValue" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                              <Label fx:id="breakfastOfftimeEndLabelValue" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                              <Label fx:id="lunchOfftimeStartLabelValue" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                              <Label fx:id="lunchOfftimeEndLabelValue" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                              <Label fx:id="earliestWorktimeStartLabelValue" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+                              <Label fx:id="latestWorktimeEndLabelValue" GridPane.columnIndex="1" GridPane.rowIndex="10" />
+                              <Label fx:id="regularWorktimeCurrentMonthLabelValue" GridPane.columnIndex="1" GridPane.rowIndex="12" />
+                              <Label fx:id="worktimeCurrentMonthLabelValue" GridPane.columnIndex="1" GridPane.rowIndex="13" />
+                              <Label fx:id="overtimeCurrentMonthLabelValue" GridPane.columnIndex="1" GridPane.rowIndex="14" />
+                              <Label fx:id="overallOvertimeLabelValue" GridPane.columnIndex="1" GridPane.rowIndex="15" />
+                           </children>
+                        </GridPane>
+                  </content>
+                </TitledPane>
+                <TitledPane id="UserVacationInfoPane" fx:id="userVacationInfoTitledPane" animated="false" text="%UserVacationInfo">
+                     <content>
+                        <GridPane fx:id="userVacationInfoGridPane" hgap="5.0" vgap="5.0">
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="ALWAYS" />
+                              <ColumnConstraints hgrow="ALWAYS" />
+                              <ColumnConstraints hgrow="ALWAYS" />
+                              <ColumnConstraints halignment="RIGHT" hgrow="NEVER" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <children>
+                              <Label fx:id="vacationdaysLabel" text="%Vacationdays" />
+                              <Label fx:id="vacationReconciliationDateLabel" minHeight="-Infinity" text="%VacationReconciliationDate" GridPane.rowIndex="1">
+                                 <GridPane.margin>
+                                    <Insets top="5.0" />
+                                 </GridPane.margin>
+                              </Label>
+                              <Label fx:id="vacationLeftLabel" text="%UserVacationLeft" GridPane.rowIndex="2" />
+                              <Label fx:id="vacationdaysLabelValue" GridPane.columnIndex="1" />
+                              <Label fx:id="vacationReconciliationDateLabelValue" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <Label fx:id="vacationLeftLabelValue" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <Label fx:id="vacationDaysType" text="%VacationCorrectionType" GridPane.columnIndex="2" />
+                              <Label fx:id="userVacationLeftType" text="%VacationCorrectionType" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                           </children>
+                        </GridPane>
+                     </content>
+                </TitledPane>
+                  <TitledPane id="UserWorkdaysInfoPane" fx:id="userWorkdaysInfoTitledPane" animated="false" text="%UserWorkdaysInfo">
+                     <content>
+                        <GridPane hgap="5.0" vgap="5.0">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="ALWAYS" />
+                              <ColumnConstraints hgrow="ALWAYS" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints />
+                            <RowConstraints vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <Label fx:id="workdaysLabel" text="%Workdays" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" />
+                              <Label fx:id="workdaysLabelValue" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <ChoiceBox fx:id="worklocationsChoiceBox" GridPane.columnSpan="2147483647" GridPane.hgrow="ALWAYS" />
+                           </children>
+                        </GridPane>
+                     </content>
+                  </TitledPane>
+              </panes>
+            </Accordion>
+         </children>
+      </GridPane>
+   </children>
+   <padding>
+      <Insets left="5.0" right="5.0" />
+   </padding>
+</VBox>

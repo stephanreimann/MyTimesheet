@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <VBox VBox.vgrow="ALWAYS">
+               <children>
+                  <GridPane hgap="5.0" prefWidth="150.0" vgap="5.0">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="ALWAYS" maxWidth="134.0" minWidth="114.0" prefWidth="134.0" />
+                      <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" />
+                        <ColumnConstraints halignment="RIGHT" hgrow="NEVER" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints vgrow="SOMETIMES" />
+                        <RowConstraints vgrow="SOMETIMES" />
+                        <RowConstraints vgrow="SOMETIMES" />
+                        <RowConstraints vgrow="SOMETIMES" />
+                        <RowConstraints vgrow="SOMETIMES" />
+                      <RowConstraints vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <Label fx:id="projectNameLabel" text="%ProjectName" />
+                        <Label fx:id="projectCostUnitLabel" text="%ProjectCostUnit" GridPane.rowIndex="1" />
+                        <Label fx:id="projectIsWorktimeRelevantLabel" text="%ProjectIsWorktimeRelevant" GridPane.rowIndex="2" />
+                        <Label fx:id="projectIsVacationRelevantLabel" text="%ProjectIsVacationRelevant" GridPane.rowIndex="3" />
+                        <Label fx:id="projectIsComptimeRelevantLabel" text="%ProjectIsComptimeRelevant" GridPane.rowIndex="4" />
+                        <Label fx:id="projectDescriptionLabel" alignment="TOP_LEFT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="%ProjectDescription" GridPane.rowIndex="5">
+                           <GridPane.margin>
+                              <Insets top="5.0" />
+                           </GridPane.margin>
+                        </Label>
+                        <TextField fx:id="projectNameTextFieldValue" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" />
+                        <TextField fx:id="projectCostUnitTextFieldValue" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="1" />
+                        <ComboBox fx:id="projectIsWorktimeRelevantComboBoxValue" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                           <GridPane.margin>
+                              <Insets />
+                           </GridPane.margin>
+                        </ComboBox>
+                        <ComboBox fx:id="projectIsVacationRelevantComboBoxValue" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                        <ComboBox fx:id="projectIsComptimeRelevantComboBoxValue" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                        <TextArea fx:id="projectDescriptionTextAreaValue" wrapText="true" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowIndex="5" />
+                     </children>
+                     <VBox.margin>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </VBox.margin>
+                  </GridPane>
+               </children>
+            </VBox>
+            <HBox alignment="TOP_RIGHT" spacing="5.0">
+               <children>
+                  <Button fx:id="acceptButton" mnemonicParsing="false" onAction="#acceptAction" text="%Accept" />
+                  <Button fx:id="cancelButton" mnemonicParsing="false" onAction="#cancelAction" text="%Cancel" />
+               </children>
+               <VBox.margin>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </VBox.margin>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

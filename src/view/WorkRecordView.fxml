@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <ToolBar fx:id="workrecordToolBar">
+        <items>
+            <Label fx:id="selectedUserLabel" text="%SelectedUser" />
+            <ComboBox fx:id="selectedUserComboBox" />
+            <Label fx:id="startDateLabel" text="%StartDate" />
+            <DatePicker fx:id="startDateDatePicker" onAction="#handleOnStartDateChangedAction" />
+            <Label fx:id="endDateLabel" text="EndDate" />
+            <DatePicker fx:id="endDateDatePicker" onAction="#handleOnEndDateChangedAction" />
+        </items>
+      </ToolBar>
+      <TableView fx:id="workrecordTableView" VBox.vgrow="ALWAYS">
+         <columns>
+            <TableColumn fx:id="workrecordDateTableColumn" maxWidth="1.7976931348623157E308" prefWidth="75.0" text="%Date" />
+            <TableColumn fx:id="workrecordStartTimeTableColumn" maxWidth="1.7976931348623157E308" prefWidth="75.0" text="%StartTime" />
+            <TableColumn fx:id="workrecordEndTimeTableColumn" maxWidth="1.7976931348623157E308" prefWidth="75.0" text="%EndTime" />
+            <TableColumn fx:id="workrecordWorkTimeTableColumn" maxWidth="1.7976931348623157E308" prefWidth="75.0" text="%WorkTime" />
+            <TableColumn fx:id="workrecordOverTimeTableColumn" prefWidth="75.0" text="%OverTime" />
+            <TableColumn fx:id="workrecordOverTimeCorrectionTableColumn" maxWidth="1.7976931348623157E308" prefWidth="75.0" text="%OverallOverTimeCorrection" />
+            <TableColumn fx:id="workrecordVacationCorrectionTableColumn" prefWidth="75.0" text="ValcationCorrection" />
+            <TableColumn fx:id="workrecordLocationTableColumn" maxWidth="1.7976931348623157E308" prefWidth="75.0" text="%Location" />
+            <TableColumn fx:id="workrecordProjectTableColumn" maxWidth="1.7976931348623157E308" prefWidth="75.0" text="%Project" />
+            <TableColumn fx:id="workrecordDescriptionTableColumn" maxWidth="1.7976931348623157E308" prefWidth="75.0" text="%Description" />
+         </columns>
+      </TableView>
+   </children>
+</VBox>

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.VBox?>
+
+<TabPane minHeight="50.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
+  <tabs>
+    <Tab fx:id="generalInfoTab" text="%GeneralInfo">
+        <content>
+                    <VBox xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+                       <children>
+                                   <ToolBar>
+                                      <items>
+                                           <Button fx:id="clearLogListButton" mnemonicParsing="false" onAction="#handleClearLogList" text="%ClearLog" />
+                        <Label fx:id="filterLable" alignment="CENTER_RIGHT" contentDisplay="RIGHT" prefHeight="17.0" prefWidth="43.0" text="%FilterLable">
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets>
+                        </Label>
+                        <ToggleButton fx:id="infoToggleButton" mnemonicParsing="false" text="Info" />
+                        <ToggleButton fx:id="debugToggleButton" mnemonicParsing="false" text="Debug" />
+                        <ToggleButton fx:id="warningToggleButton" mnemonicParsing="false" text="Warning" />
+                        <ToggleButton fx:id="errorToggleButton" mnemonicParsing="false" text="Error" />
+                        <ToggleButton fx:id="fatalToggleButton" mnemonicParsing="false" text="Fatal" />
+                        <Button fx:id="resetFilterButton" mnemonicParsing="false" onAction="#handleResetFilter" text="%ResetFilter" />
+                                      </items>
+                                   </ToolBar>
+                           <ScrollPane fx:id="logScrollPane" fitToHeight="true" fitToWidth="true" VBox.vgrow="ALWAYS">
+                     <content>
+                        <ListView fx:id="logListView" prefHeight="200.0" prefWidth="200.0" />
+                     </content></ScrollPane>
+                       </children>
+                    </VBox>
+         </content>
+      </Tab>
+      <Tab fx:id="undoRedoTab" text="%UndoRedoInfo">
+         <content>
+            <VBox>
+               <children>
+                  <ToolBar prefHeight="40.0" prefWidth="200.0">
+                     <items>
+                        <Button fx:id="undoButton" onAction="#undoAction" text="">
+                           <graphic>
+                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../icons/edit-undo-8.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                           <tooltip>
+                              <Tooltip fx:id="undoTooltip" text="Undo (Ctrl +Z)" />
+                           </tooltip>
+                        </Button>
+                        <Button fx:id="redoButton" onAction="#redoAction" text="">
+                           <graphic>
+                              <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../icons/edit-redo-8.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                           <tooltip>
+                              <Tooltip fx:id="redoTooltip" text="Redo (Ctrl + Y)" />
+                           </tooltip>
+                        </Button>
+                     </items>
+                  </ToolBar>
+                  <SplitPane fx:id="undoRedoSplitPane" dividerPositions="0.5">
+                     <items>
+                        <VBox>
+                           <children>
+                              <Label fx:id="undoStackLabel" text="%UndoStack">
+                                 <padding>
+                                    <Insets bottom="5.0" top="5.0" />
+                                 </padding>
+                                 <VBox.margin>
+                                    <Insets left="5.0" />
+                                 </VBox.margin>
+                              </Label>
+                              <ScrollPane fx:id="undoScrollPane" fitToHeight="true" fitToWidth="true">
+                                <content>
+                                    <ListView fx:id="undoListView" />
+                                </content>
+                              </ScrollPane>
+                           </children>
+                        </VBox>
+                        <VBox>
+                           <children>
+                              <Label fx:id="redoStackLabel" text="%RedoStack">
+                                 <VBox.margin>
+                                    <Insets left="5.0" />
+                                 </VBox.margin>
+                                 <padding>
+                                    <Insets bottom="5.0" top="5.0" />
+                                 </padding>
+                              </Label>
+                              <ScrollPane fx:id="redoScrollPane" fitToHeight="true" fitToWidth="true">
+                                <content>
+                                    <ListView fx:id="redoListView" />
+                                </content>
+                              </ScrollPane>
+                           </children>
+                        </VBox>
+                     </items>
+                  </SplitPane>
+               </children>
+            </VBox>
+         </content></Tab>
+  </tabs>
+</TabPane>
