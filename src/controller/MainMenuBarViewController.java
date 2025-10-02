@@ -186,9 +186,6 @@ public class MainMenuBarViewController implements Initializable, IViewController
     
     @FXML
     private void exportReferencedata(ActionEvent event) throws Exception {
-        //Open selection dialog
-
-
         Database database = new Database(rb, log4jAdapter);
         
         String[] tables = new String[] { "Address", "Contract", "Holyday", "Project", "Role", "User", "Worklocation" };
