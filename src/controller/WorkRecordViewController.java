@@ -212,7 +212,7 @@ public class WorkRecordViewController implements Initializable, IViewController,
         startDateLabel.setText(rb.getString(startDateResourceKey));
         endDateLabel.setText(rb.getString(endDateResourceKey));
         workrecordDateTableColumn.setText(rb.getString(dateResourceKey));
-        renderWorkrecordDateTableColumn();
+        renderWorkrecordDateTableColumn(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT));
         workrecordStartTimeTableColumn.setText(rb.getString(startTimeResourceKey));
         workrecordEndTimeTableColumn.setText(rb.getString(endTimeResourceKey));
         workrecordWorkTimeTableColumn.setText(rb.getString(workTimeResourceKey));
@@ -446,10 +446,9 @@ public class WorkRecordViewController implements Initializable, IViewController,
     //Once the cell has the value, it must know how to display that value. 
     //In our case, the Workrecord’s LocalDate value must be formatted and colored 
     //depending on the logic that is implemented.
-    private void renderWorkrecordDateTableColumn() {
+    private void renderWorkrecordDateTableColumn(DateTimeFormatter dateTimeFormater) {
         Callback<TableColumn<Workrecord, LocalDate>, TableCell<Workrecord, LocalDate>> dayCellFactory = column -> {
             return new TableCell<Workrecord, LocalDate>() {
-                DateTimeFormatter dateTimeFormater = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT);
                 @Override
                 protected void updateItem(LocalDate item, boolean empty) {
                     super.updateItem(item, empty);
