@@ -129,6 +129,7 @@ class ImportHolydaysViewController implements Initializable, IViewController {
             String msgPart = "Holyday: " + holyday.getDate() + ";" + holyday.getName() + ";" + holyday.getState();
             if(!holydayData.contains(holyday)) {
                 holydayData.add(holyday);
+                holydayDao.create(holyday);
             } else {
                 log.warn(msgPart + " allready exists!");
             }

@@ -20,6 +20,8 @@ import net.fortuna.ical4j.model.Property;
  * !!! IMPORTATNT !!!
  * The loading mechanism ONLY works for files of
  * //www.feiertage-kalender.de
+ * 1. Select the year
+ * 2. Download file => Feiertage2026.ics
  * @author adrest18
  */
 public class CalendarLoader {
