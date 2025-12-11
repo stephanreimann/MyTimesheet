@@ -64,6 +64,11 @@ public class MainMenuBarViewController implements Initializable, IViewController
     private final String newWorkLocationEvent = "NewWorkLocation";
     private final String editWorkLocationEvent = "EditWorkLocation";
     private final String deleteWorkLocationEvent = "DeleteWorkLocation";
+
+    private final String newHolydayEvent = "NewHolyday";
+    private final String editHolydayEvent = "EditHolyday";
+    private final String deleteHolydayEvent = "DeleteHolyday";
+    private final String importHolydayEvent = "ImportHolyday";
     
     private final Logger log = LogManager.getLogger(PropertiesService.class.getName());
 
@@ -370,6 +375,11 @@ public class MainMenuBarViewController implements Initializable, IViewController
         if(holydayViewController == null) {
             holydayViewController = new HolydayViewController(controllerRepository, languageService, connection, undoService, propertiesService);
             controllerRepository.put(HolydayViewController.class.getName(), holydayViewController);
+            WorkRecordViewController workRecordViewController = (WorkRecordViewController)this.controllerRepository.get(WorkRecordViewController.class.getName());
+            holydayViewController.getEventManager().subscribeEventToListener(newHolydayEvent, workRecordViewController);
+            holydayViewController.getEventManager().subscribeEventToListener(editHolydayEvent, workRecordViewController);
+            holydayViewController.getEventManager().subscribeEventToListener(deleteHolydayEvent, workRecordViewController);
+            holydayViewController.getEventManager().subscribeEventToListener(importHolydayEvent, workRecordViewController);
         }
         
         if(holydayViewDialog == null) {

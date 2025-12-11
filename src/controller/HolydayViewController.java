@@ -23,6 +23,7 @@ import org.apache.logging.log4j.*;
 import service.*;
 import utils.ControllerUtilities;
 import utils.DialogFactory;
+import utils.EventManager;
 
 /**
  *
@@ -44,6 +45,10 @@ public class HolydayViewController implements Initializable, IViewController {
     private final String noHolydaySelectionAlertTitle = "NoSelectionAlertTitle";
     private final String noHolydaySelectionAlertHeader = "NoHolydaySelectionAlertHeader";
     private final String noHolydaySelectionAlertContent = "NoHolydaySelectionAlertContent";
+    private final String newHolydayEvent = "NewHolyday";
+    private final String editHolydayEvent = "EditHolyday";
+    private final String deleteHolydayEvent = "DeleteHolyday";
+    private final String importHolydayEvent = "ImportHolyday";
 
     private final Logger log = LogManager.getLogger(HolydayViewController.class.getName());
     
@@ -58,7 +63,8 @@ public class HolydayViewController implements Initializable, IViewController {
     private ObservableList<Holyday> holydayData;
     private Stage holydayDetailsViewDialog;
     private Stage importHolydaysViewDialog;
-    
+    public EventManager eventManager;
+
     private final String holydayDetailsViewDialogIcon = "icons/app-maid.png";
     private final String holydayDetailsViewDialogTitleResourceKey = "HolydayDetailsViewTitle";
     private final String holydayDetailsViewResource = "/view/HolydayDetailsView.fxml";
@@ -115,6 +121,11 @@ public class HolydayViewController implements Initializable, IViewController {
         this.propertiesService = propertiesService;
         this.holydayDao = new HolydayDAO(connection);
         this.holydayData = FXCollections.observableArrayList(this.holydayDao.selectAll());        
+        this.eventManager = new EventManager();
+        this.eventManager.registerEventType(newHolydayEvent);
+        this.eventManager.registerEventType(editHolydayEvent);
+        this.eventManager.registerEventType(deleteHolydayEvent);
+        this.eventManager.registerEventType(importHolydayEvent);
     }
     
     @FXML
@@ -127,7 +138,7 @@ public class HolydayViewController implements Initializable, IViewController {
         Holyday newHolyday = new Holyday(holydayDao.getNextId());
         openHolydayDetailsDialog(newHolyday, DataAction.NEW);
         if(isHolydayValid(newHolyday)) {
-            NewHolydayCommand cmd = new NewHolydayCommand(controllerRepository, holydayTableView, newHolyday, holydayDao);
+            NewHolydayCommand cmd = new NewHolydayCommand(controllerRepository,eventManager, holydayTableView, newHolyday, holydayDao);
             undoService.execute(cmd);
         }
     }
@@ -140,7 +151,7 @@ public class HolydayViewController implements Initializable, IViewController {
             openHolydayDetailsDialog(selectedHolyday, DataAction.EDIT);
             showHolydayDetails(selectedHolyday);
             if(!originalHolyday.equals(selectedHolyday)) {
-                EditHolydayCommand cmd = new EditHolydayCommand(controllerRepository, holydayTableView, originalHolyday, selectedHolyday, holydayDao);
+                EditHolydayCommand cmd = new EditHolydayCommand(controllerRepository, eventManager, holydayTableView, originalHolyday, selectedHolyday, holydayDao);
                 undoService.execute(cmd);
             }
         } else {
@@ -152,7 +163,7 @@ public class HolydayViewController implements Initializable, IViewController {
     private void deleteHolydayAction(ActionEvent event) throws SQLException, IOException {
         Holyday selectedHolyday = holydayTableView.getSelectionModel().getSelectedItem();
         if(selectedHolyday != null) {
-            DeleteHolydayCommand cmd = new DeleteHolydayCommand(controllerRepository, holydayTableView, selectedHolyday, holydayDao);
+            DeleteHolydayCommand cmd = new DeleteHolydayCommand(controllerRepository, eventManager, holydayTableView, selectedHolyday, holydayDao);
             undoService.execute(cmd);
         } else {
             ControllerUtilities.showNoItemSelectedAlert(primaryStage, rb, noHolydaySelectionAlertTitle, noHolydaySelectionAlertHeader, noHolydaySelectionAlertContent);
@@ -243,6 +254,10 @@ public class HolydayViewController implements Initializable, IViewController {
     public void preCloseAction() {
 
     }
+
+    public EventManager getEventManager() {
+        return eventManager;
+    }
         
     private void showHolydayDetails(Holyday holyday) {
         if(holyday != null) {
@@ -289,7 +304,7 @@ public class HolydayViewController implements Initializable, IViewController {
     }
 
     private void openImportHolydaysDialog() throws IOException {
-        ImportHolydaysViewController importHolydaysViewController = new ImportHolydaysViewController(languageService, connection, undoService, holydayData);
+        ImportHolydaysViewController importHolydaysViewController = new ImportHolydaysViewController(languageService, connection, undoService, holydayData, eventManager);
 
         DialogFactory dialogFactory = new DialogFactory(
             primaryStage, 

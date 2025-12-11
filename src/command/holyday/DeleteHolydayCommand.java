@@ -11,6 +11,7 @@ import javafx.scene.control.TableView;
 import model.Holyday;
 import org.apache.logging.log4j.*;
 import sqlite.HolydayDAO;
+import utils.EventManager;
 
 /**
  *
@@ -18,15 +19,19 @@ import sqlite.HolydayDAO;
  */
 public class DeleteHolydayCommand implements ICommand {
 
+    private final String deleteHolydayEvent = "DeleteHolyday";
+
     private final MainToolBarViewController mainToolBarViewController;
     private final MainMenuBarViewController mainMenuBarViewController;
+    private final EventManager eventManager;
     private TableView<Holyday> holydayTableView;
     private Holyday selectedHolyday;
     private HolydayDAO holydayDao;
     private final Logger log = LogManager.getLogger(DeleteHolydayCommand.class.getName());
     
-    public DeleteHolydayCommand(ControllerRepository controllerRepository, TableView<Holyday> holydayTableView, Holyday selectedHolyday, HolydayDAO holydayDao) {
+    public DeleteHolydayCommand(ControllerRepository controllerRepository, EventManager eventManager, TableView<Holyday> holydayTableView, Holyday selectedHolyday, HolydayDAO holydayDao) {
         if(controllerRepository == null) throw new NullPointerException("controllerRepository");
+        if(eventManager == null) throw new NullPointerException("events");
         if(holydayTableView == null) throw new NullPointerException("holydayTableView");
         if(selectedHolyday == null) throw new NullPointerException("selectedHolyday");
         if(holydayDao == null) throw new NullPointerException("holydayDao");
@@ -34,6 +39,7 @@ public class DeleteHolydayCommand implements ICommand {
         this.mainToolBarViewController = (MainToolBarViewController) controllerRepository.get(MainToolBarViewController.class.getName());
         this.mainMenuBarViewController = (MainMenuBarViewController) controllerRepository.get(MainMenuBarViewController.class.getName());
         
+        this.eventManager = eventManager;
         this.holydayTableView = holydayTableView;
         this.selectedHolyday = selectedHolyday;
         this.holydayDao = holydayDao;
@@ -49,6 +55,7 @@ public class DeleteHolydayCommand implements ICommand {
             } else {
                 mainToolBarViewController.toggleUndoRedoButtons();
                 mainMenuBarViewController.toggleUndoRedoMenuItems();
+                eventManager.notifyListenerOfEvent(deleteHolydayEvent, this);                
                 return true;
             }
         } catch (SQLException ex) {
@@ -68,6 +75,7 @@ public class DeleteHolydayCommand implements ICommand {
                 mainToolBarViewController.toggleUndoRedoButtons();
                 mainMenuBarViewController.toggleUndoRedoMenuItems();
                 holydayTableView.getSelectionModel().select(selectedHolyday);
+                eventManager.notifyListenerOfEvent(deleteHolydayEvent, this);                
                 return true;
             }
         } catch (SQLException ex) {

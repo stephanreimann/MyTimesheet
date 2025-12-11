@@ -65,6 +65,11 @@ public class WorkRecordViewController implements Initializable, IViewController,
     private final String editUserEvent = "EditUser";
     private final String deleteUserEvent = "DeleteUser";
 
+    private final String newHolydayEvent = "NewHolyday";
+    private final String editHolydayEvent = "EditHolyday";
+    private final String deleteHolydayEvent = "DeleteHolyday";
+    private final String importHolydayEvent = "ImportHolyday";
+    
     @FXML
     private ToolBar workrecordToolBar;
     @FXML
@@ -258,6 +263,14 @@ public class WorkRecordViewController implements Initializable, IViewController,
             }
             case newWorkrecordEvent, editWorkrecordEvent, deleteWorkrecordEvent -> {
                 refreshWorkrecordTableView();
+            }
+            case newHolydayEvent, editHolydayEvent, deleteHolydayEvent, importHolydayEvent -> {
+                try {
+                    holydayData = FXCollections.observableArrayList(this.holydayDao.selectAll());
+                    updateGuiItems();
+                } catch (SQLException ex) {
+                    log.fatal("SelectAll holydays failed");
+                }
             }
         }
     }

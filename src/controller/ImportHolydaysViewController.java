@@ -21,12 +21,15 @@ import org.apache.logging.log4j.*;
 import service.*;
 import sqlite.HolydayDAO;
 import utils.CalendarLoader;
+import utils.EventManager;
 
 /**
  *
  * @author adrest18
  */
 class ImportHolydaysViewController implements Initializable, IViewController {
+
+    private final String importHolydayEvent = "ImportHolyday";
 
     private final String holydayDateResourceKey = "HolydayDate";
     private final String holydayNameResourceKey = "HolydayName";
@@ -66,17 +69,20 @@ class ImportHolydaysViewController implements Initializable, IViewController {
     private final ObservableList<Holyday> holydayData;
     private final HolydayDAO holydayDao;
     private final List<String> holydaysToImport;
+    private final EventManager eventManager;
     
-    ImportHolydaysViewController(LanguageService languageService, Connection connection, UndoService undoService, ObservableList<Holyday> holydayData) {
+    ImportHolydaysViewController(LanguageService languageService, Connection connection, UndoService undoService, ObservableList<Holyday> holydayData, EventManager eventManager) {
         if(languageService == null) throw new NullPointerException("languageService");
         if(connection == null) throw new NullPointerException("connection");
         if(undoService == null) throw new NullPointerException("undoService");
         if(holydayData == null) throw new NullPointerException("holydayData");
+        if(eventManager == null) throw new NullPointerException("eventManager");
         
         this.languageService = languageService;
         this.connection = connection;
         this.undoService = undoService;
         this.controllerRepository = ControllerRepository.getInstance();
+        this.eventManager = eventManager;
         
         this.holydayData = holydayData;
         this.holydayDao = new HolydayDAO(connection);
@@ -134,6 +140,7 @@ class ImportHolydaysViewController implements Initializable, IViewController {
                 log.warn(msgPart + " allready exists!");
             }
         }
+        eventManager.notifyListenerOfEvent(importHolydayEvent, this);        
         primaryStage.close();
     }
     
