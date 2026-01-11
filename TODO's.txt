@@ -1,6 +1,9 @@
 Here bugs that are found, topics that may can be implemented and ideas are documented!
 =======================================================================================
 
+To Run set VM options:
+--module-path "/home/stephan/JavaFX/javafx-sdk-25.0.1/lib" --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics
+
 1. Bugs:
 
 
