@@ -37,6 +37,7 @@ public class UserDAO {
         while(rs.next()) {
             resultList.add(createUserFromResultSetEntry(rs));
         }
+        log.debug("UserDAO.selectAll returns " + resultList.size() + " users");        
         return resultList;
     }
 

@@ -37,6 +37,7 @@ public class RoleDAO {
         while(rs.next()) {
             resultList.add(createRoleFromResultSetEntry(rs));
         }
+        log.debug("RoleDAO.selectAll returns " + resultList.size() + " roles");        
         return resultList;
     }
 

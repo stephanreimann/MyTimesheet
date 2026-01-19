@@ -43,6 +43,7 @@ public class WorklocationDAO {
         while(resultSet.next()) {
             resultList.add(createWorklocationFromResultSetEntry(resultSet));
         }
+        log.debug("WorklocationDAO.selectAll returns " + resultList.size() + " worklocations");        
         return resultList;
     }
     

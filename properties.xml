@@ -14,7 +14,7 @@
 <entry key="Language">en</entry>
 <entry key="WorkrecordStartTimeDelta">-00:05</entry>
 <entry key="InfoToggleButtonState">false</entry>
-<entry key="DividerPositionCenterBorderPane">0.8485607008760951</entry>
+<entry key="DividerPositionCenterBorderPane">0.6670838548185232</entry>
 <entry key="UpperOvertimeThreshold">PT70H</entry>
 <entry key="SelectedUser">Reimann</entry>
 <entry key="DatabaseStoragePathAndFullName">E:\Develop\Java\MyTimesheet\sqlite\proddb.sqlite</entry>
@@ -25,7 +25,7 @@
 <entry key="DefaultProjectIndex">0</entry>
 <entry key="UseLastWorkrecordConfiguration">true</entry>
 <entry key="DefaultWorklocationIndex">0</entry>
-<entry key="DebugToggleButtonState">false</entry>
+<entry key="DebugToggleButtonState">true</entry>
 <entry key="ApplicationAlwaysOnTop">false</entry>
 <entry key="SettingsStoragePathAndFullName">E:\Develop\Java\MyTimesheet\properties.xml</entry>
 <entry key="SettingsStoragePath">./properties.xml</entry>

@@ -145,7 +145,7 @@ public class WorkRecordViewController implements Initializable, IViewController,
         this.userDAO = new UserDAO(connection);
         this.userData = FXCollections.observableArrayList(this.userDAO.selectAll());
         this.workrecordDao = new WorkrecordDAO(connection);
-        this.workrecordData = FXCollections.observableArrayList(this.workrecordDao.selectAll());
+        this.workrecordData = FXCollections.observableArrayList();
         this.holydayDao = new HolydayDAO(connection);
         this.holydayData = FXCollections.observableArrayList(this.holydayDao.selectAll());
         this.controllerRepository = ControllerRepository.getInstance();   

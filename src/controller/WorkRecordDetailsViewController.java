@@ -704,10 +704,8 @@ public class WorkRecordDetailsViewController implements Initializable, IViewCont
         boolean isModified = false;
         String oldValue = selectedWorkrecord.getDescription();
         String newValue = workrecordDescriptionValue.getText();
-        if(!ControllerUtilities.isNullOrEmpty(newValue)) {
-            if(!oldValue.equals(newValue)) {
-                isModified = true;
-            }
+        if(!oldValue.equals(newValue)) {
+            isModified = true;
         }
         return isModified;
     }

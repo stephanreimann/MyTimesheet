@@ -38,6 +38,7 @@ public class ContractDAO {
         while(resultSet.next()) {
             resultList.add(createContractFromResultSetEntry(resultSet));
         }
+        log.debug("ContractDAO.selectAll returns " + resultList.size() + " contracts");        
         return resultList;
     }
 

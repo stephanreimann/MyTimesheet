@@ -37,6 +37,7 @@ public class AddressDAO {
         while(resultSet.next()) {
             resultList.add(createAddressFromResultSetEntry(resultSet));
         }
+        log.debug("AddressDAO.selectAll returns " + resultList.size() + " addresses");
         return resultList;
     }
     

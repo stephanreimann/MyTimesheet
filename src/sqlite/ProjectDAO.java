@@ -43,6 +43,7 @@ public class ProjectDAO {
         while(resultSet.next()) {
             resultList.add(createProjectFromResultSetEntry(resultSet));
         }
+        log.debug("ProjectDAO.selectAll returns " + resultList.size() + " projects");        
         return resultList;
     }
     

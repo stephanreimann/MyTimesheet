@@ -38,6 +38,7 @@ public class HolydayDAO {
         while(rs.next()) {
             resultList.add(createHolydayFromResultSetEntry(rs));
         }
+        log.debug("HolydayDAO.selectAll returns " + resultList.size() + " holydays");        
         return resultList;
     }
 

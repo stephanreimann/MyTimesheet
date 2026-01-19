@@ -39,6 +39,7 @@ public class WorkrecordDAO {
         while(rs.next()) {
             resultList.add(createWorkrecordFromResultSetEntry(rs));
         }
+        log.debug("WorkrecordDAO.selectAll returns " + resultList.size() + " workrecords");        
         return resultList;
     }
     
