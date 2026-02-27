@@ -6,6 +6,8 @@ package sqlite;
 
 import model.*;
 import java.sql.*;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.*;
 import org.apache.logging.log4j.*;
 
@@ -32,12 +34,16 @@ public class UserDAO {
         statement.append("SELECT id, roleid, addressid, contractid, firstname, lastname, login, password, vacationleft ");
         statement.append("FROM user;");
         
+        Instant start = Instant.now();
         PreparedStatement dbStatement = connection.prepareStatement(statement.toString());
         ResultSet rs = dbStatement.executeQuery();
         while(rs.next()) {
             resultList.add(createUserFromResultSetEntry(rs));
         }
-        log.debug("UserDAO.selectAll returns " + resultList.size() + " users");        
+        Instant finish = Instant.now();
+        long timeElapsed = Duration.between(start, finish).toMillis();
+        log.debug("UserDAO.selectAll returns " + resultList.size() + " users.");
+        log.debug("Elapsed time: " + timeElapsed + "ms");
         return resultList;
     }
 

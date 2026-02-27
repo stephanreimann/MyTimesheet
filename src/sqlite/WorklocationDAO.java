@@ -9,6 +9,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -38,12 +40,16 @@ public class WorklocationDAO {
         statement.append("SELECT id, name, description ");
         statement.append("FROM worklocation;");
         
+        Instant start = Instant.now();
         PreparedStatement dbStatement = connection.prepareStatement(statement.toString());
         ResultSet resultSet = dbStatement.executeQuery();
         while(resultSet.next()) {
             resultList.add(createWorklocationFromResultSetEntry(resultSet));
         }
-        log.debug("WorklocationDAO.selectAll returns " + resultList.size() + " worklocations");        
+        Instant finish = Instant.now();
+        long timeElapsed = Duration.between(start, finish).toMillis();
+        log.debug("WorklocationDAO.selectAll returns " + resultList.size() + " worklocations.");
+        log.debug("Elapsed time: " + timeElapsed + "ms");
         return resultList;
     }
     

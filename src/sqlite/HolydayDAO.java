@@ -5,6 +5,8 @@
 package sqlite;
 
 import java.sql.*;
+import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.*;
 import model.Holyday;
@@ -33,12 +35,16 @@ public class HolydayDAO {
         statement.append("SELECT id, date, name, state ");
         statement.append("FROM holyday;");
         
+        Instant start = Instant.now();
         PreparedStatement dbStatement = connection.prepareStatement(statement.toString());
         ResultSet rs = dbStatement.executeQuery();
         while(rs.next()) {
             resultList.add(createHolydayFromResultSetEntry(rs));
         }
-        log.debug("HolydayDAO.selectAll returns " + resultList.size() + " holydays");        
+        Instant finish = Instant.now();
+        long timeElapsed = Duration.between(start, finish).toMillis();
+        log.debug("HolydayDAO.selectAll returns " + resultList.size() + " holydays.");
+        log.debug("Elapsed time: " + timeElapsed + "ms");
         return resultList;
     }
 

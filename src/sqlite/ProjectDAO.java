@@ -9,6 +9,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -38,12 +40,16 @@ public class ProjectDAO {
         statement.append("SELECT id, name, costunit, isworktimerelevant, isvacationrelevant, iscomptimerelevant, description ");
         statement.append("FROM project;");
         
+        Instant start = Instant.now();
         PreparedStatement dbStatement = connection.prepareStatement(statement.toString());
         ResultSet resultSet = dbStatement.executeQuery();
         while(resultSet.next()) {
             resultList.add(createProjectFromResultSetEntry(resultSet));
         }
-        log.debug("ProjectDAO.selectAll returns " + resultList.size() + " projects");        
+        Instant finish = Instant.now();
+        long timeElapsed = Duration.between(start, finish).toMillis();
+        log.debug("ProjectDAO.selectAll returns " + resultList.size() + " projects.");
+        log.debug("Elapsed time: " + timeElapsed + "ms");
         return resultList;
     }
     

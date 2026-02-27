@@ -6,6 +6,8 @@ package sqlite;
 
 import model.Contract;
 import java.sql.*;
+import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalTime;
 import java.util.*;
 import org.apache.logging.log4j.*;
@@ -33,12 +35,16 @@ public class ContractDAO {
         statement.append("SELECT id, name, workhours, maxworkhours, vacationdays, vacationreconciliationdate, breakfastofftimeend, breakfastofftimestart, lunchofftimeend, lunchofftimestart, earliestworktimestart, latestworktimeend ");
         statement.append("FROM contract;");
         
+        Instant start = Instant.now();
         PreparedStatement dbStatement = connection.prepareStatement(statement.toString());
         ResultSet resultSet = dbStatement.executeQuery();
         while(resultSet.next()) {
             resultList.add(createContractFromResultSetEntry(resultSet));
         }
-        log.debug("ContractDAO.selectAll returns " + resultList.size() + " contracts");        
+        Instant finish = Instant.now();
+        long timeElapsed = Duration.between(start, finish).toMillis();
+        log.debug("ContractDAO.selectAll returns " + resultList.size() + " contracts.");
+        log.debug("Elapsed time: " + timeElapsed + "ms");
         return resultList;
     }
 

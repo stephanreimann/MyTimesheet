@@ -6,6 +6,8 @@ package sqlite;
 
 import model.Address;
 import java.sql.*;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.*;
 import org.apache.logging.log4j.*;
 
@@ -27,17 +29,21 @@ public class AddressDAO {
 
     public List<Address> selectAll() throws SQLException {
         List<Address> resultList = new ArrayList<>();
-        
+         
         StringBuilder statement = new StringBuilder();
         statement.append("SELECT id, streetname, housenumber, unitname, unitnumber, unitlocation, city, state, zipcode, country ");
         statement.append("FROM address;");
         
+        Instant start = Instant.now();
         PreparedStatement dbStatement = connection.prepareStatement(statement.toString());
         ResultSet resultSet = dbStatement.executeQuery();
         while(resultSet.next()) {
             resultList.add(createAddressFromResultSetEntry(resultSet));
         }
-        log.debug("AddressDAO.selectAll returns " + resultList.size() + " addresses");
+        Instant finish = Instant.now();
+        long timeElapsed = Duration.between(start, finish).toMillis();
+        log.debug("AddressDAO.selectAll returns " + resultList.size() + " addresses.");
+        log.debug("Elapsed time: " + timeElapsed + "ms");
         return resultList;
     }
     

@@ -6,6 +6,8 @@ package sqlite;
 
 import model.Role;
 import java.sql.*;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.*;
 import org.apache.logging.log4j.*;
 
@@ -32,12 +34,16 @@ public class RoleDAO {
         statement.append("SELECT id, name, description ");
         statement.append("FROM role;");
         
+        Instant start = Instant.now();
         PreparedStatement dbStatement = connection.prepareStatement(statement.toString());
         ResultSet rs = dbStatement.executeQuery();
         while(rs.next()) {
             resultList.add(createRoleFromResultSetEntry(rs));
         }
-        log.debug("RoleDAO.selectAll returns " + resultList.size() + " roles");        
+        Instant finish = Instant.now();
+        long timeElapsed = Duration.between(start, finish).toMillis();
+        log.debug("RoleDAO.selectAll returns " + resultList.size() + " roles.");
+        log.debug("Elapsed time: " + timeElapsed + "ms");
         return resultList;
     }
 
