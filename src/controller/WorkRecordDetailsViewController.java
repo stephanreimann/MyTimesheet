@@ -12,6 +12,8 @@ import java.net.URL;
 import java.time.*;
 import java.time.format.*;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -197,11 +199,16 @@ public class WorkRecordDetailsViewController implements Initializable, IViewCont
         newWorkrecord.setStarttime(newWorkrecordStartTime);
         newWorkrecord.setEndtime(newWorkrecordEndTime);
         newWorkrecord.setWorktime(DurationConverter.convertDurationToLocalTime(newWorkrecordWorkTime));
-        newWorkrecord.setOvertime(DurationConverter.convertDurationToSignedStringOfHoursAndMinutes(newWorkrecordOverTime));
+        Project project = (Project)workrecordProjectChoiceBox.getSelectionModel().getSelectedItem();
+        newWorkrecord.setProject(project);
+        if("true".equalsIgnoreCase(project.getIsVacationRelevant())) {
+            newWorkrecord.setOvertime(DurationConverter.convertDurationToSignedStringOfHoursAndMinutes(Duration.ZERO));        
+        } else {
+            newWorkrecord.setOvertime(DurationConverter.convertDurationToSignedStringOfHoursAndMinutes(newWorkrecordOverTime));        
+        }
         newWorkrecord.setOvertimecorrection(getOvertimecorrectionOrDefault());
         newWorkrecord.setVacationcorrection(workrecordVacationCorrectionValue.getValue());
-        newWorkrecord.setWorklocation((Worklocation)workrecordLocationChoiceBox.getSelectionModel().getSelectedItem());
-        newWorkrecord.setProject((Project)workrecordProjectChoiceBox.getSelectionModel().getSelectedItem());
+        newWorkrecord.setWorklocation((Worklocation)workrecordLocationChoiceBox.getSelectionModel().getSelectedItem());        
         newWorkrecord.setDescription(workrecordDescriptionValue.getText());
         if(isInputFilled()) {
             NewWorkrecordCommand cmd = new NewWorkrecordCommand(controllerRepository, eventManager, workrecordTableView, newWorkrecord, workrecordDao);
@@ -218,7 +225,13 @@ public class WorkRecordDetailsViewController implements Initializable, IViewCont
             modifiedWorkrecord.setStarttime(newWorkrecordStartTime);
             modifiedWorkrecord.setEndtime(newWorkrecordEndTime);
             modifiedWorkrecord.setWorktime(DurationConverter.convertDurationToLocalTime(newWorkrecordWorkTime));
-            modifiedWorkrecord.setOvertime(DurationConverter.convertDurationToSignedStringOfHoursAndMinutes(newWorkrecordOverTime));
+            Project project = (Project)workrecordProjectChoiceBox.getSelectionModel().getSelectedItem();
+            modifiedWorkrecord.setProject(project);
+            if("true".equalsIgnoreCase(project.getIsVacationRelevant())) {
+                modifiedWorkrecord.setOvertime(DurationConverter.convertDurationToSignedStringOfHoursAndMinutes(Duration.ZERO));        
+            } else {
+                modifiedWorkrecord.setOvertime(DurationConverter.convertDurationToSignedStringOfHoursAndMinutes(newWorkrecordOverTime));        
+            }
             modifiedWorkrecord.setOvertimecorrection(getOvertimecorrectionOrDefault());
             modifiedWorkrecord.setVacationcorrection(workrecordVacationCorrectionValue.getValue());
             modifiedWorkrecord.setWorklocation((Worklocation)workrecordLocationChoiceBox.getSelectionModel().getSelectedItem());
@@ -318,7 +331,7 @@ public class WorkRecordDetailsViewController implements Initializable, IViewCont
                 IsInputValid();
             }
         });
-        workrecordLocationChoiceBox.valueProperty().addListener(event ->  {
+        workrecordLocationChoiceBox.valueProperty().addListener((ObservableValue obs, Object oldValue, Object newValue) ->  {
             if(selectedUser != null) {
                 IsInputValid();
             }
@@ -334,6 +347,20 @@ public class WorkRecordDetailsViewController implements Initializable, IViewCont
                         workrecordDescriptionValue.textProperty().setValue(rb.getString(selectedComptimeResourceKey));
                     }
                 }
+            } else if(((Project)newValue).getIsVacationRelevant().equalsIgnoreCase("true")) {
+                try {
+                    List<Worklocation> worklocations = worklocationDao.selectAll();
+                    Optional<Worklocation> result = worklocations.stream().filter(x -> x.getName().equalsIgnoreCase("Out of Office")).findFirst();
+                    if(result.isPresent()) {
+                        workrecordLocationChoiceBox.setValue(result.get());
+                    }
+                    workrecordStartTimeTimeSpinner.getValueFactory().setValue(LocalTime.MIN);
+                    workrecordEndTimeTimeSpinner.getValueFactory().setValue(LocalTime.MIN);
+                    workrecordOverTimeValue.setText(DurationConverter.convertDurationToSignedStringOfHoursAndMinutes(Duration.ZERO));
+                    workrecordOverTimeValue.setStyle("");
+                } catch (SQLException ex) {
+                    log.fatal(ex.getMessage());
+                } 
             } else {
                 workrecordOverTimeCorrectionValue.getValueFactory().setValue(Duration.ZERO);
                 if(workrecordDescriptionValue.textProperty().getValue().equals(rb.getString(selectedComptimeResourceKey))) {
@@ -722,6 +749,13 @@ public class WorkRecordDetailsViewController implements Initializable, IViewCont
     }
        
     private boolean isWorkrecordStartTimeAndEndTimeSet() {
+        Project project = (Project)workrecordProjectChoiceBox.getSelectionModel().getSelectedItem();
+        if(project != null) {
+            String isVacationRelevant = project.getIsVacationRelevant();
+            if("true".equalsIgnoreCase(isVacationRelevant)) {
+                return true;
+            }
+        }
         return !(newWorkrecordStartTime.equals(LocalTime.MIN) && newWorkrecordEndTime.equals(LocalTime.MIN));
     }
     
