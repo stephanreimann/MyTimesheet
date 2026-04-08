@@ -337,37 +337,45 @@ public class WorkRecordDetailsViewController implements Initializable, IViewCont
             }
         });
         workrecordProjectChoiceBox.valueProperty().addListener((ObservableValue obs, Object oldValue, Object newValue) ->  {
-            if(((Project)newValue).getIsComptimeRelevant().equalsIgnoreCase("true")) {
-                String maxWorkhours;
-                if(selectedUser != null) {
-                    Contract contract = selectedUser.getContract();
-                    maxWorkhours = String.valueOf(contract.getWorkhours()*(-1));
-                    workrecordOverTimeCorrectionValue.getValueFactory().setValue(DurationConverter.convertSignedStringOfHoursAndMinutesToDuration(maxWorkhours));
-                    if(workrecordDescriptionValue.textProperty().getValue().isEmpty()) {
-                        workrecordDescriptionValue.textProperty().setValue(rb.getString(selectedComptimeResourceKey));
-                    }
-                }
-            } else if(((Project)newValue).getIsVacationRelevant().equalsIgnoreCase("true")) {
-                try {
-                    List<Worklocation> worklocations = worklocationDao.selectAll();
-                    Optional<Worklocation> result = worklocations.stream().filter(x -> x.getName().equalsIgnoreCase("Out of Office")).findFirst();
-                    if(result.isPresent()) {
-                        workrecordLocationChoiceBox.setValue(result.get());
-                    }
-                    workrecordStartTimeTimeSpinner.getValueFactory().setValue(LocalTime.MIN);
-                    workrecordEndTimeTimeSpinner.getValueFactory().setValue(LocalTime.MIN);
-                    workrecordOverTimeValue.setText(DurationConverter.convertDurationToSignedStringOfHoursAndMinutes(Duration.ZERO));
-                    workrecordOverTimeValue.setStyle("");
-                } catch (SQLException ex) {
-                    log.fatal(ex.getMessage());
-                } 
-            } else {
-                workrecordOverTimeCorrectionValue.getValueFactory().setValue(Duration.ZERO);
-                if(workrecordDescriptionValue.textProperty().getValue().equals(rb.getString(selectedComptimeResourceKey))) {
-                    workrecordDescriptionValue.textProperty().setValue("");
-                }
-            }                
             if(selectedUser != null) {
+                if(((Project)newValue).getIsComptimeRelevant().equalsIgnoreCase("true")) {
+                    try {
+                        List<Worklocation> worklocations = worklocationDao.selectAll();
+                        Optional<Worklocation> result = worklocations.stream().filter(x -> x.getName().equalsIgnoreCase("Out of Office")).findFirst();
+                        if(result.isPresent()) {
+                            workrecordLocationChoiceBox.setValue(result.get());
+                        }
+                        String maxWorkhours = String.valueOf(selectedUser.getContract().getWorkhours()*(-1));
+                        workrecordOverTimeCorrectionValue.getValueFactory().setValue(DurationConverter.convertSignedStringOfHoursAndMinutesToDuration(maxWorkhours));
+                        if(workrecordDescriptionValue.textProperty().getValue().isEmpty()) {
+                            workrecordDescriptionValue.textProperty().setValue(rb.getString(selectedComptimeResourceKey));
+                        }
+                    } catch (SQLException ex) {
+                        log.fatal(ex.getMessage());
+                    } 
+                } else if(((Project)newValue).getIsVacationRelevant().equalsIgnoreCase("true")) {
+                    try {
+                        List<Worklocation> worklocations = worklocationDao.selectAll();
+                        Optional<Worklocation> result = worklocations.stream().filter(x -> x.getName().equalsIgnoreCase("Out of Office")).findFirst();
+                        if(result.isPresent()) {
+                            workrecordLocationChoiceBox.setValue(result.get());
+                        }
+                        workrecordStartTimeTimeSpinner.getValueFactory().setValue(LocalTime.MIN);
+                        workrecordEndTimeTimeSpinner.getValueFactory().setValue(LocalTime.MIN);
+                        workrecordOverTimeValue.setText(DurationConverter.convertDurationToSignedStringOfHoursAndMinutes(Duration.ZERO));
+                        workrecordOverTimeValue.setStyle("");
+                        if(!workrecordDescriptionValue.textProperty().getValue().isEmpty()) {
+                            workrecordDescriptionValue.textProperty().setValue("");
+                        }
+                    } catch (SQLException ex) {
+                        log.fatal(ex.getMessage());
+                    } 
+                } else {
+                    workrecordOverTimeCorrectionValue.getValueFactory().setValue(Duration.ZERO);
+                    if(!workrecordDescriptionValue.textProperty().getValue().isEmpty()) {
+                        workrecordDescriptionValue.textProperty().setValue("");
+                    }
+                }                
                 IsInputValid();
             }
         });
