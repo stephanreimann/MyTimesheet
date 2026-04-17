@@ -70,7 +70,10 @@ public class WorkrecordDAO {
         }
         Instant finish = Instant.now();
         long timeElapsed = Duration.between(start, finish).toMillis();
-        log.debug("WorkrecordDAO.selectAll returns " + resultList.size() + " workrecords.");
+        log.debug("WorkrecordDAO.selectAll("+ user.getLastname() + ", " 
+                                            + startDate.toString() + ", "
+                                            + endDate.toString()
+                                            + " returns " + resultList.size() + " workrecords.");
         log.debug("Elapsed time: " + timeElapsed + "ms");
         return resultList;
     }
@@ -99,7 +102,11 @@ public class WorkrecordDAO {
         }
         Instant finish = Instant.now();
         long timeElapsed = Duration.between(start, finish).toMillis();
-        log.debug("WorkrecordDAO.selectAll returns " + resultList.size() + " workrecords.");
+        log.debug("WorkrecordDAO.selectAll("+ user.getLastname() + ", " 
+                                            + date.toString() + ", "
+                                            + startTime.toString() + ", "
+                                            + endTime.toString()
+                                            + " returns " + resultList.size() + " workrecords.");
         log.debug("Elapsed time: " + timeElapsed + "ms");
         return resultList;
     }
@@ -124,7 +131,7 @@ public class WorkrecordDAO {
         }
         Instant finish = Instant.now();
         long timeElapsed = Duration.between(start, finish).toMillis();
-        log.debug("WorkrecordDAO.selectAll returns " + resultList.size() + " workrecords.");
+        log.debug("WorkrecordDAO.selectAll("+ user.getLastname() + ", " + date.toString() + " returns " + resultList.size() + " workrecords.");
         log.debug("Elapsed time: " + timeElapsed + "ms");
         return resultList;
     }
@@ -147,7 +154,7 @@ public class WorkrecordDAO {
         }
         Instant finish = Instant.now();
         long timeElapsed = Duration.between(start, finish).toMillis();
-        log.debug("WorkrecordDAO.selectAll returns " + resultList.size() + " workrecords.");
+        log.debug("WorkrecordDAO.selectAll("+ user.getLastname() + ") returns " + resultList.size() + " workrecords.");
         log.debug("Elapsed time: " + timeElapsed + "ms");
         return resultList;
     }

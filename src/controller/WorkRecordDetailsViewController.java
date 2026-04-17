@@ -151,11 +151,11 @@ public class WorkRecordDetailsViewController implements Initializable, IViewCont
     @FXML
     private Label workrecordLocationLabel;
     @FXML 
-    private ChoiceBox workrecordLocationChoiceBox;
+    private ChoiceBox<Worklocation> workrecordLocationChoiceBox;
     @FXML
     private Label workrecordProjectLabel;
     @FXML 
-    private ChoiceBox workrecordProjectChoiceBox;
+    private ChoiceBox<Project> workrecordProjectChoiceBox;
     @FXML
     private Label workrecordDescriptionLabel;
     @FXML
@@ -199,7 +199,7 @@ public class WorkRecordDetailsViewController implements Initializable, IViewCont
         newWorkrecord.setStarttime(newWorkrecordStartTime);
         newWorkrecord.setEndtime(newWorkrecordEndTime);
         newWorkrecord.setWorktime(DurationConverter.convertDurationToLocalTime(newWorkrecordWorkTime));
-        Project project = (Project)workrecordProjectChoiceBox.getSelectionModel().getSelectedItem();
+        Project project = workrecordProjectChoiceBox.getSelectionModel().getSelectedItem();
         newWorkrecord.setProject(project);
         if("true".equalsIgnoreCase(project.getIsVacationRelevant())) {
             newWorkrecord.setOvertime(DurationConverter.convertDurationToSignedStringOfHoursAndMinutes(Duration.ZERO));        
@@ -225,7 +225,7 @@ public class WorkRecordDetailsViewController implements Initializable, IViewCont
             modifiedWorkrecord.setStarttime(newWorkrecordStartTime);
             modifiedWorkrecord.setEndtime(newWorkrecordEndTime);
             modifiedWorkrecord.setWorktime(DurationConverter.convertDurationToLocalTime(newWorkrecordWorkTime));
-            Project project = (Project)workrecordProjectChoiceBox.getSelectionModel().getSelectedItem();
+            Project project = workrecordProjectChoiceBox.getSelectionModel().getSelectedItem();
             modifiedWorkrecord.setProject(project);
             if("true".equalsIgnoreCase(project.getIsVacationRelevant())) {
                 modifiedWorkrecord.setOvertime(DurationConverter.convertDurationToSignedStringOfHoursAndMinutes(Duration.ZERO));        
@@ -235,7 +235,7 @@ public class WorkRecordDetailsViewController implements Initializable, IViewCont
             modifiedWorkrecord.setOvertimecorrection(getOvertimecorrectionOrDefault());
             modifiedWorkrecord.setVacationcorrection(workrecordVacationCorrectionValue.getValue());
             modifiedWorkrecord.setWorklocation((Worklocation)workrecordLocationChoiceBox.getSelectionModel().getSelectedItem());
-            modifiedWorkrecord.setProject((Project)workrecordProjectChoiceBox.getSelectionModel().getSelectedItem());
+            modifiedWorkrecord.setProject(workrecordProjectChoiceBox.getSelectionModel().getSelectedItem());
             modifiedWorkrecord.setDescription(workrecordDescriptionValue.getText());
             if(!selectedWorkrecord.equals(modifiedWorkrecord)) {
                 EditWorkrecordCommand cmd = new EditWorkrecordCommand(controllerRepository, eventManager, workrecordTableView, selectedWorkrecord, modifiedWorkrecord, workrecordDao);
@@ -284,7 +284,7 @@ public class WorkRecordDetailsViewController implements Initializable, IViewCont
         workrecordStartTimeTimeSpinner = new LocalTimeSpinner();
         workrecordEndTimeTimeSpinner = new LocalTimeSpinner();
         workrecordOverTimeCorrectionValue = new DurationSpinner();
-        workrecordVacationCorrectionValue = new Spinner(-30, 30, 0, 1);
+        workrecordVacationCorrectionValue = new Spinner<>(-30, 30, 0, 1);
         
         workrecordDetailsGridPane.add(workrecordStartTimeTimeSpinner, 2, 2);
         workrecordDetailsGridPane.add(workrecordEndTimeTimeSpinner, 2, 3);
@@ -331,14 +331,14 @@ public class WorkRecordDetailsViewController implements Initializable, IViewCont
                 IsInputValid();
             }
         });
-        workrecordLocationChoiceBox.valueProperty().addListener((ObservableValue obs, Object oldValue, Object newValue) ->  {
+        workrecordLocationChoiceBox.valueProperty().addListener((ObservableValue<? extends Worklocation> obs, Worklocation oldValue, Worklocation newValue) ->  {
             if(selectedUser != null) {
                 IsInputValid();
             }
         });
-        workrecordProjectChoiceBox.valueProperty().addListener((ObservableValue obs, Object oldValue, Object newValue) ->  {
+        workrecordProjectChoiceBox.valueProperty().addListener((ObservableValue<? extends Project> obs, Project oldValue, Project newValue) ->  {
             if(selectedUser != null) {
-                if(((Project)newValue).getIsComptimeRelevant().equalsIgnoreCase("true")) {
+                if((newValue).getIsComptimeRelevant().equalsIgnoreCase("true")) {
                     setWorkrecordLocationChoiceBox("Out of Office");
                     workrecordStartTimeTimeSpinner.getValueFactory().setValue(LocalTime.of(7, 0));
                     workrecordEndTimeTimeSpinner.getValueFactory().setValue(LocalTime.of(14, 45));
@@ -347,7 +347,7 @@ public class WorkRecordDetailsViewController implements Initializable, IViewCont
                     if(workrecordDescriptionValue.textProperty().getValue().isEmpty()) {
                         workrecordDescriptionValue.textProperty().setValue(rb.getString(selectedComptimeResourceKey));
                     }
-                } else if(((Project)newValue).getIsVacationRelevant().equalsIgnoreCase("true")) {
+                } else if((newValue).getIsVacationRelevant().equalsIgnoreCase("true")) {
                     setWorkrecordLocationChoiceBox("Out of Office");
                     workrecordStartTimeTimeSpinner.getValueFactory().setValue(LocalTime.MIN);
                     workrecordEndTimeTimeSpinner.getValueFactory().setValue(LocalTime.MIN);

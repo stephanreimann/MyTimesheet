@@ -24,9 +24,9 @@ public class UndoService {
 
     public UndoService() {
         this.undoStack = new Stack<>();
-        this.undoStackComments = new ObservableStack();
+        this.undoStackComments = new ObservableStack<>();
         this.redoStack = new Stack<>();
-        this.redoStackComments = new ObservableStack();
+        this.redoStackComments = new ObservableStack<>();
     }
 
     public boolean execute(final ICommand cmd) {

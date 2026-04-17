@@ -23,13 +23,13 @@ public class Workrecord {
     private final LongProperty id = new SimpleLongProperty();
     private final ObjectProperty<User> user = new SimpleObjectProperty<>();
     private final ObjectProperty<Project> project = new SimpleObjectProperty<>();
-    private final ObjectProperty<LocalDate> date = new SimpleObjectProperty();
-    private final ObjectProperty<LocalTime> starttime = new SimpleObjectProperty();
-    private final ObjectProperty<LocalTime> endtime = new SimpleObjectProperty();
-    private final ObjectProperty<LocalTime> worktime = new SimpleObjectProperty();
+    private final ObjectProperty<LocalDate> date = new SimpleObjectProperty<>();
+    private final ObjectProperty<LocalTime> starttime = new SimpleObjectProperty<>();
+    private final ObjectProperty<LocalTime> endtime = new SimpleObjectProperty<>();
+    private final ObjectProperty<LocalTime> worktime = new SimpleObjectProperty<>();
     private final StringProperty overtime = new SimpleStringProperty();
     private final StringProperty overtimecorrection = new SimpleStringProperty();
-    private final ObjectProperty<Integer> vacationcorrection = new SimpleObjectProperty();
+    private final ObjectProperty<Integer> vacationcorrection = new SimpleObjectProperty<>();
     private final ObjectProperty<Worklocation> worklocation = new SimpleObjectProperty<>();
     private final StringProperty description = new SimpleStringProperty();
 

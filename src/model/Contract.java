@@ -20,12 +20,12 @@ public class Contract {
     private final LongProperty maxworkhours = new SimpleLongProperty();
     private final LongProperty vacationdays = new SimpleLongProperty();
     private final StringProperty vacationreconciliationdate = new SimpleStringProperty();
-    private final ObjectProperty<LocalTime> breakfastofftimeend = new SimpleObjectProperty();
-    private final ObjectProperty<LocalTime> breakfastofftimestart = new SimpleObjectProperty();
-    private final ObjectProperty<LocalTime> lunchofftimeend = new SimpleObjectProperty();
-    private final ObjectProperty<LocalTime> lunchofftimestart = new SimpleObjectProperty();
-    private final ObjectProperty<LocalTime> earliestworktimestart = new SimpleObjectProperty();
-    private final ObjectProperty<LocalTime> latestworktimeend = new SimpleObjectProperty();
+    private final ObjectProperty<LocalTime> breakfastofftimeend = new SimpleObjectProperty<>();
+    private final ObjectProperty<LocalTime> breakfastofftimestart = new SimpleObjectProperty<>();
+    private final ObjectProperty<LocalTime> lunchofftimeend = new SimpleObjectProperty<>();
+    private final ObjectProperty<LocalTime> lunchofftimestart = new SimpleObjectProperty<>();
+    private final ObjectProperty<LocalTime> earliestworktimestart = new SimpleObjectProperty<>();
+    private final ObjectProperty<LocalTime> latestworktimeend = new SimpleObjectProperty<>();
       
     public Contract(Long id) {
         this.id.set(id);

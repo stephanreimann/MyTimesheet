@@ -5,7 +5,6 @@
 package utils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -80,11 +79,6 @@ public class ObservableStack<T> extends SimpleListProperty<T> {
     }
 
     @Override
-    public boolean addAll(T... elements) {
-        return addAll(Arrays.asList(elements));
-    }
-
-    @Override
     public boolean addAll(int i, Collection<? extends T> elements) {
         throw new UnsupportedOperationException();
     }
@@ -97,11 +91,6 @@ public class ObservableStack<T> extends SimpleListProperty<T> {
     @Override
     public void remove(int from, int to) throws UnsupportedOperationException {
         throw new UnsupportedOperationException("Operation not allowed, use pop");
-    }
-
-    @Override
-    public boolean removeAll(T... elements) {
-        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -178,8 +167,9 @@ public class ObservableStack<T> extends SimpleListProperty<T> {
         }
 
         @Override
+        @SuppressWarnings("unchecked")
         public List<T> getRemoved() {
-            return wasRemoved() ? type.getChangedObj() :
+            return wasRemoved() ? (List<T>)(type.getChangedObj()) :
                     Collections.emptyList();
         }
 

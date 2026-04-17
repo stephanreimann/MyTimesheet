@@ -113,7 +113,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws SQLException, IOException {
-        try {
+        try {            
             String log4NetStoragePathAndFullName = propertiesService.getProperty("Log4NetStoragePath", log4jFilePathAndFullName);
             log4jAdapter = new Log4jAdapter(log4NetStoragePathAndFullName);
             log4jAdapter.getInfoViewLogAppender();

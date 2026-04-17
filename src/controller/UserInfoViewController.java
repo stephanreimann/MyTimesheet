@@ -193,7 +193,7 @@ public class UserInfoViewController implements Initializable, IViewController, I
     @FXML
     private TitledPane userWorkdaysInfoTitledPane;
     @FXML
-    private ChoiceBox worklocationsChoiceBox;
+    private ChoiceBox<Worklocation> worklocationsChoiceBox;
     @FXML
     private Label workdaysLabel;
     @FXML
@@ -264,13 +264,10 @@ public class UserInfoViewController implements Initializable, IViewController, I
             }
         }
         
-        worklocationsChoiceBox.valueProperty().addListener(new ChangeListener<Worklocation>() {
-            @Override
-            public void changed(ObservableValue<? extends Worklocation> observable, Worklocation oldValue, Worklocation newValue) {
-                if(newValue != null) {
-                    propertiesService.setProperty(selectedWorklocationResourceKey, ((Worklocation)newValue).getName());
-                    refreshWorkdaysLabelValue(selectedUser, newValue);
-                }
+        worklocationsChoiceBox.valueProperty().addListener((ObservableValue<? extends Worklocation> observable, Worklocation oldValue, Worklocation newValue) -> {
+            if(newValue != null) {
+                propertiesService.setProperty(selectedWorklocationResourceKey, ((Worklocation)newValue).getName());
+                refreshWorkdaysLabelValue(selectedUser, newValue);
             }
         });
     }
@@ -649,7 +646,7 @@ public class UserInfoViewController implements Initializable, IViewController, I
         }
     }
     
-    private void setLastSelectedWorkLocation(ChoiceBox selectedWorklocationChoiceBox) {
+    private void setLastSelectedWorkLocation(ChoiceBox<Worklocation> selectedWorklocationChoiceBox) {
         String lastSelectedWorklocation = propertiesService.getProperty(selectedWorklocationResourceKey);
         ObservableList<Worklocation> worklocationList = worklocationsChoiceBox.getItems();
         for(Worklocation worklocation : worklocationList) {

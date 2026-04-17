@@ -23,6 +23,7 @@ import utils.ControllerUtilities;
  *
  * @author adrest18
  */
+@SuppressWarnings("unused")
 class ProjectDetailsViewController implements Initializable, IViewController {
 
     private final String projectNameResourceKey = "ProjectName";
@@ -77,11 +78,11 @@ class ProjectDetailsViewController implements Initializable, IViewController {
     @FXML
     private TextField projectCostUnitTextFieldValue;
     @FXML
-    private ComboBox projectIsWorktimeRelevantComboBoxValue;
+    private ComboBox<String> projectIsWorktimeRelevantComboBoxValue;
     @FXML
-    private ComboBox projectIsVacationRelevantComboBoxValue;
+    private ComboBox<String> projectIsVacationRelevantComboBoxValue;
     @FXML
-    private ComboBox projectIsComptimeRelevantComboBoxValue;
+    private ComboBox<String> projectIsComptimeRelevantComboBoxValue;
     @FXML
     private TextArea projectDescriptionTextAreaValue;
     
@@ -105,18 +106,20 @@ class ProjectDetailsViewController implements Initializable, IViewController {
     }
 
     @FXML
+    @SuppressWarnings("unused")
     private void acceptAction(ActionEvent event) {
         project.setName(projectNameTextFieldValue.getText());
         project.setCostunit(projectCostUnitTextFieldValue.getText());
-        project.setIsWorktimeRelevant(projectIsWorktimeRelevantComboBoxValue.getSelectionModel().getSelectedItem().toString());
-        project.setIsVacationRelevant(projectIsVacationRelevantComboBoxValue.getSelectionModel().getSelectedItem().toString());
-        project.setIsComptimeRelevant(projectIsComptimeRelevantComboBoxValue.getSelectionModel().getSelectedItem().toString());
+        project.setIsWorktimeRelevant(projectIsWorktimeRelevantComboBoxValue.getSelectionModel().getSelectedItem());
+        project.setIsVacationRelevant(projectIsVacationRelevantComboBoxValue.getSelectionModel().getSelectedItem());
+        project.setIsComptimeRelevant(projectIsComptimeRelevantComboBoxValue.getSelectionModel().getSelectedItem());
         project.setDescription(projectDescriptionTextAreaValue.getText());
         
         primaryStage.close();
     }
     
     @FXML
+    @SuppressWarnings("unused")
     private void cancelAction(ActionEvent event) {
         primaryStage.close();
     }
@@ -139,26 +142,17 @@ class ProjectDetailsViewController implements Initializable, IViewController {
             newProjectCostUnit = newValue;
             isInputValid();
         });
-        projectIsWorktimeRelevantComboBoxValue.valueProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                newProjectIsWorkrecordRelevant = (String)newValue;
-                isInputValid();
-            }        
+        projectIsWorktimeRelevantComboBoxValue.valueProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
+            newProjectIsWorkrecordRelevant = (String)newValue;
+            isInputValid();        
         });
-        projectIsVacationRelevantComboBoxValue.valueProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                newProjectIsVacationRelevant = (String)newValue;
-                isInputValid();
-            }        
+        projectIsVacationRelevantComboBoxValue.valueProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
+            newProjectIsVacationRelevant = (String)newValue;
+            isInputValid();        
         });
-        projectIsComptimeRelevantComboBoxValue.valueProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                newProjectIsComptimeRelevant = (String)newValue;
-                isInputValid();
-            }        
+        projectIsComptimeRelevantComboBoxValue.valueProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
+            newProjectIsComptimeRelevant = (String)newValue;
+            isInputValid();        
         });
         projectDescriptionTextAreaValue.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
             newProjectDescription = newValue;

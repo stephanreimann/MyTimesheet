@@ -281,7 +281,7 @@ public class Database {
             this.schema = schema;
         }
     
-        public List<ColumnInfo> columnInfos = new ArrayList();
+        public List<ColumnInfo> columnInfos = new ArrayList<>();
     }
     
     public class ColumnInfo {

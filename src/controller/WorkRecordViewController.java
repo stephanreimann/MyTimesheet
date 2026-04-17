@@ -75,7 +75,7 @@ public class WorkRecordViewController implements Initializable, IViewController,
     @FXML
     private Label selectedUserLabel;
     @FXML
-    private ComboBox selectedUserComboBox;
+    private ComboBox<User> selectedUserComboBox;
     @FXML
     private Label startDateLabel;
     @FXML
@@ -192,15 +192,12 @@ public class WorkRecordViewController implements Initializable, IViewController,
         };
         workrecordTableView.getSelectionModel().selectedItemProperty().addListener(selectedWorkrecordChangedListener);
         
-        ChangeListener<User> selectedUserChangedListener = new ChangeListener<User>() {
-            @Override
-            public void changed(ObservableValue<? extends User> observable, User oldValue, User newValue) {
-                if(newValue != null && oldValue != newValue) {
-                    propertiesService.setProperty(selectedUserResourceKey, ((User)newValue).getLastname());
-                    eventManager.notifyListenerOfEvent(userChangedEvent, newValue);
-                    refreshWorkrecordTableView();
-                    selectWorkrecordOf(LocalDate.now());
-                }
+        ChangeListener<User> selectedUserChangedListener = (ObservableValue<? extends User> observable, User oldValue, User newValue) -> {
+            if(newValue != null && oldValue != newValue) {
+                propertiesService.setProperty(selectedUserResourceKey, ((User)newValue).getLastname());
+                eventManager.notifyListenerOfEvent(userChangedEvent, newValue);
+                refreshWorkrecordTableView();
+                selectWorkrecordOf(LocalDate.now());
             }
         };                
         selectedUserComboBox.getSelectionModel().selectedItemProperty().addListener(selectedUserChangedListener);
@@ -533,7 +530,7 @@ public class WorkRecordViewController implements Initializable, IViewController,
         }
     }
 
-    private void setLastActiveUser(ComboBox selectedUserComboBox) {
+    private void setLastActiveUser(ComboBox<User> selectedUserComboBox) {
         String lastNameOfActiveUser = propertiesService.getProperty(selectedUserResourceKey);
         ObservableList<User> userList = selectedUserComboBox.getItems();
         for(User user : userList) {
@@ -570,7 +567,7 @@ public class WorkRecordViewController implements Initializable, IViewController,
 
     private void sortWorkrecordTableViewByDate() {
         workrecordDateTableColumn.setSortType(TableColumn.SortType.ASCENDING);
-        workrecordTableView.getSortOrder().setAll(workrecordDateTableColumn);
+        workrecordTableView.getSortOrder().setAll(List.of(workrecordDateTableColumn));
         workrecordTableView.sort();
     }
 

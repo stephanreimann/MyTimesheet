@@ -21,12 +21,12 @@ public class ChangeSelectedUserCommand implements ICommand {
     private final MainToolBarViewController mainToolBarViewController;
     private final MainMenuBarViewController mainMenuBarViewController;
     private final ChangeListener<User> selectedUserChangedListener;
-    private final ComboBox selectedUserComboBox;
+    private final ComboBox<User> selectedUserComboBox;
     private User oldSelectedUser;
     private User newSelectedUser;
     private final Logger log = LogManager.getLogger(NewWorkrecordCommand.class.getName());
 
-    public ChangeSelectedUserCommand(ControllerRepository controllerRepository, ChangeListener<User> selectedUserChangedListener, ComboBox selectedUserComboBox, User oldSelectedUser, User newSelectedUser) {
+    public ChangeSelectedUserCommand(ControllerRepository controllerRepository, ChangeListener<User> selectedUserChangedListener, ComboBox<User> selectedUserComboBox, User oldSelectedUser, User newSelectedUser) {
         if(controllerRepository == null) throw new NullPointerException("controllerRepository");
         if(selectedUserChangedListener == null) throw new NullPointerException("selectedUserChangedListener");
         if(selectedUserComboBox == null) throw new NullPointerException("selectedUserComboBox");
@@ -69,6 +69,7 @@ public class ChangeSelectedUserCommand implements ICommand {
 
     @Override
     public String getText() {
+        log.debug("Selected user changed from " + oldSelectedUser + "to " + newSelectedUser);
         return "Selected user changed from " + oldSelectedUser + " to " + newSelectedUser;
     }
     

@@ -15,7 +15,7 @@ import javafx.beans.property.*;
 public class Holyday {
 
     private final LongProperty id = new SimpleLongProperty();
-    private final ObjectProperty<LocalDate> date = new SimpleObjectProperty();
+    private final ObjectProperty<LocalDate> date = new SimpleObjectProperty<>();
     private final StringProperty name = new SimpleStringProperty();
     private final StringProperty state = new SimpleStringProperty();
     

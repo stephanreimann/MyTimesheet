@@ -18,6 +18,8 @@ import javafx.fxml.*;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.stage.*;
+import model.Project;
+import model.Worklocation;
 import org.apache.logging.log4j.LogManager;
 import service.PropertiesService;
 import sqlite.*;
@@ -115,11 +117,11 @@ public class SettingsViewController implements Initializable, IViewController {
     @FXML
     private Label workrecordLocationLabel;
     @FXML
-    private ChoiceBox workrecordLocationChoiceBox;
+    private ChoiceBox<Worklocation> workrecordLocationChoiceBox;
     @FXML
     private Label workrecordProjectLabel;
     @FXML
-    private ChoiceBox workrecordProjectChoiceBox;
+    private ChoiceBox<Project> workrecordProjectChoiceBox;
     
     @FXML
     private Tab settingsWorktimeTab;
