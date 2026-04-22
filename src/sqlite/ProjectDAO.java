@@ -48,7 +48,7 @@ public class ProjectDAO {
         }
         Instant finish = Instant.now();
         long timeElapsed = Duration.between(start, finish).toMillis();
-        log.debug("ProjectDAO.selectAll returns " + resultList.size() + " projects.");
+        log.debug("ProjectDAO.selectAll() returns " + resultList.size() + " projects.");
         log.debug("Elapsed time: " + timeElapsed + "ms");
         return resultList;
     }

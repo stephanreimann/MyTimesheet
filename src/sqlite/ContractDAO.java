@@ -43,7 +43,7 @@ public class ContractDAO {
         }
         Instant finish = Instant.now();
         long timeElapsed = Duration.between(start, finish).toMillis();
-        log.debug("ContractDAO.selectAll returns " + resultList.size() + " contracts.");
+        log.debug("ContractDAO.selectAll() returns " + resultList.size() + " contracts.");
         log.debug("Elapsed time: " + timeElapsed + "ms");
         return resultList;
     }

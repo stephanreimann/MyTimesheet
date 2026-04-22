@@ -43,7 +43,7 @@ public class HolydayDAO {
         }
         Instant finish = Instant.now();
         long timeElapsed = Duration.between(start, finish).toMillis();
-        log.debug("HolydayDAO.selectAll returns " + resultList.size() + " holydays.");
+        log.debug("HolydayDAO.selectAll() returns " + resultList.size() + " holydays.");
         log.debug("Elapsed time: " + timeElapsed + "ms");
         return resultList;
     }

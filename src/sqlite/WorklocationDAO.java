@@ -48,7 +48,7 @@ public class WorklocationDAO {
         }
         Instant finish = Instant.now();
         long timeElapsed = Duration.between(start, finish).toMillis();
-        log.debug("WorklocationDAO.selectAll returns " + resultList.size() + " worklocations.");
+        log.debug("WorklocationDAO.selectAll() returns " + resultList.size() + " worklocations.");
         log.debug("Elapsed time: " + timeElapsed + "ms");
         return resultList;
     }

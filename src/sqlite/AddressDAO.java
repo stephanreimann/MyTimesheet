@@ -42,7 +42,7 @@ public class AddressDAO {
         }
         Instant finish = Instant.now();
         long timeElapsed = Duration.between(start, finish).toMillis();
-        log.debug("AddressDAO.selectAll returns " + resultList.size() + " addresses.");
+        log.debug("AddressDAO.selectAll() returns " + resultList.size() + " addresses.");
         log.debug("Elapsed time: " + timeElapsed + "ms");
         return resultList;
     }

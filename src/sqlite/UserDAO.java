@@ -42,7 +42,7 @@ public class UserDAO {
         }
         Instant finish = Instant.now();
         long timeElapsed = Duration.between(start, finish).toMillis();
-        log.debug("UserDAO.selectAll returns " + resultList.size() + " users.");
+        log.debug("UserDAO.selectAll() returns " + resultList.size() + " users.");
         log.debug("Elapsed time: " + timeElapsed + "ms");
         return resultList;
     }

@@ -42,7 +42,7 @@ public class RoleDAO {
         }
         Instant finish = Instant.now();
         long timeElapsed = Duration.between(start, finish).toMillis();
-        log.debug("RoleDAO.selectAll returns " + resultList.size() + " roles.");
+        log.debug("RoleDAO.selectAll() returns " + resultList.size() + " roles.");
         log.debug("Elapsed time: " + timeElapsed + "ms");
         return resultList;
     }
