@@ -44,7 +44,7 @@ public class WorkrecordDAO {
         }
         Instant finish = Instant.now();
         long timeElapsed = Duration.between(start, finish).toMillis();
-        log.debug("WorkrecordDAO.selectAll returns " + resultList.size() + " workrecords.");
+        log.debug("WorkrecordDAO.selectAll() returns " + resultList.size() + " workrecords.");
         log.debug("Elapsed time: " + timeElapsed + "ms");        
         return resultList;
     }
