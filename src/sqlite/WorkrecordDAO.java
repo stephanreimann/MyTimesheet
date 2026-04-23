@@ -43,15 +43,16 @@ public class WorkrecordDAO {
         statement.append("FROM workrecord;");
         
         Instant start = Instant.now();
-        PreparedStatement dbStatement = connection.prepareStatement(statement.toString());
-        ResultSet rs = dbStatement.executeQuery();
-        while(rs.next()) {
-            resultList.add(createWorkrecordFromResultSetEntry(rs));
+        try (PreparedStatement dbStatement = connection.prepareStatement(statement.toString())) {
+            ResultSet rs = dbStatement.executeQuery();
+            while(rs.next()) {
+                resultList.add(createWorkrecordFromResultSetEntry(rs));
+            }
+            Instant finish = Instant.now();
+            long timeElapsed = Duration.between(start, finish).toMillis();
+            log.debug("WorkrecordDAO.selectAll() returns " + resultList.size() + " workrecords.");
+            log.debug("Elapsed time: " + timeElapsed + "ms");        
         }
-        Instant finish = Instant.now();
-        long timeElapsed = Duration.between(start, finish).toMillis();
-        log.debug("WorkrecordDAO.selectAll() returns " + resultList.size() + " workrecords.");
-        log.debug("Elapsed time: " + timeElapsed + "ms");        
         return resultList;
     }
     
@@ -64,21 +65,21 @@ public class WorkrecordDAO {
         statement.append("WHERE userid = ? ");
         statement.append("AND date BETWEEN ? AND ?;");
 
-        PreparedStatement dbStatement = connection.prepareStatement(statement.toString());
-        dbStatement.setLong(1, user.getId());
-        dbStatement.setString(2, startDate.toString());
-        dbStatement.setString(3, endDate.toString());
+        try (PreparedStatement dbStatement = connection.prepareStatement(statement.toString())) {
+            dbStatement.setLong(1, user.getId());
+            dbStatement.setString(2, startDate.toString());
+            dbStatement.setString(3, endDate.toString());
+            Instant start = Instant.now();
+            ResultSet rs = dbStatement.executeQuery();
+            while(rs.next()) {
+                resultList.add(createWorkrecordFromResultSetEntry(rs));
+            }
+            Instant finish = Instant.now();
+            long timeElapsed = Duration.between(start, finish).toMillis();
 
-        Instant start = Instant.now();
-        ResultSet rs = dbStatement.executeQuery();
-        while(rs.next()) {
-            resultList.add(createWorkrecordFromResultSetEntry(rs));
+            log.debug(String.format("WorkrecordDAO.selectAll(%s, %s, %s) returns %d workrecords.",user.getLastname(), startDate, endDate, resultList.size()));        
+            log.debug("Elapsed time: " + timeElapsed + "ms");
         }
-        Instant finish = Instant.now();
-        long timeElapsed = Duration.between(start, finish).toMillis();
-        
-        log.debug(String.format("WorkrecordDAO.selectAll(%s, %s, %s) returns %d workrecords.",user.getLastname(), startDate, endDate, resultList.size()));        
-        log.debug("Elapsed time: " + timeElapsed + "ms");
         return resultList;
     }
     
@@ -93,21 +94,22 @@ public class WorkrecordDAO {
         statement.append("AND starttime = ? ");
         statement.append("AND endtime = ?;");
 
-        PreparedStatement dbStatement = connection.prepareStatement(statement.toString());
-        dbStatement.setLong(1, user.getId());
-        dbStatement.setString(2, date.toString());
-        dbStatement.setString(3, startTime.toString());
-        dbStatement.setString(4, endTime.toString());
+        try (PreparedStatement dbStatement = connection.prepareStatement(statement.toString())) {
+            dbStatement.setLong(1, user.getId());
+            dbStatement.setString(2, date.toString());
+            dbStatement.setString(3, startTime.toString());
+            dbStatement.setString(4, endTime.toString());
 
-        Instant start = Instant.now();
-        ResultSet rs = dbStatement.executeQuery();
-        while(rs.next()) {
-            resultList.add(createWorkrecordFromResultSetEntry(rs));
+            Instant start = Instant.now();
+            ResultSet rs = dbStatement.executeQuery();
+            while(rs.next()) {
+                resultList.add(createWorkrecordFromResultSetEntry(rs));
+            }
+            Instant finish = Instant.now();
+            long timeElapsed = Duration.between(start, finish).toMillis();
+            log.debug(String.format("WorkrecordDAO.selectAll(%s, %s, %s, %s) returns %d workrecords.",user.getLastname(),date.toString(), startTime.toString(), endTime.toString(), resultList.size()));        
+            log.debug("Elapsed time: " + timeElapsed + "ms");
         }
-        Instant finish = Instant.now();
-        long timeElapsed = Duration.between(start, finish).toMillis();
-        log.debug(String.format("WorkrecordDAO.selectAll(%s, %s, %s, %s) returns %d workrecords.",user.getLastname(),date.toString(), startTime.toString(), endTime.toString(), resultList.size()));        
-        log.debug("Elapsed time: " + timeElapsed + "ms");
         return resultList;
     }
   
@@ -120,20 +122,21 @@ public class WorkrecordDAO {
         statement.append("WHERE userid = ? ");
         statement.append("AND date = ?;");
 
-        PreparedStatement dbStatement = connection.prepareStatement(statement.toString());
-        dbStatement.setLong(1, user.getId());
-        dbStatement.setString(2, date.toString());
+        try(PreparedStatement dbStatement = connection.prepareStatement(statement.toString())) {
+            dbStatement.setLong(1, user.getId());
+            dbStatement.setString(2, date.toString());
 
-        Instant start = Instant.now();
-        ResultSet rs = dbStatement.executeQuery();
-        while(rs.next()) {
-            resultList.add(createWorkrecordFromResultSetEntry(rs));
+            Instant start = Instant.now();
+            ResultSet rs = dbStatement.executeQuery();
+            while(rs.next()) {
+                resultList.add(createWorkrecordFromResultSetEntry(rs));
+            }
+            Instant finish = Instant.now();
+            long timeElapsed = Duration.between(start, finish).toMillis();
+            log.debug(String.format("WorkrecordDAO.selectAll(%s, %s) returns %d workrecords.",user.getLastname(),date.toString(), resultList.size()));        
+            log.debug("WorkrecordDAO.selectAll("+ user.getLastname() + ", " + date.toString() + " returns " + resultList.size() + " workrecords.");
+            log.debug("Elapsed time: " + timeElapsed + "ms");
         }
-        Instant finish = Instant.now();
-        long timeElapsed = Duration.between(start, finish).toMillis();
-        log.debug(String.format("WorkrecordDAO.selectAll(%s, %s) returns %d workrecords.",user.getLastname(),date.toString(), resultList.size()));        
-        log.debug("WorkrecordDAO.selectAll("+ user.getLastname() + ", " + date.toString() + " returns " + resultList.size() + " workrecords.");
-        log.debug("Elapsed time: " + timeElapsed + "ms");
         return resultList;
     }
 
@@ -145,18 +148,19 @@ public class WorkrecordDAO {
         statement.append("FROM workrecord ");
         statement.append("WHERE userid = ?;");
 
-        PreparedStatement dbStatement = connection.prepareStatement(statement.toString());
-        dbStatement.setLong(1, user.getId());
+        try(PreparedStatement dbStatement = connection.prepareStatement(statement.toString())) {
+            dbStatement.setLong(1, user.getId());
 
-        Instant start = Instant.now();
-        ResultSet rs = dbStatement.executeQuery();
-        while(rs.next()) {
-            resultList.add(createWorkrecordFromResultSetEntry(rs));
+            Instant start = Instant.now();
+            ResultSet rs = dbStatement.executeQuery();
+            while(rs.next()) {
+                resultList.add(createWorkrecordFromResultSetEntry(rs));
+            }
+            Instant finish = Instant.now();
+            long timeElapsed = Duration.between(start, finish).toMillis();
+            log.debug(String.format("WorkrecordDAO.selectAll(%s) returns %d workrecords.",user.getLastname(), resultList.size()));        
+            log.debug("Elapsed time: " + timeElapsed + "ms");
         }
-        Instant finish = Instant.now();
-        long timeElapsed = Duration.between(start, finish).toMillis();
-        log.debug(String.format("WorkrecordDAO.selectAll(%s) returns %d workrecords.",user.getLastname(), resultList.size()));        
-        log.debug("Elapsed time: " + timeElapsed + "ms");
         return resultList;
     }
 
@@ -166,25 +170,25 @@ public class WorkrecordDAO {
         statement.append("FROM workrecord ");
         statement.append("WHERE id = ?;");
         
-        PreparedStatement dbStatement = connection.prepareStatement(statement.toString());
-        dbStatement.setLong(1, id);
-        
-        Instant start = Instant.now();
-        ResultSet resultSet = dbStatement.executeQuery();
-        while(resultSet.next()) {
-            Workrecord workrecord = createWorkrecordFromResultSetEntry(resultSet);
+        try(PreparedStatement dbStatement = connection.prepareStatement(statement.toString())) {
+            dbStatement.setLong(1, id);
+
+            Instant start = Instant.now();
+            ResultSet resultSet = dbStatement.executeQuery();
+            while(resultSet.next()) {
+                Workrecord workrecord = createWorkrecordFromResultSetEntry(resultSet);
+                Instant finish = Instant.now();
+                long timeElapsed = Duration.between(start, finish).toMillis();
+                log.debug("WorkrecordDAO.selectWorkrecordFromId returns 1 workrecords.");
+                log.debug("Elapsed time: " + timeElapsed + "ms");
+                return Optional.of(workrecord);
+            }
             Instant finish = Instant.now();
             long timeElapsed = Duration.between(start, finish).toMillis();
-            log.debug("WorkrecordDAO.selectWorkrecordFromId returns 1 workrecords.");
+            log.debug("WorkrecordDAO.selectWorkrecordFromId returns 0 workrecords.");
             log.debug("Elapsed time: " + timeElapsed + "ms");
-            return Optional.of(workrecord);
+            log.warn("Select: Workrecord with Id " + id + " not found");        
         }
-        Instant finish = Instant.now();
-        long timeElapsed = Duration.between(start, finish).toMillis();
-        log.debug("WorkrecordDAO.selectWorkrecordFromId returns 0 workrecords.");
-        log.debug("Elapsed time: " + timeElapsed + "ms");
-        log.warn("Select: Workrecord with Id " + id + " not found");
-        
         return Optional.empty();
     }
     
@@ -213,30 +217,32 @@ public class WorkrecordDAO {
     public synchronized boolean create(Workrecord workrecord) throws SQLException {
         if(workrecord == null) throw new NullPointerException("user");
 
+        boolean result;
         StringBuilder statement = new StringBuilder();
         statement.append("INSERT INTO workrecord (id, userid, projectid, date, starttime, endtime, worktime, overtime, overtimecorrection, vacationcorrection, worklocationid, description) ");
         statement.append("VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         
-        Instant start = Instant.now();
-        PreparedStatement dbStatement = connection.prepareStatement(statement.toString());
-        dbStatement.setLong(1, workrecord.getId());
-        dbStatement.setLong(2, workrecord.getUser().getId());
-        dbStatement.setLong(3, workrecord.getProject().getId());
-        dbStatement.setString(4, workrecord.getDate().toString());
-        dbStatement.setString(5, workrecord.getStarttime().toString());
-        dbStatement.setString(6, workrecord.getEndtime().toString());
-        dbStatement.setString(7, workrecord.getWorktime().toString());
-        dbStatement.setString(8, workrecord.getOvertime());
-        dbStatement.setString(9, workrecord.getOvertimecorrection());
-        dbStatement.setLong(10, workrecord.getVacationcorrection());
-        dbStatement.setLong(11, workrecord.getWorklocation().getId());
-        dbStatement.setString(12, workrecord.getDescription());
+        try(PreparedStatement dbStatement = connection.prepareStatement(statement.toString())) {
+            dbStatement.setLong(1, workrecord.getId());
+            dbStatement.setLong(2, workrecord.getUser().getId());
+            dbStatement.setLong(3, workrecord.getProject().getId());
+            dbStatement.setString(4, workrecord.getDate().toString());
+            dbStatement.setString(5, workrecord.getStarttime().toString());
+            dbStatement.setString(6, workrecord.getEndtime().toString());
+            dbStatement.setString(7, workrecord.getWorktime().toString());
+            dbStatement.setString(8, workrecord.getOvertime());
+            dbStatement.setString(9, workrecord.getOvertimecorrection());
+            dbStatement.setLong(10, workrecord.getVacationcorrection());
+            dbStatement.setLong(11, workrecord.getWorklocation().getId());
+            dbStatement.setString(12, workrecord.getDescription());
 
-        boolean result = dbStatement.executeUpdate() > 0;
-        Instant finish = Instant.now();
-        long timeElapsed = Duration.between(start, finish).toMillis();
-        log.debug("WorkrecordDAO.create returns " + result + " workrecords.");
-        log.debug("Elapsed time: " + timeElapsed + "ms");
+            Instant start = Instant.now();
+            result = dbStatement.executeUpdate() > 0;
+            Instant finish = Instant.now();
+            long timeElapsed = Duration.between(start, finish).toMillis();
+            log.debug("WorkrecordDAO.create returns " + result + " workrecords.");
+            log.debug("Elapsed time: " + timeElapsed + "ms");
+        }
         return result;
     }
 
@@ -249,34 +255,36 @@ public class WorkrecordDAO {
             return false;
         }
         
+        boolean result;
         StringBuilder statement = new StringBuilder();
         statement.append("UPDATE workrecord ");
         statement.append("SET id = ?, userid = ?, projectid = ?, date = ?, starttime = ?, endtime = ?, worktime = ?, overtime = ?, overtimecorrection = ?, vacationcorrection = ?, worklocationid = ?, description = ? ");
         statement.append("WHERE id = ?;");
         
-        Instant start = Instant.now();
-        PreparedStatement dbStatement = connection.prepareStatement(statement.toString());
-        dbStatement.setLong(1, modified.getId());
-        dbStatement.setLong(2, modified.getUser().getId());
-        dbStatement.setLong(3, modified.getProject().getId());
-        dbStatement.setString(4, modified.getDate().toString());
-        dbStatement.setString(5, modified.getStarttime().toString());
-        dbStatement.setString(6, modified.getEndtime().toString());
-        dbStatement.setString(7, modified.getWorktime().toString());
-        dbStatement.setString(8, modified.getOvertime());
-        dbStatement.setString(9, modified.getOvertimecorrection());
-        dbStatement.setLong(10, modified.getVacationcorrection());
-        dbStatement.setLong(11, modified.getWorklocation().getId());
-        dbStatement.setString(12, modified.getDescription());
-        dbStatement.setLong(13, original.getId());
+        try(PreparedStatement dbStatement = connection.prepareStatement(statement.toString())) {
+            dbStatement.setLong(1, modified.getId());
+            dbStatement.setLong(2, modified.getUser().getId());
+            dbStatement.setLong(3, modified.getProject().getId());
+            dbStatement.setString(4, modified.getDate().toString());
+            dbStatement.setString(5, modified.getStarttime().toString());
+            dbStatement.setString(6, modified.getEndtime().toString());
+            dbStatement.setString(7, modified.getWorktime().toString());
+            dbStatement.setString(8, modified.getOvertime());
+            dbStatement.setString(9, modified.getOvertimecorrection());
+            dbStatement.setLong(10, modified.getVacationcorrection());
+            dbStatement.setLong(11, modified.getWorklocation().getId());
+            dbStatement.setString(12, modified.getDescription());
+            dbStatement.setLong(13, original.getId());
 
-        boolean result = dbStatement.executeUpdate() > 0;
-        Instant finish = Instant.now();
-        long timeElapsed = Duration.between(start, finish).toMillis();
-        log.debug("WorkrecordDAO.update returns " + result + " worrkrecords.");
-        log.debug("Elapsed time: " + timeElapsed + "ms");
-        if(!result) {
-            log.warn("Update: not possible, as " + original.toString() + " does not exist");
+            Instant start = Instant.now();
+            result = dbStatement.executeUpdate() > 0;
+            Instant finish = Instant.now();
+            long timeElapsed = Duration.between(start, finish).toMillis();
+            log.debug("WorkrecordDAO.update returns " + result + " worrkrecords.");
+            log.debug("Elapsed time: " + timeElapsed + "ms");
+            if(!result) {
+                log.warn("Update: not possible, as " + original.toString() + " does not exist");
+            }
         }
         return result;
     }
@@ -284,21 +292,23 @@ public class WorkrecordDAO {
     public synchronized boolean delete(Workrecord workrecord) throws SQLException {
         if(workrecord == null) throw new NullPointerException("user");
 
+        boolean result;
         StringBuilder statement = new StringBuilder();
         statement.append("DELETE FROM workrecord ");
         statement.append("WHERE id = ?");
         
-        Instant start = Instant.now();
-        PreparedStatement dbStatement = connection.prepareStatement(statement.toString());
-        dbStatement.setLong(1, workrecord.getId());
+        try(PreparedStatement dbStatement = connection.prepareStatement(statement.toString())) {
+            dbStatement.setLong(1, workrecord.getId());
 
-        boolean result = dbStatement.executeUpdate() > 0;
-        Instant finish = Instant.now();
-        long timeElapsed = Duration.between(start, finish).toMillis();
-        log.debug("WorkrecordDAO.delete returns " + result + " workrecords.");
-        log.debug("Elapsed time: " + timeElapsed + "ms");
-        if(!result) {
-            log.warn("Delete: not possible, as " + workrecord.toString() + " does not exist");
+            Instant start = Instant.now();
+            result = dbStatement.executeUpdate() > 0;
+            Instant finish = Instant.now();
+            long timeElapsed = Duration.between(start, finish).toMillis();
+            log.debug("WorkrecordDAO.delete returns " + result + " workrecords.");
+            log.debug("Elapsed time: " + timeElapsed + "ms");
+            if(!result) {
+                log.warn("Delete: not possible, as " + workrecord.toString() + " does not exist");
+            }
         }
         return result;
     }
@@ -309,10 +319,11 @@ public class WorkrecordDAO {
         statement.append("FROM SQLITE_SEQUENCE ");
         statement.append("WHERE name = 'Workrecord';");
 
-        PreparedStatement dbStatement = connection.prepareStatement(statement.toString());
-        ResultSet rs = dbStatement.executeQuery();
-        if (rs.next()) {
-            return rs.getLong(1) + 1;
+        try(PreparedStatement dbStatement = connection.prepareStatement(statement.toString())) {
+            ResultSet rs = dbStatement.executeQuery();
+            if (rs.next()) {
+                return rs.getLong(1) + 1;
+            }
         }
         return 0L;
     }    
