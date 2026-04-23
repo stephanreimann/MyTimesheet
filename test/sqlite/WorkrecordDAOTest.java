@@ -13,6 +13,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import model.Address;
 import model.Contract;
@@ -231,10 +232,10 @@ public class WorkrecordDAOTest {
         workrecordDAO.create(workrecord2);
 
         //Act
-        Workrecord workrecord = workrecordDAO.selectWorkrecordFromId(1L);
+        Optional<Workrecord> workrecord = workrecordDAO.selectWorkrecordFromId(1L);
 
         //Assert
-        Assert.assertEquals(workrecord1, workrecord);
+        Assert.assertEquals(workrecord1, workrecord.get());
     }
 
     @Test()
@@ -270,10 +271,10 @@ public class WorkrecordDAOTest {
         workrecordDAO.create(workrecord);
         
         //Act
-        Workrecord result = workrecordDAO.selectWorkrecordFromId(2L);
+        Optional<Workrecord> result = workrecordDAO.selectWorkrecordFromId(2L);
 
         //Assert
-        Assert.assertNull(result);
+        Assert.assertTrue(result.isEmpty());
     }
 
     @Test(expected = NullPointerException.class)
@@ -474,11 +475,11 @@ public class WorkrecordDAOTest {
         
         //Act
         boolean result = workrecordDAO.update(originalWorkrecord, modifiedWorkrecord);
-        Workrecord userResult = workrecordDAO.selectWorkrecordFromId(modifiedWorkrecord.getId());
+        Optional<Workrecord> userResult = workrecordDAO.selectWorkrecordFromId(modifiedWorkrecord.getId());
         
         //Assert
         Assert.assertTrue(result);
-        Assert.assertEquals(modifiedWorkrecord, userResult);
+        Assert.assertEquals(modifiedWorkrecord, userResult.get());
     }
 
     @Test()
@@ -555,11 +556,11 @@ public class WorkrecordDAOTest {
         
         //Act
         boolean result = workrecordDAO.update(originalWorkrecord, modifiedWorkrecord);
-        Workrecord workrecordResult = workrecordDAO.selectWorkrecordFromId(originalWorkrecord.getId());
+        Optional<Workrecord> workrecordResult = workrecordDAO.selectWorkrecordFromId(originalWorkrecord.getId());
 
         //Assert
         Assert.assertFalse(result);
-        Assert.assertEquals(originalWorkrecord, workrecordResult);
+        Assert.assertEquals(originalWorkrecord, workrecordResult.get());
     }
 
     @Test(expected = NullPointerException.class)
@@ -644,11 +645,11 @@ public class WorkrecordDAOTest {
         
         //Act
         boolean result = workrecordDAO.delete(workrecord);
-        Workrecord workrecordResult = workrecordDAO.selectWorkrecordFromId(workrecord.getId());
+        Optional<Workrecord> workrecordResult = workrecordDAO.selectWorkrecordFromId(workrecord.getId());
 
         //Assert
         Assert.assertTrue(result);
-        Assert.assertNull(workrecordResult);
+        Assert.assertTrue(workrecordResult.isEmpty());
     }
    
     @Test()

@@ -19,12 +19,16 @@ public class UserDAO {
     
     private final Logger log;
     private final Connection connection;
+    private final RoleDAO roleDao;
+    private final AddressDAO addressDao;
 
     public UserDAO(Connection connection) {
         if(connection == null) throw new NullPointerException("connection");
         
         this.log = LogManager.getLogger(UserDAO.class.getName());
         this.connection = connection;
+        this.roleDao = new RoleDAO(connection);
+        this.addressDao = new AddressDAO(connection);
     }
 
     public synchronized List<User> selectAll() throws SQLException {
@@ -76,10 +80,7 @@ public class UserDAO {
         String rsPassword = resultSet.getString("password");
         long rsVacationLeft = resultSet.getLong("vacationleft");
 
-        RoleDAO roleDao = new RoleDAO(connection);
-        Role role = roleDao.selectRoleFromId(rsRoleId);
-            
-        AddressDAO addressDao = new AddressDAO(connection);
+        Role role = roleDao.selectRoleFromId(rsRoleId);            
         Address address = addressDao.selectAddressFromId(rsAddressId);
             
         ContractDAO contractDao = new ContractDAO(connection);
