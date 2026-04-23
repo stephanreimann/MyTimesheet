@@ -12,6 +12,7 @@ import org.junit.*;
  *
  * @author stephan
  */
+@SuppressWarnings("unchecked")
 public class ProjectTest {
 
     public ProjectTest() {

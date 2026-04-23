@@ -19,6 +19,7 @@ import org.junit.Test;
  *
  * @author adrest18
  */
+@SuppressWarnings("unchecked")
 public class HolydayTest {
 
     public HolydayTest() {

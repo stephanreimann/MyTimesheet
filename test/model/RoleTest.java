@@ -12,6 +12,7 @@ import org.junit.*;
  *
  * @author adrest18
  */
+@SuppressWarnings("unchecked")
 public class RoleTest {
     
     public RoleTest() {
