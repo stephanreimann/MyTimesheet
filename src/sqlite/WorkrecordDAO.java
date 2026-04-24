@@ -424,9 +424,12 @@ public class WorkrecordDAO {
             workrecordCacheByUser.remove(workrecord.getUser().getId());
             log.debug(String.format("Cache invalidated for Workrecord list of User ID: %d", workrecord.getUser().getId()));
         }
-        // For other selectAll methods (date range, specific date/time),
-        // it's harder to invalidate precisely. For simplicity, we might
-        // either not cache those or implement a more complex cache key/invalidation strategy.
-        // For now, we only invalidate the specific user's list.
+        // Note on other selectAll methods (date range, specific date/time):
+        // These methods currently do not cache their full result lists due to the dynamic nature
+        // of their query parameters, which would complicate cache key generation and invalidation.
+        // They still benefit from individual Workrecord objects being cached in workrecordCacheById.
+        // If performance analysis indicates these specific queries are bottlenecks, a more
+        // advanced caching strategy (e.g., incorporating query parameters into cache keys)
+        // would need to be implemented for those methods.    
     }
 }
