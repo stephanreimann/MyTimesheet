@@ -322,9 +322,8 @@ public class AddressDetailsViewController implements Initializable, IViewControl
             case DataAction.EDIT -> {
                 boolean r1 = isInputFilled();
                 boolean r2 = hasInputChanged();
-                boolean r3 = isInputUnique();
                 
-                result = r1 && r2 && r3;
+                result = r1 && r2;
             }   
         }
         
