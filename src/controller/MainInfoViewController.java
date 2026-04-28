@@ -18,6 +18,10 @@ import javafx.event.ActionEvent;
 import javafx.fxml.*;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.*;
 import service.*;
 
 @SuppressWarnings("unused")
@@ -78,9 +82,9 @@ public class MainInfoViewController implements Initializable, IViewController {
     @FXML
     private Button clearLogListButton;
     @FXML
-    private ToggleButton infoToggleButton;
-    @FXML
     private ToggleButton debugToggleButton;
+    @FXML
+    private ToggleButton infoToggleButton;
     @FXML
     private ToggleButton warningToggleButton;
     @FXML
@@ -129,11 +133,108 @@ public class MainInfoViewController implements Initializable, IViewController {
       
         initListChangeListener();
         initInfoView();
+        
+        Level rootLoggerLevel = getRootLoggerLevel();
+        initInfoViewButtons(rootLoggerLevel);
 
         undoListView.setItems(undoService.getUndoStackComments());
         redoListView.setItems(undoService.getRedoStackComments());
     }
 
+    private Level getRootLoggerLevel() {
+        LoggerContext context = (LoggerContext) LogManager.getContext(false);
+        Configuration config = context.getConfiguration();
+        LoggerConfig rootLoggerConfig = config.getRootLogger();
+        return rootLoggerConfig.getLevel();
+    }
+
+    private void initInfoViewButtons(Level rootLoggerLevel) {
+        switch(rootLoggerLevel.toString()) {
+            case "ALL" ->
+            {
+                debugToggleButton.setDisable(false);
+                infoToggleButton.setDisable(false);
+                warningToggleButton.setDisable(false);
+                errorToggleButton.setDisable(false);
+                fatalToggleButton.setDisable(false);
+                clearLogListButton.setDisable(false);
+                resetFilterButton.setDisable(false);
+            }
+            case "TRACE" -> {
+                debugToggleButton.setDisable(false);
+                infoToggleButton.setDisable(false);
+                warningToggleButton.setDisable(false);
+                errorToggleButton.setDisable(false);
+                fatalToggleButton.setDisable(false);
+                clearLogListButton.setDisable(false);
+                resetFilterButton.setDisable(false);
+            }
+            case "DEBUG" -> {
+                debugToggleButton.setDisable(false);
+                infoToggleButton.setDisable(false);
+                warningToggleButton.setDisable(false);
+                errorToggleButton.setDisable(false);
+                fatalToggleButton.setDisable(false);
+                clearLogListButton.setDisable(false);
+                resetFilterButton.setDisable(false);
+            }
+            case "INFO" -> {
+                debugToggleButton.setDisable(true);
+                infoToggleButton.setDisable(false);
+                warningToggleButton.setDisable(false);
+                errorToggleButton.setDisable(false);
+                fatalToggleButton.setDisable(false);
+                clearLogListButton.setDisable(false);
+                resetFilterButton.setDisable(false);
+            }
+            case "WARN" -> {
+                debugToggleButton.setDisable(true);
+                infoToggleButton.setDisable(true);
+                warningToggleButton.setDisable(false);
+                errorToggleButton.setDisable(false);
+                fatalToggleButton.setDisable(false);
+                clearLogListButton.setDisable(false);
+                resetFilterButton.setDisable(false);
+            }
+            case "ERROR" -> {
+                debugToggleButton.setDisable(true);
+                infoToggleButton.setDisable(true);
+                warningToggleButton.setDisable(true);
+                errorToggleButton.setDisable(false);
+                fatalToggleButton.setDisable(false);
+                clearLogListButton.setDisable(false);
+                resetFilterButton.setDisable(false);
+            }
+            case "FATAL" -> {
+                debugToggleButton.setDisable(true);
+                infoToggleButton.setDisable(true);
+                warningToggleButton.setDisable(true);
+                errorToggleButton.setDisable(true);
+                fatalToggleButton.setDisable(false);
+                clearLogListButton.setDisable(false);
+                resetFilterButton.setDisable(false);
+            }
+            case "OFF" -> {
+                debugToggleButton.setDisable(true);
+                infoToggleButton.setDisable(true);
+                warningToggleButton.setDisable(true);
+                errorToggleButton.setDisable(true);
+                fatalToggleButton.setDisable(true);
+                clearLogListButton.setDisable(true);
+                resetFilterButton.setDisable(true);
+            }
+            default -> {
+                debugToggleButton.setDisable(false);
+                infoToggleButton.setDisable(false);
+                warningToggleButton.setDisable(false);
+                errorToggleButton.setDisable(false);
+                fatalToggleButton.setDisable(false);
+                clearLogListButton.setDisable(false);
+                resetFilterButton.setDisable(false);
+            }
+        }        
+    }
+    
     private void initListChangeListener() {
         infoViewEntries = log4jAdapter.getInfoViewLogAppender().GetInfoViewEntries();
         infoViewEntries.addListener((ListChangeListener.Change<? extends String> c) -> {
