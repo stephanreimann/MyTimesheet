@@ -29,8 +29,8 @@
                               <Insets />
                            </opaqueInsets>
                         </Label>
-                        <ToggleButton fx:id="infoToggleButton" mnemonicParsing="false" text="Info" />
                         <ToggleButton fx:id="debugToggleButton" mnemonicParsing="false" text="Debug" />
+                        <ToggleButton fx:id="infoToggleButton" mnemonicParsing="false" text="Info" />
                         <ToggleButton fx:id="warningToggleButton" mnemonicParsing="false" text="Warning" />
                         <ToggleButton fx:id="errorToggleButton" mnemonicParsing="false" text="Error" />
                         <ToggleButton fx:id="fatalToggleButton" mnemonicParsing="false" text="Fatal" />
