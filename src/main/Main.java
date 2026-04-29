@@ -47,6 +47,11 @@ public class Main extends Application {
     private final String appYPositionDefaultValue = "0.0";
     private final String appStartedMsgResourceKey = "AppStarted";
     private final String appStoppedMsgResourceKey = "AppStopped";
+    private final String applicationAlwaysOnTopKey = "ApplicationAlwaysOnTop";
+    private final String instanceLockKey = "instanceLock";
+    private final String workrecordAutomaticCreationKey = "WorkrecordAutomaticCreation";
+    private final String falseKey = "false";
+    private final String trueKey = "true";
     
     private final String infoToggleButtonState = "InfoToggleButtonState";
     private final String debugToggleButtonState = "DebugToggleButtonState";
@@ -106,14 +111,14 @@ public class Main extends Application {
     public Main() {
         this.languageService = new LanguageService();
         this.undoService = new UndoService();
-        this.applicationInstance = new ApplicationInstance("instanceLock");
+        this.applicationInstance = new ApplicationInstance(instanceLockKey);
         this.controllerRepository = ControllerRepository.getInstance();
         this.propertiesService = PropertiesService.getInstance();
     }
 
     @Override
     public void start(Stage primaryStage) throws SQLException, IOException {
-        this.primaryStage = primaryStage; // Assign primaryStage early
+        this.primaryStage = primaryStage;
 
         showSplashScreen();
 
@@ -344,9 +349,10 @@ public class Main extends Application {
     }
 
     @Override
-    public void stop() {
+    public void stop() throws SQLException {
         if(mainViewController != null && mainStatusBarViewController != null && primaryStage != null) {
             mainStatusBarViewController.stateMessage.set(appStoppedMsgResourceKey);
+            connection.close();
             setAppStateInformationProperties();
             setInfoViewButtonStatesProperties();
             String settingsStoragePathAndFullName = propertiesService.getProperty("SettingsStoragePath", settingsFilePathAndFullName);
@@ -374,7 +380,7 @@ public class Main extends Application {
     }
     
     private void initPrimaryStage(Stage primaryStage) {
-        this.primaryStage.setAlwaysOnTop(Boolean.parseBoolean(propertiesService.getProperty("ApplicationAlwaysOnTop", "true")));
+        this.primaryStage.setAlwaysOnTop(Boolean.parseBoolean(propertiesService.getProperty(applicationAlwaysOnTopKey, trueKey)));
         this.primaryStage.getIcons().add(new Image(appIcon));
         this.primaryStage.setTitle(bundle.getString(appNameResourceKey));
         this.primaryStage.setHeight(Double.parseDouble(propertiesService.getProperty(appHeightResourceKey, appHeightDefaultValue)));
@@ -472,11 +478,11 @@ public class Main extends Application {
         } else {
             log.error("MainViewController or its center SplitPane is null when trying to add MainInfoView.");
         }
-        mainInfoViewController.setInfoToggleButtonState(Boolean.valueOf(propertiesService.getProperty(infoToggleButtonState, "false")));
-        mainInfoViewController.setDebugToggleButtonState(Boolean.valueOf(propertiesService.getProperty(debugToggleButtonState, "false")));
-        mainInfoViewController.setWarningToggleButtonState(Boolean.valueOf(propertiesService.getProperty(warningToggleButtonState, "false")));
-        mainInfoViewController.setErrorToggleButtonState(Boolean.valueOf(propertiesService.getProperty(errorToggleButtonState, "false")));
-        mainInfoViewController.setFatalToggleButtonState(Boolean.valueOf(propertiesService.getProperty(fatalToggleButtonState, "false")));
+        mainInfoViewController.setInfoToggleButtonState(Boolean.valueOf(propertiesService.getProperty(infoToggleButtonState, falseKey)));
+        mainInfoViewController.setDebugToggleButtonState(Boolean.valueOf(propertiesService.getProperty(debugToggleButtonState, falseKey)));
+        mainInfoViewController.setWarningToggleButtonState(Boolean.valueOf(propertiesService.getProperty(warningToggleButtonState, falseKey)));
+        mainInfoViewController.setErrorToggleButtonState(Boolean.valueOf(propertiesService.getProperty(errorToggleButtonState, falseKey)));
+        mainInfoViewController.setFatalToggleButtonState(Boolean.valueOf(propertiesService.getProperty(fatalToggleButtonState, falseKey)));
     }
 
     private void initMainStatusBarView(ResourceBundle rb) throws IOException {
@@ -520,7 +526,11 @@ public class Main extends Application {
         alert.initOwner(primaryStage);
         alert.showAndWait().ifPresent(rs -> {
             if (rs == ButtonType.OK) {
-                stop();
+                try {
+                    stop();
+                } catch (SQLException exc) {
+                    log.fatal(exc);
+                }
             }
         });
     }
@@ -535,7 +545,7 @@ public class Main extends Application {
     private void createWorkrecordAutomaticallyIfNotExist() throws SQLException {
         WorkrecordDAO workrecordDao = new WorkrecordDAO(connection);
         boolean workrecordsDoNotExist = workrecordDao.selectAll(workRecordViewController.getSelectedUser(), LocalDate.now()).isEmpty();
-        boolean workrecordAutomaticCreation = Boolean.parseBoolean(propertiesService.getProperty("WorkrecordAutomaticCreation", "false"));
+        boolean workrecordAutomaticCreation = Boolean.parseBoolean(propertiesService.getProperty(workrecordAutomaticCreationKey, falseKey));
         if(workrecordsDoNotExist && workrecordAutomaticCreation) {
             workRecordDetailsViewController.createWorkrecordAutomatically();            
         }
