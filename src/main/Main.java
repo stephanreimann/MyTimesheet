@@ -140,7 +140,7 @@ public class Main extends Application {
                     javafx.application.Platform.runLater(() -> 
                         splashScreenViewController.setStatus("Loading settings...")
                     );
-                    Thread.sleep(threadSleep); // Pause for 2 seconds on background thread
+                    Thread.sleep(threadSleep);
                 }
                 String settingsStoragePathAndFullName = propertiesService.getProperty("SettingsStoragePath", settingsFilePathAndFullName);
                 propertiesService.loadPropertiesFromXmlFile(settingsStoragePathAndFullName);
@@ -154,7 +154,7 @@ public class Main extends Application {
                         javafx.application.Platform.runLater(() -> 
                             splashScreenViewController.setStatus("Connecting to database...")
                         );
-                        Thread.sleep(threadSleep); // Pause for 2 seconds on background thread
+                        Thread.sleep(threadSleep);
                     }
                     ConnectionFactory connectionFactory = new ConnectionFactory(bundle, log4jAdapter);
                     String databaseStoragePathAndFullName = propertiesService.getProperty("DatabaseStoragePath", databaseFilePathAndFullName);
@@ -307,15 +307,15 @@ public class Main extends Application {
                             primaryStage.show(); 
                             hideSplashScreen();
                         } catch (RuntimeException ex) {
-                            System.out.println(ex.getMessage());
-                            System.out.println(Arrays.toString(ex.getStackTrace()));
-                            hideSplashScreen(); // Hide splash even on error
+                            log.fatal(ex.getMessage());
+                            log.fatal(Arrays.toString(ex.getStackTrace()));
+                            hideSplashScreen();
                             showApplicationStartUpAlert(ex, AlertType.ERROR);
                             try {
                                 applicationInstance.forceRemoveOfInstanceLock();
                             } catch (Exception ex1) {
-                                System.out.println(ex1.getMessage());
-                                System.out.println(Arrays.toString(ex1.getStackTrace()));
+                                log.fatal(ex1.getMessage());
+                                log.fatal(Arrays.toString(ex1.getStackTrace()));
                                 showApplicationStartUpAlert(ex1, AlertType.ERROR);
                             }
                         }
@@ -327,16 +327,16 @@ public class Main extends Application {
                     });
                 }
             } catch (IOException | RuntimeException | InterruptedException ex) { // Added InterruptedException
-                System.out.println(ex.getMessage());
-                System.out.println(Arrays.toString(ex.getStackTrace()));
+                log.fatal(ex.getMessage());
+                log.fatal(Arrays.toString(ex.getStackTrace()));
                 javafx.application.Platform.runLater(() -> {
                     hideSplashScreen();
                     showApplicationStartUpAlert(ex, AlertType.ERROR);
                     try {
                         applicationInstance.forceRemoveOfInstanceLock();
                     } catch (Exception ex1) {
-                        System.out.println(ex1.getMessage());
-                        System.out.println(Arrays.toString(ex1.getStackTrace()));
+                        log.fatal(ex1.getMessage());
+                        log.fatal(Arrays.toString(ex1.getStackTrace()));
                         showApplicationStartUpAlert(ex1, AlertType.ERROR);
                     }
                 });
