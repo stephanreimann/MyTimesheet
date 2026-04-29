@@ -28,7 +28,7 @@ import sqlite.WorkrecordDAO;
  * @author adrest18
  */
 public class Main extends Application {
-    private final int threadSleep = 250;
+    private final int threadSleep = 100;
     private final String appIcon = "icons/app-maid.png";
     
     private final String dividerPositionCenterBorderPaneSplitPaneResourceKey = "DividerPositionCenterBorderPane";
@@ -349,14 +349,21 @@ public class Main extends Application {
     }
 
     @Override
-    public void stop() throws SQLException {
+    public void stop() {
         if(mainViewController != null && mainStatusBarViewController != null && primaryStage != null) {
             mainStatusBarViewController.stateMessage.set(appStoppedMsgResourceKey);
-            connection.close();
             setAppStateInformationProperties();
             setInfoViewButtonStatesProperties();
             String settingsStoragePathAndFullName = propertiesService.getProperty("SettingsStoragePath", settingsFilePathAndFullName);
             propertiesService.savePropertiesToXmlFile(settingsStoragePathAndFullName);
+            try {
+                if (connection != null && !connection.isClosed()) {
+                    connection.close();
+                    log.info("Database connection closed successfully.");
+                }
+            } catch (SQLException ex) {
+                log.error("Error closing database connection: " + ex.getMessage(), ex);
+            }        
         }
         
         Runtime.getRuntime().exit(0);
@@ -526,11 +533,7 @@ public class Main extends Application {
         alert.initOwner(primaryStage);
         alert.showAndWait().ifPresent(rs -> {
             if (rs == ButtonType.OK) {
-                try {
-                    stop();
-                } catch (SQLException exc) {
-                    log.fatal(exc);
-                }
+                stop();
             }
         });
     }
