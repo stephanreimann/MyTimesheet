@@ -2,6 +2,7 @@ package main;
 
 import controller.UserInfoViewController;
 import adapter.Log4jAdapter;
+import static com.sun.javafx.scene.layout.ScaledMath.round;
 import controller.*;
 import java.io.IOException;
 import java.sql.*;
@@ -22,6 +23,7 @@ import org.apache.logging.log4j.Logger;
 import service.*;
 import sqlite.ConnectionFactory;
 import sqlite.WorkrecordDAO;
+import utils.MathUtilities;
 
 /**
  *
@@ -375,7 +377,8 @@ public class Main extends Application {
         propertiesService.setProperty(appWidthResourceKey, Double.toString(primaryStage.getWidth()));
         propertiesService.setProperty(appXPositionResourceKey, Double.toString(primaryStage.getX()));
         propertiesService.setProperty(appYPositionResourceKey, Double.toString(primaryStage.getY()));
-        propertiesService.setProperty(dividerPositionCenterBorderPaneSplitPaneResourceKey, Double.toString(mainViewController.getCenterBorderPaneSplitPane().getDividerPositions()[0]));
+        double dividerPosition = MathUtilities.round(mainViewController.getCenterBorderPaneSplitPane().getDividerPositions()[0], 2);
+        propertiesService.setProperty(dividerPositionCenterBorderPaneSplitPaneResourceKey, Double.toString(dividerPosition));
     }
     
     private void setInfoViewButtonStatesProperties() {
@@ -481,7 +484,8 @@ public class Main extends Application {
         TabPane mainInfoBarView = (TabPane) load(rb, mainInfoViewController, mainInfoViewResource);
         if (mainViewController != null && mainViewController.getCenterBorderPaneSplitPane() != null) {
             mainViewController.getCenterBorderPaneSplitPane().getItems().add(mainInfoBarView);
-            mainViewController.getCenterBorderPaneSplitPane().setDividerPosition(0, Double.parseDouble(propertiesService.getProperty(dividerPositionCenterBorderPaneSplitPaneResourceKey, dividerPositionCenterBorderPaneSplitPaneDefaultValue)));
+            double dividerPosition = MathUtilities.round(Double.parseDouble(propertiesService.getProperty(dividerPositionCenterBorderPaneSplitPaneResourceKey, dividerPositionCenterBorderPaneSplitPaneDefaultValue)), 2);
+            mainViewController.getCenterBorderPaneSplitPane().setDividerPosition(0,MathUtilities.round(dividerPosition, 2));
         } else {
             log.error("MainViewController or its center SplitPane is null when trying to add MainInfoView.");
         }

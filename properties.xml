@@ -2,19 +2,19 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
 <comment>Application Properties</comment>
-<entry key="AppYPosition">149.0</entry>
+<entry key="AppYPosition">59.0</entry>
 <entry key="Log4NetStoragePath">./log4j2.xml</entry>
 <entry key="AppWidth">1566.0</entry>
 <entry key="WorkrecordEndTimeDelta">00:00</entry>
 <entry key="SelectedWorklocation">Erlangen</entry>
-<entry key="WarningToggleButtonState">true</entry>
+<entry key="WarningToggleButtonState">false</entry>
 <entry key="WorkrecordAutomaticCreation">true</entry>
 <entry key="LastExpandedUserInfoPane">UserWorktimelInfoPane</entry>
-<entry key="ErrorToggleButtonState">true</entry>
+<entry key="ErrorToggleButtonState">false</entry>
 <entry key="Language">de</entry>
 <entry key="WorkrecordStartTimeDelta">-00:05</entry>
-<entry key="InfoToggleButtonState">true</entry>
-<entry key="DividerPositionCenterBorderPane">0.6307884856070087</entry>
+<entry key="InfoToggleButtonState">false</entry>
+<entry key="DividerPositionCenterBorderPane">0.68</entry>
 <entry key="UpperOvertimeThreshold">PT70H</entry>
 <entry key="Log44NetStoragePath">./log4j2.xml</entry>
 <entry key="SelectedUser">Reimann</entry>
@@ -22,7 +22,7 @@
 <entry key="Log4jStoragePathAndFullName">E:\Develop\Java\MyTimesheet\log4j2.xml</entry>
 <entry key="DatabaseStoragePath">./sqlite/proddb.sqlite</entry>
 <entry key="AppHeight">951.0</entry>
-<entry key="FatalToggleButtonState">true</entry>
+<entry key="FatalToggleButtonState">false</entry>
 <entry key="DefaultProjectIndex">0</entry>
 <entry key="UseLastWorkrecordConfiguration">true</entry>
 <entry key="DefaultWorklocationIndex">0</entry>
@@ -31,5 +31,5 @@
 <entry key="SettingsStoragePathAndFullName">E:\Develop\Java\MyTimesheet\properties.xml</entry>
 <entry key="SettingsStoragePath">./properties.xml</entry>
 <entry key="LowerOvertimeThreshold">PT-20H</entry>
-<entry key="AppXPosition">223.0</entry>
+<entry key="AppXPosition">2004.0</entry>
 </properties>
