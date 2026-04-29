@@ -2,7 +2,6 @@ package main;
 
 import controller.UserInfoViewController;
 import adapter.Log4jAdapter;
-import static com.sun.javafx.scene.layout.ScaledMath.round;
 import controller.*;
 import java.io.IOException;
 import java.sql.*;
