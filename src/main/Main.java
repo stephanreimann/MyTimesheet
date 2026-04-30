@@ -16,7 +16,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle; // Import for undecorated stage
+import javafx.stage.StageStyle;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import service.*;
@@ -29,7 +29,7 @@ import utils.MathUtilities;
  * @author adrest18
  */
 public class Main extends Application {
-    private final int threadSleep = 100;
+    private final int threadSleep = 300;
     private final String appIcon = "icons/app-maid.png";
     
     private final String dividerPositionCenterBorderPaneSplitPaneResourceKey = "DividerPositionCenterBorderPane";
@@ -137,6 +137,8 @@ public class Main extends Application {
                 log = LogManager.getLogger(Main.class.getName());
                 propertiesService.setProperty("Log4NetStoragePath", log4NetStoragePathAndFullName);
                 
+                //---------------------------------------------------------------------------------------------------------------------------------------------
+
                 if (splashScreenViewController != null) {
                     javafx.application.Platform.runLater(() -> 
                         splashScreenViewController.setStatus("Loading settings...")
@@ -147,6 +149,14 @@ public class Main extends Application {
                 propertiesService.loadPropertiesFromXmlFile(settingsStoragePathAndFullName);
                 propertiesService.setProperty("SettingsStoragePath", settingsStoragePathAndFullName);
 
+                //---------------------------------------------------------------------------------------------------------------------------------------------
+
+                if (splashScreenViewController != null) {
+                    javafx.application.Platform.runLater(() -> 
+                        splashScreenViewController.setStatus("Initializing locale...")
+                    );
+                    Thread.sleep(threadSleep);
+                }
                 bundle = ResourceBundle.getBundle(languageRes, Locale.of(propertiesService.getProperty(appLanguageResourceKey, appLanguageDefaultValue)));
                 Locale.setDefault(bundle.getLocale());
                 
@@ -165,6 +175,8 @@ public class Main extends Application {
                     }
                     propertiesService.setProperty("DatabaseStoragePath", databaseStoragePathAndFullName);
 
+                    //---------------------------------------------------------------------------------------------------------------------------------------------
+
                     if (splashScreenViewController != null) {
                         javafx.application.Platform.runLater(() -> splashScreenViewController.setStatus("Loading main view..."));
                         Thread.sleep(threadSleep);
@@ -178,6 +190,8 @@ public class Main extends Application {
                         }
                     });
                     
+                    //---------------------------------------------------------------------------------------------------------------------------------------------
+
                     if (splashScreenViewController != null) {
                         javafx.application.Platform.runLater(() -> splashScreenViewController.setStatus("Loading menu bar..."));
                         Thread.sleep(threadSleep);
@@ -190,6 +204,7 @@ public class Main extends Application {
                         }
                     });
 
+                    //---------------------------------------------------------------------------------------------------------------------------------------------
 
                     if (splashScreenViewController != null) {
                         javafx.application.Platform.runLater(() -> splashScreenViewController.setStatus("Loading toolbar..."));
@@ -203,6 +218,8 @@ public class Main extends Application {
                         }
                     });
 
+                    //---------------------------------------------------------------------------------------------------------------------------------------------
+
                     if (splashScreenViewController != null) {
                         javafx.application.Platform.runLater(() -> splashScreenViewController.setStatus("Loading work records..."));
                         Thread.sleep(threadSleep);
@@ -215,6 +232,8 @@ public class Main extends Application {
                         }
                     });
                     
+                    //---------------------------------------------------------------------------------------------------------------------------------------------
+
                     if (splashScreenViewController != null) {
                         javafx.application.Platform.runLater(() -> splashScreenViewController.setStatus("Loading work record details..."));
                         Thread.sleep(threadSleep);
@@ -226,6 +245,8 @@ public class Main extends Application {
                             log.error("Error initializing work record details view: " + ex.getMessage(), ex);
                         }
                     });
+
+                    //---------------------------------------------------------------------------------------------------------------------------------------------
 
                     if (splashScreenViewController != null) {
                         javafx.application.Platform.runLater(() -> splashScreenViewController.setStatus("Loading user information..."));
@@ -239,6 +260,8 @@ public class Main extends Application {
                         }
                     });
                     
+                    //---------------------------------------------------------------------------------------------------------------------------------------------
+
                     if (splashScreenViewController != null) {
                         javafx.application.Platform.runLater(() -> splashScreenViewController.setStatus("Loading info panel..."));
                         Thread.sleep(threadSleep);
@@ -251,6 +274,8 @@ public class Main extends Application {
                         }
                     });
 
+                    //---------------------------------------------------------------------------------------------------------------------------------------------
+
                     if (splashScreenViewController != null) {
                         javafx.application.Platform.runLater(() -> splashScreenViewController.setStatus("Loading status bar..."));
                         Thread.sleep(threadSleep);
@@ -262,6 +287,8 @@ public class Main extends Application {
                             log.error("Error initializing status bar view: " + ex.getMessage(), ex);
                         }
                     });
+
+                    //---------------------------------------------------------------------------------------------------------------------------------------------
 
                     if (splashScreenViewController != null) {
                         javafx.application.Platform.runLater(() -> splashScreenViewController.setStatus("Subscribe to events..."));
@@ -287,6 +314,8 @@ public class Main extends Application {
                         }
                     });
 
+                    //---------------------------------------------------------------------------------------------------------------------------------------------
+
                     if (splashScreenViewController != null) {
                         javafx.application.Platform.runLater(() -> splashScreenViewController.setStatus("Create workrecord if not exists..."));
                         Thread.sleep(threadSleep);
@@ -300,6 +329,12 @@ public class Main extends Application {
                         }
                     });
 
+                    //---------------------------------------------------------------------------------------------------------------------------------------------
+
+                    if (splashScreenViewController != null) {
+                        javafx.application.Platform.runLater(() -> splashScreenViewController.setStatus("Show application..."));
+                        Thread.sleep(threadSleep);
+                    }
                     javafx.application.Platform.runLater(() -> {
                         try {
                             if(mainStatusBarViewController != null) {
