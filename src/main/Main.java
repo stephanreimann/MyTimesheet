@@ -309,7 +309,7 @@ public class Main extends Application {
                             
                             String dividerPositionAsString = propertiesService.getProperty(dividerPositionCenterBorderPaneSplitPaneResourceKey, dividerPositionCenterBorderPaneSplitPaneDefaultValue);
                             double dividerPosition = Double.parseDouble(dividerPositionAsString);
-                            dividerPosition = MathUtilities.round(Double.parseDouble(dividerPositionAsString), 2);
+                            dividerPosition = MathUtilities.round(dividerPosition, 2);
                             mainViewController.getCenterBorderPaneSplitPane().setDividerPosition(0,dividerPosition);
                             
                             hideSplashScreen();
