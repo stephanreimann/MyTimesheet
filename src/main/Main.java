@@ -305,7 +305,13 @@ public class Main extends Application {
                             if(mainStatusBarViewController != null) {
                                 mainStatusBarViewController.stateMessage.set(appStartedMsgResourceKey);
                             }
-                            primaryStage.show(); 
+                            primaryStage.show();
+                            
+                            String dividerPositionAsString = propertiesService.getProperty(dividerPositionCenterBorderPaneSplitPaneResourceKey, dividerPositionCenterBorderPaneSplitPaneDefaultValue);
+                            double dividerPosition = Double.parseDouble(dividerPositionAsString);
+                            dividerPosition = MathUtilities.round(Double.parseDouble(dividerPositionAsString), 2);
+                            mainViewController.getCenterBorderPaneSplitPane().setDividerPosition(0,dividerPosition);
+                            
                             hideSplashScreen();
                         } catch (RuntimeException ex) {
                             log.fatal(ex.getMessage());
@@ -376,7 +382,8 @@ public class Main extends Application {
         propertiesService.setProperty(appWidthResourceKey, Double.toString(primaryStage.getWidth()));
         propertiesService.setProperty(appXPositionResourceKey, Double.toString(primaryStage.getX()));
         propertiesService.setProperty(appYPositionResourceKey, Double.toString(primaryStage.getY()));
-        double dividerPosition = MathUtilities.round(mainViewController.getCenterBorderPaneSplitPane().getDividerPositions()[0], 2);
+        double dividerPosition = mainViewController.getCenterBorderPaneSplitPane().getDividerPositions()[0];
+        dividerPosition = MathUtilities.round(dividerPosition, 2);
         propertiesService.setProperty(dividerPositionCenterBorderPaneSplitPaneResourceKey, Double.toString(dividerPosition));
     }
     
@@ -483,8 +490,6 @@ public class Main extends Application {
         TabPane mainInfoBarView = (TabPane) load(rb, mainInfoViewController, mainInfoViewResource);
         if (mainViewController != null && mainViewController.getCenterBorderPaneSplitPane() != null) {
             mainViewController.getCenterBorderPaneSplitPane().getItems().add(mainInfoBarView);
-            double dividerPosition = MathUtilities.round(Double.parseDouble(propertiesService.getProperty(dividerPositionCenterBorderPaneSplitPaneResourceKey, dividerPositionCenterBorderPaneSplitPaneDefaultValue)), 2);
-            mainViewController.getCenterBorderPaneSplitPane().setDividerPosition(0,MathUtilities.round(dividerPosition, 2));
         } else {
             log.error("MainViewController or its center SplitPane is null when trying to add MainInfoView.");
         }
