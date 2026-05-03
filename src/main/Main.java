@@ -3,6 +3,7 @@ package main;
 import controller.UserInfoViewController;
 import adapter.Log4jAdapter;
 import controller.*;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.*;
 import java.time.LocalDate;
@@ -109,7 +110,7 @@ public class Main extends Application {
     private Stage splashStage;
     private SplashScreenViewController splashScreenViewController;
     
-    public Main() {
+    public Main() throws InterruptedException, InterruptedException {
         this.languageService = new LanguageService();
         this.undoService = new UndoService();
         this.applicationInstance = new ApplicationInstance(instanceLockKey);
@@ -125,263 +126,28 @@ public class Main extends Application {
 
         new Thread(() -> {
             try {            
-                if (splashScreenViewController != null) {
-                    javafx.application.Platform.runLater(() -> 
-                        splashScreenViewController.setStatus("Initializing logging...")
-                    );
-                    Thread.sleep(threadSleep);
-                }
-                String log4NetStoragePathAndFullName = propertiesService.getProperty("Log4NetStoragePath", log4jFilePathAndFullName);
-                log4jAdapter = new Log4jAdapter(log4NetStoragePathAndFullName);
-                log4jAdapter.getInfoViewLogAppender();
-                log = LogManager.getLogger(Main.class.getName());
-                propertiesService.setProperty("Log4NetStoragePath", log4NetStoragePathAndFullName);
-                
-                //---------------------------------------------------------------------------------------------------------------------------------------------
-
-                if (splashScreenViewController != null) {
-                    javafx.application.Platform.runLater(() -> 
-                        splashScreenViewController.setStatus("Loading settings...")
-                    );
-                    Thread.sleep(threadSleep);
-                }
-                String settingsStoragePathAndFullName = propertiesService.getProperty("SettingsStoragePath", settingsFilePathAndFullName);
-                propertiesService.loadPropertiesFromXmlFile(settingsStoragePathAndFullName);
-                propertiesService.setProperty("SettingsStoragePath", settingsStoragePathAndFullName);
-
-                //---------------------------------------------------------------------------------------------------------------------------------------------
-
-                if (splashScreenViewController != null) {
-                    javafx.application.Platform.runLater(() -> 
-                        splashScreenViewController.setStatus("Initializing locale...")
-                    );
-                    Thread.sleep(threadSleep);
-                }
-                bundle = ResourceBundle.getBundle(languageRes, Locale.of(propertiesService.getProperty(appLanguageResourceKey, appLanguageDefaultValue)));
-                Locale.setDefault(bundle.getLocale());
+                initLogging();
+                loadSettings();
+                initLocale();
                 
                 if(!applicationInstance.isRunning()) {
-                    if (splashScreenViewController != null) {
-                        javafx.application.Platform.runLater(() -> 
-                            splashScreenViewController.setStatus("Connecting to database...")
-                        );
-                        Thread.sleep(threadSleep);
-                    }
-                    ConnectionFactory connectionFactory = new ConnectionFactory(bundle, log4jAdapter);
-                    String databaseStoragePathAndFullName = propertiesService.getProperty("DatabaseStoragePath", databaseFilePathAndFullName);
-                    connection = connectionFactory.getConnection(databaseStoragePathAndFullName);
-                    if(this.connection == null) {
-                        throw new NullPointerException("Connection to database can not be established, may database file does not exists!");
-                    }
-                    propertiesService.setProperty("DatabaseStoragePath", databaseStoragePathAndFullName);
-
-                    //---------------------------------------------------------------------------------------------------------------------------------------------
-
-                    if (splashScreenViewController != null) {
-                        javafx.application.Platform.runLater(() -> splashScreenViewController.setStatus("Loading main view..."));
-                        Thread.sleep(threadSleep);
-                    }
-                    javafx.application.Platform.runLater(() -> {
-                        try {
-                            initPrimaryStage(primaryStage);
-                            initMainView(bundle);
-                        } catch (IOException ex) {
-                            log.error("Error initializing main view: " + ex.getMessage(), ex);
-                        }
-                    });
-                    
-                    //---------------------------------------------------------------------------------------------------------------------------------------------
-
-                    if (splashScreenViewController != null) {
-                        javafx.application.Platform.runLater(() -> splashScreenViewController.setStatus("Loading menu bar..."));
-                        Thread.sleep(threadSleep);
-                    }
-                    javafx.application.Platform.runLater(() -> {
-                        try {
-                            initMainMenuBarView(bundle);
-                        } catch (IOException ex) {
-                            log.error("Error initializing menu bar view: " + ex.getMessage(), ex);
-                        }
-                    });
-
-                    //---------------------------------------------------------------------------------------------------------------------------------------------
-
-                    if (splashScreenViewController != null) {
-                        javafx.application.Platform.runLater(() -> splashScreenViewController.setStatus("Loading toolbar..."));
-                        Thread.sleep(threadSleep);
-                    }
-                    javafx.application.Platform.runLater(() -> {
-                        try {
-                            initMainToolBarView(bundle);
-                        } catch (IOException ex) {
-                            log.error("Error initializing toolbar view: " + ex.getMessage(), ex);
-                        }
-                    });
-
-                    //---------------------------------------------------------------------------------------------------------------------------------------------
-
-                    if (splashScreenViewController != null) {
-                        javafx.application.Platform.runLater(() -> splashScreenViewController.setStatus("Loading work records..."));
-                        Thread.sleep(threadSleep);
-                    }
-                    javafx.application.Platform.runLater(() -> {
-                        try {
-                            initWorkRecordsView(bundle);
-                        } catch (IOException | SQLException ex) {
-                            log.error("Error initializing work records view: " + ex.getMessage(), ex);
-                        }
-                    });
-                    
-                    //---------------------------------------------------------------------------------------------------------------------------------------------
-
-                    if (splashScreenViewController != null) {
-                        javafx.application.Platform.runLater(() -> splashScreenViewController.setStatus("Loading work record details..."));
-                        Thread.sleep(threadSleep);
-                    }
-                    javafx.application.Platform.runLater(() -> {
-                        try {
-                            initWorkRecordsDetailsView(bundle);
-                        } catch (IOException ex) {
-                            log.error("Error initializing work record details view: " + ex.getMessage(), ex);
-                        }
-                    });
-
-                    //---------------------------------------------------------------------------------------------------------------------------------------------
-
-                    if (splashScreenViewController != null) {
-                        javafx.application.Platform.runLater(() -> splashScreenViewController.setStatus("Loading user information..."));
-                        Thread.sleep(threadSleep);
-                    }
-                    javafx.application.Platform.runLater(() -> {
-                        try {
-                            initUserInfoView(bundle);
-                        } catch (IOException | SQLException ex) {
-                            log.error("Error initializing user info view: " + ex.getMessage(), ex);
-                        }
-                    });
-                    
-                    //---------------------------------------------------------------------------------------------------------------------------------------------
-
-                    if (splashScreenViewController != null) {
-                        javafx.application.Platform.runLater(() -> splashScreenViewController.setStatus("Loading info panel..."));
-                        Thread.sleep(threadSleep);
-                    }
-                    javafx.application.Platform.runLater(() -> {
-                        try {
-                            initMainInfoView(bundle);
-                        } catch (IOException ex) {
-                            log.error("Error initializing main info view: " + ex.getMessage(), ex);
-                        }
-                    });
-
-                    //---------------------------------------------------------------------------------------------------------------------------------------------
-
-                    if (splashScreenViewController != null) {
-                        javafx.application.Platform.runLater(() -> splashScreenViewController.setStatus("Loading status bar..."));
-                        Thread.sleep(threadSleep);
-                    }
-                    javafx.application.Platform.runLater(() -> {
-                        try {
-                            initMainStatusBarView(bundle);
-                        } catch (IOException ex) {
-                            log.error("Error initializing status bar view: " + ex.getMessage(), ex);
-                        }
-                    });
-
-                    //---------------------------------------------------------------------------------------------------------------------------------------------
-
-                    if (splashScreenViewController != null) {
-                        javafx.application.Platform.runLater(() -> splashScreenViewController.setStatus("Subscribe to events..."));
-                        Thread.sleep(threadSleep);
-                    }
-                    javafx.application.Platform.runLater(() -> {
-                        try {
-                            workRecordViewController.getEventManager().subscribeEventToListener(selectedWorkRecordChangedEvent, workRecordDetailsViewController);
-                            workRecordViewController.getEventManager().subscribeEventToListener(startDateChangedEvent, workRecordDetailsViewController);
-                            workRecordViewController.getEventManager().subscribeEventToListener(endDateChangedEvent, workRecordDetailsViewController);
-                            workRecordViewController.getEventManager().subscribeEventToListener(userChangedEvent, workRecordDetailsViewController);
-                            workRecordViewController.getEventManager().subscribeEventToListener(userChangedEvent, userInfoViewController);
-
-                            workRecordDetailsViewController.getEventManager().subscribeEventToListener(newWorkrecordEvent, workRecordViewController);
-                            workRecordDetailsViewController.getEventManager().subscribeEventToListener(editWorkrecordEvent, workRecordViewController);
-                            workRecordDetailsViewController.getEventManager().subscribeEventToListener(deleteWorkrecordEvent, workRecordViewController);
-                            workRecordDetailsViewController.getEventManager().subscribeEventToListener(newWorkrecordEvent, userInfoViewController);
-                            workRecordDetailsViewController.getEventManager().subscribeEventToListener(editWorkrecordEvent, userInfoViewController);
-                            workRecordDetailsViewController.getEventManager().subscribeEventToListener(deleteWorkrecordEvent, userInfoViewController);
-                            workRecordDetailsViewController.getEventManager().subscribeEventToListener(workRecordDetailsDateChangedEvent, workRecordViewController);
-                        } catch (RuntimeException ex) {
-                            log.error("Error subscribing to events: " + ex.getMessage(), ex);
-                        }
-                    });
-
-                    //---------------------------------------------------------------------------------------------------------------------------------------------
-
-                    if (splashScreenViewController != null) {
-                        javafx.application.Platform.runLater(() -> splashScreenViewController.setStatus("Create workrecord if not exists..."));
-                        Thread.sleep(threadSleep);
-                    }
-                    javafx.application.Platform.runLater(() -> {
-                        try {
-                            createWorkrecordAutomaticallyIfNotExist();
-                            workRecordViewController.selectWorkrecordOf(LocalDate.now());
-                        } catch (SQLException ex) {
-                            log.error("Error creating workrecord: " + ex.getMessage(), ex);
-                        }
-                    });
-
-                    //---------------------------------------------------------------------------------------------------------------------------------------------
-
-                    if (splashScreenViewController != null) {
-                        javafx.application.Platform.runLater(() -> splashScreenViewController.setStatus("Show application..."));
-                        Thread.sleep(threadSleep);
-                    }
-                    javafx.application.Platform.runLater(() -> {
-                        try {
-                            if(mainStatusBarViewController != null) {
-                                mainStatusBarViewController.stateMessage.set(appStartedMsgResourceKey);
-                            }
-                            primaryStage.show();
-                            
-                            String dividerPositionAsString = propertiesService.getProperty(dividerPositionCenterBorderPaneSplitPaneResourceKey, dividerPositionCenterBorderPaneSplitPaneDefaultValue);
-                            double dividerPosition = Double.parseDouble(dividerPositionAsString);
-                            dividerPosition = MathUtilities.round(dividerPosition, 2);
-                            mainViewController.getCenterBorderPaneSplitPane().setDividerPosition(0,dividerPosition);
-                            
-                            hideSplashScreen();
-                        } catch (RuntimeException ex) {
-                            log.fatal(ex.getMessage());
-                            log.fatal(Arrays.toString(ex.getStackTrace()));
-                            hideSplashScreen();
-                            showApplicationStartUpAlert(ex, AlertType.ERROR);
-                            try {
-                                applicationInstance.forceRemoveOfInstanceLock();
-                            } catch (Exception ex1) {
-                                log.fatal(ex1.getMessage());
-                                log.fatal(Arrays.toString(ex1.getStackTrace()));
-                                showApplicationStartUpAlert(ex1, AlertType.ERROR);
-                            }
-                        }
-                    });
+                    connectToDatabase();
+                    loadMainView();
+                    loadMenuBar();
+                    loadToolBar();
+                    loadWorkrecords();
+                    loadWorkrecordsDetails();
+                    loadUserInformation();
+                    loadInfoPanel();
+                    loadStatusBar();
+                    subscribeToEvents();
+                    createWorkrecordIfNotExist();
+                    showApplication();
                 } else {
-                    javafx.application.Platform.runLater(() -> {
-                        hideSplashScreen();
-                        showApplicationRunningDialog(bundle);
-                    });
+                    showApplicationRunningDialog(bundle);
                 }
             } catch (IOException | RuntimeException | InterruptedException ex) { // Added InterruptedException
-                log.fatal(ex.getMessage());
-                log.fatal(Arrays.toString(ex.getStackTrace()));
-                javafx.application.Platform.runLater(() -> {
-                    hideSplashScreen();
-                    showApplicationStartUpAlert(ex, AlertType.ERROR);
-                    try {
-                        applicationInstance.forceRemoveOfInstanceLock();
-                    } catch (Exception ex1) {
-                        log.fatal(ex1.getMessage());
-                        log.fatal(Arrays.toString(ex1.getStackTrace()));
-                        showApplicationStartUpAlert(ex1, AlertType.ERROR);
-                    }
-                });
+                handleException(ex);
             }
         }).start();
     }
@@ -411,6 +177,220 @@ public class Main extends Application {
         Runtime.getRuntime().exit(0);
     }
 
+    private void setStatusInSplashScreen(String status, int threadSleep) throws InterruptedException {
+        if (splashScreenViewController != null) {
+            javafx.application.Platform.runLater(() -> 
+                splashScreenViewController.setStatus(status)
+            );
+            Thread.sleep(threadSleep);
+        }
+    }
+    
+    private void initLogging() throws InterruptedException, FileNotFoundException {
+        setStatusInSplashScreen("Initializing logging...", threadSleep);
+        
+        String log4NetStoragePathAndFullName = propertiesService.getProperty("Log4NetStoragePath", log4jFilePathAndFullName);
+        log4jAdapter = new Log4jAdapter(log4NetStoragePathAndFullName);
+        log4jAdapter.getInfoViewLogAppender();
+        log = LogManager.getLogger(Main.class.getName());
+        propertiesService.setProperty("Log4NetStoragePath", log4NetStoragePathAndFullName);
+    }
+    
+    private void loadSettings() throws InterruptedException {
+        setStatusInSplashScreen("Loading settings...", threadSleep);
+
+        String settingsStoragePathAndFullName = propertiesService.getProperty("SettingsStoragePath", settingsFilePathAndFullName);
+        propertiesService.loadPropertiesFromXmlFile(settingsStoragePathAndFullName);
+        propertiesService.setProperty("SettingsStoragePath", settingsStoragePathAndFullName);
+    }
+    
+    private void initLocale() throws InterruptedException {
+        setStatusInSplashScreen("Initializing locale...", threadSleep);
+
+        bundle = ResourceBundle.getBundle(languageRes, Locale.of(propertiesService.getProperty(appLanguageResourceKey, appLanguageDefaultValue)));
+        Locale.setDefault(bundle.getLocale());
+    }
+    
+    private void connectToDatabase() throws InterruptedException {
+        setStatusInSplashScreen("Connecting to database...", threadSleep);
+
+        ConnectionFactory connectionFactory = new ConnectionFactory(bundle, log4jAdapter);
+        String databaseStoragePathAndFullName = propertiesService.getProperty("DatabaseStoragePath", databaseFilePathAndFullName);
+        connection = connectionFactory.getConnection(databaseStoragePathAndFullName);
+        if(this.connection == null) {
+            throw new NullPointerException("Connection to database can not be established, may database file does not exists!");
+        }
+        propertiesService.setProperty("DatabaseStoragePath", databaseStoragePathAndFullName);
+    }
+    
+    private void loadMainView() throws InterruptedException {
+        setStatusInSplashScreen("Loading main view...", threadSleep);
+
+        javafx.application.Platform.runLater(() -> {
+            try {
+                initPrimaryStage(primaryStage);
+                initMainView(bundle);
+            } catch (IOException ex) {
+                log.error("Error initializing main view: " + ex.getMessage(), ex);
+            }
+        });
+    }
+    
+    private void loadMenuBar() throws InterruptedException {
+        setStatusInSplashScreen("Loading menu bar...", threadSleep);
+
+        javafx.application.Platform.runLater(() -> {
+            try {
+                initMainMenuBarView(bundle);
+            } catch (IOException ex) {
+                log.error("Error initializing menu bar view: " + ex.getMessage(), ex);
+            }
+        });
+    }
+    
+    private void loadToolBar() throws InterruptedException {
+        setStatusInSplashScreen("Loading toolbar...", threadSleep);
+
+        javafx.application.Platform.runLater(() -> {
+            try {
+                initMainToolBarView(bundle);
+            } catch (IOException ex) {
+                log.error("Error initializing toolbar view: " + ex.getMessage(), ex);
+            }
+        });
+    }
+    
+    private void loadWorkrecords() throws InterruptedException {
+        setStatusInSplashScreen("Loading work records...", threadSleep);
+
+        javafx.application.Platform.runLater(() -> {
+            try {
+                initWorkRecordsView(bundle);
+            } catch (IOException | SQLException ex) {
+                log.error("Error initializing work records view: " + ex.getMessage(), ex);
+            }
+        });
+    }
+    
+    private void loadWorkrecordsDetails() throws InterruptedException {
+        setStatusInSplashScreen("Loading work record details...", threadSleep);
+
+        javafx.application.Platform.runLater(() -> {
+            try {
+                initWorkRecordsDetailsView(bundle);
+            } catch (IOException ex) {
+                log.error("Error initializing work record details view: " + ex.getMessage(), ex);
+            }
+        });
+    }
+    
+    private void loadUserInformation() throws InterruptedException {
+        setStatusInSplashScreen("Loading user information...", threadSleep);
+
+        javafx.application.Platform.runLater(() -> {
+            try {
+                initUserInfoView(bundle);
+            } catch (IOException | SQLException ex) {
+                log.error("Error initializing user info view: " + ex.getMessage(), ex);
+            }
+        });
+    }
+    
+    private void loadInfoPanel() throws InterruptedException {
+        setStatusInSplashScreen("Loading info panel...", threadSleep);
+
+        javafx.application.Platform.runLater(() -> {
+            try {
+                initMainInfoView(bundle);
+            } catch (IOException ex) {
+                log.error("Error initializing main info view: " + ex.getMessage(), ex);
+            }
+        });
+    }
+    
+    private void loadStatusBar() throws InterruptedException {
+        setStatusInSplashScreen("Loading status bar...", threadSleep);
+
+        javafx.application.Platform.runLater(() -> {
+            try {
+                initMainStatusBarView(bundle);
+            } catch (IOException ex) {
+                log.error("Error initializing status bar view: " + ex.getMessage(), ex);
+            }
+        });
+    }
+    
+    private void subscribeToEvents() throws InterruptedException {
+        setStatusInSplashScreen("Subscribe to events...", threadSleep);
+
+        javafx.application.Platform.runLater(() -> {
+            workRecordViewController.getEventManager().subscribeEventToListener(selectedWorkRecordChangedEvent, workRecordDetailsViewController);
+            workRecordViewController.getEventManager().subscribeEventToListener(startDateChangedEvent, workRecordDetailsViewController);
+            workRecordViewController.getEventManager().subscribeEventToListener(endDateChangedEvent, workRecordDetailsViewController);
+            workRecordViewController.getEventManager().subscribeEventToListener(userChangedEvent, workRecordDetailsViewController);
+            workRecordViewController.getEventManager().subscribeEventToListener(userChangedEvent, userInfoViewController);
+
+            workRecordDetailsViewController.getEventManager().subscribeEventToListener(newWorkrecordEvent, workRecordViewController);
+            workRecordDetailsViewController.getEventManager().subscribeEventToListener(editWorkrecordEvent, workRecordViewController);
+            workRecordDetailsViewController.getEventManager().subscribeEventToListener(deleteWorkrecordEvent, workRecordViewController);
+            workRecordDetailsViewController.getEventManager().subscribeEventToListener(newWorkrecordEvent, userInfoViewController);
+            workRecordDetailsViewController.getEventManager().subscribeEventToListener(editWorkrecordEvent, userInfoViewController);
+            workRecordDetailsViewController.getEventManager().subscribeEventToListener(deleteWorkrecordEvent, userInfoViewController);
+            workRecordDetailsViewController.getEventManager().subscribeEventToListener(workRecordDetailsDateChangedEvent, workRecordViewController);
+        });
+    }
+    
+    private void createWorkrecordIfNotExist() throws InterruptedException {
+        setStatusInSplashScreen("Create workrecord if not exists...", threadSleep);
+
+        javafx.application.Platform.runLater(() -> {
+            try {
+                createWorkrecordAutomaticallyIfNotExist();
+                workRecordViewController.selectWorkrecordOf(LocalDate.now());
+            } catch (SQLException ex) {
+                log.error("Error creating workrecord: " + ex.getMessage(), ex);
+            }
+        });
+    }
+    
+    private void showApplication() throws InterruptedException {
+        setStatusInSplashScreen("Show application...", threadSleep);
+
+        javafx.application.Platform.runLater(() -> {
+            try {
+                if(mainStatusBarViewController != null) {
+                    mainStatusBarViewController.stateMessage.set(appStartedMsgResourceKey);
+                }
+                primaryStage.show();
+                            
+                String dividerPositionAsString = propertiesService.getProperty(dividerPositionCenterBorderPaneSplitPaneResourceKey, dividerPositionCenterBorderPaneSplitPaneDefaultValue);
+                double dividerPosition = Double.parseDouble(dividerPositionAsString);
+                dividerPosition = MathUtilities.round(dividerPosition, 2);
+                mainViewController.getCenterBorderPaneSplitPane().setDividerPosition(0,dividerPosition);
+                            
+                hideSplashScreen();
+            } catch (RuntimeException ex) {
+                handleException(ex);
+            }
+        });
+    }
+    
+    private void handleException(Exception ex) {
+        log.fatal(ex.getMessage());
+        log.fatal(Arrays.toString(ex.getStackTrace()));
+        javafx.application.Platform.runLater(() -> {
+            hideSplashScreen();
+            showApplicationStartUpAlert(ex, AlertType.ERROR);
+            try {
+                applicationInstance.forceRemoveOfInstanceLock();
+            } catch (Exception ex1) {
+                log.fatal(ex1.getMessage());
+                log.fatal(Arrays.toString(ex1.getStackTrace()));
+                showApplicationStartUpAlert(ex1, AlertType.ERROR);
+            }
+        });
+    }
+    
     private void setAppStateInformationProperties() {
         propertiesService.setProperty(appLanguageResourceKey, mainViewController.getResourceBundle().getLocale().getLanguage());            
         propertiesService.setProperty(appHeightResourceKey, Double.toString(primaryStage.getHeight()));
@@ -549,13 +529,17 @@ public class Main extends Application {
     }
 
     private void showApplicationRunningDialog(ResourceBundle rb) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(rb.getString("AppRunningInfo"));
-        alert.setHeaderText(rb.getString("AppRunningHeader"));
-        alert.setContentText(rb.getString("AppRunningDetails"));
-        //dialog allways on top of application
-        alert.initOwner(primaryStage);
-        alert.showAndWait();
+        javafx.application.Platform.runLater(() -> {
+            hideSplashScreen();
+
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle(rb.getString("AppRunningInfo"));
+            alert.setHeaderText(rb.getString("AppRunningHeader"));
+            alert.setContentText(rb.getString("AppRunningDetails"));
+            //dialog allways on top of application
+            alert.initOwner(primaryStage);
+            alert.showAndWait();
+        });        
     }
 
     private void showApplicationStartUpAlert(Exception ex, AlertType alertType) {
@@ -597,7 +581,6 @@ public class Main extends Application {
         }
     }
 
-    // New methods for splash screen
     private void showSplashScreen() throws IOException {
         splashStage = new Stage();
         splashStage.initStyle(StageStyle.UNDECORATED);

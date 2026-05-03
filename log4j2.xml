@@ -19,7 +19,7 @@
   </Appenders>
   <Loggers>
     <!-- ALL, TRACE, DEBUG, INFO, WARN, ERROR, FATAL, OFF -->  
-    <Root level="INFO">
+    <Root level="ERROR">
       <AppenderRef ref="InfoViewLogAppender" />
       <AppenderRef ref="Console"/>
       <AppenderRef ref="RollingFile"/>
