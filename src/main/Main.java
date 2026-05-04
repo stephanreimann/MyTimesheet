@@ -191,7 +191,6 @@ public class Main extends Application {
         
         String log4NetStoragePathAndFullName = propertiesService.getProperty("Log4NetStoragePath", log4jFilePathAndFullName);
         log4jAdapter = new Log4jAdapter(log4NetStoragePathAndFullName);
-        log4jAdapter.getInfoViewLogAppender();
         log = LogManager.getLogger(Main.class.getName());
         propertiesService.setProperty("Log4NetStoragePath", log4NetStoragePathAndFullName);
     }
