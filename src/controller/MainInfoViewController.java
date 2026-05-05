@@ -18,8 +18,10 @@ import javafx.event.ActionEvent;
 import javafx.fxml.*;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import main.Main;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.*;
 import service.*;
@@ -54,6 +56,7 @@ public class MainInfoViewController implements Initializable, IViewController {
     private final UndoService undoService;
     private final Log4jAdapter log4jAdapter;
     private final ControllerRepository controllerRepository;
+    private Logger log;
     
     private final Predicate<String> infoPredicate = str -> str.contains("INFO");
     private final Predicate<String> debugPredicate = str -> str.contains("DEBUG");
@@ -121,6 +124,7 @@ public class MainInfoViewController implements Initializable, IViewController {
         this.undoService = undoService;
         this.log4jAdapter = log4jAdapter;
         this.controllerRepository = ControllerRepository.getInstance();
+        log = LogManager.getLogger(MainInfoViewController.class.getName());
     }
     
     @Override
@@ -159,6 +163,7 @@ public class MainInfoViewController implements Initializable, IViewController {
                 fatalToggleButton.setDisable(false);
                 clearLogListButton.setDisable(false);
                 resetFilterButton.setDisable(false);
+                log.info("All button are enabled as root log level = 'ALL'");
             }
             case "TRACE" -> {
                 debugToggleButton.setDisable(false);
@@ -168,6 +173,7 @@ public class MainInfoViewController implements Initializable, IViewController {
                 fatalToggleButton.setDisable(false);
                 clearLogListButton.setDisable(false);
                 resetFilterButton.setDisable(false);
+                log.info("All button are enabled as root log level = 'TRACE'");
             }
             case "DEBUG" -> {
                 debugToggleButton.setDisable(false);
@@ -177,6 +183,7 @@ public class MainInfoViewController implements Initializable, IViewController {
                 fatalToggleButton.setDisable(false);
                 clearLogListButton.setDisable(false);
                 resetFilterButton.setDisable(false);
+                log.info("All buttons are enabled as root log level = 'DEBUG'");                
             }
             case "INFO" -> {
                 debugToggleButton.setDisable(true);
@@ -186,6 +193,7 @@ public class MainInfoViewController implements Initializable, IViewController {
                 fatalToggleButton.setDisable(false);
                 clearLogListButton.setDisable(false);
                 resetFilterButton.setDisable(false);
+                log.info("Debug button is disbaled as root log level = 'INFO'");                
             }
             case "WARN" -> {
                 debugToggleButton.setDisable(true);
@@ -195,6 +203,7 @@ public class MainInfoViewController implements Initializable, IViewController {
                 fatalToggleButton.setDisable(false);
                 clearLogListButton.setDisable(false);
                 resetFilterButton.setDisable(false);
+                log.info("Debug and Info button are disbaled as root log level = 'WARN'");                
             }
             case "ERROR" -> {
                 debugToggleButton.setDisable(true);
@@ -204,6 +213,7 @@ public class MainInfoViewController implements Initializable, IViewController {
                 fatalToggleButton.setDisable(false);
                 clearLogListButton.setDisable(false);
                 resetFilterButton.setDisable(false);
+                log.info("Debug, Info and Warning button are disbaled as root log level = 'ERROR'");                
             }
             case "FATAL" -> {
                 debugToggleButton.setDisable(true);
@@ -213,6 +223,7 @@ public class MainInfoViewController implements Initializable, IViewController {
                 fatalToggleButton.setDisable(false);
                 clearLogListButton.setDisable(false);
                 resetFilterButton.setDisable(false);
+                log.info("Debug, Info, Warning and Error button are disbaled as root log level = 'FATAL'");                
             }
             case "OFF" -> {
                 debugToggleButton.setDisable(true);
@@ -222,6 +233,7 @@ public class MainInfoViewController implements Initializable, IViewController {
                 fatalToggleButton.setDisable(true);
                 clearLogListButton.setDisable(true);
                 resetFilterButton.setDisable(true);
+                log.info("All buttons are disbaled as root log level = 'OFF'");                
             }
             default -> {
                 debugToggleButton.setDisable(false);
