@@ -2,7 +2,7 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
 <comment>Application Properties</comment>
-<entry key="AppYPosition">32.0</entry>
+<entry key="AppYPosition">31.0</entry>
 <entry key="Log4NetStoragePath">./log4j2.xml</entry>
 <entry key="AppWidth">1566.0</entry>
 <entry key="WorkrecordEndTimeDelta">00:00</entry>
@@ -31,5 +31,5 @@
 <entry key="SettingsStoragePathAndFullName">E:\Develop\Java\MyTimesheet\properties.xml</entry>
 <entry key="SettingsStoragePath">./properties.xml</entry>
 <entry key="LowerOvertimeThreshold">PT-20H</entry>
-<entry key="AppXPosition">0.0</entry>
+<entry key="AppXPosition">160.0</entry>
 </properties>
