@@ -11,11 +11,11 @@ import java.io.*;
  * already running.
  * @author adrest18
  */
-public class ApplicationInstance {
+public class ApplicationInstanceService {
     
     private String instanceLockName;
     
-    public ApplicationInstance(String instanceLockName) {
+    public ApplicationInstanceService(String instanceLockName) {
         if(instanceLockName == null) throw new NullPointerException("instanceLockName");
         if(instanceLockName.trim().isEmpty()) throw new IllegalArgumentException("trimmed instanceLockName is empty");
         

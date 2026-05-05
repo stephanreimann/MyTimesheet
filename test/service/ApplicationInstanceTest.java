@@ -28,7 +28,7 @@ public class ApplicationInstanceTest {
         //Arrange
         //Act
         //Assert
-        ApplicationInstance instance = new ApplicationInstance(null);
+        ApplicationInstanceService instance = new ApplicationInstanceService(null);
     }
     
     @Test(expected=IllegalArgumentException.class)
@@ -36,7 +36,7 @@ public class ApplicationInstanceTest {
         //Arrange
         //Act
         //Assert
-        ApplicationInstance instance = new ApplicationInstance("");
+        ApplicationInstanceService instance = new ApplicationInstanceService("");
     }
 
     @Test(expected=IllegalArgumentException.class)
@@ -44,13 +44,13 @@ public class ApplicationInstanceTest {
         //Arrange
         //Act
         //Assert
-        ApplicationInstance instance = new ApplicationInstance("   ");
+        ApplicationInstanceService instance = new ApplicationInstanceService("   ");
     }
 
     @Test
     public void T03_IsRunning_Called_Application_Running_Returns_True() {
         //Arrange
-        ApplicationInstance instance = new ApplicationInstance(instanceLockName);
+        ApplicationInstanceService instance = new ApplicationInstanceService(instanceLockName);
         instance.isRunning();
         
         //Act
@@ -63,7 +63,7 @@ public class ApplicationInstanceTest {
     @Test
     public void T04_IsRunning_Called_Application_IsNotRunning_Returns_False() {
         //Arrange
-        ApplicationInstance instance = new ApplicationInstance(instanceLockName);
+        ApplicationInstanceService instance = new ApplicationInstanceService(instanceLockName);
         
         //Act
         Boolean isRunning = instance.isRunning();

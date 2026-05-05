@@ -90,7 +90,7 @@ public class Main extends Application {
     private final PropertiesService propertiesService;
     private final LanguageService languageService;
     private final UndoService undoService;
-    private final ApplicationInstance applicationInstance;
+    private final ApplicationInstanceService applicationInstanceService;
     
     private final ControllerRepository controllerRepository;
     private Connection connection;
@@ -113,7 +113,7 @@ public class Main extends Application {
     public Main() throws InterruptedException, InterruptedException {
         this.languageService = new LanguageService();
         this.undoService = new UndoService();
-        this.applicationInstance = new ApplicationInstance(instanceLockKey);
+        this.applicationInstanceService = new ApplicationInstanceService(instanceLockKey);
         this.controllerRepository = ControllerRepository.getInstance();
         this.propertiesService = PropertiesService.getInstance();
     }
@@ -130,7 +130,7 @@ public class Main extends Application {
                 loadSettings();
                 initLocale();
                 
-                if(!applicationInstance.isRunning()) {
+                if(!applicationInstanceService.isRunning()) {
                     connectToDatabase();
                     loadMainView();
                     loadMenuBar();
@@ -381,7 +381,7 @@ public class Main extends Application {
             hideSplashScreen();
             showApplicationStartUpAlert(ex, AlertType.ERROR);
             try {
-                applicationInstance.forceRemoveOfInstanceLock();
+                applicationInstanceService.forceRemoveOfInstanceLock();
             } catch (Exception ex1) {
                 log.fatal(ex1.getMessage());
                 log.fatal(Arrays.toString(ex1.getStackTrace()));
