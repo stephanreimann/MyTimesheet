@@ -11,10 +11,10 @@
 <entry key="WorkrecordAutomaticCreation">true</entry>
 <entry key="LastExpandedUserInfoPane">UserWorktimelInfoPane</entry>
 <entry key="ErrorToggleButtonState">true</entry>
-<entry key="Language">en</entry>
+<entry key="Language">de</entry>
 <entry key="WorkrecordStartTimeDelta">-00:05</entry>
 <entry key="InfoToggleButtonState">true</entry>
-<entry key="DividerPositionCenterBorderPane">0.87</entry>
+<entry key="DividerPositionCenterBorderPane">0.82</entry>
 <entry key="UpperOvertimeThreshold">PT70H</entry>
 <entry key="Log44NetStoragePath">./log4j2.xml</entry>
 <entry key="SelectedUser">Reimann</entry>
