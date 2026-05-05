@@ -41,6 +41,7 @@ public class SettingsViewController implements Initializable, IViewController {
     private final String onResourceKey = "On";
     private final String offResourceKey = "Off";
     private final String applicationAlwaysOnTopResourceKey = "ApplicationOnTop";
+    private final String showSplashScreenLabelResourceKey = "ShowSplashScreen";
 
     private final String storagelocationResourceKey = "StorageLocation";
     private final String selectDirectoryResourceKey = "SelectDirectory";
@@ -76,6 +77,10 @@ public class SettingsViewController implements Initializable, IViewController {
     private Label applicationAlwaysOnTopLabel;
     @FXML
     private ToggleButton applicationAlwaysOnTopToggleButton;
+    @FXML
+    private Label showSplasScreenLabel;
+    @FXML
+    private ToggleButton showSplashScreenToggleButton;
     
     @FXML
     private Tab settingsStorageTab;
@@ -172,10 +177,15 @@ public class SettingsViewController implements Initializable, IViewController {
         applicationAlwaysOnTopToggleButton.selectedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
             toggleApplicationAlwaysOnTopToggleButton(newValue);    
         });
-
         boolean applicationAlwaysOnTop = Boolean.parseBoolean(propertiesService.getProperty("ApplicationAlwaysOnTop", "true"));
         toggleApplicationAlwaysOnTopToggleButton(applicationAlwaysOnTop);
         
+        showSplashScreenToggleButton.selectedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+            toggleShowSplashScreenToggleButton(newValue);    
+        });
+        boolean showSplashScreen = Boolean.parseBoolean(propertiesService.getProperty("ShowSplashScreen", "true"));
+        toggleShowSplashScreenToggleButton(showSplashScreen);
+
         String databaseStoragePath = propertiesService.getProperty("DatabaseStoragePathAndFullName", databaseFilePathAndFullName);
         selectDatabaseStoragePathAndFullNameTextField.setText(databaseStoragePath);
 
@@ -276,6 +286,9 @@ public class SettingsViewController implements Initializable, IViewController {
         settingsApplicationTab.setText(rb.getString(applicationResourceKey));
         applicationAlwaysOnTopLabel.setText(rb.getString(applicationAlwaysOnTopResourceKey));
         toggleApplicationAlwaysOnTopToggleButton(applicationAlwaysOnTopToggleButton.isSelected());
+
+        showSplasScreenLabel.setText(rb.getString(showSplashScreenLabelResourceKey));
+        toggleShowSplashScreenToggleButton(showSplashScreenToggleButton.isSelected());
         
         settingsStorageTab.setText(rb.getString(storagelocationResourceKey));
         databaseStoragePathAndFullNameLabel.setText(rb.getString(databaseStoragePathResourceKey));
@@ -309,6 +322,15 @@ public class SettingsViewController implements Initializable, IViewController {
         applicationAlwaysOnTopToggleButton.setSelected(isSelected);
     }
     
+    private void toggleShowSplashScreenToggleButton(Boolean isSelected) {
+        if(isSelected) {
+            showSplashScreenToggleButton.setText(rb.getString(onResourceKey));
+        } else {
+            showSplashScreenToggleButton.setText(rb.getString(offResourceKey));
+        }
+        showSplashScreenToggleButton.setSelected(isSelected);
+    }
+
     private void toggleWorkrecordAutomaticCreationToggleButton(Boolean isSelected) {
         if(isSelected) {
             workrecordAutomaticCreationToggleButton.setText(rb.getString(onResourceKey));
@@ -422,6 +444,7 @@ public class SettingsViewController implements Initializable, IViewController {
         propertiesService.setProperty("WorkrecordEndTimeDelta", DurationConverter.convertDurationToSignedStringOfHoursAndMinutes(workrecordEndTimeDeltaValue.getValue()));        
         propertiesService.setProperty("UpperOvertimeThreshold", upperOverallOvertimeThresholdValue.getValue().toString());
         propertiesService.setProperty("LowerOvertimeThreshold", lowerOverallOvertimeThresholdValue.getValue().toString());
+        propertiesService.setProperty("ShowSplashScreen", String.valueOf(showSplashScreenToggleButton.isSelected()));
         propertiesService.setProperty("ApplicationAlwaysOnTop", String.valueOf(applicationAlwaysOnTopToggleButton.isSelected()));
         propertiesService.setProperty("WorkrecordAutomaticCreation", String.valueOf(workrecordAutomaticCreationToggleButton.isSelected()));
         propertiesService.setProperty("UseLastWorkrecordConfiguration", String.valueOf(workrecordUseLastWorkrecordConfigurationToggleButton.isSelected()));

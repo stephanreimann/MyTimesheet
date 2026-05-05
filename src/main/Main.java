@@ -30,7 +30,7 @@ import utils.MathUtilities;
  * @author adrest18
  */
 public class Main extends Application {
-    private final int threadSleep = 300;
+    private final int threadSleep = 150;
     private final String appIcon = "icons/app-maid.png";
     
     private final String dividerPositionCenterBorderPaneSplitPaneResourceKey = "DividerPositionCenterBorderPane";
@@ -122,12 +122,16 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws SQLException, IOException {
         this.primaryStage = primaryStage;
 
-        showSplashScreen();
+        loadSettings();
 
+        boolean showSplashScreen =  Boolean.parseBoolean(propertiesService.getProperty("ShowSplashScreen", "true"));
+        if(showSplashScreen) {
+            showSplashScreen();
+        }
+        
         new Thread(() -> {
             try {            
                 initLogging();
-                loadSettings();
                 initLocale();
                 
                 if(!applicationInstanceService.isRunning()) {
@@ -195,9 +199,7 @@ public class Main extends Application {
         propertiesService.setProperty("Log4NetStoragePath", log4NetStoragePathAndFullName);
     }
     
-    private void loadSettings() throws InterruptedException {
-        setStatusInSplashScreen("Loading settings...", threadSleep);
-
+    private void loadSettings() {
         String settingsStoragePathAndFullName = propertiesService.getProperty("SettingsStoragePath", settingsFilePathAndFullName);
         propertiesService.loadPropertiesFromXmlFile(settingsStoragePathAndFullName);
         propertiesService.setProperty("SettingsStoragePath", settingsStoragePathAndFullName);
