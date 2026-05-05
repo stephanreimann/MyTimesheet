@@ -146,7 +146,7 @@ public class Main extends Application {
                 } else {
                     showApplicationRunningDialog(bundle);
                 }
-            } catch (IOException | RuntimeException | InterruptedException ex) { // Added InterruptedException
+            } catch (IOException | RuntimeException | InterruptedException ex) {
                 handleException(ex);
             }
         }).start();
@@ -424,7 +424,7 @@ public class Main extends Application {
         mainViewController.setResourceBundle(rb);
         mainViewController.setPrimaryStage(primaryStage);
         controllerRepository.put(MainViewController.class.getName(), mainViewController);
-        BorderPane mainSceneRoot = (BorderPane) load(rb, mainViewController, mainViewResource); // Renamed to avoid conflict
+        BorderPane mainSceneRoot = (BorderPane) load(rb, mainViewController, mainViewResource);
         scene = new Scene(mainSceneRoot);
         primaryStage.setScene(scene);
     }
@@ -535,7 +535,6 @@ public class Main extends Application {
             alert.setTitle(rb.getString("AppRunningInfo"));
             alert.setHeaderText(rb.getString("AppRunningHeader"));
             alert.setContentText(rb.getString("AppRunningDetails"));
-            //dialog allways on top of application
             alert.initOwner(primaryStage);
             alert.showAndWait();
         });        
@@ -555,7 +554,6 @@ public class Main extends Application {
         content.append(Arrays.toString(ex.getStackTrace()));
         alert.setContentText(content.toString());
         
-        //dialog allways on top of application
         alert.initOwner(primaryStage);
         alert.showAndWait().ifPresent(rs -> {
             if (rs == ButtonType.OK) {
