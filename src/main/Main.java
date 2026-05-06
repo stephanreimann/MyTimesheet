@@ -30,7 +30,7 @@ import utils.MathUtilities;
  * @author adrest18
  */
 public class Main extends Application {
-    private final int threadSleep = 150;
+    private final int threadSleep = 250;
     private final String appIcon = "icons/app-maid.png";
     
     private final String dividerPositionCenterBorderPaneSplitPaneResourceKey = "DividerPositionCenterBorderPane";
@@ -123,6 +123,8 @@ public class Main extends Application {
         this.primaryStage = primaryStage;
 
         loadSettings();
+        initLogging();
+        initLocale();
 
         boolean showSplashScreen =  Boolean.parseBoolean(propertiesService.getProperty("ShowSplashScreen", "true"));
         if(showSplashScreen) {
@@ -131,8 +133,6 @@ public class Main extends Application {
         
         new Thread(() -> {
             try {            
-                initLogging();
-                initLocale();
                 
                 if(!applicationInstanceService.isRunning()) {
                     connectToDatabase();
@@ -150,7 +150,7 @@ public class Main extends Application {
                 } else {
                     showApplicationRunningDialog(bundle);
                 }
-            } catch (IOException | RuntimeException | InterruptedException ex) {
+            } catch (RuntimeException | InterruptedException ex) {
                 handleException(ex);
             }
         }).start();
@@ -181,22 +181,13 @@ public class Main extends Application {
         Runtime.getRuntime().exit(0);
     }
 
-    private void setStatusInSplashScreen(String status, int threadSleep) throws InterruptedException {
+    private void setStatusInSplashScreen(String messageResourceKey, int threadSleep) throws InterruptedException {
         if (splashScreenViewController != null) {
             javafx.application.Platform.runLater(() -> 
-                splashScreenViewController.setStatus(status)
+                splashScreenViewController.setStatus(messageResourceKey)
             );
             Thread.sleep(threadSleep);
         }
-    }
-    
-    private void initLogging() throws InterruptedException, FileNotFoundException {
-        setStatusInSplashScreen("Initializing logging...", threadSleep);
-        
-        String log4NetStoragePathAndFullName = propertiesService.getProperty("Log4NetStoragePath", log4jFilePathAndFullName);
-        log4jAdapter = new Log4jAdapter(log4NetStoragePathAndFullName);
-        log = LogManager.getLogger(Main.class.getName());
-        propertiesService.setProperty("Log4NetStoragePath", log4NetStoragePathAndFullName);
     }
     
     private void loadSettings() {
@@ -205,15 +196,20 @@ public class Main extends Application {
         propertiesService.setProperty("SettingsStoragePath", settingsStoragePathAndFullName);
     }
     
-    private void initLocale() throws InterruptedException {
-        setStatusInSplashScreen("Initializing locale...", threadSleep);
+    private void initLogging() throws FileNotFoundException {
+        String log4NetStoragePathAndFullName = propertiesService.getProperty("Log4NetStoragePath", log4jFilePathAndFullName);
+        log4jAdapter = new Log4jAdapter(log4NetStoragePathAndFullName);
+        log = LogManager.getLogger(Main.class.getName());
+        propertiesService.setProperty("Log4NetStoragePath", log4NetStoragePathAndFullName);
+    }
 
+    private void initLocale() {
         bundle = ResourceBundle.getBundle(languageRes, Locale.of(propertiesService.getProperty(appLanguageResourceKey, appLanguageDefaultValue)));
         Locale.setDefault(bundle.getLocale());
     }
     
     private void connectToDatabase() throws InterruptedException {
-        setStatusInSplashScreen("Connecting to database...", threadSleep);
+        setStatusInSplashScreen("ConnectToDatabase", threadSleep);
 
         ConnectionFactory connectionFactory = new ConnectionFactory(bundle, log4jAdapter);
         String databaseStoragePathAndFullName = propertiesService.getProperty("DatabaseStoragePath", databaseFilePathAndFullName);
@@ -225,7 +221,7 @@ public class Main extends Application {
     }
     
     private void loadMainView() throws InterruptedException {
-        setStatusInSplashScreen("Loading main view...", threadSleep);
+        setStatusInSplashScreen("LoadMainView", threadSleep);
 
         javafx.application.Platform.runLater(() -> {
             try {
@@ -238,7 +234,7 @@ public class Main extends Application {
     }
     
     private void loadMenuBar() throws InterruptedException {
-        setStatusInSplashScreen("Loading menu bar...", threadSleep);
+        setStatusInSplashScreen("LoadMenuBar", threadSleep);
 
         javafx.application.Platform.runLater(() -> {
             try {
@@ -250,7 +246,7 @@ public class Main extends Application {
     }
     
     private void loadToolBar() throws InterruptedException {
-        setStatusInSplashScreen("Loading toolbar...", threadSleep);
+        setStatusInSplashScreen("LoadToolBar", threadSleep);
 
         javafx.application.Platform.runLater(() -> {
             try {
@@ -262,7 +258,7 @@ public class Main extends Application {
     }
     
     private void loadWorkrecords() throws InterruptedException {
-        setStatusInSplashScreen("Loading work records...", threadSleep);
+        setStatusInSplashScreen("LoadWorkrecords", threadSleep);
 
         javafx.application.Platform.runLater(() -> {
             try {
@@ -274,7 +270,7 @@ public class Main extends Application {
     }
     
     private void loadWorkrecordsDetails() throws InterruptedException {
-        setStatusInSplashScreen("Loading work record details...", threadSleep);
+        setStatusInSplashScreen("LoadWorkrecordsDetails", threadSleep);
 
         javafx.application.Platform.runLater(() -> {
             try {
@@ -286,7 +282,7 @@ public class Main extends Application {
     }
     
     private void loadUserInformation() throws InterruptedException {
-        setStatusInSplashScreen("Loading user information...", threadSleep);
+        setStatusInSplashScreen("LoadUserInformation", threadSleep);
 
         javafx.application.Platform.runLater(() -> {
             try {
@@ -298,7 +294,7 @@ public class Main extends Application {
     }
     
     private void loadInfoPanel() throws InterruptedException {
-        setStatusInSplashScreen("Loading info panel...", threadSleep);
+        setStatusInSplashScreen("LoadInfoPanel", threadSleep);
 
         javafx.application.Platform.runLater(() -> {
             try {
@@ -310,7 +306,7 @@ public class Main extends Application {
     }
     
     private void loadStatusBar() throws InterruptedException {
-        setStatusInSplashScreen("Loading status bar...", threadSleep);
+        setStatusInSplashScreen("LoadStatusBar", threadSleep);
 
         javafx.application.Platform.runLater(() -> {
             try {
@@ -322,7 +318,7 @@ public class Main extends Application {
     }
     
     private void subscribeToEvents() throws InterruptedException {
-        setStatusInSplashScreen("Subscribe to events...", threadSleep);
+        setStatusInSplashScreen("SubscribeToEvents", threadSleep);
 
         javafx.application.Platform.runLater(() -> {
             workRecordViewController.getEventManager().subscribeEventToListener(selectedWorkRecordChangedEvent, workRecordDetailsViewController);
@@ -342,7 +338,7 @@ public class Main extends Application {
     }
     
     private void createWorkrecordIfNotExist() throws InterruptedException {
-        setStatusInSplashScreen("Create workrecord if not exists...", threadSleep);
+        setStatusInSplashScreen("CreateWorkrecordIfNotExist", threadSleep);
 
         javafx.application.Platform.runLater(() -> {
             try {
@@ -355,7 +351,7 @@ public class Main extends Application {
     }
     
     private void showApplication() throws InterruptedException {
-        setStatusInSplashScreen("Show application...", threadSleep);
+        setStatusInSplashScreen("ShowApplication", threadSleep);
 
         javafx.application.Platform.runLater(() -> {
             try {
@@ -588,6 +584,8 @@ public class Main extends Application {
         FXMLLoader loader = new FXMLLoader(getClass().getResource(splashScreenViewResource));
         Parent splashLayout = loader.load();
         splashScreenViewController = loader.getController();
+        splashScreenViewController.setResourceBundle(bundle);
+        splashScreenViewController.updateGuiItems();
         Scene splashScene = new Scene(splashLayout);
         splashStage.setScene(splashScene);
         splashStage.show();

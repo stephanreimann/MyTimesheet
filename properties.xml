@@ -11,7 +11,7 @@
 <entry key="WorkrecordAutomaticCreation">true</entry>
 <entry key="LastExpandedUserInfoPane">UserWorktimelInfoPane</entry>
 <entry key="ErrorToggleButtonState">true</entry>
-<entry key="Language">en</entry>
+<entry key="Language">de</entry>
 <entry key="WorkrecordStartTimeDelta">-00:05</entry>
 <entry key="InfoToggleButtonState">true</entry>
 <entry key="DividerPositionCenterBorderPane">0.82</entry>
@@ -29,7 +29,7 @@
 <entry key="DebugToggleButtonState">false</entry>
 <entry key="ApplicationAlwaysOnTop">false</entry>
 <entry key="SettingsStoragePathAndFullName">E:\Develop\Java\MyTimesheet\properties.xml</entry>
-<entry key="ShowSplashScreen">false</entry>
+<entry key="ShowSplashScreen">true</entry>
 <entry key="SettingsStoragePath">./properties.xml</entry>
 <entry key="LowerOvertimeThreshold">PT-20H</entry>
 <entry key="AppXPosition">233.0</entry>
