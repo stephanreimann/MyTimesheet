@@ -30,7 +30,7 @@ import utils.MathUtilities;
  * @author adrest18
  */
 public class Main extends Application {
-    private final int threadSleep = 250;
+    private final int threadSleep = 150;
     private final String appIcon = "icons/app-maid.png";
     
     private final String dividerPositionCenterBorderPaneSplitPaneResourceKey = "DividerPositionCenterBorderPane";
@@ -125,6 +125,7 @@ public class Main extends Application {
         loadSettings();
         initLogging();
         initLocale();
+        initPrimaryStage(primaryStage);
 
         boolean showSplashScreen =  Boolean.parseBoolean(propertiesService.getProperty("ShowSplashScreen", "true"));
         if(showSplashScreen) {
@@ -132,8 +133,7 @@ public class Main extends Application {
         }
         
         new Thread(() -> {
-            try {            
-                
+            try {                            
                 if(!applicationInstanceService.isRunning()) {
                     connectToDatabase();
                     loadMainView();
@@ -225,7 +225,6 @@ public class Main extends Application {
 
         javafx.application.Platform.runLater(() -> {
             try {
-                initPrimaryStage(primaryStage);
                 initMainView(bundle);
             } catch (IOException ex) {
                 log.error("Error initializing main view: " + ex.getMessage(), ex);
@@ -533,9 +532,8 @@ public class Main extends Application {
             alert.setTitle(rb.getString("AppRunningInfo"));
             alert.setHeaderText(rb.getString("AppRunningHeader"));
             alert.setContentText(rb.getString("AppRunningDetails"));
-            alert.initOwner(primaryStage);
             alert.showAndWait();
-        });        
+        });
     }
 
     private void showApplicationStartUpAlert(Exception ex, AlertType alertType) {
@@ -552,7 +550,6 @@ public class Main extends Application {
         content.append(Arrays.toString(ex.getStackTrace()));
         alert.setContentText(content.toString());
         
-        alert.initOwner(primaryStage);
         alert.showAndWait().ifPresent(rs -> {
             if (rs == ButtonType.OK) {
                 stop();
