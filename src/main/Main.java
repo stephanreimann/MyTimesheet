@@ -94,7 +94,7 @@ public class Main extends Application {
     
     private final ControllerRepository controllerRepository;
     private Connection connection;
-    private ResourceBundle bundle;
+    private ResourceBundle resourceBundle;
     private Stage primaryStage;
     private MainMenuBarViewController mainMenuBarViewController;
     private MainToolBarViewController mainToolBarViewController;
@@ -125,7 +125,7 @@ public class Main extends Application {
         loadSettings();
         initLogging();
         initLocale();
-        initPrimaryStage(primaryStage);
+        initPrimaryStage();
 
         boolean showSplashScreen =  Boolean.parseBoolean(propertiesService.getProperty("ShowSplashScreen", "true"));
         if(showSplashScreen) {
@@ -148,7 +148,7 @@ public class Main extends Application {
                     createWorkrecordIfNotExist();
                     showApplication();
                 } else {
-                    showApplicationRunningDialog(bundle);
+                    showApplicationRunningDialog(resourceBundle);
                 }
             } catch (RuntimeException | InterruptedException ex) {
                 handleException(ex);
@@ -204,14 +204,14 @@ public class Main extends Application {
     }
 
     private void initLocale() {
-        bundle = ResourceBundle.getBundle(languageRes, Locale.of(propertiesService.getProperty(appLanguageResourceKey, appLanguageDefaultValue)));
-        Locale.setDefault(bundle.getLocale());
+        resourceBundle = ResourceBundle.getBundle(languageRes, Locale.of(propertiesService.getProperty(appLanguageResourceKey, appLanguageDefaultValue)));
+        Locale.setDefault(resourceBundle.getLocale());
     }
     
     private void connectToDatabase() throws InterruptedException {
         setStatusInSplashScreen("ConnectToDatabase", threadSleep);
 
-        ConnectionFactory connectionFactory = new ConnectionFactory(bundle, log4jAdapter);
+        ConnectionFactory connectionFactory = new ConnectionFactory(resourceBundle, log4jAdapter);
         String databaseStoragePathAndFullName = propertiesService.getProperty("DatabaseStoragePath", databaseFilePathAndFullName);
         connection = connectionFactory.getConnection(databaseStoragePathAndFullName);
         if(this.connection == null) {
@@ -225,7 +225,7 @@ public class Main extends Application {
 
         javafx.application.Platform.runLater(() -> {
             try {
-                initMainView(bundle);
+                initMainView(resourceBundle);
             } catch (IOException ex) {
                 log.error("Error initializing main view: " + ex.getMessage(), ex);
             }
@@ -237,7 +237,7 @@ public class Main extends Application {
 
         javafx.application.Platform.runLater(() -> {
             try {
-                initMainMenuBarView(bundle);
+                initMainMenuBarView(resourceBundle);
             } catch (IOException ex) {
                 log.error("Error initializing menu bar view: " + ex.getMessage(), ex);
             }
@@ -249,7 +249,7 @@ public class Main extends Application {
 
         javafx.application.Platform.runLater(() -> {
             try {
-                initMainToolBarView(bundle);
+                initMainToolBarView(resourceBundle);
             } catch (IOException ex) {
                 log.error("Error initializing toolbar view: " + ex.getMessage(), ex);
             }
@@ -261,7 +261,7 @@ public class Main extends Application {
 
         javafx.application.Platform.runLater(() -> {
             try {
-                initWorkRecordsView(bundle);
+                initWorkRecordsView(resourceBundle);
             } catch (IOException | SQLException ex) {
                 log.error("Error initializing work records view: " + ex.getMessage(), ex);
             }
@@ -273,7 +273,7 @@ public class Main extends Application {
 
         javafx.application.Platform.runLater(() -> {
             try {
-                initWorkRecordsDetailsView(bundle);
+                initWorkRecordsDetailsView(resourceBundle);
             } catch (IOException ex) {
                 log.error("Error initializing work record details view: " + ex.getMessage(), ex);
             }
@@ -285,7 +285,7 @@ public class Main extends Application {
 
         javafx.application.Platform.runLater(() -> {
             try {
-                initUserInfoView(bundle);
+                initUserInfoView(resourceBundle);
             } catch (IOException | SQLException ex) {
                 log.error("Error initializing user info view: " + ex.getMessage(), ex);
             }
@@ -297,7 +297,7 @@ public class Main extends Application {
 
         javafx.application.Platform.runLater(() -> {
             try {
-                initMainInfoView(bundle);
+                initMainInfoView(resourceBundle);
             } catch (IOException ex) {
                 log.error("Error initializing main info view: " + ex.getMessage(), ex);
             }
@@ -309,7 +309,7 @@ public class Main extends Application {
 
         javafx.application.Platform.runLater(() -> {
             try {
-                initMainStatusBarView(bundle);
+                initMainStatusBarView(resourceBundle);
             } catch (IOException ex) {
                 log.error("Error initializing status bar view: " + ex.getMessage(), ex);
             }
@@ -406,10 +406,10 @@ public class Main extends Application {
         propertiesService.setProperty(fatalToggleButtonState, Boolean.toString(mainInfoViewController.getFatalToggleButtonState()));        
     }
     
-    private void initPrimaryStage(Stage primaryStage) {
+    private void initPrimaryStage() {
         this.primaryStage.setAlwaysOnTop(Boolean.parseBoolean(propertiesService.getProperty(applicationAlwaysOnTopKey, trueKey)));
         this.primaryStage.getIcons().add(new Image(appIcon));
-        this.primaryStage.setTitle(bundle.getString(appNameResourceKey));
+        this.primaryStage.setTitle(resourceBundle.getString(appNameResourceKey));
         this.primaryStage.setHeight(Double.parseDouble(propertiesService.getProperty(appHeightResourceKey, appHeightDefaultValue)));
         this.primaryStage.setWidth(Double.parseDouble(propertiesService.getProperty(appWidthResourceKey, appWidthDefaultValue)));
         this.primaryStage.setX(Double.parseDouble(propertiesService.getProperty(appXPositionResourceKey, appXPositionDefaultValue)));
@@ -581,7 +581,7 @@ public class Main extends Application {
         FXMLLoader loader = new FXMLLoader(getClass().getResource(splashScreenViewResource));
         Parent splashLayout = loader.load();
         splashScreenViewController = loader.getController();
-        splashScreenViewController.setResourceBundle(bundle);
+        splashScreenViewController.setResourceBundle(resourceBundle);
         splashScreenViewController.updateGuiItems();
         Scene splashScene = new Scene(splashLayout);
         splashStage.setScene(splashScene);
