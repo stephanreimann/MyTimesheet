@@ -8,6 +8,7 @@ import model.*;
 import java.sql.*;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalTime;
 import java.util.*;
 import org.apache.logging.log4j.*;
 
@@ -19,24 +20,33 @@ public class UserDAO {
     
     private final Logger log;
     private final Connection connection;
-    private final RoleDAO roleDao;
-    private final AddressDAO addressDao;
 
     public UserDAO(Connection connection) {
         if(connection == null) throw new NullPointerException("connection");
         
         this.log = LogManager.getLogger(UserDAO.class.getName());
         this.connection = connection;
-        this.roleDao = new RoleDAO(connection);
-        this.addressDao = new AddressDAO(connection);
     }
 
+    private StringBuilder getBaseSelectStatement() {
+        StringBuilder statement = new StringBuilder();
+        statement.append("SELECT ");
+        statement.append("u.id AS u_id, u.roleid AS u_roleid, u.addressid AS u_addressid, u.contractid AS u_contractid, u.firstname AS u_firstname, u.lastname AS u_lastname, u.login AS u_login, u.password AS u_password, u.vacationleft AS u_vacationleft, ");
+        statement.append("r.id AS r_id, r.name AS r_name, r.Description AS r_Description, ");
+        statement.append("a.id AS a_id, a.streetname AS a_streetname, a.housenumber AS a_housenumber, a.unitname AS a_unitname, a.unitnumber AS a_unitnumber, a.unitLocation AS a_unitLocation, a.city As a_city, a.state AS a_state, a.zipcode AS a_zipcode, a.country AS a_country, ");
+        statement.append("c.id AS c_id, c.name AS c_name, c.workhours AS c_workhours, c.maxworkhours AS c_maxworkhours, c.vacationdays AS c_vacationdays, c.vacationreconciliationdate AS c_vacationreconciliationdate, c.breakfastofftimeend AS c_breakfastofftimeend, c.breakfastofftimestart AS c_breakfastofftimestart, c.lunchofftimeend AS c_lunchofftimeend, c.lunchofftimestart AS c_lunchofftimestart, c.earliestworktimestart AS c_earliestworktimestart, c.latestworktimeend AS c_latestworktimeend ");
+        statement.append("FROM user u ");
+        statement.append("JOIN role r ON u.roleid = r.id ");
+        statement.append("JOIN address a ON u.addressid = a.id ");
+        statement.append("JOIN contract c ON u.contractid = c.id ");        
+        return statement;
+    }
+    
     public synchronized List<User> selectAll() throws SQLException {
         List<User> resultList = new ArrayList<>();
         
-        StringBuilder statement = new StringBuilder();
-        statement.append("SELECT id, roleid, addressid, contractid, firstname, lastname, login, password, vacationleft ");
-        statement.append("FROM user;");
+        StringBuilder statement = getBaseSelectStatement();
+        statement.append(";");
         
         Instant start = Instant.now();
         PreparedStatement dbStatement = connection.prepareStatement(statement.toString());
@@ -52,9 +62,7 @@ public class UserDAO {
     }
 
     public User selectUserFromId(long id) throws SQLException {
-        StringBuilder statement = new StringBuilder();
-        statement.append("SELECT id, roleid, addressid, contractid, firstname, lastname, login, password, vacationleft ");
-        statement.append("FROM user ");
+        StringBuilder statement = getBaseSelectStatement();
         statement.append("WHERE id = ?;");
         
         PreparedStatement dbStatement = connection.prepareStatement(statement.toString());
@@ -69,24 +77,46 @@ public class UserDAO {
         return null;
     }
     
-    private User createUserFromResultSetEntry(ResultSet resultSet) throws SQLException {
-        long rsId = resultSet.getLong("id");
-        long rsRoleId = resultSet.getLong("roleid");
-        long rsAddressId = resultSet.getLong("addressid");
-        long rsContractId = resultSet.getLong("contractid");
-        String rsFirstName = resultSet.getString("firstname");
-        String rsLastName = resultSet.getString("lastname");
-        String rsLogin = resultSet.getString("login");
-        String rsPassword = resultSet.getString("password");
-        long rsVacationLeft = resultSet.getLong("vacationleft");
+    private User createUserFromResultSetEntry(ResultSet resultSet) throws SQLException {            
+        Role role = new Role(resultSet.getLong("r_id"));
+        role.setName(resultSet.getString("r_name"));
+        role.setDescription(resultSet.getString("r_description"));
 
-        Role role = roleDao.selectRoleFromId(rsRoleId);            
-        Address address = addressDao.selectAddressFromId(rsAddressId);
-            
-        ContractDAO contractDao = new ContractDAO(connection);
-        Contract contract = contractDao.selectContractFromId(rsContractId);
-            
-        return new User(rsId, role, address, contract, rsFirstName, rsLastName, rsLogin, rsPassword, rsVacationLeft);
+        Address address = new Address(resultSet.getLong("a_id"));
+        address.setStreetname(resultSet.getString("a_streetname"));
+        address.setHousenumber(resultSet.getLong("a_housenumber"));
+        address.setUnitname(resultSet.getString("a_unitname"));
+        address.setUnitnumber(resultSet.getLong("a_unitnumber"));
+        address.setUnitlocation(resultSet.getString("a_unitLocation"));
+        address.setCity(resultSet.getString("a_city"));
+        address.setState(resultSet.getString("a_state"));
+        address.setZipcode(resultSet.getLong("a_zipcode"));
+        address.setCountry(resultSet.getString("a_country"));
+
+        Contract contract = new Contract(resultSet.getLong("c_id"));
+        contract.setName(resultSet.getString("c_name"));
+        contract.setWorkhours(resultSet.getLong("c_workhours"));
+        contract.setMaxworkhours(resultSet.getLong("c_maxworkhours"));
+        contract.setVacationdays(resultSet.getLong("c_vacationdays"));
+        contract.setVacationreconciliationdate(resultSet.getString("c_vacationreconciliationdate"));
+        contract.setBreakfastofftimeend(LocalTime.parse(resultSet.getString("c_breakfastofftimeend")));
+        contract.setBreakfastofftimestart(LocalTime.parse(resultSet.getString("c_breakfastofftimestart")));
+        contract.setLunchofftimeend(LocalTime.parse(resultSet.getString("c_lunchofftimeend")));
+        contract.setLunchofftimestart(LocalTime.parse(resultSet.getString("c_lunchofftimestart")));
+        contract.setEarliestworktimestart(LocalTime.parse(resultSet.getString("c_earliestworktimestart")));
+        contract.setLatestworktimeend(LocalTime.parse(resultSet.getString("c_latestworktimeend")));
+
+        User user = new User(resultSet.getLong("u_id"));
+        user.setRole(role);
+        user.setAddress(address);
+        user.setContract(contract);
+        user.setFirstname(resultSet.getString("u_firstname"));
+        user.setLastname(resultSet.getString("u_lastname"));
+        user.setLogin(resultSet.getString("u_login"));
+        user.setPassword(resultSet.getString("u_password"));
+        user.setVacationleft(resultSet.getLong("u_vacationleft"));
+        
+        return user;
     }
     
     public synchronized boolean create(User user) throws SQLException {
