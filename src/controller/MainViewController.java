@@ -20,6 +20,8 @@ import service.LanguageService;
  */
 public class MainViewController implements Initializable, IViewController {
 
+    private final String appNameResourceKey = "AppName";
+    
     private Stage primaryStage;
     private final LanguageService languageService;
     private final Connection connection;
@@ -54,7 +56,7 @@ public class MainViewController implements Initializable, IViewController {
 
     @Override
     public void updateGuiItems() {
-
+        this.primaryStage.setTitle(rb.getString(appNameResourceKey));
     }
 
     @Override
