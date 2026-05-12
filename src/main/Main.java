@@ -125,7 +125,6 @@ public class Main extends Application {
         loadSettings();
         initLogging();
         initLocale();
-        initPrimaryStage();
 
         boolean showSplashScreen =  Boolean.parseBoolean(propertiesService.getProperty("ShowSplashScreen", "true"));
         if(showSplashScreen) {
@@ -135,6 +134,7 @@ public class Main extends Application {
         new Thread(() -> {
             try {                            
                 if(!applicationInstanceService.isRunning()) {
+                    initPrimaryStage();
                     connectToDatabase();
                     loadMainView();
                     loadMenuBar();
