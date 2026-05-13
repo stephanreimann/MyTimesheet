@@ -32,22 +32,12 @@ import utils.EventManager;
  * @author adrest18
  */
 public class SettingsViewController implements Initializable, IViewController {
-
-    private final String settingsFilePathAndFullName = "./properties.xml";
-    private final String databaseFilePathAndFullName = "./sqlite/proddb.sqlite";
-    private final String log4jFilePathAndFullName = "./log4j2.xml";
     
     private final String applicationResourceKey = "Application";
     private final String onResourceKey = "On";
     private final String offResourceKey = "Off";
     private final String applicationAlwaysOnTopResourceKey = "ApplicationOnTop";
     private final String showSplashScreenLabelResourceKey = "ShowSplashScreen";
-
-    private final String storagelocationResourceKey = "StorageLocation";
-    private final String selectDirectoryResourceKey = "SelectDirectory";
-    private final String databaseStoragePathResourceKey = "DatabaseStoragePathAndFullName";
-    private final String settingsStoragePathResourceKey = "SettingsStoragePathAndFullName";
-    private final String log4NetStoragePathResourceKey = "Log4jStoragePathAndFullName";
 
     private final String workrecordResourceKey = "Workrecord";
     private final String workrecordAutomaticCreationResourceKey = "WorkrecordAutomaticCreation";
@@ -81,27 +71,6 @@ public class SettingsViewController implements Initializable, IViewController {
     private Label showSplasScreenLabel;
     @FXML
     private ToggleButton showSplashScreenToggleButton;
-    
-    @FXML
-    private Tab settingsStorageTab;
-    @FXML
-    private Label databaseStoragePathAndFullNameLabel;
-    @FXML
-    private TextField selectDatabaseStoragePathAndFullNameTextField;
-    @FXML
-    private Button selectDatabaseStoragePathAndFullNameButton;
-    @FXML
-    private Label settingsStoragePathAndFullNameLabel;
-    @FXML
-    private TextField selectSettingsStoragePathAndFullNameTextField;
-    @FXML
-    private Button selectSettingsStoragePathAndFullNameButton;
-    @FXML
-    private Label log4jStoragePathAndFullNameLabel;
-    @FXML
-    private TextField selectLog4jStoragePathAndFullNameTextField;
-    @FXML
-    private Button selectLog4jStoragePathAndFullNameButton;    
     
     @FXML
     private Tab settingsWorkrecordTab;
@@ -186,20 +155,11 @@ public class SettingsViewController implements Initializable, IViewController {
         boolean showSplashScreen = Boolean.parseBoolean(propertiesService.getProperty("ShowSplashScreen", "true"));
         toggleShowSplashScreenToggleButton(showSplashScreen);
 
-        String databaseStoragePath = propertiesService.getProperty("DatabaseStoragePathAndFullName", databaseFilePathAndFullName);
-        selectDatabaseStoragePathAndFullNameTextField.setText(databaseStoragePath);
-
-        String settingsStoragePath = propertiesService.getProperty("SettingsStoragePathAndFullName", settingsFilePathAndFullName);
-        selectSettingsStoragePathAndFullNameTextField.setText(settingsStoragePath);
-
-        String log4J2StoragePath = propertiesService.getProperty("Log4jStoragePathAndFullName", log4jFilePathAndFullName);
-        selectLog4jStoragePathAndFullNameTextField.setText(log4J2StoragePath);
-    
         workrecordAutomaticCreationToggleButton.selectedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
             toggleWorkrecordAutomaticCreationToggleButton(newValue);
             eventManager.notifyListenerOfEvent(workrecordAutomaticCreationChangeEvent, newValue);
         });
-                
+        
         workrecordStartTimeDeltaValue = new DurationSpinner();
         String startTimeDeltaValue = propertiesService.getProperty("WorkrecordStartTimeDelta", defaultWorkrecordStartTimeDelta);
         Duration startTimeDeltaDuration = DurationConverter.convertSignedStringOfHoursAndMinutesToDuration(startTimeDeltaValue);
@@ -290,14 +250,6 @@ public class SettingsViewController implements Initializable, IViewController {
         showSplasScreenLabel.setText(rb.getString(showSplashScreenLabelResourceKey));
         toggleShowSplashScreenToggleButton(showSplashScreenToggleButton.isSelected());
         
-        settingsStorageTab.setText(rb.getString(storagelocationResourceKey));
-        databaseStoragePathAndFullNameLabel.setText(rb.getString(databaseStoragePathResourceKey));
-        selectDatabaseStoragePathAndFullNameButton.setText(rb.getString(selectDirectoryResourceKey));
-        settingsStoragePathAndFullNameLabel.setText(rb.getString(settingsStoragePathResourceKey));
-        selectSettingsStoragePathAndFullNameButton.setText(rb.getString(selectDirectoryResourceKey));
-        log4jStoragePathAndFullNameLabel.setText(rb.getString(log4NetStoragePathResourceKey));
-        selectLog4jStoragePathAndFullNameButton.setText(rb.getString(selectDirectoryResourceKey));
-        
         settingsWorkrecordTab.setText(rb.getString(workrecordResourceKey));
         workrecordCreateAutomatic.setText(rb.getString(workrecordAutomaticCreationResourceKey));
         toggleWorkrecordAutomaticCreationToggleButton(workrecordAutomaticCreationToggleButton.isSelected());
@@ -370,45 +322,6 @@ public class SettingsViewController implements Initializable, IViewController {
         workrecordUseLastWorkrecordConfigurationToggleButton.setSelected(isSelected);
     }
     
-    @FXML
-    private void handleOnSelectDatabaseStorageButtonClickAction(ActionEvent event) throws IOException {
-        List<String> extensionList = new ArrayList<>();
-        extensionList.add("*.sqlite");
-        
-        File choosenFile = initializeFileChooserAndShowIt("SQLITE files (*.sqlite)", extensionList);
-        if(choosenFile != null && choosenFile.exists()) {
-            String file = choosenFile.getPath();
-            selectDatabaseStoragePathAndFullNameTextField.textProperty().unbind();
-            selectDatabaseStoragePathAndFullNameTextField.setText(file);
-        }    
-    }
-    
-    @FXML
-    private void handleOnSelectSettingsStoragePathButtonClickAction(ActionEvent event) throws IOException {
-        List<String> extensionList = new ArrayList<>();
-        extensionList.add("*.xml");
-        
-        File choosenFile = initializeFileChooserAndShowIt("SETTINGS files (*.xml)", extensionList);
-        if(choosenFile != null && choosenFile.exists()) {
-            String file = choosenFile.getPath();
-            selectSettingsStoragePathAndFullNameTextField.textProperty().unbind();
-            selectSettingsStoragePathAndFullNameTextField.setText(file);
-        }    
-    }
-
-    @FXML
-    private void handleOnSelectLog4NetStorageButtonClickAction(ActionEvent event) throws IOException {
-        List<String> extensionList = new ArrayList<>();
-        extensionList.add("*.xml");
-        
-        File choosenFile = initializeFileChooserAndShowIt("Log4j files (*.xml)", extensionList);
-        if(choosenFile != null && choosenFile.exists()) {
-            String file = choosenFile.getPath();
-            selectLog4jStoragePathAndFullNameTextField.textProperty().unbind();
-            selectLog4jStoragePathAndFullNameTextField.setText(file);
-        }    
-    }
-
     private File initializeFileChooserAndShowIt(String description, List<String> extensions) throws IOException {
         String holydaysDirectory = new File(".").getCanonicalPath();
         FileChooser fileChooser = new FileChooser();
@@ -448,9 +361,6 @@ public class SettingsViewController implements Initializable, IViewController {
         propertiesService.setProperty("ApplicationAlwaysOnTop", String.valueOf(applicationAlwaysOnTopToggleButton.isSelected()));
         propertiesService.setProperty("WorkrecordAutomaticCreation", String.valueOf(workrecordAutomaticCreationToggleButton.isSelected()));
         propertiesService.setProperty("UseLastWorkrecordConfiguration", String.valueOf(workrecordUseLastWorkrecordConfigurationToggleButton.isSelected()));
-        propertiesService.setProperty("DatabaseStoragePathAndFullName", selectDatabaseStoragePathAndFullNameTextField.getText());
-        propertiesService.setProperty("SettingsStoragePathAndFullName", selectSettingsStoragePathAndFullNameTextField.getText());
-        propertiesService.setProperty("Log4jStoragePathAndFullName", selectLog4jStoragePathAndFullNameTextField.getText());
     }
         
 }
