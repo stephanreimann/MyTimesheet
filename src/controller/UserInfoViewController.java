@@ -8,6 +8,7 @@ import java.net.URL;
 import java.sql.*;
 import java.text.MessageFormat;
 import java.time.*;
+import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.ResourceBundle;
 import javafx.beans.value.*;
@@ -76,7 +77,7 @@ public class UserInfoViewController implements Initializable, IViewController, I
     private final String editWorkLocationEvent = "EditWorkLocation";
     private final String deleteWorkLocationEvent = "DeleteWorkLocation";
 
-    private final String defaultOvertimeThreshold = "00:00";
+    private final String defaultOvertimeThreshold = "PT00H";
     private final String thresholdExceededResourceKey = "ThresholdExceeded";
     
     private final Logger log = LogManager.getLogger(UserInfoViewController.class.getName());
@@ -431,9 +432,19 @@ public class UserInfoViewController implements Initializable, IViewController, I
             Long overallOvertime = calculateOverallOvertime(user);
             overallOvertimeLabelValue.setText(TimeConverter.hoursAndMinutesToString(overallOvertime));
             String upperOvertimeThreshold = propertiesService.getProperty("UpperOvertimeThreshold", defaultOvertimeThreshold);
-            Long upperOvertimeThresholdAsLong = Duration.parse(upperOvertimeThreshold).toMinutes();
+            Long upperOvertimeThresholdAsLong;
+            try {
+                upperOvertimeThresholdAsLong = Duration.parse(upperOvertimeThreshold).toMinutes();
+            } catch (DateTimeParseException ex) {
+                upperOvertimeThresholdAsLong = 0L;
+            }
             String lowerOvertimeThreshold = propertiesService.getProperty("LowerOvertimeThreshold", defaultOvertimeThreshold);
-            Long lowerOvertimeThresholdAsLong = Duration.parse(lowerOvertimeThreshold).toMinutes();
+            Long lowerOvertimeThresholdAsLong;
+            try {
+                lowerOvertimeThresholdAsLong = Duration.parse(lowerOvertimeThreshold).toMinutes();
+            } catch (DateTimeParseException ex) {
+                lowerOvertimeThresholdAsLong = 0L;
+            }
             TimeStyler.styleTimeLabel(overallOvertimeLabelValue, overallOvertime, upperOvertimeThresholdAsLong, lowerOvertimeThresholdAsLong);
             if(overallOvertime < lowerOvertimeThresholdAsLong) {
                 String formattedLowerOvertimeThreshold = DurationConverter.convertDurationStringToSignedStringOfHoursAndMinutes(lowerOvertimeThreshold);
