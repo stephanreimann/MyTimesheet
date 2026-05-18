@@ -18,7 +18,6 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import model.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import service.*;
@@ -566,14 +565,11 @@ public class Main extends Application {
     }
     
     private void createWorkrecordAutomaticallyIfNotExist() throws SQLException {
-        User selectedUser = workRecordViewController.getSelectedUser();
-        if(selectedUser != null) {
-            WorkrecordDAO workrecordDao = new WorkrecordDAO(connection);
-            boolean workrecordsDoNotExist = workrecordDao.selectAll(selectedUser, LocalDate.now()).isEmpty();
-            boolean workrecordAutomaticCreation = Boolean.parseBoolean(propertiesService.getProperty(workrecordAutomaticCreationKey, falseKey));
-            if(workrecordsDoNotExist && workrecordAutomaticCreation) {
-                workRecordDetailsViewController.createWorkrecordAutomatically();            
-            }
+        WorkrecordDAO workrecordDao = new WorkrecordDAO(connection);
+        boolean workrecordsDoNotExist = workrecordDao.selectAll(workRecordViewController.getSelectedUser(), LocalDate.now()).isEmpty();
+        boolean workrecordAutomaticCreation = Boolean.parseBoolean(propertiesService.getProperty(workrecordAutomaticCreationKey, falseKey));
+        if(workrecordsDoNotExist && workrecordAutomaticCreation) {
+            workRecordDetailsViewController.createWorkrecordAutomatically();            
         }
     }
 

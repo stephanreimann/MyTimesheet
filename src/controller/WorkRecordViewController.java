@@ -160,11 +160,11 @@ public class WorkRecordViewController implements Initializable, IViewController,
     public void initialize(URL location, ResourceBundle rb) {
         this.rb = rb;
         
+        workrecordTableView.setItems(workrecordData);
+        
         refreshSelectedUserComboBox(userData);        
         setLastActiveUser(selectedUserComboBox);
         
-        workrecordTableView.setItems(workrecordData);
-                
         setStartDateToFirstDayOfActualMonth();
         initStartDateCellFactory();
         setEndDateToLastDayOfActualMonth();
@@ -532,16 +532,12 @@ public class WorkRecordViewController implements Initializable, IViewController,
 
     private void setLastActiveUser(ComboBox<User> selectedUserComboBox) {
         String lastNameOfActiveUser = propertiesService.getProperty(selectedUserResourceKey);
-        if(lastNameOfActiveUser != null) {
-            ObservableList<User> userList = selectedUserComboBox.getItems();
-            for(User user : userList) {
-                if(user.getLastname().equals(lastNameOfActiveUser)) {
-                    selectedUserComboBox.getSelectionModel().select(user);
-                }
-            }        
-        } else {
-            
-        }
+        ObservableList<User> userList = selectedUserComboBox.getItems();
+        for(User user : userList) {
+            if(user.getLastname().equals(lastNameOfActiveUser)) {
+                selectedUserComboBox.getSelectionModel().select(user);
+            }
+        }        
     }
     
     private void setStartDateToFirstDayOfActualMonth() {

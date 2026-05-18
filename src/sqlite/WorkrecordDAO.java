@@ -124,10 +124,6 @@ public class WorkrecordDAO {
   
     public List<Workrecord> selectAll(User user, LocalDate date) throws SQLException {
         List<Workrecord> resultList = new ArrayList<>();
-
-        if(user == null) {
-            return resultList;
-        }
         
         StringBuilder statement = getBaseSelectStatement();
         statement.append("WHERE wr.userid = ? ");
