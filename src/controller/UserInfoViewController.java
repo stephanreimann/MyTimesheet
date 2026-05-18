@@ -432,19 +432,9 @@ public class UserInfoViewController implements Initializable, IViewController, I
             Long overallOvertime = calculateOverallOvertime(user);
             overallOvertimeLabelValue.setText(TimeConverter.hoursAndMinutesToString(overallOvertime));
             String upperOvertimeThreshold = propertiesService.getProperty("UpperOvertimeThreshold", defaultOvertimeThreshold);
-            Long upperOvertimeThresholdAsLong;
-            try {
-                upperOvertimeThresholdAsLong = Duration.parse(upperOvertimeThreshold).toMinutes();
-            } catch (DateTimeParseException ex) {
-                upperOvertimeThresholdAsLong = 0L;
-            }
+            Long upperOvertimeThresholdAsLong = Duration.parse(upperOvertimeThreshold).toMinutes();
             String lowerOvertimeThreshold = propertiesService.getProperty("LowerOvertimeThreshold", defaultOvertimeThreshold);
-            Long lowerOvertimeThresholdAsLong;
-            try {
-                lowerOvertimeThresholdAsLong = Duration.parse(lowerOvertimeThreshold).toMinutes();
-            } catch (DateTimeParseException ex) {
-                lowerOvertimeThresholdAsLong = 0L;
-            }
+            Long lowerOvertimeThresholdAsLong = Duration.parse(lowerOvertimeThreshold).toMinutes();
             TimeStyler.styleTimeLabel(overallOvertimeLabelValue, overallOvertime, upperOvertimeThresholdAsLong, lowerOvertimeThresholdAsLong);
             if(overallOvertime < lowerOvertimeThresholdAsLong) {
                 String formattedLowerOvertimeThreshold = DurationConverter.convertDurationStringToSignedStringOfHoursAndMinutes(lowerOvertimeThreshold);
