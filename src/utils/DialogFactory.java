@@ -43,7 +43,8 @@ public class DialogFactory {
         stage.initStyle(StageStyle.UTILITY);
         stage.setTitle(this.rb.getString(dialogTitleResourceKey));
         stage.getIcons().add(new Image(dialogIconPath));
-        stage.setScene(new Scene((AnchorPane)ControllerUtilities.load(this.getClass(), dialogResource, rb, dialogController)));
+        AnchorPane anchorPane = (AnchorPane)ControllerUtilities.load(this.getClass(), dialogResource, rb, dialogController);
+        stage.setScene(new Scene(anchorPane));
         stage.setOnCloseRequest((request) -> {
             dialogController.preCloseAction();
             stage.close();

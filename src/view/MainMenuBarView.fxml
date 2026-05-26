@@ -71,6 +71,19 @@
                   <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                </accelerator>
             </MenuItem>
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem fx:id="openXmlEditorMenuItem" mnemonicParsing="false" onAction="#openXmlEditor" text="OpenXmlEditor">
+               <graphic>
+                  <ImageView fitHeight="15.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../icons/edit.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+               <accelerator>
+                  <KeyCodeCombination alt="UP" code="L" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+               </accelerator>
+            </MenuItem>
             </items>
         </Menu>
       <Menu fx:id="dataMenu" mnemonicParsing="false" text="%Referencedata">

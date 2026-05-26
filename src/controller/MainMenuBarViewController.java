@@ -40,6 +40,7 @@ public class MainMenuBarViewController implements Initializable, IViewController
     private final String undoResourceKey = "Undo";
     private final String redoResourceKey = "Redo";
     private final String settingsResourceKey = "Settings";
+    private final String openXmlEditorResourceKey = "OpenXmlEditor";
     private final String dataResourceKey = "Referencedata";
     private final String userDataResourceKey = "User";
     private final String roleDataResourceKey = "Role";
@@ -107,6 +108,9 @@ public class MainMenuBarViewController implements Initializable, IViewController
     private final String worklocationViewDialogTitleResourceKey = "WorklocationViewTitle";
     private final String worklocationViewResource = "/view/WorkLocationView.fxml";
 
+    private final String xmlEditorViewDialogTitleResourceKey = "XmlEditorViewTitle";
+    private final String xmlEditorViewResource = "/view/XmlEditorView.fxml";
+    
     private final ControllerRepository controllerRepository;
     
     private Stage settingsViewDialog;
@@ -117,6 +121,7 @@ public class MainMenuBarViewController implements Initializable, IViewController
     private Stage holydayViewDialog;
     private Stage projectViewDialog;
     private Stage worklocationViewDialog;
+    private Stage xmlEditorViewDialog;
     
     @FXML
     private Menu fileMenu;
@@ -145,6 +150,8 @@ public class MainMenuBarViewController implements Initializable, IViewController
     private MenuItem redoMenuItem;
     @FXML
     private MenuItem settingsMenuItem;
+    @FXML
+    private MenuItem openXmlEditorMenuItem;
     @FXML
     private MenuItem dataMenu;
     @FXML
@@ -254,6 +261,26 @@ public class MainMenuBarViewController implements Initializable, IViewController
         settingsViewDialog.showAndWait();
     }
 
+    @FXML
+    private void openXmlEditor(ActionEvent event) throws IOException {
+        XmlEditorViewController xmlEditorViewController = new XmlEditorViewController(languageService, undoService);
+
+        DialogFactory dialogFactory = new DialogFactory(
+            primaryStage, 
+            xmlEditorViewDialogTitleResourceKey, 
+            viewDialogIcon, 
+            xmlEditorViewResource, 
+            rb, 
+            xmlEditorViewController);
+        xmlEditorViewDialog = dialogFactory.create();
+        xmlEditorViewDialog.setWidth(650);
+        xmlEditorViewDialog.setHeight(450);
+                
+        ControllerUtilities.CenterOnDialog(primaryStage, xmlEditorViewDialog);
+        
+        xmlEditorViewDialog.showAndWait();            
+    }
+    
     @FXML
     private void openUserDialog(ActionEvent event) throws IOException, SQLException
     {
@@ -488,7 +515,7 @@ public class MainMenuBarViewController implements Initializable, IViewController
         undoMenuItem.setText(rb.getString(undoResourceKey));
         redoMenuItem.setText(rb.getString(redoResourceKey));
         settingsMenuItem.setText(rb.getString(settingsResourceKey));
-        toggleUndoRedoMenuItems();
+        openXmlEditorMenuItem.setText(rb.getString(openXmlEditorResourceKey));
         
         
         dataMenu.setText(rb.getString(dataResourceKey));
