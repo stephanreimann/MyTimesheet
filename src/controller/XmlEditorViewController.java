@@ -13,6 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -45,7 +46,7 @@ public class XmlEditorViewController implements Initializable, IViewController {
     private final String acceptResourceKey = "Accept";
     private final String cancelResourceKey = "Cancel";
     private final String pathToXmlFileResourceKey = "PathToXmlFile";
-    
+        
     private final Logger log = LogManager.getLogger(XmlEditorViewController.class.getName());
 
     @FXML
@@ -67,6 +68,7 @@ public class XmlEditorViewController implements Initializable, IViewController {
     private ResourceBundle rb;
     private ControllerRepository controllerRepository;
     private EventManager eventManager;
+    private String originalText;
     
     XmlEditorViewController(LanguageService languageService, UndoService undoService) {
         if(languageService == null) throw new NullPointerException("languageService");
@@ -108,6 +110,7 @@ public class XmlEditorViewController implements Initializable, IViewController {
     private void loadFromFile(String filePathAndName) throws IOException, ParserException {
         String content = Files.readString(Path.of(filePathAndName), StandardCharsets.UTF_8);
         xmlTextArea.setText(content);
+        originalText = content;
     }
      
     @FXML
@@ -167,7 +170,13 @@ public class XmlEditorViewController implements Initializable, IViewController {
     public void initialize(URL location, ResourceBundle rb) {
         this.rb = rb;
 
-        acceptButton.disableProperty().bind(xmlTextArea.textProperty().isEmpty());
+        xmlTextArea.textProperty().addListener((ObservableValue<? extends String> observable, String oldText, String newText) -> {
+            if(!oldText.isEmpty() && !newText.equals(originalText)) {
+                acceptButton.setDisable(false);
+            } else {
+                acceptButton.setDisable(true);
+            }
+        });          
         
         Platform.runLater(() -> selectButton.requestFocus());
         
