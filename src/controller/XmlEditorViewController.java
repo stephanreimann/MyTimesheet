@@ -133,7 +133,7 @@ public class XmlEditorViewController implements Initializable, IViewController {
         try {
             validateXml(content);
             Files.writeString(Path.of(filePath), content, StandardCharsets.UTF_8);
-            showAlert(AlertType.INFORMATION, "Success", "XML file saved successfully.");
+            showAlert(AlertType.INFORMATION, "Success", "XML file saved successfully.\nChanges become active after restart of appolication!");
             primaryStage.close();
         } catch (ParserConfigurationException | SAXException ex) {
             showAlert(AlertType.ERROR, "Invalid XML", "XML validation failed:\n" + ex.getMessage());
