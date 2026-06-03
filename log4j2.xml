@@ -18,8 +18,8 @@
     </RollingFile>  
   </Appenders>
   <Loggers>
-    <!-- ALL, TRACE, DEBUG, INFO, WARN, ERROR, FATAL, OFF -->  
-    <Root level="DEBUG">
+    <!-- ALL, TRACE, DEBUG, INFO, WARN, ERROR, FATAL, OFF -->
+    <Root level="ALL">
       <AppenderRef ref="InfoViewLogAppender" />
       <AppenderRef ref="Console"/>
       <AppenderRef ref="RollingFile"/>
