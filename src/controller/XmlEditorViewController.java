@@ -25,6 +25,7 @@ import javafx.stage.Stage;
 import javax.xml.parsers.*;
 import net.fortuna.ical4j.data.ParserException;
 import org.apache.logging.log4j.*;
+import org.fxmisc.flowless.VirtualizedScrollPane;
 import org.fxmisc.richtext.*;
 import org.fxmisc.richtext.model.*;
 import org.xml.sax.*;
@@ -71,9 +72,6 @@ public class XmlEditorViewController implements Initializable, IViewController {
     
     @FXML 
     Button selectButton;
-
-    @FXML
-    CodeArea codeArea;
     
     @FXML
     ToolBar toolBar;
@@ -91,6 +89,8 @@ public class XmlEditorViewController implements Initializable, IViewController {
     private ControllerRepository controllerRepository;
     private EventManager eventManager;
     private String originalText;
+    private CodeArea codeArea;
+    private VirtualizedScrollPane virtualizedScrollPane;
     
     XmlEditorViewController(LanguageService languageService, UndoService undoService) {
         if(languageService == null) throw new NullPointerException("languageService");
@@ -129,57 +129,81 @@ public class XmlEditorViewController implements Initializable, IViewController {
         return fileChooser.showOpenDialog(primaryStage);
     }
     
+    @SuppressWarnings("unchecked")
     private void loadFromFile(String filePathAndName) throws IOException, ParserException {
+        acceptButton.setDisable(true);
+
         codeArea.setParagraphGraphicFactory(LineNumberFactory.get(codeArea));
+
+        vBox.getChildren().remove(1);
+        vBox.getChildren().add(1, virtualizedScrollPane);
+        
+        codeArea.prefWidthProperty().bind(vBox.widthProperty());
+        codeArea.prefHeightProperty().bind(vBox.heightProperty());
         
         String content = Files.readString(Path.of(filePathAndName), StandardCharsets.UTF_8);
-        codeArea.replaceText(content);
+
+        StyleSpans<Collection<String>> xmlHighlighting = computeHighlighting(content);
+        codeArea.clear();
+        if(xmlHighlighting != null) {
+            codeArea.setStyleSpans(0, xmlHighlighting);
+            codeArea.replaceText(content);
+        } else {
+            codeArea.replaceText("Error loading the XML content!");
+        }
+
+        String style = XmlEditorViewController.class.getResource("/resources/xml-highlighting.css").toExternalForm();
+        codeArea.getStylesheets().add(style);
+        
         originalText = content;
-        codeArea.setStyleSpans(0, computeHighlighting(content));
     }
 
-    private static StyleSpans<Collection<String>> computeHighlighting(String text) {	
-        Matcher matcher = XML_TAG.matcher(text);
-        int lastKwEnd = 0;
-        StyleSpansBuilder<Collection<String>> spansBuilder = new StyleSpansBuilder<>();
-        while(matcher.find()) {
-        	
-        	spansBuilder.add(Collections.emptyList(), matcher.start() - lastKwEnd);
-        	if(matcher.group("COMMENT") != null) {
-        		spansBuilder.add(Collections.singleton("comment"), matcher.end() - matcher.start());
-        	}
-        	else {
-        		if(matcher.group("ELEMENT") != null) {
-        			String attributesText = matcher.group(GROUP_ATTRIBUTES_SECTION);
-        			
-        			spansBuilder.add(Collections.singleton("tagmark"), matcher.end(GROUP_OPEN_BRACKET) - matcher.start(GROUP_OPEN_BRACKET));
-        			spansBuilder.add(Collections.singleton("anytag"), matcher.end(GROUP_ELEMENT_NAME) - matcher.end(GROUP_OPEN_BRACKET));
+    private static StyleSpans<Collection<String>> computeHighlighting(String text) {
+        try {
+            Matcher matcher = XML_TAG.matcher(text);
+            int lastKwEnd = 0;
+            StyleSpansBuilder<Collection<String>> spansBuilder = new StyleSpansBuilder<>();
+            while(matcher.find()) {
 
-        			if(!attributesText.isEmpty()) {
-        				
-        				lastKwEnd = 0;
-        				
-        				Matcher amatcher = ATTRIBUTES.matcher(attributesText);
-        				while(amatcher.find()) {
-        					spansBuilder.add(Collections.emptyList(), amatcher.start() - lastKwEnd);
-        					spansBuilder.add(Collections.singleton("attribute"), amatcher.end(GROUP_ATTRIBUTE_NAME) - amatcher.start(GROUP_ATTRIBUTE_NAME));
-        					spansBuilder.add(Collections.singleton("tagmark"), amatcher.end(GROUP_EQUAL_SYMBOL) - amatcher.end(GROUP_ATTRIBUTE_NAME));
-        					spansBuilder.add(Collections.singleton("avalue"), amatcher.end(GROUP_ATTRIBUTE_VALUE) - amatcher.end(GROUP_EQUAL_SYMBOL));
-        					lastKwEnd = amatcher.end();
-        				}
-        				if(attributesText.length() > lastKwEnd)
-        					spansBuilder.add(Collections.emptyList(), attributesText.length() - lastKwEnd);
-        			}
+                    spansBuilder.add(Collections.emptyList(), matcher.start() - lastKwEnd);
+                    if(matcher.group("COMMENT") != null) {
+                            spansBuilder.add(Collections.singleton("comment"), matcher.end() - matcher.start());
+                    }
+                    else {
+                            if(matcher.group("ELEMENT") != null) {
+                                    String attributesText = matcher.group(GROUP_ATTRIBUTES_SECTION);
 
-        			lastKwEnd = matcher.end(GROUP_ATTRIBUTES_SECTION);
-        			
-        			spansBuilder.add(Collections.singleton("tagmark"), matcher.end(GROUP_CLOSE_BRACKET) - lastKwEnd);
-        		}
-        	}
-            lastKwEnd = matcher.end();
+                                    spansBuilder.add(Collections.singleton("tagmark"), matcher.end(GROUP_OPEN_BRACKET) - matcher.start(GROUP_OPEN_BRACKET));
+                                    spansBuilder.add(Collections.singleton("anytag"), matcher.end(GROUP_ELEMENT_NAME) - matcher.end(GROUP_OPEN_BRACKET));
+
+                                    if(!attributesText.isEmpty()) {
+
+                                            lastKwEnd = 0;
+
+                                            Matcher amatcher = ATTRIBUTES.matcher(attributesText);
+                                            while(amatcher.find()) {
+                                                    spansBuilder.add(Collections.emptyList(), amatcher.start() - lastKwEnd);
+                                                    spansBuilder.add(Collections.singleton("attribute"), amatcher.end(GROUP_ATTRIBUTE_NAME) - amatcher.start(GROUP_ATTRIBUTE_NAME));
+                                                    spansBuilder.add(Collections.singleton("tagmark"), amatcher.end(GROUP_EQUAL_SYMBOL) - amatcher.end(GROUP_ATTRIBUTE_NAME));
+                                                    spansBuilder.add(Collections.singleton("avalue"), amatcher.end(GROUP_ATTRIBUTE_VALUE) - amatcher.end(GROUP_EQUAL_SYMBOL));
+                                                    lastKwEnd = amatcher.end();
+                                            }
+                                            if(attributesText.length() > lastKwEnd)
+                                                    spansBuilder.add(Collections.emptyList(), attributesText.length() - lastKwEnd);
+                                    }
+
+                                    lastKwEnd = matcher.end(GROUP_ATTRIBUTES_SECTION);
+
+                                    spansBuilder.add(Collections.singleton("tagmark"), matcher.end(GROUP_CLOSE_BRACKET) - lastKwEnd);
+                            }
+                    }
+                lastKwEnd = matcher.end();
+            }
+            spansBuilder.add(Collections.emptyList(), text.length() - lastKwEnd);
+            return spansBuilder.create();
+        } catch(Exception | StackOverflowError ex) {
+            return null;
         }
-        spansBuilder.add(Collections.emptyList(), text.length() - lastKwEnd);
-        return spansBuilder.create();
     }
  
     @FXML
@@ -202,7 +226,7 @@ public class XmlEditorViewController implements Initializable, IViewController {
         try {
             validateXml(content);
             Files.writeString(Path.of(filePath), content, StandardCharsets.UTF_8);
-            showAlert(AlertType.INFORMATION, "Success", "XML file saved successfully.\nChanges become active after restart of appolication!");
+            showAlert(AlertType.INFORMATION, "Success", "XML file saved successfully.\nChanges become active after restart of application!");
             primaryStage.close();
         } catch (ParserConfigurationException | SAXException ex) {
             showAlert(AlertType.ERROR, "Invalid XML", "XML validation failed:\n" + ex.getMessage());
@@ -236,8 +260,12 @@ public class XmlEditorViewController implements Initializable, IViewController {
     }
     
     @Override
+    @SuppressWarnings("unchecked")
     public void initialize(URL location, ResourceBundle rb) {
         this.rb = rb;
+        codeArea = new CodeArea();
+        virtualizedScrollPane = new VirtualizedScrollPane(codeArea);
+        
         acceptButton.setDisable(true);
         
         codeArea.textProperty().addListener((ObservableValue<? extends String> observable, String oldText, String newText) -> {

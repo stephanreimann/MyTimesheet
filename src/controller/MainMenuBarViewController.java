@@ -275,6 +275,7 @@ public class MainMenuBarViewController implements Initializable, IViewController
         xmlEditorViewDialog = dialogFactory.create();
         xmlEditorViewDialog.setWidth(650);
         xmlEditorViewDialog.setHeight(450);
+        xmlEditorViewDialog.resizableProperty().setValue(Boolean.TRUE);
                 
         ControllerUtilities.CenterOnDialog(primaryStage, xmlEditorViewDialog);
         
