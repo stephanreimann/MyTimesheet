@@ -120,10 +120,10 @@ public class XmlEditorViewController implements Initializable, IViewController {
     }
 
     private File initializeFileChooserAndShowIt() throws IOException {
-        String holydaysDirectory = new File(".").getCanonicalPath();
+        String path = new File(".").getCanonicalPath();
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle(rb.getString("FileChooserTitle"));
-        fileChooser.setInitialDirectory(new File(holydaysDirectory));
+        fileChooser.setInitialDirectory(new File(path));
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("XML files (*.xml)", "*.xml");
         fileChooser.getExtensionFilters().add(extFilter);
         return fileChooser.showOpenDialog(primaryStage);
