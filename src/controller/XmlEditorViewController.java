@@ -55,7 +55,11 @@ public class XmlEditorViewController implements Initializable, IViewController {
     private final String acceptResourceKey = "Accept";
     private final String cancelResourceKey = "Cancel";
     private final String pathToXmlFileResourceKey = "PathToXmlFile";
-        
+    private final String errorLoadingXmlResourceKey = "ErrorLoadingXml";
+    private final String xmlHighlightingCss = "/resources/xml-highlighting.css";
+    private final String noXmlFileSelecetedResourceKey = "NoXmlFileSeleceted";
+    private final String noSelectionAlertTitleResourceKey = "NoSelectionAlertTitle";
+    
     private final Logger log = LogManager.getLogger(XmlEditorViewController.class.getName());
 
     @FXML
@@ -149,10 +153,10 @@ public class XmlEditorViewController implements Initializable, IViewController {
             codeArea.setStyleSpans(0, xmlHighlighting);
             codeArea.replaceText(content);
         } else {
-            codeArea.replaceText("Error loading the XML content!");
+            codeArea.replaceText(rb.getString(errorLoadingXmlResourceKey));
         }
 
-        String style = XmlEditorViewController.class.getResource("/resources/xml-highlighting.css").toExternalForm();
+        String style = XmlEditorViewController.class.getResource(xmlHighlightingCss).toExternalForm();
         codeArea.getStylesheets().add(style);
         
         originalText = content;
@@ -212,8 +216,8 @@ public class XmlEditorViewController implements Initializable, IViewController {
         String content = codeArea.getText();
 
         if (filePath == null || filePath.isBlank()) {
-            showAlert(AlertType.ERROR, "No file selected", "Please select an XML file first.");
-            log.error("No file path selected.");
+            showAlert(AlertType.ERROR, rb.getString(noSelectionAlertTitleResourceKey), rb.getString(noXmlFileSelecetedResourceKey));
+            log.error(rb.getString(noSelectionAlertTitleResourceKey), rb.getString(noXmlFileSelecetedResourceKey));
             return;
         }
 
