@@ -59,6 +59,8 @@ public class XmlEditorViewController implements Initializable, IViewController {
     private final String xmlHighlightingCss = "/resources/xml-highlighting.css";
     private final String noXmlFileSelecetedResourceKey = "NoXmlFileSeleceted";
     private final String noSelectionAlertTitleResourceKey = "NoSelectionAlertTitle";
+    private final String emptyXmlResourceKey = "EmptyXml";
+    private final String emptyXmlDetailsResourceKey = "EmptyXmlDetails";
     
     private final Logger log = LogManager.getLogger(XmlEditorViewController.class.getName());
 
@@ -222,8 +224,8 @@ public class XmlEditorViewController implements Initializable, IViewController {
         }
 
         if (content == null || content.isBlank()) {
-            showAlert(AlertType.ERROR, "Empty XML", "The XML content is empty.");
-            log.error("XML content is empty.");
+            showAlert(AlertType.ERROR, rb.getString(emptyXmlResourceKey), rb.getString(emptyXmlDetailsResourceKey));
+            log.error(rb.getString(emptyXmlDetailsResourceKey));
             return;
         }
 
