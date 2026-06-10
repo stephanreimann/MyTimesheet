@@ -132,9 +132,9 @@ public class MainToolBarViewController implements Initializable, IViewController
     private void workItemTrackingToolAction(ActionEvent event) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.initOwner(primaryStage);
-        alert.setTitle("Under construction");
+        alert.setTitle(rb.getString("UnderConstructionTitle"));
         alert.setHeaderText("");
-        alert.setContentText("This Tool is currently under construction and will be available soon.");
+        alert.setContentText(rb.getString("UnderConstructionDetails"));
         alert.showAndWait();        
     }
 
