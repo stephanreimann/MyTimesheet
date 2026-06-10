@@ -30,6 +30,7 @@ public class MainToolBarViewController implements Initializable, IViewController
     private final String languageItResourceKey = "LanguageIT";
     private final String undoResourceKey = "Undo";
     private final String redoResourceKey = "Redo";
+    private final String workTrackingToolResourceKey = "WorkTrackingTool";
     
     private Stage primaryStage;
     private final LanguageService languageService;
@@ -59,6 +60,10 @@ public class MainToolBarViewController implements Initializable, IViewController
     private MenuItem languageFR;
     @FXML
     private MenuItem languageIT;
+    @FXML
+    private Button workTrackingToolButton;
+    @FXML
+    private Tooltip workTrackingToolTooltip;
     
     public TranslationStringProperty undoButtonText;
 
@@ -93,6 +98,7 @@ public class MainToolBarViewController implements Initializable, IViewController
         undoTooltip.setText(rb.getString(undoResourceKey));
         redoButton.setText(rb.getString(redoResourceKey));
         redoTooltip.setText(rb.getString(redoResourceKey));
+        workTrackingToolTooltip.setText(rb.getString(workTrackingToolResourceKey));
     }
 
     public MenuItem GetActiveMenuItem() {
@@ -120,6 +126,11 @@ public class MainToolBarViewController implements Initializable, IViewController
         Locale oldLocale = getLocale(activeMenuItem);
         ChangeLanguageCommand cmd = new ChangeLanguageCommand(oldLocale, newLocale, languageService, controllerRepository);
         undoService.execute(cmd);
+    }
+
+    @FXML
+    private void workTrackingToolAction(ActionEvent event) {
+        
     }
 
     private Locale getLocale(ActionEvent event) {

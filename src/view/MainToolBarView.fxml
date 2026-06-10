@@ -36,7 +36,7 @@
                 <Tooltip fx:id="redoTooltip" text="Redo (Ctrl + Y)" />
             </tooltip>
         </Button>
-        <Separator orientation="VERTICAL" />
+        <Separator />
         <SplitMenuButton fx:id="languageSelectorButton" mnemonicParsing="false" prefHeight="44.0" text="%languageSelectorButton" GridPane.columnIndex="3">
             <items>
                 <MenuItem id="changeToGerman" fx:id="languageDE" mnemonicParsing="false" onAction="#changeLanguageAction" text="Undef">
@@ -93,5 +93,18 @@
                 </ImageView>
             </graphic>
         </SplitMenuButton>
+      <Separator />
+      <Button fx:id="workTrackingToolButton" mnemonicParsing="false" onAction="#workTrackingToolAction">
+         <graphic>
+            <ImageView fitHeight="35.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../icons/edit.png" />
+               </image>
+            </ImageView>
+         </graphic>
+         <tooltip>
+            <Tooltip fx:id="workTrackingToolTooltip" />
+         </tooltip>
+      </Button>
     </items>
 </ToolBar>
