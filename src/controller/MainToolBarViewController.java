@@ -130,7 +130,12 @@ public class MainToolBarViewController implements Initializable, IViewController
 
     @FXML
     private void workTrackingToolAction(ActionEvent event) {
-        
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.initOwner(primaryStage);
+        alert.setTitle("Under construction");
+        alert.setHeaderText("");
+        alert.setContentText("This Tool is currently under construction and will be available soon.");
+        alert.showAndWait();        
     }
 
     private Locale getLocale(ActionEvent event) {
