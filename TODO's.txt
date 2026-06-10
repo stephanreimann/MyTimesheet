@@ -12,6 +12,7 @@ To Run set VM options:
     - May some tool tips for input controls where valid input is not obvious.
     - Add input validation for other input text fields.
 
+
 3. Implementation ideas:
     - Functionality that creates a new Db for a new year (deleted work records, but keep overall overtime).
     - Improve command texts for undo/redo
@@ -19,3 +20,54 @@ To Run set VM options:
     - Create data export and import functionality 
     - Create a Setup with all dependencies
         https://github.com/edvin/fxlauncher
+
+
+4. Design WorkItemTracking
+    Table: Workitem
+    Id  UserId  WorkrecordId    SprintId    TrackingItemId Starttime (HH:MM) 	Endtime (HH:MM)     Description
+    ======================================================================================================================================================================================================================================================
+    1   1       1               138         1              00,00		00,00               Sprint Planing
+    1   1       1               138         2              00,00		00,00               Product Backlog Item 5797411: Support multiple AND‑combined conditions in trigger expressions
+    1   1       1               138         3              00,00		00,00               Bug 6118935: Error in Step7 Smoke Test: Exception in PLCSimAdvancedBug 6118935: Error in Step7 Smoke Test: Exception in PLCSimAdvanced
+    1   1       1               138         4              00,00		00,00               ⬇️ Merge Relevant for SPL_03_W ⬇️ ⏳/⚠️-✅-❌
+                                                                                                    RGT on jupiter:         [✅]
+                                                                                                    ✅	5793_21.01.00.00_01.37.0015 TPE.Step7_SPL_03_W.rgt.ERL
+                                                                                                    ✅	5762_21.01.00.00_01.37.0008 TPE.Step7_SPL_T.rgt.ERL <= For duplicate check!
+                                                                                                    QG2:                    [✅] 
+                                                                                                    5803_21.01.00.00_01.37.0008	TPE.Step7_SPL_03_W.rgs.ERL
+                                                                                                    ⬆️ Merge Relevant for SPL_03_W ⬆️
+                                                                                                    QG3:                    [⏳]
+                                                                                                    8696_21.01.00.00_01.37.0009	TPE.Step7_SPL_T.rgl.ERL
+    1   1       1               138         5              00,00		00,00               Product Backlog Item 5797415: Redesing of xxxx
+    1   1       1               138         6              00,00		00,00               This and That
+
+    Table: Sprint
+    Id  	StartDate	EndDate		Length (Working Days)
+    ======================================================================================================================================================================================================================================================
+    138		10.06.2026	23.06.2026	10
+    139		24.06.2026	07.07.2026	10
+    140		08.07.2026	21.07.2026	10
+    141		22.07.2026	04.08.2026	10
+
+    Table: TrackingItem
+    ======================================================================================================================================================================================================================================================
+    Id      Name                                Shortcut
+    1       Scrum                               S
+    2       Feature Development                 FD
+    3       Bug Fixing                          BF
+    4       Test Evaluation and Maintenance     TE
+    5       Technical Debts                     TD
+    6       Misc                                M
+
+    Calculations:
+    Total for a Sprint    	137 (Number of Sprint)
+    Total for a TimeSpan 	from 11.06.2026 to 25.06.2026  that is (Sprint 137)
+    Expected Total as of workday
+    Expected total as of TimeSpan
+    Expected total as of Sprint
+
+    Validations:
+    1. First TrackingItem starts at WorkRecord StartTime
+    2. Last TrackingItem ends at WorkRecord EndTime
+    2. TrackingItem_X_EndDate < TrackingItem_X+1_StartDate
+    

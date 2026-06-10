@@ -30,7 +30,7 @@ public class MainToolBarViewController implements Initializable, IViewController
     private final String languageItResourceKey = "LanguageIT";
     private final String undoResourceKey = "Undo";
     private final String redoResourceKey = "Redo";
-    private final String workTrackingToolResourceKey = "WorkTrackingTool";
+    private final String workItemTrackingToolResourceKey = "WorkItemTrackingTool";
     
     private Stage primaryStage;
     private final LanguageService languageService;
@@ -61,9 +61,9 @@ public class MainToolBarViewController implements Initializable, IViewController
     @FXML
     private MenuItem languageIT;
     @FXML
-    private Button workTrackingToolButton;
+    private Button workItemTrackingToolButton;
     @FXML
-    private Tooltip workTrackingToolTooltip;
+    private Tooltip workItemTrackingToolTooltip;
     
     public TranslationStringProperty undoButtonText;
 
@@ -98,7 +98,7 @@ public class MainToolBarViewController implements Initializable, IViewController
         undoTooltip.setText(rb.getString(undoResourceKey));
         redoButton.setText(rb.getString(redoResourceKey));
         redoTooltip.setText(rb.getString(redoResourceKey));
-        workTrackingToolTooltip.setText(rb.getString(workTrackingToolResourceKey));
+        workItemTrackingToolTooltip.setText(rb.getString(workItemTrackingToolResourceKey));
     }
 
     public MenuItem GetActiveMenuItem() {
@@ -129,7 +129,7 @@ public class MainToolBarViewController implements Initializable, IViewController
     }
 
     @FXML
-    private void workTrackingToolAction(ActionEvent event) {
+    private void workItemTrackingToolAction(ActionEvent event) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.initOwner(primaryStage);
         alert.setTitle("Under construction");

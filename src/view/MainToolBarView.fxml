@@ -94,7 +94,7 @@
             </graphic>
         </SplitMenuButton>
       <Separator />
-      <Button fx:id="workTrackingToolButton" mnemonicParsing="false" onAction="#workTrackingToolAction">
+      <Button fx:id="workItemTrackingToolButton" mnemonicParsing="false" onAction="#workItemTrackingToolAction">
          <graphic>
             <ImageView fitHeight="35.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
                <image>
@@ -103,7 +103,7 @@
             </ImageView>
          </graphic>
          <tooltip>
-            <Tooltip fx:id="workTrackingToolTooltip" />
+            <Tooltip fx:id="workItemTrackingToolTooltip" />
          </tooltip>
       </Button>
     </items>
