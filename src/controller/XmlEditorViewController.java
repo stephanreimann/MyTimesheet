@@ -61,6 +61,12 @@ public class XmlEditorViewController implements Initializable, IViewController {
     private final String noSelectionAlertTitleResourceKey = "NoSelectionAlertTitle";
     private final String emptyXmlResourceKey = "EmptyXml";
     private final String emptyXmlDetailsResourceKey = "EmptyXmlDetails";
+    private final String successDialogHeaderResourceKey = "SuccessDialogHeader";
+    private final String successDialogDetailsResourceKey = "SuccessDialogDetails";
+    private final String invalidXmlDialogHeaderResourceKey = "InvalidXmlDialogHeader";
+    private final String invalidXmlDialogDetailsResourceKey = "InvalidXmlDialogDetails";
+    private final String errorSavingXmlDialogHeaderResourceKey = "ErrorSavingXmlDialogHeader";
+    private final String errorSavingXmlDialogDetailsResourceKey = "ErrorSavingXmlDialogDetails";
     
     private final Logger log = LogManager.getLogger(XmlEditorViewController.class.getName());
 
@@ -218,13 +224,13 @@ public class XmlEditorViewController implements Initializable, IViewController {
         String content = codeArea.getText();
 
         if (filePath == null || filePath.isBlank()) {
-            showAlert(AlertType.ERROR, rb.getString(noSelectionAlertTitleResourceKey), rb.getString(noXmlFileSelecetedResourceKey));
+            showAlert(AlertType.ERROR, rb.getString(noSelectionAlertTitleResourceKey), "", rb.getString(noXmlFileSelecetedResourceKey));
             log.error(rb.getString(noSelectionAlertTitleResourceKey), rb.getString(noXmlFileSelecetedResourceKey));
             return;
         }
 
         if (content == null || content.isBlank()) {
-            showAlert(AlertType.ERROR, rb.getString(emptyXmlResourceKey), rb.getString(emptyXmlDetailsResourceKey));
+            showAlert(AlertType.ERROR, rb.getString(emptyXmlResourceKey), "", rb.getString(emptyXmlDetailsResourceKey));
             log.error(rb.getString(emptyXmlDetailsResourceKey));
             return;
         }
@@ -232,14 +238,14 @@ public class XmlEditorViewController implements Initializable, IViewController {
         try {
             validateXml(content);
             Files.writeString(Path.of(filePath), content, StandardCharsets.UTF_8);
-            showAlert(AlertType.INFORMATION, "Success", "XML file saved successfully.\nChanges become active after restart of application!");
+            showAlert(AlertType.INFORMATION, rb.getString(successDialogHeaderResourceKey), "",  rb.getString(successDialogDetailsResourceKey));
             primaryStage.close();
         } catch (ParserConfigurationException | SAXException ex) {
-            showAlert(AlertType.ERROR, "Invalid XML", "XML validation failed:\n" + ex.getMessage());
-            log.error("XML validation failed: " + ex.getMessage(), ex);
+            showAlert(AlertType.ERROR, rb.getString(invalidXmlDialogHeaderResourceKey), rb.getString(invalidXmlDialogDetailsResourceKey), ex.getMessage());
+            log.error(rb.getString(invalidXmlDialogDetailsResourceKey) + " " + ex.getMessage());
         } catch (IOException ex) {
-            showAlert(AlertType.ERROR, "Save Error", "The XML file could not be saved:\n" + ex.getMessage());
-            log.fatal("Error saving XML file: " + ex.getMessage(), ex);
+            showAlert(AlertType.ERROR, rb.getString(errorSavingXmlDialogHeaderResourceKey), rb.getString(errorSavingXmlDialogDetailsResourceKey), ex.getMessage());
+            log.fatal(rb.getString(errorSavingXmlDialogDetailsResourceKey) + " " + ex.getMessage());
         }
     }
 
@@ -251,11 +257,11 @@ public class XmlEditorViewController implements Initializable, IViewController {
         builder.parse(new InputSource(new StringReader(xmlContent)));
     }    
 
-    private void showAlert(AlertType alertType, String title, String content) {
+    private void showAlert(AlertType alertType, String title, String header, String content) {
         Alert alert = new Alert(alertType);
         alert.initOwner(primaryStage);
         alert.setTitle(title);
-        alert.setHeaderText(null);
+        alert.setHeaderText(header);
         alert.setContentText(content);
         alert.showAndWait();
     }

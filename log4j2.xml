@@ -15,7 +15,7 @@
         <TimeBasedTriggeringPolicy />
         <SizeBasedTriggeringPolicy size="250 MB"/>
       </Policies>
-    </RollingFile>  
+    </RollingFile>
   </Appenders>
   <Loggers>
     <!-- ALL, TRACE, DEBUG, INFO, WARN, ERROR, FATAL, OFF -->
