@@ -227,6 +227,20 @@ public class Database {
         return createTable(fileName, userTableSchema);
     }
      
+    public boolean createTrackingItemTableIfNotExists(String fileName) {
+        String trackingItemTableSchema = new StringBuilder()
+            .append("CREATE TABLE TrackingItem (")
+            .append("Id             INTEGER NOT NULL,")
+	    .append("Name           TEXT NOT NULL,")
+	    .append("Shortcut       TEXT NOT NULL,")
+	    .append("Description    TEXT,")
+	    .append("PRIMARY KEY(Id AUTOINCREMENT)")
+            .append(");")        
+            .toString();
+            
+        return createTable(fileName, trackingItemTableSchema);
+    }
+    
     public boolean createSqliteSequenceTableIfNotExists(String fileName) {
         String userTableSchema = new StringBuilder()
             .append("CREATE TABLE sqlite_sequence(name,seq);")
