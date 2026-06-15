@@ -6,8 +6,7 @@ package sqlite;
 
 import model.Role;
 import java.sql.*;
-import java.time.Duration;
-import java.time.Instant;
+import java.time.*;
 import java.util.*;
 import org.apache.logging.log4j.*;
 
@@ -60,7 +59,7 @@ public class RoleDAO {
             Role role = createRoleFromResultSetEntry(resultSet);
             return role;
         }
-        log.warn("Select: Address with Id " + id + " not found");
+        log.warn("Select: Role with Id " + id + " not found");
         return null;
     }
     

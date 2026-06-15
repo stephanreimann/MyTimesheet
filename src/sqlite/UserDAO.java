@@ -63,7 +63,7 @@ public class UserDAO {
 
     public User selectUserFromId(long id) throws SQLException {
         StringBuilder statement = getBaseSelectStatement();
-        statement.append("WHERE id = ?;");
+        statement.append("WHERE u.id = ?;");
         
         PreparedStatement dbStatement = connection.prepareStatement(statement.toString());
         dbStatement.setString(1, Long.toString(id));

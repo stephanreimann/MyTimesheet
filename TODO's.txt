@@ -52,13 +52,13 @@ To Run set VM options:
 
     Table: TrackingItem
     ======================================================================================================================================================================================================================================================
-    Id      Name                                Shortcut
-    1       Scrum                               S
-    2       Feature Development                 FD
-    3       Bug Fixing                          BF
-    4       Test Evaluation and Maintenance     TE
-    5       Technical Debts                     TD
-    6       Misc                                M
+    Id      Name                                Shortcut    Description
+    1       Scrum                               S           All task related to SCRUM activities
+    2       Feature Development                 FD          Feature Development, provide a Product Backlog Item
+    3       Bug Fixing                          BF          Bug Fixing, provide a Bug ID
+    4       Test Evaluation and Maintenance     TE          All task related to Test evaluation and/or Test maintenance activities
+    5       Technical Debts                     TD          Working on Technical Debts, provide ID
+    6       Misc                                M           Misc Task, like learning sessions, global Meetings, etc.
 
     Calculations:
     Total for a Sprint    	137 (Number of Sprint)
