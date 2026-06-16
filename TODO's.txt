@@ -28,7 +28,7 @@ To Run set VM options:
     Table: Workitem
     Id  UserId  WorkrecordId    SprintId    TrackingItemId Starttime (HH:MM) 	Endtime (HH:MM)     Description
     ======================================================================================================================================================================================================================================================
-    1   1       1               138         1              00,00		00,00               Sprint Planing
+    1   1       1               138         1              00,00		00,00               Sprint Planning
     2   1       1               138         2              00,00		00,00               Product Backlog Item 5797411: Support multiple AND‑combined conditions in trigger expressions
     3   1       1               138         3              00,00		00,00               Bug 6118935: Error in Step7 Smoke Test: Exception in PLCSimAdvancedBug 6118935: Error in Step7 Smoke Test: Exception in PLCSimAdvanced
     4   1       1               138         4              00,00		00,00               ⬇️ Merge Relevant for SPL_03_W ⬇️ ⏳/⚠️-✅-❌
