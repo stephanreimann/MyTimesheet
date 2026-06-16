@@ -241,6 +241,20 @@ public class Database {
         return createTable(fileName, trackingItemTableSchema);
     }
     
+    public boolean createSprintTableIfNotExists(String fileName) {
+        String sprintTableSchema = new StringBuilder()
+            .append("CREATE TABLE Sprint (")
+            .append("Id                 INTEGER NOT NULL,")
+            .append("StartDate          TEXT NOT NULL,")
+            .append("EndDate            TEXT NOT NULL,")
+            .append("NumberOfSprintDays INTEGER NOT NULL,")
+            .append("PRIMARY KEY(Id AUTOINCREMENT)")
+            .append(");")        
+            .toString();
+            
+        return createTable(fileName, sprintTableSchema);
+    }
+
     public boolean createSqliteSequenceTableIfNotExists(String fileName) {
         String userTableSchema = new StringBuilder()
             .append("CREATE TABLE sqlite_sequence(name,seq);")

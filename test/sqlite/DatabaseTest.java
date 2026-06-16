@@ -651,4 +651,45 @@ public class DatabaseTest {
         Assert.assertEquals("NO", tableInfo.columnInfos.get(3).getAutoIncrement());
     }
 
+    @Test
+    public void T39_CreateSprintTable_Creates_TrackingItemTable() throws SQLException, IOException {
+        //Arrange
+        String userDir = "user.dir";
+        String sqLiteDir = "/sqlite/"; 
+        String fileName = "TestFile.sqlite";
+        String pathToSqLiteDatabase = System.getProperty(userDir).concat(sqLiteDir).concat(fileName);
+
+        ResourceBundle resourceBundleMock = Mockito.mock(ResourceBundle.class);
+        Log4jAdapter log4jAdapterMock = Mockito.mock(Log4jAdapter.class);
+        
+        Database database = new Database(resourceBundleMock, log4jAdapterMock);
+        database.deleteDatabaseFile(fileName);
+        database.createDatabase(fileName);
+
+        //Act
+        boolean result = database.createSprintTableIfNotExists(fileName);
+        
+        TableInfo tableInfo = database.getTableInfo(fileName, "Sprint");
+        
+        //Assert
+        Assert.assertTrue(result);
+        Assert.assertEquals("Sprint", tableInfo.getName());
+        
+        Assert.assertEquals("Id", tableInfo.columnInfos.get(0).getColName());
+        Assert.assertEquals("INTEGER", tableInfo.columnInfos.get(0).getTypeName());
+        Assert.assertEquals("YES", tableInfo.columnInfos.get(0).getAutoIncrement());
+        
+        Assert.assertEquals("StartDate", tableInfo.columnInfos.get(1).getColName());
+        Assert.assertEquals("TEXT", tableInfo.columnInfos.get(1).getTypeName());
+        Assert.assertEquals("NO", tableInfo.columnInfos.get(1).getAutoIncrement());
+
+        Assert.assertEquals("EndDate", tableInfo.columnInfos.get(2).getColName());
+        Assert.assertEquals("TEXT", tableInfo.columnInfos.get(2).getTypeName());
+        Assert.assertEquals("NO", tableInfo.columnInfos.get(2).getAutoIncrement());
+        
+        Assert.assertEquals("NumberOfSprintDays", tableInfo.columnInfos.get(3).getColName());
+        Assert.assertEquals("INTEGER", tableInfo.columnInfos.get(3).getTypeName());        
+        Assert.assertEquals("NO", tableInfo.columnInfos.get(3).getAutoIncrement());
+    }
+
 }
