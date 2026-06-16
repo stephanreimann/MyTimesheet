@@ -21,8 +21,6 @@ To Run set VM options:
     - Replace Text Input Fields for Durations by Duration Time Spinner
     - Create data export and import functionality 
     - Create a Setup with all dependencies
-        https://github.com/edvin/fxlauncher
-
 
 4. Design WorkItemTracking
     Table: Workitem
