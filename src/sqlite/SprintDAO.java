@@ -46,9 +46,9 @@ public class SprintDAO {
         return resultList;
     }
 
-    public Sprint selectRoleFromId(long id) throws SQLException {
+    public Sprint selectSprintFromId(long id) throws SQLException {
         StringBuilder statement = new StringBuilder();
-        statement.append("SELECT id, startdate. enddate, numberofsprintdays ");
+        statement.append("SELECT id, startdate, enddate, numberofsprintdays ");
         statement.append("FROM sprint ");
         statement.append("WHERE id = ?;");
         
