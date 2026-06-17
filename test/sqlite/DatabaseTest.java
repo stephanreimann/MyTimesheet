@@ -652,7 +652,7 @@ public class DatabaseTest {
     }
 
     @Test
-    public void T39_CreateSprintTable_Creates_TrackingItemTable() throws SQLException, IOException {
+    public void T39_CreateSprintTable_Creates_SprintTable() throws SQLException, IOException {
         //Arrange
         String userDir = "user.dir";
         String sqLiteDir = "/sqlite/"; 
@@ -690,6 +690,63 @@ public class DatabaseTest {
         Assert.assertEquals("NumberOfSprintDays", tableInfo.columnInfos.get(3).getColName());
         Assert.assertEquals("INTEGER", tableInfo.columnInfos.get(3).getTypeName());        
         Assert.assertEquals("NO", tableInfo.columnInfos.get(3).getAutoIncrement());
+    }
+
+    @Test
+    public void T40_CreateWorkItemTable_Creates_WorkItemTable() throws SQLException, IOException {
+        //Arrange
+        String userDir = "user.dir";
+        String sqLiteDir = "/sqlite/"; 
+        String fileName = "TestFile.sqlite";
+        String pathToSqLiteDatabase = System.getProperty(userDir).concat(sqLiteDir).concat(fileName);
+
+        ResourceBundle resourceBundleMock = Mockito.mock(ResourceBundle.class);
+        Log4jAdapter log4jAdapterMock = Mockito.mock(Log4jAdapter.class);
+        
+        Database database = new Database(resourceBundleMock, log4jAdapterMock);
+        database.deleteDatabaseFile(fileName);
+        database.createDatabase(fileName);
+
+        //Act
+        boolean result = database.createWorkItemTableIfNotExists(fileName);
+        
+        TableInfo tableInfo = database.getTableInfo(fileName, "WorkItem");
+        
+        //Assert
+        Assert.assertTrue(result);
+        Assert.assertEquals("WorkItem", tableInfo.getName());
+        
+        Assert.assertEquals("Id", tableInfo.columnInfos.get(0).getColName());
+        Assert.assertEquals("INTEGER", tableInfo.columnInfos.get(0).getTypeName());
+        Assert.assertEquals("YES", tableInfo.columnInfos.get(0).getAutoIncrement());
+        
+        Assert.assertEquals("UserId", tableInfo.columnInfos.get(1).getColName());
+        Assert.assertEquals("INTEGER", tableInfo.columnInfos.get(1).getTypeName());
+        Assert.assertEquals("NO", tableInfo.columnInfos.get(1).getAutoIncrement());
+
+        Assert.assertEquals("WorkrecordId", tableInfo.columnInfos.get(2).getColName());
+        Assert.assertEquals("INTEGER", tableInfo.columnInfos.get(2).getTypeName());
+        Assert.assertEquals("NO", tableInfo.columnInfos.get(2).getAutoIncrement());
+
+        Assert.assertEquals("SprintId", tableInfo.columnInfos.get(3).getColName());
+        Assert.assertEquals("INTEGER", tableInfo.columnInfos.get(3).getTypeName());
+        Assert.assertEquals("NO", tableInfo.columnInfos.get(3).getAutoIncrement());
+
+        Assert.assertEquals("TrackingItemId", tableInfo.columnInfos.get(4).getColName());
+        Assert.assertEquals("INTEGER", tableInfo.columnInfos.get(4).getTypeName());
+        Assert.assertEquals("NO", tableInfo.columnInfos.get(4).getAutoIncrement());
+
+        Assert.assertEquals("Starttime", tableInfo.columnInfos.get(5).getColName());
+        Assert.assertEquals("TEXT", tableInfo.columnInfos.get(5).getTypeName());
+        Assert.assertEquals("NO", tableInfo.columnInfos.get(5).getAutoIncrement());
+
+        Assert.assertEquals("Endtime", tableInfo.columnInfos.get(6).getColName());
+        Assert.assertEquals("TEXT", tableInfo.columnInfos.get(6).getTypeName());
+        Assert.assertEquals("NO", tableInfo.columnInfos.get(6).getAutoIncrement());
+        
+        Assert.assertEquals("Description", tableInfo.columnInfos.get(7).getColName());
+        Assert.assertEquals("TEXT", tableInfo.columnInfos.get(7).getTypeName());
+        Assert.assertEquals("NO", tableInfo.columnInfos.get(7).getAutoIncrement());
     }
 
 }

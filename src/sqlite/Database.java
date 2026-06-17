@@ -255,6 +255,24 @@ public class Database {
         return createTable(fileName, sprintTableSchema);
     }
 
+    public boolean createWorkItemTableIfNotExists(String fileName) {
+        String sprintTableSchema = new StringBuilder()  
+        .append("CREATE TABLE WorkItem (")
+	.append("Id                 INTEGER NOT NULL,")
+	.append("UserId             INTEGER NOT NULL,")
+	.append("WorkrecordId       INTEGER NOT NULL,")
+	.append("SprintId           INTEGER NOT NULL,")
+	.append("TrackingItemId     INTEGER NOT NULL,")
+	.append("Starttime          TEXT NOT NULL,")
+        .append("Endtime            TEXT NOT NULL,")
+	.append("Description        TEXT,")
+	.append("PRIMARY KEY(Id AUTOINCREMENT)")
+        .append(");")        
+        .toString();
+
+        return createTable(fileName, sprintTableSchema);
+    }
+    
     public boolean createSqliteSequenceTableIfNotExists(String fileName) {
         String userTableSchema = new StringBuilder()
             .append("CREATE TABLE sqlite_sequence(name,seq);")
