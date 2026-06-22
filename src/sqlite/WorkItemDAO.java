@@ -45,7 +45,7 @@ public class WorkItemDAO {
         statement.append("c.id AS c_id, c.name AS c_name, c.workhours AS c_workhours, c.maxworkhours AS c_maxworkhours, c.vacationdays AS c_vacationdays, c.vacationreconciliationdate AS c_vacationreconciliationdate, c.breakfastofftimeend AS c_breakfastofftimeend, c.breakfastofftimestart AS c_breakfastofftimestart, c.lunchofftimeend AS c_lunchofftimeend, c.lunchofftimestart AS c_lunchofftimestart, c.earliestworktimestart AS c_earliestworktimestart, c.latestworktimeend AS c_latestworktimeend, ");
         statement.append("p.id AS p_id, p.name AS p_name, p.costunit AS p_costunit, p.isworktimerelevant AS p_isworktimerelevant, p.isvacationrelevant AS p_isvacationrelevant, p.iscomptimerelevant AS p_iscomptimerelevant, p.description AS p_description, ");
         statement.append("wr.id AS wr_id, wr.userid AS wr_userid, wr.projectid AS wr_projectid, wr.date AS wr_date, wr.starttime AS wr_starttime, wr.endtime AS wr_endtime, wr.worktime AS wr_worktime, wr.overtime AS wr_overtime, wr.overtimecorrection AS wr_overtimecorrection, wr.vacationcorrection AS wr_vacationcorrection, wr.worklocationid AS wr_worklocationid, wr.description AS wr_description, ");
-        statement.append("wl.id AS wl_id, wl.name AS wl_name, wl.description AS wl_description ");
+        statement.append("wl.id AS wl_id, wl.name AS wl_name, wl.description AS wl_description, ");
         statement.append("s.id AS s_id, s.startdate AS s_startdate, s.enddate AS s_enddate, s.numberofsprintdays AS s_numberofsprintdays, ");
         statement.append("ti.id AS ti_id, ti.name AS ti_name, ti.shortcut AS ti_shortcut, ti.description AS ti_description ");
         statement.append("FROM workitem wi ");
@@ -85,7 +85,7 @@ public class WorkItemDAO {
         List<WorkItem> resultList = new ArrayList<>();
         
         StringBuilder statement = getBaseSelectStatement();
-        statement.append("WHERE u.userid = ? ");
+        statement.append("WHERE u.id = ? ");
         statement.append("AND s.id = ?;");
         
         try(PreparedStatement dbStatement = connection.prepareStatement(statement.toString())) {

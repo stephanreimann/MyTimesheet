@@ -9,8 +9,21 @@ import java.io.FileNotFoundException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import model.Address;
+import model.Contract;
+import model.Project;
+import model.Role;
+import model.Sprint;
+import model.TrackingItem;
+import model.User;
+import model.WorkItem;
+import model.Worklocation;
+import model.Workrecord;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -76,14 +89,359 @@ public class WorkItemDAOTest {
         Assert.assertNotNull(workItemDAO);
     }
     
+    @Test()
+    public void T10_Calling_SelectAll_Returns_All_Found_WorkItems() throws SQLException {
+        //Arrange
+        String description = "TestDescription";
+        
+        Role role = new Role(1L, "Admin", "The Administrator role has access to all application features");
+        RoleDAO roleDAO = new RoleDAO(connection);
+        roleDAO.create(role);
+        
+        Address address = new Address(1L, "Humboldtstrasse", 90L, "Etage",2L, "Rechts", "Nürenberg", "Bayern", 90495L, "Deutschland");
+        AddressDAO addressDAO = new AddressDAO(connection);
+        addressDAO.create(address);
+        
+        Contract contract = new Contract(1L, "7 hours contract", 7L, 10L, 30L, "31.03", LocalTime.of(0, 15), LocalTime.of(9, 0), LocalTime.of(0, 30), LocalTime.of(12, 0), LocalTime.of(5, 0, 0), LocalTime.of(22, 0, 0));
+        ContractDAO contractDAO = new ContractDAO(connection);
+        contractDAO.create(contract);
+        
+        User user = new User(1L, role, address, contract, "Stephan", "Reimann", "stephan", "password", 30L);
+        UserDAO userDAO = new UserDAO(connection);
+        userDAO.create(user);
+        
+        Project project = new Project(1L, "TestProject", "AAAA.BBBB.CCCC.DDDD", "TRUE", "TRUE", "TRUE", "TestDescription");
+        ProjectDAO projectDAO = new ProjectDAO(connection);
+        projectDAO.create(project);
+        
+        Worklocation worklocation = new Worklocation(1L, "Homeoffice", "Worklocation is Homeoffice");
+        WorklocationDAO worklocationDAO = new WorklocationDAO(connection);
+        worklocationDAO.create(worklocation);
+        
+        Workrecord workrecord = new Workrecord(1L, user, project, LocalDate.now(), LocalTime.now(), LocalTime.now(), LocalTime.now(), LocalTime.now().toString(), LocalTime.now().toString(), 0, worklocation, description);
+        WorkrecordDAO workrecordDAO = new WorkrecordDAO(connection);
+        workrecordDAO.create(workrecord);
+        
+        Sprint sprint = new Sprint(1L, LocalDate.now(), LocalDate.now(), 10);
+        SprintDAO sprintDAO = new SprintDAO(connection);
+        sprintDAO.create(sprint);
+        
+        TrackingItem trackingItem = new TrackingItem(1L, "Scrum", "S", "All task related to SCRUM activities");
+        TrackingItemDAO trackingItemDAO = new TrackingItemDAO(connection);
+        trackingItemDAO.create(trackingItem);
+        
+        WorkItem workItem1 = new WorkItem(1L, user, workrecord, sprint, trackingItem, LocalTime.now(), LocalTime.now(), description);        
+        WorkItem workItem2 = new WorkItem(2L, user, workrecord, sprint, trackingItem, LocalTime.now(), LocalTime.now(), description);        
+
+        WorkItemDAO workItemDAO = new WorkItemDAO(connection);
+        workItemDAO.create(workItem1);
+        workItemDAO.create(workItem2);
+        
+        //Act
+        List<WorkItem> workItems = workItemDAO.selectAll();
+        
+        //Assert
+        Assert.assertEquals(2, workItems.size());
+        Assert.assertEquals(workItem1, workItems.get(0));
+        Assert.assertEquals(workItem2, workItems.get(1));
+    }    
     
+    @Test()
+    public void T11_Calling_SelectAll_Returns_EmptyList_If_No_WorkItem_Found() throws SQLException {
+        //Arrange
+        WorkItemDAO workItemDAO = new WorkItemDAO(connection);
+        
+        //Act
+        List<WorkItem> workItemList = workItemDAO.selectAll();
+
+        //Assert
+        Assert.assertTrue(workItemList.isEmpty());
+    }
     
+    @Test
+    public void T12_Calling_SelectAll_Returns_All_Found_WorkItems_That_Match_The_QueryParameter() throws SQLException {
+        //Arrange
+        String description = "TestDescription";
+        
+        Role role = new Role(1L, "Admin", "The Administrator role has access to all application features");
+        RoleDAO roleDAO = new RoleDAO(connection);
+        roleDAO.create(role);
+        
+        Address address = new Address(1L, "Humboldtstrasse", 90L, "Etage",2L, "Rechts", "Nürenberg", "Bayern", 90495L, "Deutschland");
+        AddressDAO addressDAO = new AddressDAO(connection);
+        addressDAO.create(address);
+        
+        Contract contract = new Contract(1L, "7 hours contract", 7L, 10L, 30L, "31.03", LocalTime.of(0, 15), LocalTime.of(9, 0), LocalTime.of(0, 30), LocalTime.of(12, 0), LocalTime.of(5, 0, 0), LocalTime.of(22, 0, 0));
+        ContractDAO contractDAO = new ContractDAO(connection);
+        contractDAO.create(contract);
+        
+        User user1 = new User(1L, role, address, contract, "Stephan", "Reimann", "stephan", "password", 30L);
+        User user2 = new User(2L, role, address, contract, "Gabi", "Golibrzuch", "gabi", "password", 30L);
+        UserDAO userDAO = new UserDAO(connection);
+        userDAO.create(user1);
+        userDAO.create(user2);
+        
+        Project project = new Project(1L, "TestProject", "AAAA.BBBB.CCCC.DDDD", "TRUE", "TRUE", "TRUE", "TestDescription");
+        ProjectDAO projectDAO = new ProjectDAO(connection);
+        projectDAO.create(project);
+        
+        Worklocation worklocation = new Worklocation(1L, "Homeoffice", "Worklocation is Homeoffice");
+        WorklocationDAO worklocationDAO = new WorklocationDAO(connection);
+        worklocationDAO.create(worklocation);
+        
+        Workrecord workrecord1 = new Workrecord(1L, user1, project, LocalDate.now(), LocalTime.now(), LocalTime.now(), LocalTime.now(), LocalTime.now().toString(), LocalTime.now().toString(), 0, worklocation, description);
+        Workrecord workrecord2 = new Workrecord(2L, user2, project, LocalDate.now(), LocalTime.now(), LocalTime.now(), LocalTime.now(), LocalTime.now().toString(), LocalTime.now().toString(), 0, worklocation, description);
+        WorkrecordDAO workrecordDAO = new WorkrecordDAO(connection);
+        workrecordDAO.create(workrecord1);
+        workrecordDAO.create(workrecord2);
+        
+        Sprint sprint1 = new Sprint(139L, LocalDate.now(), LocalDate.now(), 10);
+        Sprint sprint2 = new Sprint(140L, LocalDate.now(), LocalDate.now(), 10);
+        SprintDAO sprintDAO = new SprintDAO(connection);
+        sprintDAO.create(sprint1);
+        sprintDAO.create(sprint2);
+        
+        TrackingItem trackingItem = new TrackingItem(139L, "Scrum", "S", "All task related to SCRUM activities");
+        TrackingItemDAO trackingItemDAO = new TrackingItemDAO(connection);
+        trackingItemDAO.create(trackingItem);
+
+        WorkItem workItem1 = new WorkItem(1L, user1, workrecord1, sprint1, trackingItem, LocalTime.now(), LocalTime.now(), description);        
+        WorkItem workItem2 = new WorkItem(2L, user2, workrecord2, sprint2, trackingItem, LocalTime.now(), LocalTime.now(), description);        
+        
+        //Act
+        WorkItemDAO workItemDAO = new WorkItemDAO(connection);
+        workItemDAO.create(workItem1);
+        workItemDAO.create(workItem2);
+        
+        //Act
+        List<WorkItem> workItems = workItemDAO.selectAll(user1, sprint1);
+
+        //Assert
+        Assert.assertEquals(1, workItems.size());
+        Assert.assertEquals(workItem1, workItems.get(0));
+    }    
     
+    @Test
+    public void T12_Calling_SelectAll_Returns_EmptyList_If_User_NotFound() throws SQLException {
+        //Arrange
+        String description = "TestDescription";
+        
+        Role role = new Role(1L, "Admin", "The Administrator role has access to all application features");
+        RoleDAO roleDAO = new RoleDAO(connection);
+        roleDAO.create(role);
+        
+        Address address = new Address(1L, "Humboldtstrasse", 90L, "Etage",2L, "Rechts", "Nürenberg", "Bayern", 90495L, "Deutschland");
+        AddressDAO addressDAO = new AddressDAO(connection);
+        addressDAO.create(address);
+        
+        Contract contract = new Contract(1L, "7 hours contract", 7L, 10L, 30L, "31.03", LocalTime.of(0, 15), LocalTime.of(9, 0), LocalTime.of(0, 30), LocalTime.of(12, 0), LocalTime.of(5, 0, 0), LocalTime.of(22, 0, 0));
+        ContractDAO contractDAO = new ContractDAO(connection);
+        contractDAO.create(contract);
+        
+        User user1 = new User(1L, role, address, contract, "Stephan", "Reimann", "stephan", "password", 30L);
+        User user2 = new User(2L, role, address, contract, "Gabi", "Golibrzuch", "gabi", "password", 30L);
+        User notFoundUser = new User(3L, role, address, contract, "Gabi", "Golibrzuch", "gabi", "password", 30L);
+        UserDAO userDAO = new UserDAO(connection);
+        userDAO.create(user1);
+        userDAO.create(user2);
+        
+        Project project = new Project(1L, "TestProject", "AAAA.BBBB.CCCC.DDDD", "TRUE", "TRUE", "TRUE", "TestDescription");
+        ProjectDAO projectDAO = new ProjectDAO(connection);
+        projectDAO.create(project);
+        
+        Worklocation worklocation = new Worklocation(1L, "Homeoffice", "Worklocation is Homeoffice");
+        WorklocationDAO worklocationDAO = new WorklocationDAO(connection);
+        worklocationDAO.create(worklocation);
+        
+        Workrecord workrecord1 = new Workrecord(1L, user1, project, LocalDate.now(), LocalTime.now(), LocalTime.now(), LocalTime.now(), LocalTime.now().toString(), LocalTime.now().toString(), 0, worklocation, description);
+        Workrecord workrecord2 = new Workrecord(2L, user2, project, LocalDate.now(), LocalTime.now(), LocalTime.now(), LocalTime.now(), LocalTime.now().toString(), LocalTime.now().toString(), 0, worklocation, description);
+        WorkrecordDAO workrecordDAO = new WorkrecordDAO(connection);
+        workrecordDAO.create(workrecord1);
+        workrecordDAO.create(workrecord2);
+        
+        Sprint sprint1 = new Sprint(139L, LocalDate.now(), LocalDate.now(), 10);
+        Sprint sprint2 = new Sprint(140L, LocalDate.now(), LocalDate.now(), 10);
+        SprintDAO sprintDAO = new SprintDAO(connection);
+        sprintDAO.create(sprint1);
+        sprintDAO.create(sprint2);
+        
+        TrackingItem trackingItem = new TrackingItem(139L, "Scrum", "S", "All task related to SCRUM activities");
+        TrackingItemDAO trackingItemDAO = new TrackingItemDAO(connection);
+        trackingItemDAO.create(trackingItem);
+
+        WorkItem workItem1 = new WorkItem(1L, user1, workrecord1, sprint1, trackingItem, LocalTime.now(), LocalTime.now(), description);        
+        WorkItem workItem2 = new WorkItem(2L, user2, workrecord2, sprint2, trackingItem, LocalTime.now(), LocalTime.now(), description);        
+        
+        //Act
+        WorkItemDAO workItemDAO = new WorkItemDAO(connection);
+        workItemDAO.create(workItem1);
+        workItemDAO.create(workItem2);
+        
+        //Act
+        List<WorkItem> workItems = workItemDAO.selectAll(notFoundUser, sprint1);
+
+        //Assert
+        Assert.assertTrue(workItems.isEmpty());
+    }    
     
-    
+    @Test
+    public void T12_Calling_SelectAll_Returns_EmptyList_If_Sprint_NotFound() throws SQLException {
+        //Arrange
+        String description = "TestDescription";
+        
+        Role role = new Role(1L, "Admin", "The Administrator role has access to all application features");
+        RoleDAO roleDAO = new RoleDAO(connection);
+        roleDAO.create(role);
+        
+        Address address = new Address(1L, "Humboldtstrasse", 90L, "Etage",2L, "Rechts", "Nürenberg", "Bayern", 90495L, "Deutschland");
+        AddressDAO addressDAO = new AddressDAO(connection);
+        addressDAO.create(address);
+        
+        Contract contract = new Contract(1L, "7 hours contract", 7L, 10L, 30L, "31.03", LocalTime.of(0, 15), LocalTime.of(9, 0), LocalTime.of(0, 30), LocalTime.of(12, 0), LocalTime.of(5, 0, 0), LocalTime.of(22, 0, 0));
+        ContractDAO contractDAO = new ContractDAO(connection);
+        contractDAO.create(contract);
+        
+        User user1 = new User(1L, role, address, contract, "Stephan", "Reimann", "stephan", "password", 30L);
+        User user2 = new User(2L, role, address, contract, "Gabi", "Golibrzuch", "gabi", "password", 30L);
+        UserDAO userDAO = new UserDAO(connection);
+        userDAO.create(user1);
+        userDAO.create(user2);
+        
+        Project project = new Project(1L, "TestProject", "AAAA.BBBB.CCCC.DDDD", "TRUE", "TRUE", "TRUE", "TestDescription");
+        ProjectDAO projectDAO = new ProjectDAO(connection);
+        projectDAO.create(project);
+        
+        Worklocation worklocation = new Worklocation(1L, "Homeoffice", "Worklocation is Homeoffice");
+        WorklocationDAO worklocationDAO = new WorklocationDAO(connection);
+        worklocationDAO.create(worklocation);
+        
+        Workrecord workrecord1 = new Workrecord(1L, user1, project, LocalDate.now(), LocalTime.now(), LocalTime.now(), LocalTime.now(), LocalTime.now().toString(), LocalTime.now().toString(), 0, worklocation, description);
+        Workrecord workrecord2 = new Workrecord(2L, user2, project, LocalDate.now(), LocalTime.now(), LocalTime.now(), LocalTime.now(), LocalTime.now().toString(), LocalTime.now().toString(), 0, worklocation, description);
+        WorkrecordDAO workrecordDAO = new WorkrecordDAO(connection);
+        workrecordDAO.create(workrecord1);
+        workrecordDAO.create(workrecord2);
+        
+        Sprint sprint1 = new Sprint(139L, LocalDate.now(), LocalDate.now(), 10);
+        Sprint sprint2 = new Sprint(140L, LocalDate.now(), LocalDate.now(), 10);
+        Sprint notFoundSprint = new Sprint(141L, LocalDate.now(), LocalDate.now(), 10);
+        SprintDAO sprintDAO = new SprintDAO(connection);
+        sprintDAO.create(sprint1);
+        sprintDAO.create(sprint2);
+        
+        TrackingItem trackingItem = new TrackingItem(139L, "Scrum", "S", "All task related to SCRUM activities");
+        TrackingItemDAO trackingItemDAO = new TrackingItemDAO(connection);
+        trackingItemDAO.create(trackingItem);
+
+        WorkItem workItem1 = new WorkItem(1L, user1, workrecord1, sprint1, trackingItem, LocalTime.now(), LocalTime.now(), description);        
+        WorkItem workItem2 = new WorkItem(2L, user2, workrecord2, sprint2, trackingItem, LocalTime.now(), LocalTime.now(), description);        
+        
+        //Act
+        WorkItemDAO workItemDAO = new WorkItemDAO(connection);
+        workItemDAO.create(workItem1);
+        workItemDAO.create(workItem2);
+        
+        //Act
+        List<WorkItem> workItems = workItemDAO.selectAll(user1, notFoundSprint);
+
+        //Assert
+        Assert.assertTrue(workItems.isEmpty());
+    }    
+
     private synchronized boolean truncateTable() {
+        
         boolean result = false;
+        
         StringBuilder statement = new StringBuilder();
+        statement.append("DELETE FROM role ");
+        
+        try {
+            PreparedStatement dbStatement = connection.prepareStatement(statement.toString());
+            result = dbStatement.execute();
+        } catch (SQLException e) {
+            return result;
+        }
+
+        statement = new StringBuilder();
+        statement.append("DELETE FROM address ");
+        
+        try {
+            PreparedStatement dbStatement = connection.prepareStatement(statement.toString());
+            result = dbStatement.execute();
+        } catch (SQLException e) {
+            return result;
+        }
+
+        statement = new StringBuilder();
+        statement.append("DELETE FROM user ");
+        
+        try {
+            PreparedStatement dbStatement = connection.prepareStatement(statement.toString());
+            result = dbStatement.execute();
+        } catch (SQLException e) {
+            return result;
+        }
+        
+        statement = new StringBuilder();
+        statement.append("DELETE FROM project ");
+        
+        try {
+            PreparedStatement dbStatement = connection.prepareStatement(statement.toString());
+            result = dbStatement.execute();
+        } catch (SQLException e) {
+            return result;
+        }
+
+        statement = new StringBuilder();
+        statement.append("DELETE FROM contract ");
+        
+        try {
+            PreparedStatement dbStatement = connection.prepareStatement(statement.toString());
+            result = dbStatement.execute();
+        } catch (SQLException e) {
+            return result;
+        }
+
+        statement = new StringBuilder();
+        statement.append("DELETE FROM worklocation ");
+        
+        try {
+            PreparedStatement dbStatement = connection.prepareStatement(statement.toString());
+            result = dbStatement.execute();
+        } catch (SQLException e) {
+            return result;
+        }
+        
+        statement = new StringBuilder();
+        statement.append("DELETE FROM workrecord ");
+        
+        try {
+            PreparedStatement dbStatement = connection.prepareStatement(statement.toString());
+            result = dbStatement.execute();
+        } catch (SQLException e) {
+            return result;
+        }
+
+        statement = new StringBuilder();
+        statement.append("DELETE FROM sprint ");
+        
+        try {
+            PreparedStatement dbStatement = connection.prepareStatement(statement.toString());
+            result = dbStatement.execute();
+        } catch (SQLException e) {
+            return result;
+        }
+
+        statement = new StringBuilder();
+        statement.append("DELETE FROM trackingitem ");
+        
+        try {
+            PreparedStatement dbStatement = connection.prepareStatement(statement.toString());
+            result = dbStatement.execute();
+        } catch (SQLException e) {
+            return result;
+        }
+
+        statement = new StringBuilder();
         statement.append("DELETE FROM workitem ");
         
         try {
@@ -92,16 +450,97 @@ public class WorkItemDAOTest {
         } catch (SQLException e) {
             return result;
         }
-        
+
         statement = new StringBuilder();        
-        //statement.append("UPDATE SQLITE_SEQUENCE SET seq = 0 WHERE name='WorkItem'");
-        statement.append("DELETE FROM SQLITE_SEQUENCE WHERE name='WorkItem'");
+        statement.append("DELETE FROM SQLITE_SEQUENCE WHERE name='Role'");
         try {
             PreparedStatement dbStatement = connection.prepareStatement(statement.toString());
             result = dbStatement.execute();
         } catch (SQLException e) {
             return result;
         }
+        
+        statement = new StringBuilder();        
+        statement.append("DELETE FROM SQLITE_SEQUENCE WHERE name='Address'");
+        try {
+            PreparedStatement dbStatement = connection.prepareStatement(statement.toString());
+            result = dbStatement.execute();
+        } catch (SQLException e) {
+            return result;
+        }
+
+        statement = new StringBuilder();        
+        statement.append("DELETE FROM SQLITE_SEQUENCE WHERE name='Project'");
+        try {
+            PreparedStatement dbStatement = connection.prepareStatement(statement.toString());
+            result = dbStatement.execute();
+        } catch (SQLException e) {
+            return result;
+        }
+
+        statement = new StringBuilder();        
+        statement.append("DELETE FROM SQLITE_SEQUENCE WHERE name='User'");
+        try {
+            PreparedStatement dbStatement = connection.prepareStatement(statement.toString());
+            result = dbStatement.execute();
+        } catch (SQLException e) {
+            return result;
+        }
+
+        statement = new StringBuilder();        
+        statement.append("DELETE FROM SQLITE_SEQUENCE WHERE name='Contract'");
+        try {
+            PreparedStatement dbStatement = connection.prepareStatement(statement.toString());
+            result = dbStatement.execute();
+        } catch (SQLException e) {
+            return result;
+        }
+
+        statement = new StringBuilder();        
+        statement.append("DELETE FROM SQLITE_SEQUENCE WHERE name='Worklocation'");
+        try {
+            PreparedStatement dbStatement = connection.prepareStatement(statement.toString());
+            result = dbStatement.execute();
+        } catch (SQLException e) {
+            return result;
+        }
+
+        statement = new StringBuilder();        
+        statement.append("DELETE FROM SQLITE_SEQUENCE WHERE name='Workrecord'");
+        try {
+            PreparedStatement dbStatement = connection.prepareStatement(statement.toString());
+            result = dbStatement.execute();
+        } catch (SQLException e) {
+            return result;
+        }
+
+        statement = new StringBuilder();        
+        statement.append("DELETE FROM SQLITE_SEQUENCE WHERE name='Sprint'");
+        try {
+            PreparedStatement dbStatement = connection.prepareStatement(statement.toString());
+            result = dbStatement.execute();
+        } catch (SQLException e) {
+            return result;
+        }
+
+        statement = new StringBuilder();        
+        statement.append("DELETE FROM SQLITE_SEQUENCE WHERE name='Trackingitem'");
+        try {
+            PreparedStatement dbStatement = connection.prepareStatement(statement.toString());
+            result = dbStatement.execute();
+        } catch (SQLException e) {
+            return result;
+        }
+        
+        statement = new StringBuilder();        
+        statement.append("DELETE FROM SQLITE_SEQUENCE WHERE name='Workitem'");
+        try {
+            PreparedStatement dbStatement = connection.prepareStatement(statement.toString());
+            result = dbStatement.execute();
+        } catch (SQLException e) {
+            return result;
+        }
+        
         return result;
     }
     
