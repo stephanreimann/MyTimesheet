@@ -222,7 +222,7 @@ public class WorkItemDAOTest {
     }    
     
     @Test
-    public void T12_Calling_SelectAll_Returns_EmptyList_If_User_NotFound() throws SQLException {
+    public void T13_Calling_SelectAll_Returns_EmptyList_If_User_NotFound() throws SQLException {
         //Arrange
         String description = "TestDescription";
         
@@ -285,7 +285,7 @@ public class WorkItemDAOTest {
     }    
     
     @Test
-    public void T12_Calling_SelectAll_Returns_EmptyList_If_Sprint_NotFound() throws SQLException {
+    public void T14_Calling_SelectAll_Returns_EmptyList_If_Sprint_NotFound() throws SQLException {
         //Arrange
         String description = "TestDescription";
         
@@ -347,6 +347,163 @@ public class WorkItemDAOTest {
         Assert.assertTrue(workItems.isEmpty());
     }    
 
+    @Test(expected = NullPointerException.class)
+    public void T30_Calling_Create_WorkItem_IsNull_Throws_NullPointerException() throws SQLException {
+        //Arrange
+        WorkItemDAO workItemDAO = new WorkItemDAO(connection);
+
+        //Act
+        //Assert
+        boolean result = workItemDAO.create(null);
+    }
+    
+    @Test()
+    public void T31_Calling_Create_Stores_WorkItem() throws SQLException {
+        //Arrange
+        String description = "TestDescription";
+        
+        Role role = new Role(1L, "Admin", "The Administrator role has access to all application features");
+        RoleDAO roleDAO = new RoleDAO(connection);
+        roleDAO.create(role);
+        
+        Address address = new Address(1L, "Humboldtstrasse", 90L, "Etage",2L, "Rechts", "Nürenberg", "Bayern", 90495L, "Deutschland");
+        AddressDAO addressDAO = new AddressDAO(connection);
+        addressDAO.create(address);
+        
+        Contract contract = new Contract(1L, "7 hours contract", 7L, 10L, 30L, "31.03", LocalTime.of(0, 15), LocalTime.of(9, 0), LocalTime.of(0, 30), LocalTime.of(12, 0), LocalTime.of(5, 0, 0), LocalTime.of(22, 0, 0));
+        ContractDAO contractDAO = new ContractDAO(connection);
+        contractDAO.create(contract);
+        
+        User user = new User(1L, role, address, contract, "Stephan", "Reimann", "stephan", "password", 30L);
+        UserDAO userDAO = new UserDAO(connection);
+        userDAO.create(user);
+        
+        Project project = new Project(1L, "TestProject", "AAAA.BBBB.CCCC.DDDD", "TRUE", "TRUE", "TRUE", "TestDescription");
+        ProjectDAO projectDAO = new ProjectDAO(connection);
+        projectDAO.create(project);
+        
+        Worklocation worklocation = new Worklocation(1L, "Homeoffice", "Worklocation is Homeoffice");
+        WorklocationDAO worklocationDAO = new WorklocationDAO(connection);
+        worklocationDAO.create(worklocation);
+        
+        Workrecord workrecord = new Workrecord(1L, user, project, LocalDate.now(), LocalTime.now(), LocalTime.now(), LocalTime.now(), LocalTime.now().toString(), LocalTime.now().toString(), 0, worklocation, description);
+        WorkrecordDAO workrecordDAO = new WorkrecordDAO(connection);
+        workrecordDAO.create(workrecord);
+        
+        Sprint sprint = new Sprint(1L, LocalDate.now(), LocalDate.now(), 10);
+        SprintDAO sprintDAO = new SprintDAO(connection);
+        sprintDAO.create(sprint);
+        
+        TrackingItem trackingItem = new TrackingItem(1L, "Scrum", "S", "All task related to SCRUM activities");
+        TrackingItemDAO trackingItemDAO = new TrackingItemDAO(connection);
+        trackingItemDAO.create(trackingItem);
+        
+        WorkItem workItem = new WorkItem(1L, user, workrecord, sprint, trackingItem, LocalTime.now(), LocalTime.now(), description);        
+
+        WorkItemDAO workItemDAO = new WorkItemDAO(connection);
+
+        //Act
+        boolean result = workItemDAO.create(workItem);
+
+         //Assert
+        Assert.assertTrue(result);
+    }
+    
+    @Test(expected = SQLException.class)
+    public void T32_Calling_Create_WorkItem_AllreadyExists_Throws_SQLException() throws SQLException {
+        //Arrange
+        String description = "TestDescription";
+        
+        Role role = new Role(1L, "Admin", "The Administrator role has access to all application features");
+        RoleDAO roleDAO = new RoleDAO(connection);
+        roleDAO.create(role);
+        
+        Address address = new Address(1L, "Humboldtstrasse", 90L, "Etage",2L, "Rechts", "Nürenberg", "Bayern", 90495L, "Deutschland");
+        AddressDAO addressDAO = new AddressDAO(connection);
+        addressDAO.create(address);
+        
+        Contract contract = new Contract(1L, "7 hours contract", 7L, 10L, 30L, "31.03", LocalTime.of(0, 15), LocalTime.of(9, 0), LocalTime.of(0, 30), LocalTime.of(12, 0), LocalTime.of(5, 0, 0), LocalTime.of(22, 0, 0));
+        ContractDAO contractDAO = new ContractDAO(connection);
+        contractDAO.create(contract);
+        
+        User user = new User(1L, role, address, contract, "Stephan", "Reimann", "stephan", "password", 30L);
+        UserDAO userDAO = new UserDAO(connection);
+        userDAO.create(user);
+        
+        Project project = new Project(1L, "TestProject", "AAAA.BBBB.CCCC.DDDD", "TRUE", "TRUE", "TRUE", "TestDescription");
+        ProjectDAO projectDAO = new ProjectDAO(connection);
+        projectDAO.create(project);
+        
+        Worklocation worklocation = new Worklocation(1L, "Homeoffice", "Worklocation is Homeoffice");
+        WorklocationDAO worklocationDAO = new WorklocationDAO(connection);
+        worklocationDAO.create(worklocation);
+        
+        Workrecord workrecord = new Workrecord(1L, user, project, LocalDate.now(), LocalTime.now(), LocalTime.now(), LocalTime.now(), LocalTime.now().toString(), LocalTime.now().toString(), 0, worklocation, description);
+        WorkrecordDAO workrecordDAO = new WorkrecordDAO(connection);
+        workrecordDAO.create(workrecord);
+        
+        Sprint sprint = new Sprint(1L, LocalDate.now(), LocalDate.now(), 10);
+        SprintDAO sprintDAO = new SprintDAO(connection);
+        sprintDAO.create(sprint);
+        
+        TrackingItem trackingItem = new TrackingItem(1L, "Scrum", "S", "All task related to SCRUM activities");
+        TrackingItemDAO trackingItemDAO = new TrackingItemDAO(connection);
+        trackingItemDAO.create(trackingItem);
+        
+        WorkItem workItem = new WorkItem(1L, user, workrecord, sprint, trackingItem, LocalTime.now(), LocalTime.now(), description);        
+
+        WorkItemDAO workItemDAO = new WorkItemDAO(connection);
+        workItemDAO.create(workItem);
+
+        //Act
+         //Assert
+        workItemDAO.create(workItem);
+    }
+    
+    @Test(expected = NullPointerException.class)
+    public void T40_Calling_Update_OriginalWorkItem_IsNull_Throws_NullPointerException() throws SQLException {
+    }
+    
+    @Test(expected = NullPointerException.class)
+    public void T41_Calling_Update_ModifiedWorkItem_IsNull_Throws_NullPointerException() throws SQLException {
+    }
+    
+    @Test()
+    public void T42_Calling_Update_Updates_OriginalWorkItem() throws SQLException {
+    }
+    
+    @Test()
+    public void T43_Calling_Update_OriginalWorkItem_DoesNotExists_Returns_False() throws SQLException {
+    }
+    
+    @Test()
+    public void T44_Calling_Update_On_Different_WorkItem_DoenNotChange_WorkItem() throws SQLException {
+    }    
+
+    @Test(expected = NullPointerException.class)
+    public void T50_Calling_Delete_WorkItem_IsNull_Throws_NullPointerException() throws SQLException {
+    }
+    
+    @Test()
+    public void T51_Calling_Delete_WorkItem_DoesNotExists_Returns_False() throws SQLException {
+    }
+    
+    @Test()
+    public void T52_Calling_Delete_WorkItem_Exists_Deletes_Workrecord() throws SQLException {
+    }
+    
+    @Test()
+    public void T60_Calling_GetNextId_On_WorkItemTable_Containing_One_WorkItem_Returns_2() throws SQLException {
+    }
+    
+    @Test()
+    public void T61_Calling_GetNextId_Twice_On_WorkItemTable_Returns_SameId() throws SQLException {
+    }
+    
+    @Test
+    public void T62_Calling_GetNextId_On_Truncated_Sqlite_Sequence_Table_Returns_0() throws SQLException {
+    }
+    
     private synchronized boolean truncateTable() {
         
         boolean result = false;

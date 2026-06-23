@@ -522,7 +522,7 @@ public class WorkrecordDAOTest {
     }
     
     @Test()
-    public void T44_Calling_Update_On_Different_Workrecords_DoenNotChange_User() throws SQLException {
+    public void T44_Calling_Update_On_Different_Workrecords_DoenNotChange_Workrecord() throws SQLException {
         //Arrange
         Role role = new Role(1L, "Admin", "The Administrator role has access to all application features");
         RoleDAO roleDAO = new RoleDAO(connection);
