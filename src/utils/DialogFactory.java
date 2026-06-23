@@ -5,10 +5,7 @@
 package utils;
 
 import controller.IViewController;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ResourceBundle;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
