@@ -49,7 +49,9 @@ public class MainMenuBarViewController implements Initializable, IViewController
     private final String holydayDataResourceKey = "Holyday";
     private final String projectDataResourceKey = "Project";
     private final String worklocationDataResourceKey = "Worklocation";
- 
+    private final String sprintDataResourceKey = "Sprint";
+    private final String trackingItemDataResourceKey = "TrackingItem";
+    
     private final String newUserEvent = "NewUser";
     private final String editUserEvent = "EditUser";
     private final String deleteUserEvent = "DeleteUser";
@@ -111,6 +113,12 @@ public class MainMenuBarViewController implements Initializable, IViewController
     private final String xmlEditorViewDialogTitleResourceKey = "XmlEditorViewTitle";
     private final String xmlEditorViewResource = "/view/XmlEditorView.fxml";
     
+    private final String sprintViewDialogTitleResourceKey = "SprintViewDialogTitle";
+    private final String sprintViewResource = "/view/SprintView.fxml";
+    
+    private final String trackingItemViewDialogTitleResourceKey = "TrackingItemViewDialogTitle";
+    private final String trackingItemViewResource = "/view/TrackingItemView.fxml";
+
     private final ControllerRepository controllerRepository;
     
     private Stage settingsViewDialog;
@@ -122,6 +130,8 @@ public class MainMenuBarViewController implements Initializable, IViewController
     private Stage projectViewDialog;
     private Stage worklocationViewDialog;
     private Stage xmlEditorViewDialog;
+    private Stage sprintViewDialog;
+    private Stage trackingItemViewDialog;
     
     @FXML
     private Menu fileMenu;
@@ -168,7 +178,12 @@ public class MainMenuBarViewController implements Initializable, IViewController
     private MenuItem projectMenuItem;
     @FXML
     private MenuItem worklocationMenuItem;
-
+    @FXML
+    private MenuItem sprintMenuItem;
+    @FXML
+    private MenuItem trackingItemMenuItem;
+    
+    
     public MainMenuBarViewController(LanguageService languageService, Connection connection, UndoService undoService, Application application, PropertiesService propertiesService, Log4jAdapter log4jAdapter) {
         if(languageService == null) throw new NullPointerException("languageService");
         if(connection == null) throw new NullPointerException("connection");
@@ -218,12 +233,22 @@ public class MainMenuBarViewController implements Initializable, IViewController
 
     @FXML
     private void importReferencedata(ActionEvent event) throws Exception {
-        
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.initOwner(primaryStage);
+        alert.setTitle(rb.getString("UnderConstructionTitle"));
+        alert.setHeaderText("");
+        alert.setContentText(rb.getString("UnderConstructionDetails"));
+        alert.showAndWait();        
     }
 
     @FXML
     private void importWorkrecords(ActionEvent event) throws Exception {
-
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.initOwner(primaryStage);
+        alert.setTitle(rb.getString("UnderConstructionTitle"));
+        alert.setHeaderText("");
+        alert.setContentText(rb.getString("UnderConstructionDetails"));
+        alert.showAndWait();        
     }
 
     @FXML
@@ -495,6 +520,56 @@ public class MainMenuBarViewController implements Initializable, IViewController
         worklocationViewDialog.showAndWait();
     }
 
+    @FXML
+    private void openSprintDialog(ActionEvent event) throws IOException {
+        SprintViewController sprintViewController = (SprintViewController) controllerRepository.get(SprintViewController.class.getName());
+        if(sprintViewController == null) {
+            sprintViewController = new SprintViewController(controllerRepository, languageService, connection, undoService, propertiesService);
+            controllerRepository.put(UserViewController.class.getName(), sprintViewController);
+        }
+
+        DialogFactory dialogFactory = new DialogFactory(
+            primaryStage, 
+            sprintViewDialogTitleResourceKey, 
+            viewDialogIcon, 
+            sprintViewResource, 
+            rb, 
+            sprintViewController);
+        sprintViewDialog = dialogFactory.create();
+        sprintViewDialog.setWidth(650);
+        sprintViewDialog.setHeight(450);
+        sprintViewDialog.resizableProperty().setValue(Boolean.TRUE);
+                
+        ControllerUtilities.CenterOnDialog(primaryStage, sprintViewDialog);
+        
+        sprintViewDialog.showAndWait();            
+    }
+            
+    @FXML
+    private void openTrackingItemDialog(ActionEvent event) throws IOException {
+        TrackingItemViewController trackingItemViewController = (TrackingItemViewController) controllerRepository.get(TrackingItemViewController.class.getName());
+        if(trackingItemViewController == null) {
+            trackingItemViewController = new TrackingItemViewController(controllerRepository, languageService, connection, undoService, propertiesService);
+            controllerRepository.put(UserViewController.class.getName(), trackingItemViewController);
+        }
+
+        DialogFactory dialogFactory = new DialogFactory(
+            primaryStage, 
+            trackingItemViewDialogTitleResourceKey, 
+            viewDialogIcon, 
+            trackingItemViewResource, 
+            rb, 
+            trackingItemViewController);
+        trackingItemViewDialog = dialogFactory.create();
+        trackingItemViewDialog.setWidth(650);
+        trackingItemViewDialog.setHeight(450);
+        trackingItemViewDialog.resizableProperty().setValue(Boolean.TRUE);
+                
+        ControllerUtilities.CenterOnDialog(primaryStage, trackingItemViewDialog);
+        
+        trackingItemViewDialog.showAndWait();            
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         languageService.updateGuiItems();
@@ -527,6 +602,8 @@ public class MainMenuBarViewController implements Initializable, IViewController
         holydayMenuItem.setText(rb.getString(holydayDataResourceKey));
         projectMenuItem.setText(rb.getString(projectDataResourceKey));
         worklocationMenuItem.setText(rb.getString(worklocationDataResourceKey));
+        sprintMenuItem.setText(rb.getString(sprintDataResourceKey));
+        trackingItemMenuItem.setText(rb.getString(trackingItemDataResourceKey));
         
         if(settingsViewDialog != null) {
             settingsViewDialog.setTitle(rb.getString(settingsViewDialogTitleResourceKey));
@@ -548,6 +625,12 @@ public class MainMenuBarViewController implements Initializable, IViewController
         }
         if(projectViewDialog != null) {
             projectViewDialog.setTitle(rb.getString(projectViewDialogTitleResourceKey));
+        }
+        if(sprintViewDialog != null) {
+            sprintViewDialog.setTitle(rb.getString(sprintViewDialogTitleResourceKey));
+        }
+        if(trackingItemViewDialog != null) {
+            trackingItemViewDialog.setTitle(rb.getString(trackingItemViewDialogTitleResourceKey));
         }
     }
 

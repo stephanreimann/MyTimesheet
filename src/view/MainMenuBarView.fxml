@@ -95,6 +95,8 @@
             <MenuItem fx:id="roleMenuItem" mnemonicParsing="false" onAction="#openRoleDialog" text="%Role" />
             <MenuItem fx:id="userMenuItem" mnemonicParsing="false" onAction="#openUserDialog" text="%User" />
             <MenuItem fx:id="worklocationMenuItem" mnemonicParsing="false" onAction="#openWorklocationDialog" text="%Worklocation" />
+            <MenuItem fx:id="sprintMenuItem" mnemonicParsing="false" onAction="#openSprintDialog" text="%Sprint" />
+            <MenuItem fx:id="trackingItemMenuItem" mnemonicParsing="false" onAction="#openTrackingItemDialog" text="%TrackingItem" />
         </items>
       </Menu>
     </menus>
