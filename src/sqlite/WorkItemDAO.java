@@ -243,7 +243,8 @@ public class WorkItemDAO {
             dbStatement.setString(6, modified.getStartTime().toString());
             dbStatement.setString(7, modified.getEndTime().toString());
             dbStatement.setString(8, modified.getDescription());
-
+            dbStatement.setLong(9, original.getId());
+            
             Instant start = Instant.now();
             result = dbStatement.executeUpdate() > 0;
             Instant finish = Instant.now();

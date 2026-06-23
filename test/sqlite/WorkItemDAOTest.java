@@ -462,46 +462,513 @@ public class WorkItemDAOTest {
     
     @Test(expected = NullPointerException.class)
     public void T40_Calling_Update_OriginalWorkItem_IsNull_Throws_NullPointerException() throws SQLException {
+        //Arrange
+        String description = "TestDescription";
+        
+        Role role = new Role(1L, "Admin", "The Administrator role has access to all application features");
+        RoleDAO roleDAO = new RoleDAO(connection);
+        roleDAO.create(role);
+        
+        Address address = new Address(1L, "Humboldtstrasse", 90L, "Etage",2L, "Rechts", "Nürenberg", "Bayern", 90495L, "Deutschland");
+        AddressDAO addressDAO = new AddressDAO(connection);
+        addressDAO.create(address);
+        
+        Contract contract = new Contract(1L, "7 hours contract", 7L, 10L, 30L, "31.03", LocalTime.of(0, 15), LocalTime.of(9, 0), LocalTime.of(0, 30), LocalTime.of(12, 0), LocalTime.of(5, 0, 0), LocalTime.of(22, 0, 0));
+        ContractDAO contractDAO = new ContractDAO(connection);
+        contractDAO.create(contract);
+        
+        User user = new User(1L, role, address, contract, "Stephan", "Reimann", "stephan", "password", 30L);
+        UserDAO userDAO = new UserDAO(connection);
+        userDAO.create(user);
+        
+        Project project = new Project(1L, "TestProject", "AAAA.BBBB.CCCC.DDDD", "TRUE", "TRUE", "TRUE", "TestDescription");
+        ProjectDAO projectDAO = new ProjectDAO(connection);
+        projectDAO.create(project);
+        
+        Worklocation worklocation = new Worklocation(1L, "Homeoffice", "Worklocation is Homeoffice");
+        WorklocationDAO worklocationDAO = new WorklocationDAO(connection);
+        worklocationDAO.create(worklocation);
+        
+        Workrecord workrecord = new Workrecord(1L, user, project, LocalDate.now(), LocalTime.now(), LocalTime.now(), LocalTime.now(), LocalTime.now().toString(), LocalTime.now().toString(), 0, worklocation, description);
+        WorkrecordDAO workrecordDAO = new WorkrecordDAO(connection);
+        workrecordDAO.create(workrecord);
+        
+        Sprint sprint = new Sprint(1L, LocalDate.now(), LocalDate.now(), 10);
+        SprintDAO sprintDAO = new SprintDAO(connection);
+        sprintDAO.create(sprint);
+        
+        TrackingItem trackingItem = new TrackingItem(1L, "Scrum", "S", "All task related to SCRUM activities");
+        TrackingItemDAO trackingItemDAO = new TrackingItemDAO(connection);
+        trackingItemDAO.create(trackingItem);
+        
+        WorkItem modifiedWorkItem = new WorkItem(1L, user, workrecord, sprint, trackingItem, LocalTime.now(), LocalTime.now(), description);        
+
+        WorkItemDAO workItemDAO = new WorkItemDAO(connection);
+
+        //Act
+        boolean result = workItemDAO.update(null, modifiedWorkItem);
+
+        //Assert
+        Assert.assertFalse(result);        
     }
     
     @Test(expected = NullPointerException.class)
     public void T41_Calling_Update_ModifiedWorkItem_IsNull_Throws_NullPointerException() throws SQLException {
+        //Arrange
+        String description = "TestDescription";
+        
+        Role role = new Role(1L, "Admin", "The Administrator role has access to all application features");
+        RoleDAO roleDAO = new RoleDAO(connection);
+        roleDAO.create(role);
+        
+        Address address = new Address(1L, "Humboldtstrasse", 90L, "Etage",2L, "Rechts", "Nürenberg", "Bayern", 90495L, "Deutschland");
+        AddressDAO addressDAO = new AddressDAO(connection);
+        addressDAO.create(address);
+        
+        Contract contract = new Contract(1L, "7 hours contract", 7L, 10L, 30L, "31.03", LocalTime.of(0, 15), LocalTime.of(9, 0), LocalTime.of(0, 30), LocalTime.of(12, 0), LocalTime.of(5, 0, 0), LocalTime.of(22, 0, 0));
+        ContractDAO contractDAO = new ContractDAO(connection);
+        contractDAO.create(contract);
+        
+        User user = new User(1L, role, address, contract, "Stephan", "Reimann", "stephan", "password", 30L);
+        UserDAO userDAO = new UserDAO(connection);
+        userDAO.create(user);
+        
+        Project project = new Project(1L, "TestProject", "AAAA.BBBB.CCCC.DDDD", "TRUE", "TRUE", "TRUE", "TestDescription");
+        ProjectDAO projectDAO = new ProjectDAO(connection);
+        projectDAO.create(project);
+        
+        Worklocation worklocation = new Worklocation(1L, "Homeoffice", "Worklocation is Homeoffice");
+        WorklocationDAO worklocationDAO = new WorklocationDAO(connection);
+        worklocationDAO.create(worklocation);
+        
+        Workrecord workrecord = new Workrecord(1L, user, project, LocalDate.now(), LocalTime.now(), LocalTime.now(), LocalTime.now(), LocalTime.now().toString(), LocalTime.now().toString(), 0, worklocation, description);
+        WorkrecordDAO workrecordDAO = new WorkrecordDAO(connection);
+        workrecordDAO.create(workrecord);
+        
+        Sprint sprint = new Sprint(1L, LocalDate.now(), LocalDate.now(), 10);
+        SprintDAO sprintDAO = new SprintDAO(connection);
+        sprintDAO.create(sprint);
+        
+        TrackingItem trackingItem = new TrackingItem(1L, "Scrum", "S", "All task related to SCRUM activities");
+        TrackingItemDAO trackingItemDAO = new TrackingItemDAO(connection);
+        trackingItemDAO.create(trackingItem);
+        
+        WorkItem originalWorkItem = new WorkItem(1L, user, workrecord, sprint, trackingItem, LocalTime.now(), LocalTime.now(), description);        
+
+        WorkItemDAO workItemDAO = new WorkItemDAO(connection);
+
+        //Act
+        boolean result = workItemDAO.update(originalWorkItem, null);
+
+        //Assert
+        Assert.assertFalse(result);        
     }
     
     @Test()
     public void T42_Calling_Update_Updates_OriginalWorkItem() throws SQLException {
+        //Arrange
+        String description = "TestDescription";
+        
+        Role role = new Role(1L, "Admin", "The Administrator role has access to all application features");
+        RoleDAO roleDAO = new RoleDAO(connection);
+        roleDAO.create(role);
+        
+        Address address = new Address(1L, "Humboldtstrasse", 90L, "Etage",2L, "Rechts", "Nürenberg", "Bayern", 90495L, "Deutschland");
+        AddressDAO addressDAO = new AddressDAO(connection);
+        addressDAO.create(address);
+        
+        Contract contract = new Contract(1L, "7 hours contract", 7L, 10L, 30L, "31.03", LocalTime.of(0, 15), LocalTime.of(9, 0), LocalTime.of(0, 30), LocalTime.of(12, 0), LocalTime.of(5, 0, 0), LocalTime.of(22, 0, 0));
+        ContractDAO contractDAO = new ContractDAO(connection);
+        contractDAO.create(contract);
+        
+        User user = new User(1L, role, address, contract, "Stephan", "Reimann", "stephan", "password", 30L);
+        UserDAO userDAO = new UserDAO(connection);
+        userDAO.create(user);
+        
+        Project project = new Project(1L, "TestProject", "AAAA.BBBB.CCCC.DDDD", "TRUE", "TRUE", "TRUE", "TestDescription");
+        ProjectDAO projectDAO = new ProjectDAO(connection);
+        projectDAO.create(project);
+        
+        Worklocation worklocation = new Worklocation(1L, "Homeoffice", "Worklocation is Homeoffice");
+        WorklocationDAO worklocationDAO = new WorklocationDAO(connection);
+        worklocationDAO.create(worklocation);
+        
+        Workrecord workrecord = new Workrecord(1L, user, project, LocalDate.now(), LocalTime.now(), LocalTime.now(), LocalTime.now(), LocalTime.now().toString(), LocalTime.now().toString(), 0, worklocation, description);
+        WorkrecordDAO workrecordDAO = new WorkrecordDAO(connection);
+        workrecordDAO.create(workrecord);
+        
+        Sprint sprint = new Sprint(1L, LocalDate.now(), LocalDate.now(), 10);
+        SprintDAO sprintDAO = new SprintDAO(connection);
+        sprintDAO.create(sprint);
+        
+        TrackingItem trackingItem = new TrackingItem(1L, "Scrum", "S", "All task related to SCRUM activities");
+        TrackingItemDAO trackingItemDAO = new TrackingItemDAO(connection);
+        trackingItemDAO.create(trackingItem);
+        
+        String modifiedDescription = "modified TestDescription";
+        
+        WorkItem originalWorkItem = new WorkItem(1L, user, workrecord, sprint, trackingItem, LocalTime.now(), LocalTime.now(), description);        
+        WorkItem modifiedWorkItem = new WorkItem(1L, user, workrecord, sprint, trackingItem, LocalTime.now(), LocalTime.now(), modifiedDescription);        
+
+        WorkItemDAO workItemDAO = new WorkItemDAO(connection);
+        workItemDAO.create(originalWorkItem);
+
+        //Act
+        boolean result = workItemDAO.update(originalWorkItem, modifiedWorkItem);
+        List<WorkItem> workItemResult = workItemDAO.selectAll(user, sprint);
+        
+        //Assert
+        Assert.assertTrue(result);
+        Assert.assertEquals(modifiedWorkItem, workItemResult.get(0));
     }
     
     @Test()
     public void T43_Calling_Update_OriginalWorkItem_DoesNotExists_Returns_False() throws SQLException {
+        //Arrange
+        String description = "TestDescription";
+        
+        Role role = new Role(1L, "Admin", "The Administrator role has access to all application features");
+        RoleDAO roleDAO = new RoleDAO(connection);
+        roleDAO.create(role);
+        
+        Address address = new Address(1L, "Humboldtstrasse", 90L, "Etage",2L, "Rechts", "Nürenberg", "Bayern", 90495L, "Deutschland");
+        AddressDAO addressDAO = new AddressDAO(connection);
+        addressDAO.create(address);
+        
+        Contract contract = new Contract(1L, "7 hours contract", 7L, 10L, 30L, "31.03", LocalTime.of(0, 15), LocalTime.of(9, 0), LocalTime.of(0, 30), LocalTime.of(12, 0), LocalTime.of(5, 0, 0), LocalTime.of(22, 0, 0));
+        ContractDAO contractDAO = new ContractDAO(connection);
+        contractDAO.create(contract);
+        
+        User user = new User(1L, role, address, contract, "Stephan", "Reimann", "stephan", "password", 30L);
+        UserDAO userDAO = new UserDAO(connection);
+        userDAO.create(user);
+        
+        Project project = new Project(1L, "TestProject", "AAAA.BBBB.CCCC.DDDD", "TRUE", "TRUE", "TRUE", "TestDescription");
+        ProjectDAO projectDAO = new ProjectDAO(connection);
+        projectDAO.create(project);
+        
+        Worklocation worklocation = new Worklocation(1L, "Homeoffice", "Worklocation is Homeoffice");
+        WorklocationDAO worklocationDAO = new WorklocationDAO(connection);
+        worklocationDAO.create(worklocation);
+        
+        Workrecord workrecord = new Workrecord(1L, user, project, LocalDate.now(), LocalTime.now(), LocalTime.now(), LocalTime.now(), LocalTime.now().toString(), LocalTime.now().toString(), 0, worklocation, description);
+        WorkrecordDAO workrecordDAO = new WorkrecordDAO(connection);
+        workrecordDAO.create(workrecord);
+        
+        Sprint sprint = new Sprint(1L, LocalDate.now(), LocalDate.now(), 10);
+        SprintDAO sprintDAO = new SprintDAO(connection);
+        sprintDAO.create(sprint);
+        
+        TrackingItem trackingItem = new TrackingItem(1L, "Scrum", "S", "All task related to SCRUM activities");
+        TrackingItemDAO trackingItemDAO = new TrackingItemDAO(connection);
+        trackingItemDAO.create(trackingItem);
+        
+        String modifiedDescription = "modified TestDescription";
+        
+        WorkItem originalWorkItem = new WorkItem(1L, user, workrecord, sprint, trackingItem, LocalTime.now(), LocalTime.now(), description);        
+        WorkItem modifiedWorkItem = new WorkItem(1L, user, workrecord, sprint, trackingItem, LocalTime.now(), LocalTime.now(), modifiedDescription);        
+
+        WorkItemDAO workItemDAO = new WorkItemDAO(connection);
+
+        //Act
+        boolean result = workItemDAO.update(originalWorkItem, modifiedWorkItem);
+        List<WorkItem> workItemResult = workItemDAO.selectAll(user, sprint);
+        
+        //Assert
+        Assert.assertFalse(result);
     }
     
     @Test()
     public void T44_Calling_Update_On_Different_WorkItem_DoenNotChange_WorkItem() throws SQLException {
+        //Arrange
+        String description = "TestDescription";
+        
+        Role role = new Role(1L, "Admin", "The Administrator role has access to all application features");
+        RoleDAO roleDAO = new RoleDAO(connection);
+        roleDAO.create(role);
+        
+        Address address = new Address(1L, "Humboldtstrasse", 90L, "Etage",2L, "Rechts", "Nürenberg", "Bayern", 90495L, "Deutschland");
+        AddressDAO addressDAO = new AddressDAO(connection);
+        addressDAO.create(address);
+        
+        Contract contract = new Contract(1L, "7 hours contract", 7L, 10L, 30L, "31.03", LocalTime.of(0, 15), LocalTime.of(9, 0), LocalTime.of(0, 30), LocalTime.of(12, 0), LocalTime.of(5, 0, 0), LocalTime.of(22, 0, 0));
+        ContractDAO contractDAO = new ContractDAO(connection);
+        contractDAO.create(contract);
+        
+        User user = new User(1L, role, address, contract, "Stephan", "Reimann", "stephan", "password", 30L);
+        UserDAO userDAO = new UserDAO(connection);
+        userDAO.create(user);
+        
+        Project project = new Project(1L, "TestProject", "AAAA.BBBB.CCCC.DDDD", "TRUE", "TRUE", "TRUE", "TestDescription");
+        ProjectDAO projectDAO = new ProjectDAO(connection);
+        projectDAO.create(project);
+        
+        Worklocation worklocation = new Worklocation(1L, "Homeoffice", "Worklocation is Homeoffice");
+        WorklocationDAO worklocationDAO = new WorklocationDAO(connection);
+        worklocationDAO.create(worklocation);
+        
+        Workrecord workrecord = new Workrecord(1L, user, project, LocalDate.now(), LocalTime.now(), LocalTime.now(), LocalTime.now(), LocalTime.now().toString(), LocalTime.now().toString(), 0, worklocation, description);
+        WorkrecordDAO workrecordDAO = new WorkrecordDAO(connection);
+        workrecordDAO.create(workrecord);
+        
+        Sprint sprint = new Sprint(1L, LocalDate.now(), LocalDate.now(), 10);
+        SprintDAO sprintDAO = new SprintDAO(connection);
+        sprintDAO.create(sprint);
+        
+        TrackingItem trackingItem = new TrackingItem(1L, "Scrum", "S", "All task related to SCRUM activities");
+        TrackingItemDAO trackingItemDAO = new TrackingItemDAO(connection);
+        trackingItemDAO.create(trackingItem);
+        
+        String modifiedDescription = "modified TestDescription";
+        
+        WorkItem originalWorkItem = new WorkItem(1L, user, workrecord, sprint, trackingItem, LocalTime.now(), LocalTime.now(), description);        
+        WorkItem modifiedWorkItem = new WorkItem(2L, user, workrecord, sprint, trackingItem, LocalTime.now(), LocalTime.now(), modifiedDescription);        
+
+        WorkItemDAO workItemDAO = new WorkItemDAO(connection);
+        workItemDAO.create(originalWorkItem);
+
+        //Act
+        boolean result = workItemDAO.update(originalWorkItem, modifiedWorkItem);
+        List<WorkItem> workItemResult = workItemDAO.selectAll(user, sprint);
+        
+        //Assert
+        Assert.assertFalse(result);
+        Assert.assertEquals(originalWorkItem, workItemResult.get(0));
     }    
 
     @Test(expected = NullPointerException.class)
     public void T50_Calling_Delete_WorkItem_IsNull_Throws_NullPointerException() throws SQLException {
+        //Arrange
+        WorkItemDAO workItemDAO = new WorkItemDAO(connection);
+
+        //Act
+        //Assert
+        boolean result = workItemDAO.delete(null);
     }
     
     @Test()
     public void T51_Calling_Delete_WorkItem_DoesNotExists_Returns_False() throws SQLException {
+        //Arrange
+        String description = "TestDescription";
+        
+        Role role = new Role(1L, "Admin", "The Administrator role has access to all application features");
+        RoleDAO roleDAO = new RoleDAO(connection);
+        roleDAO.create(role);
+        
+        Address address = new Address(1L, "Humboldtstrasse", 90L, "Etage",2L, "Rechts", "Nürenberg", "Bayern", 90495L, "Deutschland");
+        AddressDAO addressDAO = new AddressDAO(connection);
+        addressDAO.create(address);
+        
+        Contract contract = new Contract(1L, "7 hours contract", 7L, 10L, 30L, "31.03", LocalTime.of(0, 15), LocalTime.of(9, 0), LocalTime.of(0, 30), LocalTime.of(12, 0), LocalTime.of(5, 0, 0), LocalTime.of(22, 0, 0));
+        ContractDAO contractDAO = new ContractDAO(connection);
+        contractDAO.create(contract);
+        
+        User user = new User(1L, role, address, contract, "Stephan", "Reimann", "stephan", "password", 30L);
+        UserDAO userDAO = new UserDAO(connection);
+        userDAO.create(user);
+        
+        Project project = new Project(1L, "TestProject", "AAAA.BBBB.CCCC.DDDD", "TRUE", "TRUE", "TRUE", "TestDescription");
+        ProjectDAO projectDAO = new ProjectDAO(connection);
+        projectDAO.create(project);
+        
+        Worklocation worklocation = new Worklocation(1L, "Homeoffice", "Worklocation is Homeoffice");
+        WorklocationDAO worklocationDAO = new WorklocationDAO(connection);
+        worklocationDAO.create(worklocation);
+        
+        Workrecord workrecord = new Workrecord(1L, user, project, LocalDate.now(), LocalTime.now(), LocalTime.now(), LocalTime.now(), LocalTime.now().toString(), LocalTime.now().toString(), 0, worklocation, description);
+        WorkrecordDAO workrecordDAO = new WorkrecordDAO(connection);
+        workrecordDAO.create(workrecord);
+        
+        Sprint sprint = new Sprint(1L, LocalDate.now(), LocalDate.now(), 10);
+        SprintDAO sprintDAO = new SprintDAO(connection);
+        sprintDAO.create(sprint);
+        
+        TrackingItem trackingItem = new TrackingItem(1L, "Scrum", "S", "All task related to SCRUM activities");
+        TrackingItemDAO trackingItemDAO = new TrackingItemDAO(connection);
+        trackingItemDAO.create(trackingItem);
+        
+        WorkItem workItem = new WorkItem(1L, user, workrecord, sprint, trackingItem, LocalTime.now(), LocalTime.now(), description);        
+
+        WorkItemDAO workItemDAO = new WorkItemDAO(connection);
+
+        //Act
+        boolean result = workItemDAO.delete(workItem);
+
+        //Assert
+        Assert.assertFalse(result);        
     }
     
     @Test()
     public void T52_Calling_Delete_WorkItem_Exists_Deletes_Workrecord() throws SQLException {
-    }
+        //Arrange
+        String description = "TestDescription";
+        
+        Role role = new Role(1L, "Admin", "The Administrator role has access to all application features");
+        RoleDAO roleDAO = new RoleDAO(connection);
+        roleDAO.create(role);
+        
+        Address address = new Address(1L, "Humboldtstrasse", 90L, "Etage",2L, "Rechts", "Nürenberg", "Bayern", 90495L, "Deutschland");
+        AddressDAO addressDAO = new AddressDAO(connection);
+        addressDAO.create(address);
+        
+        Contract contract = new Contract(1L, "7 hours contract", 7L, 10L, 30L, "31.03", LocalTime.of(0, 15), LocalTime.of(9, 0), LocalTime.of(0, 30), LocalTime.of(12, 0), LocalTime.of(5, 0, 0), LocalTime.of(22, 0, 0));
+        ContractDAO contractDAO = new ContractDAO(connection);
+        contractDAO.create(contract);
+        
+        User user = new User(1L, role, address, contract, "Stephan", "Reimann", "stephan", "password", 30L);
+        UserDAO userDAO = new UserDAO(connection);
+        userDAO.create(user);
+        
+        Project project = new Project(1L, "TestProject", "AAAA.BBBB.CCCC.DDDD", "TRUE", "TRUE", "TRUE", "TestDescription");
+        ProjectDAO projectDAO = new ProjectDAO(connection);
+        projectDAO.create(project);
+        
+        Worklocation worklocation = new Worklocation(1L, "Homeoffice", "Worklocation is Homeoffice");
+        WorklocationDAO worklocationDAO = new WorklocationDAO(connection);
+        worklocationDAO.create(worklocation);
+        
+        Workrecord workrecord = new Workrecord(1L, user, project, LocalDate.now(), LocalTime.now(), LocalTime.now(), LocalTime.now(), LocalTime.now().toString(), LocalTime.now().toString(), 0, worklocation, description);
+        WorkrecordDAO workrecordDAO = new WorkrecordDAO(connection);
+        workrecordDAO.create(workrecord);
+        
+        Sprint sprint = new Sprint(1L, LocalDate.now(), LocalDate.now(), 10);
+        SprintDAO sprintDAO = new SprintDAO(connection);
+        sprintDAO.create(sprint);
+        
+        TrackingItem trackingItem = new TrackingItem(1L, "Scrum", "S", "All task related to SCRUM activities");
+        TrackingItemDAO trackingItemDAO = new TrackingItemDAO(connection);
+        trackingItemDAO.create(trackingItem);
+        
+        WorkItem workItem = new WorkItem(1L, user, workrecord, sprint, trackingItem, LocalTime.now(), LocalTime.now(), description);        
+
+        WorkItemDAO workItemDAO = new WorkItemDAO(connection);
+        workItemDAO.create(workItem);
+
+        //Act
+        boolean result = workItemDAO.delete(workItem);
+        List<WorkItem> workItemResult = workItemDAO.selectAll();
+        
+        //Assert
+        Assert.assertTrue(result);
+        Assert.assertTrue(workItemResult.isEmpty());    }
     
     @Test()
     public void T60_Calling_GetNextId_On_WorkItemTable_Containing_One_WorkItem_Returns_2() throws SQLException {
+        //Arrange
+        String description = "TestDescription";
+        
+        Role role = new Role(1L, "Admin", "The Administrator role has access to all application features");
+        RoleDAO roleDAO = new RoleDAO(connection);
+        roleDAO.create(role);
+        
+        Address address = new Address(1L, "Humboldtstrasse", 90L, "Etage",2L, "Rechts", "Nürenberg", "Bayern", 90495L, "Deutschland");
+        AddressDAO addressDAO = new AddressDAO(connection);
+        addressDAO.create(address);
+        
+        Contract contract = new Contract(1L, "7 hours contract", 7L, 10L, 30L, "31.03", LocalTime.of(0, 15), LocalTime.of(9, 0), LocalTime.of(0, 30), LocalTime.of(12, 0), LocalTime.of(5, 0, 0), LocalTime.of(22, 0, 0));
+        ContractDAO contractDAO = new ContractDAO(connection);
+        contractDAO.create(contract);
+        
+        User user = new User(1L, role, address, contract, "Stephan", "Reimann", "stephan", "password", 30L);
+        UserDAO userDAO = new UserDAO(connection);
+        userDAO.create(user);
+        
+        Project project = new Project(1L, "TestProject", "AAAA.BBBB.CCCC.DDDD", "TRUE", "TRUE", "TRUE", "TestDescription");
+        ProjectDAO projectDAO = new ProjectDAO(connection);
+        projectDAO.create(project);
+        
+        Worklocation worklocation = new Worklocation(1L, "Homeoffice", "Worklocation is Homeoffice");
+        WorklocationDAO worklocationDAO = new WorklocationDAO(connection);
+        worklocationDAO.create(worklocation);
+        
+        Workrecord workrecord = new Workrecord(1L, user, project, LocalDate.now(), LocalTime.now(), LocalTime.now(), LocalTime.now(), LocalTime.now().toString(), LocalTime.now().toString(), 0, worklocation, description);
+        WorkrecordDAO workrecordDAO = new WorkrecordDAO(connection);
+        workrecordDAO.create(workrecord);
+        
+        Sprint sprint = new Sprint(1L, LocalDate.now(), LocalDate.now(), 10);
+        SprintDAO sprintDAO = new SprintDAO(connection);
+        sprintDAO.create(sprint);
+        
+        TrackingItem trackingItem = new TrackingItem(1L, "Scrum", "S", "All task related to SCRUM activities");
+        TrackingItemDAO trackingItemDAO = new TrackingItemDAO(connection);
+        trackingItemDAO.create(trackingItem);
+        
+        WorkItem workItem = new WorkItem(1L, user, workrecord, sprint, trackingItem, LocalTime.now(), LocalTime.now(), description);        
+
+        WorkItemDAO workItemDAO = new WorkItemDAO(connection);
+        workItemDAO.create(workItem);
+
+        //Act
+        long receivedId = workItemDAO.getNextId();
+        
+        //Assert
+        Assert.assertEquals(2L, receivedId);        
     }
     
     @Test()
     public void T61_Calling_GetNextId_Twice_On_WorkItemTable_Returns_SameId() throws SQLException {
+        //Arrange
+        String description = "TestDescription";
+        
+        Role role = new Role(1L, "Admin", "The Administrator role has access to all application features");
+        RoleDAO roleDAO = new RoleDAO(connection);
+        roleDAO.create(role);
+        
+        Address address = new Address(1L, "Humboldtstrasse", 90L, "Etage",2L, "Rechts", "Nürenberg", "Bayern", 90495L, "Deutschland");
+        AddressDAO addressDAO = new AddressDAO(connection);
+        addressDAO.create(address);
+        
+        Contract contract = new Contract(1L, "7 hours contract", 7L, 10L, 30L, "31.03", LocalTime.of(0, 15), LocalTime.of(9, 0), LocalTime.of(0, 30), LocalTime.of(12, 0), LocalTime.of(5, 0, 0), LocalTime.of(22, 0, 0));
+        ContractDAO contractDAO = new ContractDAO(connection);
+        contractDAO.create(contract);
+        
+        User user = new User(1L, role, address, contract, "Stephan", "Reimann", "stephan", "password", 30L);
+        UserDAO userDAO = new UserDAO(connection);
+        userDAO.create(user);
+        
+        Project project = new Project(1L, "TestProject", "AAAA.BBBB.CCCC.DDDD", "TRUE", "TRUE", "TRUE", "TestDescription");
+        ProjectDAO projectDAO = new ProjectDAO(connection);
+        projectDAO.create(project);
+        
+        Worklocation worklocation = new Worklocation(1L, "Homeoffice", "Worklocation is Homeoffice");
+        WorklocationDAO worklocationDAO = new WorklocationDAO(connection);
+        worklocationDAO.create(worklocation);
+        
+        Workrecord workrecord = new Workrecord(1L, user, project, LocalDate.now(), LocalTime.now(), LocalTime.now(), LocalTime.now(), LocalTime.now().toString(), LocalTime.now().toString(), 0, worklocation, description);
+        WorkrecordDAO workrecordDAO = new WorkrecordDAO(connection);
+        workrecordDAO.create(workrecord);
+        
+        Sprint sprint = new Sprint(1L, LocalDate.now(), LocalDate.now(), 10);
+        SprintDAO sprintDAO = new SprintDAO(connection);
+        sprintDAO.create(sprint);
+        
+        TrackingItem trackingItem = new TrackingItem(1L, "Scrum", "S", "All task related to SCRUM activities");
+        TrackingItemDAO trackingItemDAO = new TrackingItemDAO(connection);
+        trackingItemDAO.create(trackingItem);
+        
+        WorkItem workItem = new WorkItem(1L, user, workrecord, sprint, trackingItem, LocalTime.now(), LocalTime.now(), description);        
+
+        WorkItemDAO workItemDAO = new WorkItemDAO(connection);
+        workItemDAO.create(workItem);
+
+        //Act
+        long receivedIdFirstCall = workItemDAO.getNextId();
+        long receivedIdSecondCall = workItemDAO.getNextId();
+        
+        //Assert
+        Assert.assertEquals(receivedIdSecondCall, receivedIdFirstCall);
     }
     
     @Test
     public void T62_Calling_GetNextId_On_Truncated_Sqlite_Sequence_Table_Returns_0() throws SQLException {
+        //Arrange
+        WorkItemDAO workItemDAO = new WorkItemDAO(connection);
+        
+        //Act
+        long resultId = workItemDAO.getNextId();
+
+        //Assert
+        Assert.assertEquals(0L, resultId);
     }
     
     private synchronized boolean truncateTable() {
@@ -681,7 +1148,7 @@ public class WorkItemDAOTest {
         }
 
         statement = new StringBuilder();        
-        statement.append("DELETE FROM SQLITE_SEQUENCE WHERE name='Trackingitem'");
+        statement.append("DELETE FROM SQLITE_SEQUENCE WHERE name='TrackingItem'");
         try {
             PreparedStatement dbStatement = connection.prepareStatement(statement.toString());
             result = dbStatement.execute();
@@ -690,7 +1157,7 @@ public class WorkItemDAOTest {
         }
         
         statement = new StringBuilder();        
-        statement.append("DELETE FROM SQLITE_SEQUENCE WHERE name='Workitem'");
+        statement.append("DELETE FROM SQLITE_SEQUENCE WHERE name='WorkItem'");
         try {
             PreparedStatement dbStatement = connection.prepareStatement(statement.toString());
             result = dbStatement.execute();
