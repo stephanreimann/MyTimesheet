@@ -9,6 +9,8 @@ import java.sql.*;
 import java.util.ResourceBundle;
 import javafx.fxml.Initializable;
 import javafx.stage.Stage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import service.LanguageService;
 import service.PropertiesService;
 import service.UndoService;
@@ -19,6 +21,8 @@ import service.UndoService;
  */
 public class SprintViewController implements Initializable, IViewController {
 
+    private final Logger log = LogManager.getLogger(SprintViewController.class.getName());
+    
     private Stage primaryStage;
     private final ControllerRepository controllerRepository;
     private final LanguageService languageService;
@@ -44,7 +48,8 @@ public class SprintViewController implements Initializable, IViewController {
 
     @Override
     public void initialize(URL location, ResourceBundle rb) {
-
+        this.rb = rb;
+        
     }
 
     @Override
@@ -64,7 +69,7 @@ public class SprintViewController implements Initializable, IViewController {
 
     @Override
     public void setPrimaryStage(Stage primaryStage) {
-
+        this.primaryStage = primaryStage;
     }
 
     @Override
