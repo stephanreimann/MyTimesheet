@@ -7,13 +7,14 @@ package controller;
 import java.net.URL;
 import java.sql.Connection;
 import java.util.ResourceBundle;
+import javafx.collections.ObservableList;
 import javafx.fxml.Initializable;
 import javafx.stage.Stage;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import service.LanguageService;
-import service.PropertiesService;
-import service.UndoService;
+import model.TrackingItem;
+import org.apache.logging.log4j.*;
+import service.*;
+import sqlite.TrackingItemDAO;
+import utils.EventManager;
 
 /**
  *
@@ -21,6 +22,30 @@ import service.UndoService;
  */
 public class TrackingItemViewController implements Initializable, IViewController {
 
+    public enum DataAction { NEW, EDIT, DELETE };
+
+    private final String newResourceKey = "New";
+    private final String editResourceKey = "Edit";
+    private final String deleteResourceKey = "Delete";
+    
+    private final String trackingItemDetailsLabelResourceKey = "TrackingItemDetailsLabel";
+    
+    private final String trackingItemNameResourceKey = "TrackingItemName";
+    private final String trackingItemShortcutResourceKey = "TrackingItemShortcut";
+    private final String trackingItemDescriptionResourceKey = "TrackingItemDescription";
+    
+    private final String noTrackingItemSelectionAlertTitle = "NoSelectionAlertTitle";
+    private final String noTrackingItemSelectionAlertHeader = "NoWorklocationSelectionAlertHeader";
+    private final String noTrackingItemSelectionAlertContent = "NoWorklocationSelectionAlertContent";
+    
+    private final String trackingItemDetailsViewDialogIcon = "icons/app-maid.png";
+    private final String trackingItemDetailsViewDialogTitleResourceKey = "TrackingItemDetailsViewTitle";
+    private final String trackingItemDetailsViewResource = "/view/TrackingItemDetailsView.fxml";
+    
+    private final String newTrackingItemEvent = "NewTrackingItem";
+    private final String editTrackingItemEvent = "EditTrackingItem";
+    private final String deleteTrackingItemEvent = "DeleteTrackingItem";
+    
     private final Logger log = LogManager.getLogger(TrackingItemViewController.class.getName());
     
     private Stage primaryStage;
@@ -30,6 +55,12 @@ public class TrackingItemViewController implements Initializable, IViewControlle
     private final UndoService undoService;
     private final PropertiesService propertiesService;
     private ResourceBundle rb;
+    private EventManager eventManager;
+    
+    private TrackingItemDAO trackingItemDao;
+    private ObservableList<TrackingItem> trackingItemData;
+    
+    private Stage trackingItemDetailsViewDialog;
     
     public TrackingItemViewController(ControllerRepository controllerRepository, LanguageService languageService, Connection connection, UndoService undoService, PropertiesService propertiesService) {
         if(controllerRepository == null) throw new NullPointerException("controllerRepository");

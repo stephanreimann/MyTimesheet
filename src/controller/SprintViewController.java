@@ -7,13 +7,14 @@ package controller;
 import java.net.URL;
 import java.sql.*;
 import java.util.ResourceBundle;
+import javafx.collections.ObservableList;
 import javafx.fxml.Initializable;
 import javafx.stage.Stage;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import service.LanguageService;
-import service.PropertiesService;
-import service.UndoService;
+import model.Sprint;
+import org.apache.logging.log4j.*;
+import service.*;
+import sqlite.SprintDAO;
+import utils.EventManager;
 
 /**
  *
@@ -21,6 +22,31 @@ import service.UndoService;
  */
 public class SprintViewController implements Initializable, IViewController {
 
+    public enum DataAction { NEW, EDIT, DELETE };
+
+    private final String newResourceKey = "New";
+    private final String editResourceKey = "Edit";
+    private final String deleteResourceKey = "Delete";
+    
+    private final String sprintDetailsLabelResourceKey = "SprintDetailsLabel";
+    
+    private final String sprintIdResourceKey = "SprintId";
+    private final String startDateResourceKey = "StartDate";
+    private final String endDateResourceKey = "EndDate";
+    private final String numberOfSprintDaysResourceKey = "NumberOfSprintDays";
+    
+    private final String noSprintSelectionAlertTitle = "NoSelectionAlertTitle";
+    private final String noSprintSelectionAlertHeader = "NoWorklocationSelectionAlertHeader";
+    private final String noSprintSelectionAlertContent = "NoWorklocationSelectionAlertContent";
+    
+    private final String sprintDetailsViewDialogIcon = "icons/app-maid.png";
+    private final String sprintDetailsViewDialogTitleResourceKey = "SprintDetailsViewTitle";
+    private final String sprintDetailsViewResource = "/view/SprintDetailsView.fxml";
+    
+    private final String newSprintEvent = "NewSprint";
+    private final String editSprintEvent = "EditSprint";
+    private final String deleteSprintEvent = "DeleteSprint";
+    
     private final Logger log = LogManager.getLogger(SprintViewController.class.getName());
     
     private Stage primaryStage;
@@ -30,6 +56,12 @@ public class SprintViewController implements Initializable, IViewController {
     private final UndoService undoService;
     private final PropertiesService propertiesService;
     private ResourceBundle rb;
+    private EventManager eventManager;
+    
+    private SprintDAO sprintDao;
+    private ObservableList<Sprint> sprintData;
+    
+    private Stage sprintDetailsViewDialog;
     
     public SprintViewController(ControllerRepository controllerRepository, LanguageService languageService, Connection connection, UndoService undoService, PropertiesService propertiesService) {
         if(controllerRepository == null) throw new NullPointerException("controllerRepository");

@@ -28,15 +28,23 @@ public class WorkLocationViewController implements Initializable, IViewControlle
 
     public enum DataAction { NEW, EDIT, DELETE };
 
-    private final String worklocationNameResourceKey = "WorklocationName";
-    private final String worklocationDescriptionResourceKey = "WorklocationDescription";
-    private final String worklocationDetailsLabelResourceKey = "WorklocationDetailsLabel";
     private final String newResourceKey = "New";
     private final String editResourceKey = "Edit";
     private final String deleteResourceKey = "Delete";
+
+    private final String worklocationDetailsLabelResourceKey = "WorklocationDetailsLabel";
+
+    private final String worklocationNameResourceKey = "WorklocationName";
+    private final String worklocationDescriptionResourceKey = "WorklocationDescription";
+    
     private final String noWorklocationSelectionAlertTitle = "NoSelectionAlertTitle";
     private final String noWorklocationSelectionAlertHeader = "NoWorklocationSelectionAlertHeader";
     private final String noWorklocationSelectionAlertContent = "NoWorklocationSelectionAlertContent";
+
+    private final String worklocationDetailsViewDialogIcon = "icons/app-maid.png";
+    private final String worklocationDetailsViewDialogTitleResourceKey = "WorklocationDetailsViewTitle";
+    private final String worklocationDetailsViewResource = "/view/WorkLocationDetailsView.fxml";
+
     private final String newWorkLocationEvent = "NewWorkLocation";
     private final String editWorkLocationEvent = "EditWorkLocation";
     private final String deleteWorkLocationEvent = "DeleteWorkLocation";
@@ -50,15 +58,13 @@ public class WorkLocationViewController implements Initializable, IViewControlle
     private final UndoService undoService;
     private final PropertiesService propertiesService;
     private ResourceBundle rb;
-    private final WorklocationDAO worklocationDao;
-    private ObservableList<Worklocation> worklocationData;
-    private Stage worklocationDetailsViewDialog;
     private EventManager eventManager;
     
-    private final String worklocationDetailsViewDialogIcon = "icons/app-maid.png";
-    private final String worklocationDetailsViewDialogTitleResourceKey = "WorklocationDetailsViewTitle";
-    private final String worklocationDetailsViewResource = "/view/WorkLocationDetailsView.fxml";
-    
+    private final WorklocationDAO worklocationDao;
+    private ObservableList<Worklocation> worklocationData;
+
+    private Stage worklocationDetailsViewDialog;
+       
     @FXML
     private TableView<Worklocation> worklocationTableView;
     @FXML
