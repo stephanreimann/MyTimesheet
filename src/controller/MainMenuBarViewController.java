@@ -521,7 +521,7 @@ public class MainMenuBarViewController implements Initializable, IViewController
     }
 
     @FXML
-    private void openSprintDialog(ActionEvent event) throws IOException {
+    private void openSprintDialog(ActionEvent event) throws IOException, SQLException {
         SprintViewController sprintViewController = (SprintViewController) controllerRepository.get(SprintViewController.class.getName());
         if(sprintViewController == null) {
             sprintViewController = new SprintViewController(controllerRepository, languageService, connection, undoService, propertiesService);
