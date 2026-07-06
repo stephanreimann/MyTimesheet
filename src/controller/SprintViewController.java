@@ -8,6 +8,8 @@ import commands.sprint.*;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.*;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -21,6 +23,7 @@ import org.apache.logging.log4j.*;
 import service.*;
 import sqlite.SprintDAO;
 import utils.ControllerUtilities;
+import utils.DialogFactory;
 import utils.EventManager;
 
 /**
@@ -176,7 +179,13 @@ public class SprintViewController implements Initializable, IViewController {
 
     @Override
     public void updateGuiItems() {
-
+        sprintIdLabel.setText(rb.getString(sprintIdResourceKey));
+        startDateLabel.setText(rb.getString(startDateResourceKey));
+        endDateLabel.setText(rb.getString(endDateResourceKey));
+        numberOfSprintDaysLabel.setText(rb.getString(numberOfSprintDaysResourceKey));        
+        newButton.setText(rb.getString(newResourceKey));
+        editButton.setText(rb.getString(editResourceKey));
+        deleteButton.setText(rb.getString(deleteResourceKey));        
     }
 
     @Override
@@ -199,17 +208,52 @@ public class SprintViewController implements Initializable, IViewController {
 
     }
     
-    private void openSprintDetailsDialog(Sprint newSprint, DataAction dataAction) {
-
+    private void showSprintDetails(Sprint sprint) {
+        if(sprint != null) {
+            DateTimeFormatter dateTimeFormater = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT);
+            sprintIdLabelValue.setText(sprint.getId().toString());
+            startDateLabelValue.setText(dateTimeFormater.format(sprint.getStartDate()));
+            endDateLabelValue.setText(dateTimeFormater.format(sprint.getEndDate()));
+            numberOfSprintDaysLabelValue.setText(sprint.getNumberOfSprintDays().toString());
+        } else {
+            sprintIdLabelValue.setText("");
+            startDateLabelValue.setText("");
+            endDateLabelValue.setText("");
+            numberOfSprintDaysLabelValue.setText("");
+        }
     }
 
-    private boolean isSprintValid(Sprint newSprint) {
+    private void openSprintDetailsDialog(Sprint sprint, DataAction dataAction) throws IOException {
+        SprintDetailsViewController sprintDetailsViewController = new SprintDetailsViewController(languageService, connection, undoService, sprintData);
+        controllerRepository.put(SprintDetailsViewController.class.getName(), sprintDetailsViewController);
+
+        DialogFactory dialogFactory = new DialogFactory(
+            primaryStage, 
+            sprintDetailsViewDialogTitleResourceKey, 
+            sprintDetailsViewDialogIcon, 
+            sprintDetailsViewResource, 
+            rb, 
+            sprintDetailsViewController);
+        sprintDetailsViewDialog = dialogFactory.create();
+        sprintDetailsViewDialog.setWidth(400);
+        sprintDetailsViewDialog.setHeight(350);
+                
+        sprintDetailsViewController.setAction(dataAction);
+        sprintDetailsViewController.showSprintDetails(sprint);
         
-        return false;
-    }
+        ControllerUtilities.CenterOnDialog(primaryStage, sprintDetailsViewDialog);
 
-    private void showSprintDetails(Sprint selectedSprint) {
-
-    }
+        sprintDetailsViewDialog.showAndWait();        
     
+        controllerRepository.remove(SprintDetailsViewController.class.getName());
+
+    }
+
+    private boolean isSprintValid(Sprint sprint) {
+        return !ControllerUtilities.isNullOrEmpty(sprint.getId().toString()) &&
+               !ControllerUtilities.isNullOrEmpty(sprint.getStartDate().toString()) &&
+               !ControllerUtilities.isNullOrEmpty(sprint.getEndDate().toString()) &&
+               !ControllerUtilities.isNullOrEmpty(sprint.getNumberOfSprintDays().toString());
+    }
+  
 }

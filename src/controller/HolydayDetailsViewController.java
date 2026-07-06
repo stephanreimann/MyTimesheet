@@ -181,7 +181,7 @@ public class HolydayDetailsViewController implements Initializable, IViewControl
     void showHolydayDetails(Holyday holyday) {
         this.holyday = holyday;
         
-        //We save the actual contract information to be able to 
+        //We save the actual holyday information to be able to 
         //check for changes of each Information at validation of Innput.
         saveActualHolydayInformation(holyday);
         
