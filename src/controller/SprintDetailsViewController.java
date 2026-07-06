@@ -18,6 +18,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import model.Sprint;
@@ -55,8 +56,8 @@ public class SprintDetailsViewController implements Initializable, IViewControll
     private LocalDate newStartDate;
     private LocalDate oldEndDate;
     private LocalDate newEndDate;
-    private Integer oldNumberOfSprintDays;
-    private Integer newNumberOfSprintDays;
+    private Long oldNumberOfSprintDays;
+    private Long newNumberOfSprintDays;
     
     @FXML
     private Label sprintIdLabel;
@@ -68,13 +69,13 @@ public class SprintDetailsViewController implements Initializable, IViewControll
     private Label numberOfSprintDaysLabel;
 
     @FXML
-    private Label sprintIdLabelValue;
+    private TextField sprintIdLabelValue;
     @FXML
     private DatePicker startDatePicker;
     @FXML
     private DatePicker endDatePicker;
     @FXML
-    private Label numberOfSprintDaysLabelValue;
+    private TextField numberOfSprintDaysLabelValue;
 
     @FXML 
     private Button acceptButton;
@@ -100,7 +101,7 @@ public class SprintDetailsViewController implements Initializable, IViewControll
         sprint.setId(Long.getLong(sprintIdLabelValue.getText()));
         sprint.setStartDate(startDatePicker.getValue());
         sprint.setEndDate(endDatePicker.getValue());
-        sprint.setNumberOfSprintDays(Integer.getInteger(numberOfSprintDaysLabel.getText()));
+        sprint.setNumberOfSprintDays(Long.getLong(numberOfSprintDaysLabel.getText()));
         primaryStage.close();
     }
     
@@ -173,7 +174,8 @@ public class SprintDetailsViewController implements Initializable, IViewControll
         //check for changes of each Information at validation of Innput.
         saveActualSprintInformation(sprint);
         
-        sprintIdLabelValue.setText(sprint.getId().toString());
+        String idAsString = sprint.getId().toString();
+        sprintIdLabelValue.setText(idAsString);
         LocalDate startDate;
         if(sprint.getStartDate() == null) {
             startDate = LocalDate.now();
@@ -186,7 +188,8 @@ public class SprintDetailsViewController implements Initializable, IViewControll
         } else {
             endDate = sprint.getEndDate();
         }
-        numberOfSprintDaysLabelValue.setText(sprint.getNumberOfSprintDays().toString());
+        String numberOfSprintDaysAsString = sprint.getNumberOfSprintDays().toString();
+        numberOfSprintDaysLabelValue.setText(numberOfSprintDaysAsString);
     }
 
     private void saveActualSprintInformation(Sprint sprint) {

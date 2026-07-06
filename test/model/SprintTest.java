@@ -54,14 +54,14 @@ public class SprintTest {
         Assert.assertEquals(Long.valueOf(1), sprint.getId());
         Assert.assertNull(sprint.getStartDate());
         Assert.assertNull(sprint.getEndDate());
-        Assert.assertNull(sprint.getNumberOfSprintDays());
+        Assert.assertEquals(Long.valueOf(0), sprint.getNumberOfSprintDays());
     }
 
     @Test()
     public void T01_Parameterized_Ctor_Called_Returns_WithParameterInitialized_Instance() {
         //Arrange
         Long id = 138L;
-        Integer numberOfSprintDays = 10;
+        Long numberOfSprintDays = 10L;
         LocalDate startDate = LocalDate.now();
         LocalDate endDate = startDate.plusDays(numberOfSprintDays);
         
@@ -80,7 +80,7 @@ public class SprintTest {
     public void T02_Copy_Ctor_Called_Returns_WithParameterInitialized_Instance() {
         //Arrange
         Long id = 138L;
-        Integer numberOfSprintDays = 10;
+        Long numberOfSprintDays = 10L;
         LocalDate startDate = LocalDate.now();
         LocalDate endDate = startDate.plusDays(numberOfSprintDays);
         Sprint sprint = new Sprint(id, startDate, endDate, numberOfSprintDays);
@@ -100,7 +100,7 @@ public class SprintTest {
     public void T10_Requesting_HashCode_Twice_For_Same_Sprint_Instance_Returns_Identical_HashCode() {
         //Arrange
         Long id = 138L;
-        Integer numberOfSprintDays = 10;
+        Long numberOfSprintDays = 10L;
         LocalDate startDate = LocalDate.now();
         LocalDate endDate = startDate.plusDays(numberOfSprintDays);
         Sprint sprint = new Sprint(id, startDate, endDate, numberOfSprintDays);
@@ -116,7 +116,7 @@ public class SprintTest {
     @Test()
     public void T11_Requesting_HashCode_For_Different_Sprint_Instance_Returns_Different_HashCode() {
         //Arrange
-        Integer numberOfSprintDays = 10;
+        Long numberOfSprintDays = 10L;
         Sprint sprint1 = new Sprint(138L, LocalDate.now(), LocalDate.now().plusDays(numberOfSprintDays), numberOfSprintDays);
         Sprint sprint2 = new Sprint(139L, LocalDate.now(), LocalDate.now().plusDays(numberOfSprintDays), numberOfSprintDays);
 
@@ -132,7 +132,7 @@ public class SprintTest {
     @SuppressWarnings({"unchecked"})
     public void T20_Compare_Equal_Roles_Returns_True() {
         //Arrange
-        Integer numberOfSprintDays = 10;
+        Long numberOfSprintDays = 10L;
 
         List<Pair<Sprint, Sprint>> pairList = new ArrayList<>(); 
         pairList.add(
@@ -159,7 +159,7 @@ public class SprintTest {
     @SuppressWarnings("unchecked")
     public void T21_Compare_Different_Roles_Returns_False() {
         //Arrange
-        Integer numberOfSprintDays = 10;
+        Long numberOfSprintDays = 10L;
 
         List<Pair<Sprint, Sprint>> pairList = new ArrayList<>(); 
         pairList.add(
@@ -205,7 +205,7 @@ public class SprintTest {
         String expectedPrintResult = "138";
         
         Long id = 138L;
-        Integer numberOfSprintDays = 10;
+        Long numberOfSprintDays = 10L;
         LocalDate startDate = LocalDate.now();
         LocalDate endDate = startDate.plusDays(numberOfSprintDays);
 

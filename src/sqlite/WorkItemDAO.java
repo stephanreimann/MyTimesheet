@@ -181,7 +181,7 @@ public class WorkItemDAO {
         Sprint sprint = new Sprint(resultSet.getLong("s_id"));
         sprint.setStartDate(LocalDate.parse(resultSet.getString("s_startdate")));
         sprint.setEndDate(LocalDate.parse(resultSet.getString("s_enddate")));
-        sprint.setNumberOfSprintDays(resultSet.getInt("s_numberofsprintdays"));
+        sprint.setNumberOfSprintDays(resultSet.getLong("s_numberofsprintdays"));
         
         TrackingItem trackingItem = new TrackingItem(resultSet.getLong("ti_id"));
         trackingItem.setName(resultSet.getString("ti_name"));

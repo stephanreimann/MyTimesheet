@@ -20,13 +20,13 @@ public class Sprint {
     private final LongProperty id = new SimpleLongProperty();
     private final ObjectProperty<LocalDate> startdate = new SimpleObjectProperty<>();
     private final ObjectProperty<LocalDate> enddate = new SimpleObjectProperty<>();
-    private final ObjectProperty<Integer> numberofsprintdays = new SimpleObjectProperty<>();
+    private final LongProperty numberofsprintdays = new SimpleLongProperty();
 
     public Sprint(Long id) {
         this.id.set(id);
     }
     
-    public Sprint(Long id, LocalDate startdate, LocalDate enddate, Integer numberofsprintdays) {
+    public Sprint(Long id, LocalDate startdate, LocalDate enddate, Long numberofsprintdays) {
         this.id.set(id);
         this.startdate.set(startdate);
         this.enddate.set(enddate);
@@ -80,15 +80,15 @@ public class Sprint {
     }
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="NumberOfSprintDays Property">
-    public Integer getNumberOfSprintDays() {
+    public Long getNumberOfSprintDays() {
         return numberofsprintdays.get();
     }
     
-    public void setNumberOfSprintDays(Integer value) {
+    public void setNumberOfSprintDays(Long value) {
         numberofsprintdays.set(value);
     }
     
-    public ObjectProperty<Integer> getNumberOfSprintDaysProperty() {
+    public LongProperty getNumberOfSprintDaysProperty() {
         return numberofsprintdays;
     }
     // </editor-fold>

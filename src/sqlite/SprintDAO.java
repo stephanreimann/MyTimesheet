@@ -67,7 +67,7 @@ public class SprintDAO {
         Long rsId = rs.getLong("id");
         LocalDate rsStartDate = LocalDate.parse(rs.getString("startdate"));
         LocalDate rsEndDate = LocalDate.parse(rs.getString("enddate"));
-        int rsNumberOfSprintDays = rs.getInt("numberofsprintdays");
+        Long rsNumberOfSprintDays = rs.getLong("numberofsprintdays");
 
         return new Sprint(rsId, rsStartDate, rsEndDate, rsNumberOfSprintDays);
     }

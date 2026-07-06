@@ -122,7 +122,7 @@ public class WorkItemDAOTest {
         WorkrecordDAO workrecordDAO = new WorkrecordDAO(connection);
         workrecordDAO.create(workrecord);
         
-        Sprint sprint = new Sprint(1L, LocalDate.now(), LocalDate.now(), 10);
+        Sprint sprint = new Sprint(1L, LocalDate.now(), LocalDate.now(), 10L);
         SprintDAO sprintDAO = new SprintDAO(connection);
         sprintDAO.create(sprint);
         
@@ -195,8 +195,8 @@ public class WorkItemDAOTest {
         workrecordDAO.create(workrecord1);
         workrecordDAO.create(workrecord2);
         
-        Sprint sprint1 = new Sprint(139L, LocalDate.now(), LocalDate.now(), 10);
-        Sprint sprint2 = new Sprint(140L, LocalDate.now(), LocalDate.now(), 10);
+        Sprint sprint1 = new Sprint(139L, LocalDate.now(), LocalDate.now(), 10L);
+        Sprint sprint2 = new Sprint(140L, LocalDate.now(), LocalDate.now(), 10L);
         SprintDAO sprintDAO = new SprintDAO(connection);
         sprintDAO.create(sprint1);
         sprintDAO.create(sprint2);
@@ -259,8 +259,8 @@ public class WorkItemDAOTest {
         workrecordDAO.create(workrecord1);
         workrecordDAO.create(workrecord2);
         
-        Sprint sprint1 = new Sprint(139L, LocalDate.now(), LocalDate.now(), 10);
-        Sprint sprint2 = new Sprint(140L, LocalDate.now(), LocalDate.now(), 10);
+        Sprint sprint1 = new Sprint(139L, LocalDate.now(), LocalDate.now(), 10L);
+        Sprint sprint2 = new Sprint(140L, LocalDate.now(), LocalDate.now(), 10L);
         SprintDAO sprintDAO = new SprintDAO(connection);
         sprintDAO.create(sprint1);
         sprintDAO.create(sprint2);
@@ -321,9 +321,9 @@ public class WorkItemDAOTest {
         workrecordDAO.create(workrecord1);
         workrecordDAO.create(workrecord2);
         
-        Sprint sprint1 = new Sprint(139L, LocalDate.now(), LocalDate.now(), 10);
-        Sprint sprint2 = new Sprint(140L, LocalDate.now(), LocalDate.now(), 10);
-        Sprint notFoundSprint = new Sprint(141L, LocalDate.now(), LocalDate.now(), 10);
+        Sprint sprint1 = new Sprint(139L, LocalDate.now(), LocalDate.now(), 10L);
+        Sprint sprint2 = new Sprint(140L, LocalDate.now(), LocalDate.now(), 10L);
+        Sprint notFoundSprint = new Sprint(141L, LocalDate.now(), LocalDate.now(), 10L);
         SprintDAO sprintDAO = new SprintDAO(connection);
         sprintDAO.create(sprint1);
         sprintDAO.create(sprint2);
@@ -390,7 +390,7 @@ public class WorkItemDAOTest {
         WorkrecordDAO workrecordDAO = new WorkrecordDAO(connection);
         workrecordDAO.create(workrecord);
         
-        Sprint sprint = new Sprint(1L, LocalDate.now(), LocalDate.now(), 10);
+        Sprint sprint = new Sprint(1L, LocalDate.now(), LocalDate.now(), 10L);
         SprintDAO sprintDAO = new SprintDAO(connection);
         sprintDAO.create(sprint);
         
@@ -442,7 +442,7 @@ public class WorkItemDAOTest {
         WorkrecordDAO workrecordDAO = new WorkrecordDAO(connection);
         workrecordDAO.create(workrecord);
         
-        Sprint sprint = new Sprint(1L, LocalDate.now(), LocalDate.now(), 10);
+        Sprint sprint = new Sprint(1L, LocalDate.now(), LocalDate.now(), 10L);
         SprintDAO sprintDAO = new SprintDAO(connection);
         sprintDAO.create(sprint);
         
@@ -493,7 +493,7 @@ public class WorkItemDAOTest {
         WorkrecordDAO workrecordDAO = new WorkrecordDAO(connection);
         workrecordDAO.create(workrecord);
         
-        Sprint sprint = new Sprint(1L, LocalDate.now(), LocalDate.now(), 10);
+        Sprint sprint = new Sprint(1L, LocalDate.now(), LocalDate.now(), 10L);
         SprintDAO sprintDAO = new SprintDAO(connection);
         sprintDAO.create(sprint);
         
@@ -545,7 +545,7 @@ public class WorkItemDAOTest {
         WorkrecordDAO workrecordDAO = new WorkrecordDAO(connection);
         workrecordDAO.create(workrecord);
         
-        Sprint sprint = new Sprint(1L, LocalDate.now(), LocalDate.now(), 10);
+        Sprint sprint = new Sprint(1L, LocalDate.now(), LocalDate.now(), 10L);
         SprintDAO sprintDAO = new SprintDAO(connection);
         sprintDAO.create(sprint);
         
@@ -597,7 +597,7 @@ public class WorkItemDAOTest {
         WorkrecordDAO workrecordDAO = new WorkrecordDAO(connection);
         workrecordDAO.create(workrecord);
         
-        Sprint sprint = new Sprint(1L, LocalDate.now(), LocalDate.now(), 10);
+        Sprint sprint = new Sprint(1L, LocalDate.now(), LocalDate.now(), 10L);
         SprintDAO sprintDAO = new SprintDAO(connection);
         sprintDAO.create(sprint);
         
@@ -655,7 +655,7 @@ public class WorkItemDAOTest {
         WorkrecordDAO workrecordDAO = new WorkrecordDAO(connection);
         workrecordDAO.create(workrecord);
         
-        Sprint sprint = new Sprint(1L, LocalDate.now(), LocalDate.now(), 10);
+        Sprint sprint = new Sprint(1L, LocalDate.now(), LocalDate.now(), 10L);
         SprintDAO sprintDAO = new SprintDAO(connection);
         sprintDAO.create(sprint);
         
@@ -711,7 +711,7 @@ public class WorkItemDAOTest {
         WorkrecordDAO workrecordDAO = new WorkrecordDAO(connection);
         workrecordDAO.create(workrecord);
         
-        Sprint sprint = new Sprint(1L, LocalDate.now(), LocalDate.now(), 10);
+        Sprint sprint = new Sprint(1L, LocalDate.now(), LocalDate.now(), 10L);
         SprintDAO sprintDAO = new SprintDAO(connection);
         sprintDAO.create(sprint);
         
@@ -779,7 +779,7 @@ public class WorkItemDAOTest {
         WorkrecordDAO workrecordDAO = new WorkrecordDAO(connection);
         workrecordDAO.create(workrecord);
         
-        Sprint sprint = new Sprint(1L, LocalDate.now(), LocalDate.now(), 10);
+        Sprint sprint = new Sprint(1L, LocalDate.now(), LocalDate.now(), 10L);
         SprintDAO sprintDAO = new SprintDAO(connection);
         sprintDAO.create(sprint);
         
@@ -831,7 +831,7 @@ public class WorkItemDAOTest {
         WorkrecordDAO workrecordDAO = new WorkrecordDAO(connection);
         workrecordDAO.create(workrecord);
         
-        Sprint sprint = new Sprint(1L, LocalDate.now(), LocalDate.now(), 10);
+        Sprint sprint = new Sprint(1L, LocalDate.now(), LocalDate.now(), 10L);
         SprintDAO sprintDAO = new SprintDAO(connection);
         sprintDAO.create(sprint);
         
@@ -885,7 +885,7 @@ public class WorkItemDAOTest {
         WorkrecordDAO workrecordDAO = new WorkrecordDAO(connection);
         workrecordDAO.create(workrecord);
         
-        Sprint sprint = new Sprint(1L, LocalDate.now(), LocalDate.now(), 10);
+        Sprint sprint = new Sprint(1L, LocalDate.now(), LocalDate.now(), 10L);
         SprintDAO sprintDAO = new SprintDAO(connection);
         sprintDAO.create(sprint);
         
@@ -938,7 +938,7 @@ public class WorkItemDAOTest {
         WorkrecordDAO workrecordDAO = new WorkrecordDAO(connection);
         workrecordDAO.create(workrecord);
         
-        Sprint sprint = new Sprint(1L, LocalDate.now(), LocalDate.now(), 10);
+        Sprint sprint = new Sprint(1L, LocalDate.now(), LocalDate.now(), 10L);
         SprintDAO sprintDAO = new SprintDAO(connection);
         sprintDAO.create(sprint);
         

@@ -73,7 +73,7 @@ public class WorkItemTest {
         Project project = new Project(1L, "TestProject", "AAAA.BBBB.CCCC.DDDD", "TRUE", "TRUE", "TRUE", "TestDescription");
         Worklocation worklocation = new Worklocation(1L, "Homeoffice", "Worklocation is Homeoffice");
         Workrecord workrecord = new Workrecord(id, user, project, LocalDate.now(), LocalTime.now(), LocalTime.now(), LocalTime.now(), LocalTime.now().toString(), LocalTime.now().toString(), 0, worklocation, description);
-        Sprint sprint = new Sprint(id, LocalDate.now(), LocalDate.now(), 10);
+        Sprint sprint = new Sprint(id, LocalDate.now(), LocalDate.now(), 10L);
         TrackingItem trackingItem = new TrackingItem(1L, "Scrum", "S", "All task related to SCRUM activities");
         LocalTime starttime = LocalTime.now();
         LocalTime endtime = LocalTime.now();
@@ -105,7 +105,7 @@ public class WorkItemTest {
         Project project = new Project(1L, "TestProject", "AAAA.BBBB.CCCC.DDDD", "TRUE", "TRUE", "TRUE", "TestDescription");
         Worklocation worklocation = new Worklocation(1L, "Homeoffice", "Worklocation is Homeoffice");
         Workrecord workrecord = new Workrecord(id, user, project, LocalDate.now(), LocalTime.now(), LocalTime.now(), LocalTime.now(), LocalTime.now().toString(), LocalTime.now().toString(), 0, worklocation, description);
-        Sprint sprint = new Sprint(id, LocalDate.now(), LocalDate.now(), 10);
+        Sprint sprint = new Sprint(id, LocalDate.now(), LocalDate.now(), 10L);
         TrackingItem trackingItem = new TrackingItem(1L, "Scrum", "S", "All task related to SCRUM activities");
         LocalTime starttime = LocalTime.now();
         LocalTime endtime = LocalTime.now();
@@ -130,7 +130,7 @@ public class WorkItemTest {
         Project project = new Project(1L, "TestProject", "AAAA.BBBB.CCCC.DDDD", "TRUE", "TRUE", "TRUE", "TestDescription");
         Worklocation worklocation = new Worklocation(1L, "Homeoffice", "Worklocation is Homeoffice");
         Workrecord workrecord = new Workrecord(1L, user, project, LocalDate.now(), LocalTime.now(), LocalTime.now(), LocalTime.now(), LocalTime.now().toString(), LocalTime.now().toString(), 0, worklocation, description);
-        Sprint sprint = new Sprint(1L, LocalDate.now(), LocalDate.now(), 10);
+        Sprint sprint = new Sprint(1L, LocalDate.now(), LocalDate.now(), 10L);
         TrackingItem trackingItem = new TrackingItem(1L, "Scrum", "S", "All task related to SCRUM activities");
         LocalTime starttime = LocalTime.now();
         LocalTime endtime = LocalTime.now();
@@ -156,7 +156,7 @@ public class WorkItemTest {
         Project project = new Project(1L, "TestProject", "AAAA.BBBB.CCCC.DDDD", "TRUE", "TRUE", "TRUE", "TestDescription");
         Worklocation worklocation = new Worklocation(1L, "Homeoffice", "Worklocation is Homeoffice");
         Workrecord workrecord = new Workrecord(1L, user, project, LocalDate.now(), LocalTime.now(), LocalTime.now(), LocalTime.now(), LocalTime.now().toString(), LocalTime.now().toString(), 0, worklocation, description);
-        Sprint sprint = new Sprint(1L, LocalDate.now(), LocalDate.now(), 10);
+        Sprint sprint = new Sprint(1L, LocalDate.now(), LocalDate.now(), 10L);
         TrackingItem trackingItem = new TrackingItem(1L, "Scrum", "S", "All task related to SCRUM activities");
         LocalTime starttime = LocalTime.now();
         LocalTime endtime = LocalTime.now();
@@ -181,7 +181,7 @@ public class WorkItemTest {
         Project project = new Project(1L, "TestProject", "AAAA.BBBB.CCCC.DDDD", "TRUE", "TRUE", "TRUE", "TestDescription");
         Worklocation worklocation = new Worklocation(1L, "Homeoffice", "Worklocation is Homeoffice");
         Workrecord workrecord = new Workrecord(1L, user, project, LocalDate.now(), LocalTime.now(), LocalTime.now(), LocalTime.now(), LocalTime.now().toString(), LocalTime.now().toString(), 0, worklocation, description);
-        Sprint sprint = new Sprint(1L, LocalDate.now(), LocalDate.now(), 10);
+        Sprint sprint = new Sprint(1L, LocalDate.now(), LocalDate.now(), 10L);
         TrackingItem trackingItem = new TrackingItem(1L, "Scrum", "S", "All task related to SCRUM activities");
         LocalTime starttime = LocalTime.now();
         LocalTime endtime = LocalTime.now();
@@ -259,7 +259,7 @@ public class WorkItemTest {
         Project project = new Project(1L, "TestProject", "AAAA.BBBB.CCCC.DDDD", "TRUE", "TRUE", "TRUE", "TestDescription");
         Worklocation worklocation = new Worklocation(1L, "Homeoffice", "Worklocation is Homeoffice");
         Workrecord workrecord = new Workrecord(1L, user, project, LocalDate.now(), LocalTime.now(), LocalTime.now(), LocalTime.now(), LocalTime.now().toString(), LocalTime.now().toString(), 0, worklocation, description);
-        Sprint sprint = new Sprint(1L, LocalDate.now(), LocalDate.now(), 10);
+        Sprint sprint = new Sprint(1L, LocalDate.now(), LocalDate.now(), 10L);
         TrackingItem trackingItem = new TrackingItem(1L, "Scrum", "S", "All task related to SCRUM activities");
         LocalTime starttime = LocalTime.of(1, 0, 0, 0);
         LocalTime endtime = LocalTime.of(1, 0, 0, 0);
