@@ -11,6 +11,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.ResourceBundle;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -26,6 +27,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import service.LanguageService;
 import service.UndoService;
+import utils.ControllerUtilities;
+import utils.DateConverter;
 
 /**
  *
@@ -33,10 +36,13 @@ import service.UndoService;
  */
 public class SprintDetailsViewController implements Initializable, IViewController {
 
+    private final String dateFormat = "dd.MM.yyyy";
     private final String sprintIdResourceKey = "SprintId";
     private final String startDateResourceKey = "StartDate";
     private final String endDateResourceKey = "EndDate";
     private final String numberOfSprintDaysResourceKey = "NumberOfSprintDays";
+    private final String acceptResourceKey = "Accept";
+    private final String cancelResourceKey = "Cancel";
     
     private final Logger log = LogManager.getLogger(SprintDetailsViewController.class.getName());
     
@@ -98,10 +104,18 @@ public class SprintDetailsViewController implements Initializable, IViewControll
 
     @FXML
     private void acceptAction(ActionEvent event) {
-        sprint.setId(Long.getLong(sprintIdLabelValue.getText()));
+        String sprintIdAsString = sprintIdLabelValue.getText();
+        if(ControllerUtilities.isNullOrEmpty(sprintIdAsString)) {
+            sprintIdAsString = "0";
+        }
+        sprint.setId(Long.valueOf(sprintIdAsString));
         sprint.setStartDate(startDatePicker.getValue());
         sprint.setEndDate(endDatePicker.getValue());
-        sprint.setNumberOfSprintDays(Long.getLong(numberOfSprintDaysLabel.getText()));
+        String numberOfSprintDaysAsString = numberOfSprintDaysLabelValue.getText();
+        if(ControllerUtilities.isNullOrEmpty(numberOfSprintDaysAsString)) {
+            numberOfSprintDaysAsString = "0";
+        }
+        sprint.setNumberOfSprintDays(Long.valueOf(numberOfSprintDaysAsString));
         primaryStage.close();
     }
     
@@ -111,12 +125,35 @@ public class SprintDetailsViewController implements Initializable, IViewControll
     }
     
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
+    public void initialize(URL location, ResourceBundle rb) {
+        this.rb = rb;
 
+        acceptButton.setDisable(true);
+        
+        sprintIdLabelValue.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
+            newSprintId = Long.getLong(newValue);
+            validateInput();
+        });        
+        startDatePicker.valueProperty().addListener((ObservableValue<? extends LocalDate> observable, LocalDate oldValue, LocalDate newValue) -> {
+            newStartDate = newValue;
+            validateInput();
+        });
+        endDatePicker.valueProperty().addListener((ObservableValue<? extends LocalDate> observable, LocalDate oldValue, LocalDate newValue) -> {
+            newEndDate = newValue;
+            validateInput();
+        });        
+        numberOfSprintDaysLabelValue.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
+            newNumberOfSprintDays = Long.getLong(newValue);
+            validateInput();
+        });        
     }
 
     @Override
     public void updateGuiItems() {
+        sprintIdLabel.setText(rb.getString(sprintIdResourceKey));
+        numberOfSprintDaysLabel.setText(rb.getString(numberOfSprintDaysResourceKey));
+        acceptButton.setText(rb.getString(acceptResourceKey));
+        cancelButton.setText(rb.getString(cancelResourceKey));
 
         refreshSprintDatesFormat();        
     }
@@ -170,7 +207,7 @@ public class SprintDetailsViewController implements Initializable, IViewControll
     public void showSprintDetails(Sprint sprint) {
         this.sprint = sprint;
         
-        //We save the actual holyday information to be able to 
+        //We save the actual ho information to be able to 
         //check for changes of each Information at validation of Innput.
         saveActualSprintInformation(sprint);
         
@@ -182,12 +219,14 @@ public class SprintDetailsViewController implements Initializable, IViewControll
         } else {
             startDate = sprint.getStartDate();
         }
+        startDatePicker.setValue(startDate);
         LocalDate endDate;
         if(sprint.getEndDate() == null) {
             endDate = LocalDate.now();
         } else {
             endDate = sprint.getEndDate();
         }
+        endDatePicker.setValue(endDate);
         String numberOfSprintDaysAsString = sprint.getNumberOfSprintDays().toString();
         numberOfSprintDaysLabelValue.setText(numberOfSprintDaysAsString);
     }
@@ -197,6 +236,106 @@ public class SprintDetailsViewController implements Initializable, IViewControll
         oldStartDate = sprint.getStartDate();
         oldEndDate = sprint.getEndDate();
         oldNumberOfSprintDays = sprint.getNumberOfSprintDays();
+    }
+
+    private boolean validateInput() {
+        if(isInputValid()) {
+            acceptButton.setDisable(false);
+            return true;
+        } else {
+            acceptButton.setDisable(true);
+            return false;
+        }
+    }
+
+    private boolean isInputValid() {
+        boolean result = false;
+        switch(dataAction) {
+            case DataAction.NEW -> {
+                boolean r1 = isInputFilled();
+                boolean r2 = isInputUnique(); 
+
+                return r1 && r2;
+            }
+            case DataAction.EDIT -> {
+                boolean r1 = isInputFilled();
+                boolean r2 = hasInputChanged();
+                return r1 && r2;
+            }
+        }
+        
+        if(result) {
+            acceptButton.setDisable(false);
+            return true;
+        } else {
+            acceptButton.setDisable(true);
+            return false;
+        }
+    }
+    
+    private boolean isInputFilled() {
+        boolean r1 = isSprintIdFilled(sprintIdLabelValue);
+        boolean r2 = isDateFilled(startDatePicker);
+        boolean r3 = isDateFilled(endDatePicker);
+        boolean r4 = isNumberOfSprintDaysFilled(numberOfSprintDaysLabelValue);
+        
+        boolean result = r1 && r2 && r3;
+
+        return result;
+    }
+
+    private boolean isSprintIdFilled(TextField sprintId) {
+        return !isNullOrEmpty(sprintId);
+    }
+    
+    private boolean isDateFilled(DatePicker datePicker) {
+        LocalDate date = datePicker.getValue();
+        String formatedDate;
+        if(date == null) {
+            formatedDate = "";
+        } else {
+            formatedDate = DateConverter.format(date, DateTimeFormatter.ofPattern(dateFormat));
+        }
+        return !ControllerUtilities.isNullOrEmpty(formatedDate);
+    }
+    
+    private boolean isNumberOfSprintDaysFilled(TextField numberOfSprintDays) {
+        return !isNullOrEmpty(numberOfSprintDays);
+    }
+
+    private boolean isNullOrEmpty(TextField textField) {
+        return ControllerUtilities.isNullOrEmpty(textField.getText());
+    }    
+
+    private boolean isInputUnique() {
+        String sprintIdAsString = sprintIdLabelValue.getText();
+        if(ControllerUtilities.isNullOrEmpty(sprintIdAsString)) {
+            sprintIdAsString = "0";
+        }
+        Long sprintId = Long.valueOf(sprintIdAsString);
+        LocalDate startDate = startDatePicker.getValue();
+        LocalDate endDate = endDatePicker.getValue();
+        String numberOfSprintDaysAsString = numberOfSprintDaysLabelValue.getText();
+        if(ControllerUtilities.isNullOrEmpty(numberOfSprintDaysAsString)) {
+            numberOfSprintDaysAsString = "0";
+        }
+        Long numberOfSprintDays = Long.valueOf(numberOfSprintDaysAsString);
+        if(startDate == null || endDate == null) {
+            return false;
+        }
+        Sprint tempSprint = new Sprint(sprintId, startDate, endDate, numberOfSprintDays);
+        return !sprintData.contains(tempSprint);
+    }
+
+    private boolean hasInputChanged() {
+        boolean r1 = !oldSprintId.equals(newSprintId);
+        boolean r2 = !oldStartDate.equals(newStartDate);
+        boolean r3 = !oldEndDate.equals(newEndDate);
+        boolean r4 = !oldNumberOfSprintDays.equals(newNumberOfSprintDays);
+        
+        boolean result = r1 || r2 || r3;
+        
+        return result;
     }
     
 }

@@ -250,6 +250,9 @@ public class SprintViewController implements Initializable, IViewController {
     }
 
     private boolean isSprintValid(Sprint sprint) {
+        if(sprint.getStartDate() == null || sprint.getEndDate() == null) {
+            return false;
+        }
         return !ControllerUtilities.isNullOrEmpty(sprint.getId().toString()) &&
                !ControllerUtilities.isNullOrEmpty(sprint.getStartDate().toString()) &&
                !ControllerUtilities.isNullOrEmpty(sprint.getEndDate().toString()) &&
