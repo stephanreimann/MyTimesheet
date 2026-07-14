@@ -259,13 +259,16 @@ public class SprintDetailsViewController implements Initializable, IViewControll
             case DataAction.NEW -> {
                 boolean r1 = isInputFilled();
                 boolean r2 = isInputUnique(); 
-
-                return r1 && r2;
+                boolean r3 = isStartDateBeforeEndDate();
+                
+                return r1 && r2 && r3;
             }
             case DataAction.EDIT -> {
                 boolean r1 = isInputFilled();
                 boolean r2 = hasInputChanged();
-                return r1 && r2;
+                boolean r3 = isStartDateBeforeEndDate();
+                
+                return r1 && r2 && r3;
             }
         }
         
@@ -340,6 +343,20 @@ public class SprintDetailsViewController implements Initializable, IViewControll
         return result;
     }
   
+    private boolean isStartDateBeforeEndDate() {
+        boolean result = false;
+        LocalDate startDate = startDatePicker.getValue();
+        LocalDate endDate = endDatePicker.getValue();
+        
+        if(startDate == null || endDate == null) {
+            return result;
+        }
+        
+        result = startDate.isBefore(endDate);
+        
+        return result;
+    }
+    
     private Long calculateNumberOfSprintDays() {
         Long sprintDays = 0L;
         LocalDate startDate = startDatePicker.getValue();
