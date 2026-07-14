@@ -51,20 +51,20 @@
                             </VBox.margin>
                             <children>
                                 <Label fx:id="sprintIdLabel" text="%SprintId" GridPane.rowIndex="0" />
-                                <Label fx:id="startDateLabel" text="%StartDate" GridPane.rowIndex="1" />
-                                <Label fx:id="endDateLabel" text="%EndDate" GridPane.rowIndex="2" />
+                                <Label fx:id="sprintStartDateLabel" text="%StartDate" GridPane.rowIndex="1" />
+                                <Label fx:id="sprintEndDateLabel" text="%EndDate" GridPane.rowIndex="2" />
                                 <Label fx:id="numberOfSprintDaysLabel" text="%NumberOfSprintDays" GridPane.rowIndex="3" />
                                 <Label fx:id="sprintIdLabelValue" GridPane.columnIndex="1">
                                     <GridPane.margin>
                                         <Insets left="5.0" right="5.0" />
                                     </GridPane.margin>
                                 </Label>
-                                <Label fx:id="startDateLabelValue" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                <Label fx:id="sprintStartDateLabelValue" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                     <GridPane.margin>
                                         <Insets left="5.0" right="5.0" />
                                     </GridPane.margin>
                                 </Label>
-                                <Label fx:id="endDateLabelValue" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                <Label fx:id="sprintEndDateLabelValue" GridPane.columnIndex="1" GridPane.rowIndex="2">
                                     <GridPane.margin>
                                         <Insets left="5.0" right="5.0" />
                                     </GridPane.margin>

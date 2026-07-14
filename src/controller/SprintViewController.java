@@ -64,17 +64,17 @@ public class SprintViewController implements Initializable, IViewController {
     @FXML
     private Label sprintIdLabel;
     @FXML
-    private Label startDateLabel;
+    private Label sprintStartDateLabel;
     @FXML
-    private Label endDateLabel;
+    private Label sprintEndDateLabel;
     @FXML
     private Label numberOfSprintDaysLabel;
     @FXML
     private Label sprintIdLabelValue;
     @FXML
-    private Label startDateLabelValue;
+    private Label sprintStartDateLabelValue;
     @FXML
-    private Label endDateLabelValue;
+    private Label sprintEndDateLabelValue;
     @FXML
     private Label numberOfSprintDaysLabelValue;
             
@@ -180,8 +180,8 @@ public class SprintViewController implements Initializable, IViewController {
     @Override
     public void updateGuiItems() {
         sprintIdLabel.setText(rb.getString(sprintIdResourceKey));
-        startDateLabel.setText(rb.getString(startDateResourceKey));
-        endDateLabel.setText(rb.getString(endDateResourceKey));
+        sprintStartDateLabel.setText(rb.getString(startDateResourceKey));
+        sprintEndDateLabel.setText(rb.getString(endDateResourceKey));
         numberOfSprintDaysLabel.setText(rb.getString(numberOfSprintDaysResourceKey));        
         newButton.setText(rb.getString(newResourceKey));
         editButton.setText(rb.getString(editResourceKey));
@@ -212,13 +212,13 @@ public class SprintViewController implements Initializable, IViewController {
         if(sprint != null) {
             DateTimeFormatter dateTimeFormater = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT);
             sprintIdLabelValue.setText(sprint.getId().toString());
-            startDateLabelValue.setText(dateTimeFormater.format(sprint.getStartDate()));
-            endDateLabelValue.setText(dateTimeFormater.format(sprint.getEndDate()));
+            sprintStartDateLabelValue.setText(dateTimeFormater.format(sprint.getStartDate()));
+            sprintEndDateLabelValue.setText(dateTimeFormater.format(sprint.getEndDate()));
             numberOfSprintDaysLabelValue.setText(sprint.getNumberOfSprintDays().toString());
         } else {
             sprintIdLabelValue.setText("");
-            startDateLabelValue.setText("");
-            endDateLabelValue.setText("");
+            sprintStartDateLabelValue.setText("");
+            sprintEndDateLabelValue.setText("");
             numberOfSprintDaysLabelValue.setText("");
         }
     }
