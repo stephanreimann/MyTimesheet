@@ -10,6 +10,7 @@ import java.sql.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
+import java.util.List;
 import java.util.ResourceBundle;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
@@ -131,7 +132,7 @@ public class SprintDetailsViewController implements Initializable, IViewControll
         acceptButton.setDisable(true);
         
         sprintIdLabelValue.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
-            newSprintId = Long.getLong(newValue);
+            newSprintId = Long.parseLong(newValue);
             validateInput();
         });        
         startDatePicker.valueProperty().addListener((ObservableValue<? extends LocalDate> observable, LocalDate oldValue, LocalDate newValue) -> {
@@ -143,7 +144,7 @@ public class SprintDetailsViewController implements Initializable, IViewControll
             validateInput();
         });        
         numberOfSprintDaysLabelValue.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
-            newNumberOfSprintDays = Long.getLong(newValue);
+            newNumberOfSprintDays = Long.parseLong(newValue);
             validateInput();
         });        
     }
@@ -280,7 +281,6 @@ public class SprintDetailsViewController implements Initializable, IViewControll
         boolean r4 = isNumberOfSprintDaysFilled(numberOfSprintDaysLabelValue);
         
         boolean result = r1 && r2 && r3;
-
         return result;
     }
 
@@ -324,17 +324,15 @@ public class SprintDetailsViewController implements Initializable, IViewControll
             return false;
         }
         Sprint tempSprint = new Sprint(sprintId, startDate, endDate, numberOfSprintDays);
-        return !sprintData.contains(tempSprint);
-    }
+        return !sprintData.contains(tempSprint);    }
 
     private boolean hasInputChanged() {
         boolean r1 = !oldSprintId.equals(newSprintId);
         boolean r2 = !oldStartDate.equals(newStartDate);
         boolean r3 = !oldEndDate.equals(newEndDate);
         boolean r4 = !oldNumberOfSprintDays.equals(newNumberOfSprintDays);
-        
-        boolean result = r1 || r2 || r3;
-        
+
+        boolean result = r1 || r2 || r3 || r4;      
         return result;
     }
     
