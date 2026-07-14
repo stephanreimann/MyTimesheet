@@ -44,6 +44,7 @@ public class SprintDetailsViewController implements Initializable, IViewControll
     private final String numberOfSprintDaysResourceKey = "NumberOfSprintDays";
     private final String acceptResourceKey = "Accept";
     private final String cancelResourceKey = "Cancel";
+    private final String endDateBeforStartDateInfoResourceKey = "EndDateBeforStartDate";
     
     private final Logger log = LogManager.getLogger(SprintDetailsViewController.class.getName());
     
@@ -74,6 +75,8 @@ public class SprintDetailsViewController implements Initializable, IViewControll
     private Label endDateLabel;
     @FXML
     private Label numberOfSprintDaysLabel;
+    @FXML
+    private Label infoLabel;
 
     @FXML
     private TextField sprintIdLabelValue;
@@ -83,7 +86,7 @@ public class SprintDetailsViewController implements Initializable, IViewControll
     private DatePicker endDatePicker;
     @FXML
     private TextField numberOfSprintDaysLabelValue;
-
+    
     @FXML 
     private Button acceptButton;
     @FXML
@@ -355,8 +358,12 @@ public class SprintDetailsViewController implements Initializable, IViewControll
         result = startDate.isBefore(endDate);
         if(result == false) {
             endDatePicker.setStyle("-fx-background-color: red;");
+            infoLabel.setText(rb.getString(endDateBeforStartDateInfoResourceKey));
+            infoLabel.setStyle("-fx-text-fill: red;");
         } else {
             endDatePicker.setStyle("");
+            infoLabel.setText("");
+            infoLabel.setStyle("");
         }
         
         return result;
