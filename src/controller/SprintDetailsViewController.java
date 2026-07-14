@@ -353,6 +353,11 @@ public class SprintDetailsViewController implements Initializable, IViewControll
         }
         
         result = startDate.isBefore(endDate);
+        if(result == false) {
+            endDatePicker.setStyle("-fx-background-color: red;");
+        } else {
+            endDatePicker.setStyle("");
+        }
         
         return result;
     }
