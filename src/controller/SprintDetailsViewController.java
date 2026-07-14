@@ -8,6 +8,7 @@ import controller.SprintViewController.DataAction;
 import java.net.URL;
 import java.sql.*;
 import java.time.LocalDate;
+import java.time.DayOfWeek;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.ResourceBundle;
@@ -131,19 +132,23 @@ public class SprintDetailsViewController implements Initializable, IViewControll
         acceptButton.setDisable(true);
         
         sprintIdLabelValue.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
-            newSprintId = Long.parseLong(newValue);
+            newSprintId = Long.valueOf(newValue);
             validateInput();
         });        
         startDatePicker.valueProperty().addListener((ObservableValue<? extends LocalDate> observable, LocalDate oldValue, LocalDate newValue) -> {
             newStartDate = newValue;
+            newNumberOfSprintDays = calculateNumberOfSprintDays();
+            numberOfSprintDaysLabelValue.setText(newNumberOfSprintDays.toString());
             validateInput();
         });
         endDatePicker.valueProperty().addListener((ObservableValue<? extends LocalDate> observable, LocalDate oldValue, LocalDate newValue) -> {
             newEndDate = newValue;
+            newNumberOfSprintDays = calculateNumberOfSprintDays();
+            numberOfSprintDaysLabelValue.setText(newNumberOfSprintDays.toString());
             validateInput();
         });        
         numberOfSprintDaysLabelValue.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
-            newNumberOfSprintDays = Long.parseLong(newValue);
+            newNumberOfSprintDays = Long.valueOf(newValue);
             validateInput();
         });        
     }
@@ -279,7 +284,7 @@ public class SprintDetailsViewController implements Initializable, IViewControll
         boolean r3 = isDateFilled(endDatePicker);
         boolean r4 = isNumberOfSprintDaysFilled(numberOfSprintDaysLabelValue);
         
-        boolean result = r1 && r2 && r3;
+        boolean result = r1 && r2 && r3 && r4;
         return result;
     }
 
@@ -333,6 +338,34 @@ public class SprintDetailsViewController implements Initializable, IViewControll
 
         boolean result = r1 || r2 || r3 || r4;      
         return result;
+    }
+  
+    private Long calculateNumberOfSprintDays() {
+        Long sprintDays = 0L;
+        LocalDate startDate = startDatePicker.getValue();
+        LocalDate endDate = endDatePicker.getValue();
+        
+        if(startDate == null || endDate == null) {
+            return sprintDays;
+        }
+        
+        if (endDate.isBefore(startDate)) {
+            LocalDate temp = startDate;
+            startDate = endDate;
+            endDate = temp;
+        }
+
+        LocalDate date = startDate;
+
+        while (!date.isAfter(endDate)) {
+            DayOfWeek day = date.getDayOfWeek();
+            if (day != DayOfWeek.SATURDAY && day != DayOfWeek.SUNDAY) {
+                sprintDays++;
+            }
+            date = date.plusDays(1);
+        }
+        
+        return sprintDays;
     }
     
 }
