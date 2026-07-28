@@ -46,8 +46,8 @@ public class SprintViewController implements Initializable, IViewController {
     private final String numberOfSprintDaysResourceKey = "NumberOfSprintDays";
     
     private final String noSprintSelectionAlertTitle = "NoSelectionAlertTitle";
-    private final String noSprintSelectionAlertHeader = "NoWorklocationSelectionAlertHeader";
-    private final String noSprintSelectionAlertContent = "NoWorklocationSelectionAlertContent";
+    private final String noSprintSelectionAlertHeader = "NoSprintSelectionAlertHeader";
+    private final String noSprintSelectionAlertContent = "NoSprintSelectionAlertContent";
     
     private final String sprintDetailsViewDialogIcon = "icons/app-maid.png";
     private final String sprintDetailsViewDialogTitleResourceKey = "SprintDetailsViewTitle";
@@ -157,7 +157,6 @@ public class SprintViewController implements Initializable, IViewController {
             ControllerUtilities.showNoItemSelectedAlert(primaryStage, rb, noSprintSelectionAlertTitle, noSprintSelectionAlertHeader, noSprintSelectionAlertContent);
         }
     }
-
     
     @Override
     public void initialize(URL location, ResourceBundle rb) {
@@ -173,8 +172,7 @@ public class SprintViewController implements Initializable, IViewController {
 
         sprintTableView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> showSprintDetails(newValue));
                 
-        languageService.updateGuiItems();        
-        
+        languageService.updateGuiItems();                
     }
 
     @Override

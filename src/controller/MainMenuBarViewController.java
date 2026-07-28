@@ -546,7 +546,7 @@ public class MainMenuBarViewController implements Initializable, IViewController
     }
             
     @FXML
-    private void openTrackingItemDialog(ActionEvent event) throws IOException {
+    private void openTrackingItemDialog(ActionEvent event) throws IOException, SQLException {
         TrackingItemViewController trackingItemViewController = (TrackingItemViewController) controllerRepository.get(TrackingItemViewController.class.getName());
         if(trackingItemViewController == null) {
             trackingItemViewController = new TrackingItemViewController(controllerRepository, languageService, connection, undoService, propertiesService);
