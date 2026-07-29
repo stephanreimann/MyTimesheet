@@ -20,10 +20,12 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.DateCell;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import javafx.util.StringConverter;
 import model.Sprint;
 import org.apache.logging.log4j.LogManager;
@@ -135,7 +137,9 @@ public class SprintDetailsViewController implements Initializable, IViewControll
         this.rb = rb;
 
         acceptButton.setDisable(true);
-        
+        initStartDateCellFactory();
+        initEndDateCellFactory();
+
         sprintIdLabelValue.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
             try {
                 newSprintId = Long.valueOf(newValue);
@@ -161,7 +165,7 @@ public class SprintDetailsViewController implements Initializable, IViewControll
             validateInput();
         });
     }
-
+    
     @Override
     public void updateGuiItems() {
         sprintIdLabel.setText(rb.getString(sprintIdResourceKey));
@@ -169,6 +173,8 @@ public class SprintDetailsViewController implements Initializable, IViewControll
         acceptButton.setText(rb.getString(acceptResourceKey));
         cancelButton.setText(rb.getString(cancelResourceKey));
 
+        initStartDateCellFactory();
+        initEndDateCellFactory();        
         refreshSprintDatesFormat();        
     }
 
@@ -227,6 +233,7 @@ public class SprintDetailsViewController implements Initializable, IViewControll
         
         String idAsString = sprint.getId().toString();
         sprintIdLabelValue.setText(idAsString);
+        
         LocalDate startDate;
         if(sprint.getStartDate() == null) {
             startDate = LocalDate.now();
@@ -234,9 +241,10 @@ public class SprintDetailsViewController implements Initializable, IViewControll
             startDate = sprint.getStartDate();
         }
         sprintStartDatePicker.setValue(startDate);
+        
         LocalDate endDate;
         if(sprint.getEndDate() == null) {
-            endDate = LocalDate.now();
+            endDate = startDate.plusDays(1);
         } else {
             endDate = sprint.getEndDate();
         }
@@ -245,6 +253,44 @@ public class SprintDetailsViewController implements Initializable, IViewControll
         numberOfSprintDaysLabelValue.setText(numberOfSprintDaysAsString);
     }
 
+    private void initStartDateCellFactory() {
+        Callback<DatePicker, DateCell> dayCellFactory = dp -> {
+            return new DateCell() {
+                @Override
+                public void updateItem(LocalDate item, boolean empty)
+                {
+                    super.updateItem(item, empty);
+                    LocalDate selectedEndDate = sprintEndDatePicker.getValue();
+                    if(item.isAfter(selectedEndDate))
+                    {
+                        setStyle("-fx-background-color: #ffc0cb;");
+                        setDisable(true);
+                    }
+                }
+            };
+        };
+        sprintStartDatePicker.setDayCellFactory(dayCellFactory);
+    }
+    
+    private void initEndDateCellFactory() {
+        Callback<DatePicker, DateCell> dayCellFactory = dp -> {
+            return new DateCell() {
+                @Override
+                public void updateItem(LocalDate item, boolean empty)
+                {
+                    super.updateItem(item, empty);
+                    LocalDate selectedStartDate = sprintStartDatePicker.getValue();
+                    if(item.isBefore(selectedStartDate))
+                    {
+                        setStyle("-fx-background-color: #ffc0cb;");
+                        setDisable(true);
+                    }
+                }
+            };
+        };
+        sprintEndDatePicker.setDayCellFactory(dayCellFactory);
+    }
+    
     private void saveActualSprintInformation(Sprint sprint) {
         oldSprintId = sprint.getId();
         oldStartDate = sprint.getStartDate();
