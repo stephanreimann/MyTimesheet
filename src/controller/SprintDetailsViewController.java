@@ -11,7 +11,9 @@ import java.time.LocalDate;
 import java.time.DayOfWeek;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -85,7 +87,7 @@ public class SprintDetailsViewController implements Initializable, IViewControll
     @FXML
     private DatePicker sprintEndDatePicker;
     @FXML
-    private TextField numberOfSprintDaysLabelValue;
+    private Label numberOfSprintDaysLabelValue;
     
     @FXML 
     private Button acceptButton;
@@ -135,8 +137,12 @@ public class SprintDetailsViewController implements Initializable, IViewControll
         acceptButton.setDisable(true);
         
         sprintIdLabelValue.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
-            newSprintId = Long.valueOf(newValue);
-            validateInput();
+            try {
+                newSprintId = Long.valueOf(newValue);
+                validateInput();
+            } catch (NumberFormatException ex) {
+                acceptButton.setDisable(true);
+            }
         });        
         sprintStartDatePicker.valueProperty().addListener((ObservableValue<? extends LocalDate> observable, LocalDate oldValue, LocalDate newValue) -> {
             newStartDate = newValue;
@@ -153,7 +159,7 @@ public class SprintDetailsViewController implements Initializable, IViewControll
         numberOfSprintDaysLabelValue.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
             newNumberOfSprintDays = Long.valueOf(newValue);
             validateInput();
-        });        
+        });
     }
 
     @Override
@@ -235,7 +241,7 @@ public class SprintDetailsViewController implements Initializable, IViewControll
             endDate = sprint.getEndDate();
         }
         sprintEndDatePicker.setValue(endDate);
-        String numberOfSprintDaysAsString = sprint.getNumberOfSprintDays().toString();
+        String numberOfSprintDaysAsString = calculateNumberOfSprintDays().toString();
         numberOfSprintDaysLabelValue.setText(numberOfSprintDaysAsString);
     }
 
@@ -263,15 +269,17 @@ public class SprintDetailsViewController implements Initializable, IViewControll
                 boolean r1 = isInputFilled();
                 boolean r2 = isInputUnique(); 
                 boolean r3 = isStartDateBeforeEndDate();
+                boolean r4 = isSprintNumberValid();
                 
-                return r1 && r2 && r3;
+                return r1 && r2 && r3 && r4;
             }
             case DataAction.EDIT -> {
                 boolean r1 = isInputFilled();
                 boolean r2 = hasInputChanged();
                 boolean r3 = isStartDateBeforeEndDate();
+                boolean r4 = isSprintNumberValid();
                 
-                return r1 && r2 && r3;
+                return r1 && r2 && r3 && r4;
             }
         }
         
@@ -288,9 +296,8 @@ public class SprintDetailsViewController implements Initializable, IViewControll
         boolean r1 = isSprintIdFilled(sprintIdLabelValue);
         boolean r2 = isDateFilled(sprintStartDatePicker);
         boolean r3 = isDateFilled(sprintEndDatePicker);
-        boolean r4 = isNumberOfSprintDaysFilled(numberOfSprintDaysLabelValue);
         
-        boolean result = r1 && r2 && r3 && r4;
+        boolean result = r1 && r2 && r3;
         return result;
     }
 
@@ -309,31 +316,15 @@ public class SprintDetailsViewController implements Initializable, IViewControll
         return !ControllerUtilities.isNullOrEmpty(formatedDate);
     }
     
-    private boolean isNumberOfSprintDaysFilled(TextField numberOfSprintDays) {
-        return !isNullOrEmpty(numberOfSprintDays);
-    }
-
     private boolean isNullOrEmpty(TextField textField) {
         return ControllerUtilities.isNullOrEmpty(textField.getText());
     }    
 
     private boolean isInputUnique() {
-        String sprintIdAsString = sprintIdLabelValue.getText();
-        if(ControllerUtilities.isNullOrEmpty(sprintIdAsString)) {
-            sprintIdAsString = "0";
-        }
-        Long sprintId = Long.valueOf(sprintIdAsString);
-        LocalDate startDate = sprintStartDatePicker.getValue();
-        LocalDate endDate = sprintEndDatePicker.getValue();
-        String numberOfSprintDaysAsString = numberOfSprintDaysLabelValue.getText();
-        if(ControllerUtilities.isNullOrEmpty(numberOfSprintDaysAsString)) {
-            numberOfSprintDaysAsString = "0";
-        }
-        Long numberOfSprintDays = Long.valueOf(numberOfSprintDaysAsString);
-        if(startDate == null || endDate == null) {
+        if(newStartDate == null || newEndDate == null) {
             return false;
         }
-        Sprint tempSprint = new Sprint(sprintId, startDate, endDate, numberOfSprintDays);
+        Sprint tempSprint = new Sprint(newSprintId, newStartDate, newEndDate, newNumberOfSprintDays);
         return !sprintData.contains(tempSprint);    }
 
     private boolean hasInputChanged() {
@@ -348,8 +339,8 @@ public class SprintDetailsViewController implements Initializable, IViewControll
   
     private boolean isStartDateBeforeEndDate() {
         boolean result = false;
-        LocalDate startDate = sprintStartDatePicker.getValue();
-        LocalDate endDate = sprintEndDatePicker.getValue();
+        LocalDate startDate = newStartDate;
+        LocalDate endDate = newEndDate;
         
         if(startDate == null || endDate == null) {
             return result;
@@ -369,10 +360,27 @@ public class SprintDetailsViewController implements Initializable, IViewControll
         return result;
     }
     
+    private boolean isSprintNumberValid() {        
+        boolean r1 = isSprintIdGreaterOrEqualZero();
+        boolean r2 = isSprintIdUnique();
+        
+        boolean result = r1 && r2;
+        return result;
+    }
+    
+    private boolean isSprintIdGreaterOrEqualZero() {
+        return newSprintId >= 0;
+    }
+    
+    private boolean isSprintIdUnique() {
+        List<Sprint> filteredList = sprintData.stream().filter(s -> s.getId().equals(newSprintId)).collect(Collectors.toList());
+        return filteredList.isEmpty();
+    }
+    
     private Long calculateNumberOfSprintDays() {
         Long sprintDays = 0L;
-        LocalDate startDate = sprintStartDatePicker.getValue();
-        LocalDate endDate = sprintEndDatePicker.getValue();
+        LocalDate startDate = newStartDate;
+        LocalDate endDate = newEndDate;
         
         if(startDate == null || endDate == null) {
             return sprintDays;

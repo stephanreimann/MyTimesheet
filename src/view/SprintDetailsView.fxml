@@ -32,14 +32,14 @@
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
-                              <Label fx:id="sprintIdLabel" text="%SprintId" />
-                              <Label fx:id="sprintStartDateLabel" text="%StartDate" GridPane.rowIndex="1" />
-                              <Label fx:id="sprintEndDateLabel" text="%EndDate" GridPane.rowIndex="2" />
+                        <Label fx:id="sprintIdLabel" text="%SprintId" />
+                        <Label fx:id="sprintStartDateLabel" text="%StartDate" GridPane.rowIndex="1" />
+                        <Label fx:id="sprintEndDateLabel" text="%EndDate" GridPane.rowIndex="2" />
                         <Label fx:id="numberOfSprintDaysLabel" text="%NumberOfSprintDays" GridPane.rowIndex="3" />
                         <TextField fx:id="sprintIdLabelValue" GridPane.columnIndex="1" />
                         <DatePicker fx:id="sprintStartDatePicker" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                         <DatePicker fx:id="sprintEndDatePicker" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                        <TextField fx:id="numberOfSprintDaysLabelValue" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                        <Label fx:id="numberOfSprintDaysLabelValue" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                         <Label fx:id="sprintInfoLabel" GridPane.columnSpan="2" GridPane.rowIndex="4" />
                      </children>
                      <VBox.margin>
