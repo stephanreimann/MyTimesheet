@@ -128,6 +128,7 @@ public class SprintViewController implements Initializable, IViewController {
         if(isSprintValid(newSprint)) {
             NewSprintCommand cmd = new NewSprintCommand(controllerRepository,eventManager, sprintTableView, newSprint, sprintDao);
             undoService.execute(cmd);
+            sprintTableView.sort();
         }
     }
     
@@ -141,6 +142,7 @@ public class SprintViewController implements Initializable, IViewController {
             if(!originalSprint.equals(selectedSprint)) {
                 EditSprintCommand cmd = new EditSprintCommand(controllerRepository, eventManager, sprintTableView, originalSprint, selectedSprint, sprintDao);
                 undoService.execute(cmd);
+                sprintTableView.sort();
             }
         } else {
             ControllerUtilities.showNoItemSelectedAlert(primaryStage, rb, noSprintSelectionAlertTitle, noSprintSelectionAlertHeader, noSprintSelectionAlertContent);
@@ -153,6 +155,7 @@ public class SprintViewController implements Initializable, IViewController {
         if(selectedSprint != null) {
             DeleteSprintCommand cmd = new DeleteSprintCommand(controllerRepository, eventManager, sprintTableView, selectedSprint, sprintDao);
             undoService.execute(cmd);
+            sprintTableView.sort();
         } else {
             ControllerUtilities.showNoItemSelectedAlert(primaryStage, rb, noSprintSelectionAlertTitle, noSprintSelectionAlertHeader, noSprintSelectionAlertContent);
         }
@@ -166,8 +169,10 @@ public class SprintViewController implements Initializable, IViewController {
         //HOWTO: Cell Value Factory
         //The cell must know which part of Sprint it needs to display. For all cells in the sprintDateTableColumn this will be the Sprint date value.
         sprintIdTableColumn.setCellValueFactory(cellData -> cellData.getValue().getIdProperty().asString());
-        sprintIdTableColumn.setSortable(false);
-        
+        sprintIdTableColumn.setSortable(true);
+        sprintIdTableColumn.setSortType(TableColumn.SortType.ASCENDING);
+        sprintTableView.sort();
+
         showSprintDetails(null);
 
         sprintTableView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> showSprintDetails(newValue));
