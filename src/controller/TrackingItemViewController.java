@@ -56,6 +56,8 @@ public class TrackingItemViewController implements Initializable, IViewControlle
     @FXML
     private TableColumn<TrackingItem, String> trackingItemIdTableColumn;
     @FXML
+    private TableColumn<TrackingItem, String> trackingItemNameTableColumn;
+    @FXML
     private Label trackingItemDetailsLabel;
     @FXML
     private Label trackingItemIdLabel;
@@ -163,6 +165,7 @@ public class TrackingItemViewController implements Initializable, IViewControlle
         //The cell must know which part of TrackingItem it needs to display. For all cells in the trackingItemDateTableColumn this will be the TrackingItem date value.
         trackingItemIdTableColumn.setCellValueFactory(cellData -> cellData.getValue().getIdProperty().asString());
         trackingItemIdTableColumn.setSortable(false);
+        trackingItemNameTableColumn.setCellValueFactory(cellData -> cellData.getValue().getNameProperty());
         
         showTrackingItemDetails(null);
 

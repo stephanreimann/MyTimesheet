@@ -20,6 +20,7 @@
                 <TableView fx:id="trackingItemTableView">
                   <columns>
                     <TableColumn fx:id="trackingItemIdTableColumn" prefWidth="75.0" text="%TrackingItemId" />
+                    <TableColumn fx:id="trackingItemNameTableColumn" prefWidth="75.0" text="%TrackingItemName" />
                   </columns>
                    <columnResizePolicy>
                       <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
