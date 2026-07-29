@@ -126,6 +126,7 @@ public class TrackingItemViewController implements Initializable, IViewControlle
         if(isTrackingItemValid(newTrackingItem)) {
             NewTrackingItemCommand cmd = new NewTrackingItemCommand(controllerRepository,eventManager, trackingItemTableView, newTrackingItem, trackingItemDao);
             undoService.execute(cmd);
+            trackingItemTableView.sort();
         }
     }
     
@@ -139,6 +140,7 @@ public class TrackingItemViewController implements Initializable, IViewControlle
             if(!originalTrackingItem.equals(selectedTrackingItem)) {
                 EditTrackingItemCommand cmd = new EditTrackingItemCommand(controllerRepository, eventManager, trackingItemTableView, originalTrackingItem, selectedTrackingItem, trackingItemDao);
                 undoService.execute(cmd);
+                trackingItemTableView.sort();
             }
         } else {
             ControllerUtilities.showNoItemSelectedAlert(primaryStage, rb, noTrackingItemSelectionAlertTitle, noTrackingItemSelectionAlertHeader, noTrackingItemSelectionAlertContent);
@@ -151,6 +153,7 @@ public class TrackingItemViewController implements Initializable, IViewControlle
         if(selectedTrackingItem != null) {
             DeleteTrackingItemCommand cmd = new DeleteTrackingItemCommand(controllerRepository, eventManager, trackingItemTableView, selectedTrackingItem, trackingItemDao);
             undoService.execute(cmd);
+            trackingItemTableView.sort();
         } else {
             ControllerUtilities.showNoItemSelectedAlert(primaryStage, rb, noTrackingItemSelectionAlertTitle, noTrackingItemSelectionAlertHeader, noTrackingItemSelectionAlertContent);
         }
@@ -164,7 +167,10 @@ public class TrackingItemViewController implements Initializable, IViewControlle
         //HOWTO: Cell Value Factory
         //The cell must know which part of TrackingItem it needs to display. For all cells in the trackingItemDateTableColumn this will be the TrackingItem date value.
         trackingItemIdTableColumn.setCellValueFactory(cellData -> cellData.getValue().getIdProperty().asString());
-        trackingItemIdTableColumn.setSortable(false);
+        trackingItemIdTableColumn.setSortable(true);
+        trackingItemIdTableColumn.setSortType(TableColumn.SortType.ASCENDING);
+        trackingItemTableView.sort();
+        
         trackingItemNameTableColumn.setCellValueFactory(cellData -> cellData.getValue().getNameProperty());
         
         showTrackingItemDetails(null);
