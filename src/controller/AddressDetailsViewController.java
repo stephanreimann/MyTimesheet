@@ -154,7 +154,7 @@ public class AddressDetailsViewController implements Initializable, IViewControl
         
         streetNameTextFieldValue.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
             newStreetName = newValue;
-            isInputValid();
+            validateInput();
         });        
         houseNumberTextFieldValue.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
             validateNumberInput(newValue, houseNumberTextFieldValue);
@@ -162,13 +162,12 @@ public class AddressDetailsViewController implements Initializable, IViewControl
                 newHouseNumber = Long.valueOf(newValue);
             } catch(NumberFormatException ex) {
                 houseNumberTextFieldValue.setText(newValue.replaceAll("[^\\d]", ""));
-                return;
             }
-            isInputValid();
+            validateInput();
         });        
         unitNameTextFieldValue.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
             newUnitName = newValue;
-            isInputValid();
+            validateInput();
         });        
         unitNumberTextFieldValue.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
             validateNumberInput(newValue, unitNumberTextFieldValue);
@@ -176,21 +175,20 @@ public class AddressDetailsViewController implements Initializable, IViewControl
                 newUnitNumber = Long.valueOf(newValue);
             } catch(NumberFormatException ex) {
                 unitNumberTextFieldValue.setText(newValue.replaceAll("[^\\d]", ""));
-                return;
             }
-            isInputValid();
+            validateInput();
         });        
         unitLocationTextFieldValue.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
             newUnitLocation = newValue;
-            isInputValid();
+            validateInput();
         });        
         cityTextFieldValue.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
             newCity = newValue;
-            isInputValid();
+            validateInput();
         });        
         stateTextFieldValue.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
             newState = newValue;
-            isInputValid();
+            validateInput();
         });        
         zipCodeTextFieldValue.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
             validateNumberInput(newValue, zipCodeTextFieldValue);
@@ -198,15 +196,13 @@ public class AddressDetailsViewController implements Initializable, IViewControl
                 newZipCode = Long.valueOf(newValue);
             } catch(NumberFormatException ex) {
                 zipCodeTextFieldValue.setText(newValue.replaceAll("[^\\d]", ""));
-                return;
             }
-            isInputValid();
+            validateInput();
         });        
         countryTextFieldValue.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
             newCountry = newValue;
-            isInputValid();
+            validateInput();
         });        
-
     }
     
     @Override
@@ -309,7 +305,7 @@ public class AddressDetailsViewController implements Initializable, IViewControl
         }
     }
     
-    private boolean isInputValid() {
+    private boolean validateInput() {
         boolean result = false;
 
         switch(dataAction) {

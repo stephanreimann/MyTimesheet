@@ -8,20 +8,17 @@ import controller.TrackingItemViewController.DataAction;
 import java.net.URL;
 import java.sql.*;
 import java.util.ResourceBundle;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 import model.TrackingItem;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import service.LanguageService;
-import service.UndoService;
+import org.apache.logging.log4j.*;
+import service.*;
 import utils.ControllerUtilities;
 
 /**
@@ -120,9 +117,18 @@ public class TrackingItemDetailsViewController implements Initializable, IViewCo
 
         acceptButton.setDisable(true);
         
-        trackingItemIdLabelValue.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
-            newTrackingItemId = Long.valueOf(newValue);
-            validateInput();
+        trackingItemIdLabelValue.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                validateNumberInput(newValue, trackingItemIdLabelValue);
+                try {
+                    newTrackingItemId = Long.valueOf(newValue);
+                } catch (NumberFormatException ex) {
+                    //trackingItemIdLabelValue.setText(newValue.replaceAll("[^\\d]", ""));
+                    acceptButton.setDisable(true);
+                }
+                validateInput();
+            }
         });        
         trackingItemNameLabelValue.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
             newTrackingItemName = newValue;
@@ -271,6 +277,12 @@ public class TrackingItemDetailsViewController implements Initializable, IViewCo
 
         boolean result = r1 || r2 || r3 || r4;      
         return result;
+    }
+
+    private void validateNumberInput(String newValue, TextField textField) {
+        if (!newValue.matches("\\d*")) {
+            textField.setText(newValue.replaceAll("[^\\d]", ""));
+        }
     }
     
 }

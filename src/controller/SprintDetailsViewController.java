@@ -141,12 +141,14 @@ public class SprintDetailsViewController implements Initializable, IViewControll
         initEndDateCellFactory();
 
         sprintIdLabelValue.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
+            validateNumberInput(newValue, sprintIdLabelValue);            
             try {
                 newSprintId = Long.valueOf(newValue);
-                validateInput();
             } catch (NumberFormatException ex) {
+                //sprintIdLabelValue.setText(newValue.replaceAll("[^\\d]", ""));
                 acceptButton.setDisable(true);
             }
+            validateInput();
         });        
         sprintStartDatePicker.valueProperty().addListener((ObservableValue<? extends LocalDate> observable, LocalDate oldValue, LocalDate newValue) -> {
             newStartDate = newValue;
@@ -449,6 +451,12 @@ public class SprintDetailsViewController implements Initializable, IViewControll
         }
         
         return sprintDays;
+    }
+    
+    private void validateNumberInput(String newValue, TextField textField) {
+        if (!newValue.matches("\\d*")) {
+            textField.setText(newValue.replaceAll("[^\\d]", ""));
+        }
     }
     
 }
