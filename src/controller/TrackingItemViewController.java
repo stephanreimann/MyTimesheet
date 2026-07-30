@@ -248,7 +248,6 @@ public class TrackingItemViewController implements Initializable, IViewControlle
         trackingItemDetailsViewDialog.showAndWait();        
     
         controllerRepository.remove(TrackingItemDetailsViewController.class.getName());
-
     }
 
     private boolean isTrackingItemValid(TrackingItem trackingItem) {

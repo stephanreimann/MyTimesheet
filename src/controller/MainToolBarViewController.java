@@ -6,6 +6,7 @@
 package controller;
 
 import commands.ChangeLanguageCommand;
+import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
 import java.util.*;
@@ -15,6 +16,8 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 import properties.TranslationStringProperty;
 import service.*;
+import utils.ControllerUtilities;
+import utils.DialogFactory;
 
 /**
  *
@@ -32,7 +35,12 @@ public class MainToolBarViewController implements Initializable, IViewController
     private final String redoResourceKey = "Redo";
     private final String workItemTrackingToolResourceKey = "WorkItemTrackingTool";
     
+    private final String workItemTrackingToolViewDialogIcon = "icons/app-maid.png";
+    private final String workItemTrackingToolViewDialogTitleResourceKey = "WorkItemTrackingToolViewTitle";
+    private final String workItemTrackingToolViewResource = "/view/WorkItemTrackingToolView.fxml";
+    
     private Stage primaryStage;
+    private Stage workItemTrackingToolViewDialog;
     private final LanguageService languageService;
     private final Connection connection;
     private final UndoService undoService;
@@ -129,13 +137,26 @@ public class MainToolBarViewController implements Initializable, IViewController
     }
 
     @FXML
-    private void workItemTrackingToolAction(ActionEvent event) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.initOwner(primaryStage);
-        alert.setTitle(rb.getString("UnderConstructionTitle"));
-        alert.setHeaderText("");
-        alert.setContentText(rb.getString("UnderConstructionDetails"));
-        alert.showAndWait();        
+    private void workItemTrackingToolAction(ActionEvent event) throws IOException {
+        WorkItemTrackingToolViewController workItemTrackingToolViewController = new WorkItemTrackingToolViewController();
+        controllerRepository.put(WorkItemTrackingToolViewController.class.getName(), workItemTrackingToolViewController);
+
+        DialogFactory dialogFactory = new DialogFactory(
+            primaryStage, 
+            workItemTrackingToolViewDialogTitleResourceKey, 
+            workItemTrackingToolViewDialogIcon, 
+            workItemTrackingToolViewResource, 
+            rb, 
+            workItemTrackingToolViewController);
+        workItemTrackingToolViewDialog = dialogFactory.create();
+        workItemTrackingToolViewDialog.setWidth(400);
+        workItemTrackingToolViewDialog.setHeight(350);
+                        
+        ControllerUtilities.CenterOnDialog(primaryStage, workItemTrackingToolViewDialog);
+
+        workItemTrackingToolViewDialog.showAndWait();        
+    
+        controllerRepository.remove(WorkItemTrackingToolViewController.class.getName());
     }
 
     private Locale getLocale(ActionEvent event) {
