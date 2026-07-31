@@ -280,8 +280,11 @@ public class HolydayViewController implements Initializable, IViewController {
     }
 
     private void openHolydayDetailsDialog(Holyday holyday, DataAction dataAction) throws IOException {
-        HolydayDetailsViewController holydayDetailsViewController = new HolydayDetailsViewController(languageService, connection, undoService, holydayData);
-        controllerRepository.put(HolydayDetailsViewController.class.getName(), holydayDetailsViewController);
+        HolydayDetailsViewController holydayDetailsViewController = (HolydayDetailsViewController)controllerRepository.get(HolydayDetailsViewController.class.getName());
+        if(holydayDetailsViewController == null) {
+            holydayDetailsViewController = new HolydayDetailsViewController(languageService, connection, undoService, holydayData);
+            controllerRepository.put(HolydayDetailsViewController.class.getName(), holydayDetailsViewController);
+        }
 
         DialogFactory dialogFactory = new DialogFactory(
             primaryStage, 

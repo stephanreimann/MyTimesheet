@@ -221,8 +221,11 @@ public class WorkLocationViewController implements Initializable, IViewControlle
     }
     
     private void openWorklocationDetailsDialog(Worklocation worklocation, DataAction dataAction) throws SQLException, IOException {
-        WorkLocationDetailsViewController worklocationDetailsViewController = new WorkLocationDetailsViewController(languageService, connection, undoService, worklocationData);
-        controllerRepository.put(WorkLocationDetailsViewController.class.getName(), worklocationDetailsViewController);
+        WorkLocationDetailsViewController worklocationDetailsViewController = (WorkLocationDetailsViewController)controllerRepository.get(WorkLocationDetailsViewController.class.getName());
+        if(worklocationDetailsViewController == null) {
+            worklocationDetailsViewController = new WorkLocationDetailsViewController(languageService, connection, undoService, worklocationData);
+            controllerRepository.put(WorkLocationDetailsViewController.class.getName(), worklocationDetailsViewController);
+        }
 
         DialogFactory dialogFactory = new DialogFactory(
             primaryStage, 

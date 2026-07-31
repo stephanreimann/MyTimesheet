@@ -280,8 +280,11 @@ public class ContractViewController implements Initializable, IViewController {
     }
 
     private void openContractDetailsDialog(Contract contract, DataAction dataAction) throws IOException {
-        ContractDetailsViewController contractDetailsViewController = new ContractDetailsViewController(languageService, connection, undoService, contractData);
-        controllerRepository.put(ContractDetailsViewController.class.getName(), contractDetailsViewController);
+        ContractDetailsViewController contractDetailsViewController = (ContractDetailsViewController)controllerRepository.get(ContractDetailsViewController.class.getName());
+        if(contractDetailsViewController == null) {
+            contractDetailsViewController = new ContractDetailsViewController(languageService, connection, undoService, contractData);
+            controllerRepository.put(ContractDetailsViewController.class.getName(), contractDetailsViewController);
+        }
 
         DialogFactory dialogFactory = new DialogFactory(
             primaryStage, 
@@ -300,8 +303,6 @@ public class ContractViewController implements Initializable, IViewController {
         ControllerUtilities.CenterOnDialog(primaryStage, contractDetailsViewDialog);
         
         contractDetailsViewDialog.showAndWait();        
-    
-        controllerRepository.remove(ContractDetailsViewController.class.getName());
     }
 
     private boolean isContractValid(Contract contract) {

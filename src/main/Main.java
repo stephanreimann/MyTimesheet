@@ -117,6 +117,14 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws SQLException, IOException {
+        // Register golbal Handler for all Threads
+        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+            @Override
+            public void uncaughtException(Thread thread, Throwable throwable) { 
+                handleException((Exception) throwable);
+            }
+        });
+        
         this.primaryStage = primaryStage;
 
         loadSettings();
@@ -373,13 +381,13 @@ public class Main extends Application {
         log.fatal(Arrays.toString(ex.getStackTrace()));
         javafx.application.Platform.runLater(() -> {
             hideSplashScreen();
-            showApplicationStartUpAlert(ex, AlertType.ERROR);
+            showApplicationAlert(ex, AlertType.ERROR);
             try {
                 applicationInstanceService.forceRemoveOfInstanceLock();
             } catch (Exception ex1) {
                 log.fatal(ex1.getMessage());
                 log.fatal(Arrays.toString(ex1.getStackTrace()));
-                showApplicationStartUpAlert(ex1, AlertType.ERROR);
+                showApplicationAlert(ex1, AlertType.ERROR);
             }
         });
     }
@@ -424,100 +432,121 @@ public class Main extends Application {
     }
 
     private void initMainMenuBarView(ResourceBundle rb) throws IOException {
-        mainMenuBarViewController = new MainMenuBarViewController(languageService, connection, undoService, this, propertiesService, log4jAdapter);
-        mainMenuBarViewController.setResourceBundle(rb);
-        mainMenuBarViewController.setPrimaryStage(primaryStage);
-        controllerRepository.put(MainMenuBarViewController.class.getName(), mainMenuBarViewController);
-        MenuBar mainMenuBarView = (MenuBar) load(rb, mainMenuBarViewController, mainMenuBarViewResource);
-        if (mainViewController != null && mainViewController.getTopBorderPaneVBox() != null) {
-            mainViewController.getTopBorderPaneVBox().getChildren().add(mainMenuBarView);
-        } else {
-            log.error("MainViewController or its top VBox is null when trying to add MainMenuBarView.");
+        mainMenuBarViewController = (MainMenuBarViewController)controllerRepository.get(MainMenuBarViewController.class.getName());
+        if(mainMenuBarViewController == null) {
+            mainMenuBarViewController = new MainMenuBarViewController(languageService, connection, undoService, this, propertiesService, log4jAdapter);
+            mainMenuBarViewController.setResourceBundle(rb);
+            mainMenuBarViewController.setPrimaryStage(primaryStage);
+            controllerRepository.put(MainMenuBarViewController.class.getName(), mainMenuBarViewController);
+            MenuBar mainMenuBarView = (MenuBar) load(rb, mainMenuBarViewController, mainMenuBarViewResource);
+            if (mainViewController != null && mainViewController.getTopBorderPaneVBox() != null) {
+                mainViewController.getTopBorderPaneVBox().getChildren().add(mainMenuBarView);
+            } else {
+                log.error("MainViewController or its top VBox is null when trying to add MainMenuBarView.");
+            }
         }
     }
 
     private void initMainToolBarView(ResourceBundle rb) throws IOException {
-        mainToolBarViewController = new MainToolBarViewController(languageService, connection, undoService);
-        mainToolBarViewController.setResourceBundle(rb);
-        mainToolBarViewController.setPrimaryStage(primaryStage);
-        controllerRepository.put(MainToolBarViewController.class.getName(), mainToolBarViewController);
-        ToolBar mainToolBarView = (ToolBar) load(rb, mainToolBarViewController, mainToolBarViewResource);
-        if (mainViewController != null && mainViewController.getTopBorderPaneVBox() != null) {
-            mainViewController.getTopBorderPaneVBox().getChildren().add(mainToolBarView);
-        } else {
-            log.error("MainViewController or its top VBox is null when trying to add MainToolBarView.");
+        mainToolBarViewController = (MainToolBarViewController)controllerRepository.get(MainToolBarViewController.class.getName());
+        if(mainToolBarViewController == null) {
+            mainToolBarViewController = new MainToolBarViewController(languageService, connection, undoService);
+            mainToolBarViewController.setResourceBundle(rb);
+            mainToolBarViewController.setPrimaryStage(primaryStage);
+            controllerRepository.put(MainToolBarViewController.class.getName(), mainToolBarViewController);
+            ToolBar mainToolBarView = (ToolBar) load(rb, mainToolBarViewController, mainToolBarViewResource);
+            if (mainViewController != null && mainViewController.getTopBorderPaneVBox() != null) {
+                mainViewController.getTopBorderPaneVBox().getChildren().add(mainToolBarView);
+            } else {
+                log.error("MainViewController or its top VBox is null when trying to add MainToolBarView.");
+            }
         }
     }
 
     private void initWorkRecordsView(ResourceBundle rb) throws IOException, SQLException {
-        workRecordViewController = new WorkRecordViewController(languageService, connection, undoService, propertiesService);
-        workRecordViewController.setResourceBundle(rb);
-        workRecordViewController.setPrimaryStage(primaryStage);
-        controllerRepository.put(workRecordViewController.getClass().getName(), workRecordViewController);
-        VBox workRecordsView = (VBox) load(rb, workRecordViewController, workRecordViewResource);
-        if (mainViewController != null && mainViewController.getCenterBorderPaneSplitPane() != null) {
-            mainViewController.getCenterBorderPaneSplitPane().getItems().add(workRecordsView);
-        } else {
-            log.error("MainViewController or its center SplitPane is null when trying to add WorkRecordsView.");
+        workRecordViewController = (WorkRecordViewController)controllerRepository.get(WorkRecordViewController.class.getName());
+        if(workRecordViewController == null) {
+            workRecordViewController = new WorkRecordViewController(languageService, connection, undoService, propertiesService);
+            workRecordViewController.setResourceBundle(rb);
+            workRecordViewController.setPrimaryStage(primaryStage);
+            controllerRepository.put(workRecordViewController.getClass().getName(), workRecordViewController);
+            VBox workRecordsView = (VBox) load(rb, workRecordViewController, workRecordViewResource);
+            if (mainViewController != null && mainViewController.getCenterBorderPaneSplitPane() != null) {
+                mainViewController.getCenterBorderPaneSplitPane().getItems().add(workRecordsView);
+            } else {
+                log.error("MainViewController or its center SplitPane is null when trying to add WorkRecordsView.");
+            }
         }
     }
     
     private void initWorkRecordsDetailsView(ResourceBundle rb) throws IOException {
-        workRecordDetailsViewController = new WorkRecordDetailsViewController(controllerRepository, languageService, connection, undoService, propertiesService);
-        workRecordDetailsViewController.setResourceBundle(rb);
-        workRecordDetailsViewController.setPrimaryStage(primaryStage);
-        controllerRepository.put(workRecordDetailsViewController.getClass().getName(), workRecordDetailsViewController);
-        VBox workRecordDetailsView = (VBox) load(rb, workRecordDetailsViewController, workRecordDetailsViewResource);
-        workRecordDetailsView.setMinWidth(260);        
-        if (mainViewController != null && mainViewController.getRightBorderPaneVBox() != null) {
-            mainViewController.getRightBorderPaneVBox().getChildren().add(workRecordDetailsView);
-        } else {
-            log.error("MainViewController or its right VBox is null when trying to add WorkRecordDetailsView.");
+        workRecordDetailsViewController = (WorkRecordDetailsViewController)controllerRepository.get(WorkRecordDetailsViewController.class.getName());
+        if(workRecordDetailsViewController == null) {
+            workRecordDetailsViewController = new WorkRecordDetailsViewController(controllerRepository, languageService, connection, undoService, propertiesService);
+            workRecordDetailsViewController.setResourceBundle(rb);
+            workRecordDetailsViewController.setPrimaryStage(primaryStage);
+            controllerRepository.put(workRecordDetailsViewController.getClass().getName(), workRecordDetailsViewController);
+            VBox workRecordDetailsView = (VBox) load(rb, workRecordDetailsViewController, workRecordDetailsViewResource);
+            workRecordDetailsView.setMinWidth(260);        
+            if (mainViewController != null && mainViewController.getRightBorderPaneVBox() != null) {
+                mainViewController.getRightBorderPaneVBox().getChildren().add(workRecordDetailsView);
+            } else {
+                log.error("MainViewController or its right VBox is null when trying to add WorkRecordDetailsView.");
+            }
         }
     }
 
     private void initUserInfoView(ResourceBundle rb) throws IOException, SQLException {
-        userInfoViewController = new UserInfoViewController(controllerRepository, languageService, connection, undoService, propertiesService);
-        userInfoViewController.setResourceBundle(rb);
-        userInfoViewController.setPrimaryStage(primaryStage);
-        controllerRepository.put(userInfoViewController.getClass().getName(), userInfoViewController);
-        VBox userInfoView = (VBox) load(rb, userInfoViewController, userInfoViewResource);
-        userInfoView.setMinWidth(300);        
-        if (mainViewController != null && mainViewController.getLeftBorderPaneVBox() != null) {
-            mainViewController.getLeftBorderPaneVBox().getChildren().add(userInfoView);
-        } else {
-            log.error("MainViewController or its left VBox is null when trying to add UserInfoView.");
+        userInfoViewController = (UserInfoViewController)controllerRepository.get(UserInfoViewController.class.getName());
+        if(userInfoViewController == null) {
+            userInfoViewController = new UserInfoViewController(controllerRepository, languageService, connection, undoService, propertiesService);
+            userInfoViewController.setResourceBundle(rb);
+            userInfoViewController.setPrimaryStage(primaryStage);
+            controllerRepository.put(userInfoViewController.getClass().getName(), userInfoViewController);
+            VBox userInfoView = (VBox) load(rb, userInfoViewController, userInfoViewResource);
+            userInfoView.setMinWidth(300);        
+            if (mainViewController != null && mainViewController.getLeftBorderPaneVBox() != null) {
+                mainViewController.getLeftBorderPaneVBox().getChildren().add(userInfoView);
+            } else {
+                log.error("MainViewController or its left VBox is null when trying to add UserInfoView.");
+            }
         }
     }
     
     private void initMainInfoView(ResourceBundle rb) throws IOException {
-        mainInfoViewController = new MainInfoViewController(languageService, connection, undoService, log4jAdapter);
-        mainInfoViewController.setResourceBundle(rb);
-        mainInfoViewController.setPrimaryStage(primaryStage);
-        controllerRepository.put(mainInfoViewController.getClass().getName(), mainInfoViewController);
-        TabPane mainInfoBarView = (TabPane) load(rb, mainInfoViewController, mainInfoViewResource);
-        if (mainViewController != null && mainViewController.getCenterBorderPaneSplitPane() != null) {
-            mainViewController.getCenterBorderPaneSplitPane().getItems().add(mainInfoBarView);
-        } else {
-            log.error("MainViewController or its center SplitPane is null when trying to add MainInfoView.");
+        mainInfoViewController = (MainInfoViewController)controllerRepository.get(MainInfoViewController.class.getName());
+        if(mainInfoViewController == null) {
+            mainInfoViewController = new MainInfoViewController(languageService, connection, undoService, log4jAdapter);
+            mainInfoViewController.setResourceBundle(rb);
+            mainInfoViewController.setPrimaryStage(primaryStage);
+            controllerRepository.put(mainInfoViewController.getClass().getName(), mainInfoViewController);
+            TabPane mainInfoBarView = (TabPane) load(rb, mainInfoViewController, mainInfoViewResource);
+            if (mainViewController != null && mainViewController.getCenterBorderPaneSplitPane() != null) {
+                mainViewController.getCenterBorderPaneSplitPane().getItems().add(mainInfoBarView);
+            } else {
+                log.error("MainViewController or its center SplitPane is null when trying to add MainInfoView.");
+            }
+            mainInfoViewController.setInfoToggleButtonState(Boolean.valueOf(propertiesService.getProperty(infoToggleButtonState, falseKey)));
+            mainInfoViewController.setDebugToggleButtonState(Boolean.valueOf(propertiesService.getProperty(debugToggleButtonState, falseKey)));
+            mainInfoViewController.setWarningToggleButtonState(Boolean.valueOf(propertiesService.getProperty(warningToggleButtonState, falseKey)));
+            mainInfoViewController.setErrorToggleButtonState(Boolean.valueOf(propertiesService.getProperty(errorToggleButtonState, falseKey)));
+            mainInfoViewController.setFatalToggleButtonState(Boolean.valueOf(propertiesService.getProperty(fatalToggleButtonState, falseKey)));
         }
-        mainInfoViewController.setInfoToggleButtonState(Boolean.valueOf(propertiesService.getProperty(infoToggleButtonState, falseKey)));
-        mainInfoViewController.setDebugToggleButtonState(Boolean.valueOf(propertiesService.getProperty(debugToggleButtonState, falseKey)));
-        mainInfoViewController.setWarningToggleButtonState(Boolean.valueOf(propertiesService.getProperty(warningToggleButtonState, falseKey)));
-        mainInfoViewController.setErrorToggleButtonState(Boolean.valueOf(propertiesService.getProperty(errorToggleButtonState, falseKey)));
-        mainInfoViewController.setFatalToggleButtonState(Boolean.valueOf(propertiesService.getProperty(fatalToggleButtonState, falseKey)));
     }
 
     private void initMainStatusBarView(ResourceBundle rb) throws IOException {
-        mainStatusBarViewController = new MainStatusBarViewController(languageService, connection, mainInfoViewController, log4jAdapter);
-        mainStatusBarViewController.setResourceBundle(rb);
-        mainStatusBarViewController.setPrimaryStage(primaryStage);
-        controllerRepository.put(this.mainStatusBarViewController.getClass().getName(), mainStatusBarViewController);
-        GridPane mainStatusBarView = (GridPane) load(rb, mainStatusBarViewController, mainStautsBarViewResource);
-        if (mainViewController != null && mainViewController.getBottomBorderPaneVBox() != null) {
-            mainViewController.getBottomBorderPaneVBox().getChildren().add(mainStatusBarView);
-        } else {
-            log.error("MainViewController or its bottom VBox is null when trying to add MainStatusBarView.");
+        mainStatusBarViewController = (MainStatusBarViewController)controllerRepository.get(MainStatusBarViewController.class.getName());
+        if(mainStatusBarViewController == null) {
+            mainStatusBarViewController = new MainStatusBarViewController(languageService, connection, mainInfoViewController, log4jAdapter);
+            mainStatusBarViewController.setResourceBundle(rb);
+            mainStatusBarViewController.setPrimaryStage(primaryStage);
+            controllerRepository.put(this.mainStatusBarViewController.getClass().getName(), mainStatusBarViewController);
+            GridPane mainStatusBarView = (GridPane) load(rb, mainStatusBarViewController, mainStautsBarViewResource);
+            if (mainViewController != null && mainViewController.getBottomBorderPaneVBox() != null) {
+                mainViewController.getBottomBorderPaneVBox().getChildren().add(mainStatusBarView);
+            } else {
+                log.error("MainViewController or its bottom VBox is null when trying to add MainStatusBarView.");
+            }
         }
     }
 
@@ -533,10 +562,10 @@ public class Main extends Application {
         });
     }
 
-    private void showApplicationStartUpAlert(Exception ex, AlertType alertType) {
+    private void showApplicationAlert(Exception ex, AlertType alertType) {
         Alert alert = new Alert(alertType);
-        alert.setTitle("Application startup error");
-        alert.setHeaderText("The application could not start!");
+        alert.setTitle("Application error");
+        alert.setHeaderText("The application could not proceed!");
         
         StringBuilder content = new StringBuilder();
         content.append("Message:").append("\n");

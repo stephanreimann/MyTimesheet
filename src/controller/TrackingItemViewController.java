@@ -233,8 +233,11 @@ public class TrackingItemViewController implements Initializable, IViewControlle
     }
     
     private void openTrackingItemDetailsDialog(TrackingItem trackingItem, DataAction dataAction) throws IOException {
-        TrackingItemDetailsViewController trackingItemDetailsViewController = new TrackingItemDetailsViewController(languageService, connection, undoService, trackingItemData);
-        controllerRepository.put(TrackingItemDetailsViewController.class.getName(), trackingItemDetailsViewController);
+        TrackingItemDetailsViewController trackingItemDetailsViewController = (TrackingItemDetailsViewController)controllerRepository.get(TrackingItemDetailsViewController.class.getName());
+        if(trackingItemDetailsViewController == null) {
+            trackingItemDetailsViewController = new TrackingItemDetailsViewController(languageService, connection, undoService, trackingItemData);
+            controllerRepository.put(TrackingItemDetailsViewController.class.getName(), trackingItemDetailsViewController);
+        }
 
         DialogFactory dialogFactory = new DialogFactory(
             primaryStage, 

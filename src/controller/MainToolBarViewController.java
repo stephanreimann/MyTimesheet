@@ -138,8 +138,11 @@ public class MainToolBarViewController implements Initializable, IViewController
 
     @FXML
     private void workItemTrackingToolAction(ActionEvent event) throws IOException {
-        WorkItemTrackingToolViewController workItemTrackingToolViewController = new WorkItemTrackingToolViewController();
-        controllerRepository.put(WorkItemTrackingToolViewController.class.getName(), workItemTrackingToolViewController);
+        WorkItemTrackingToolViewController workItemTrackingToolViewController = (WorkItemTrackingToolViewController)controllerRepository.get(WorkItemTrackingToolViewController.class.getName());
+        if(workItemTrackingToolViewController == null) {
+            workItemTrackingToolViewController = new WorkItemTrackingToolViewController();
+            controllerRepository.put(WorkItemTrackingToolViewController.class.getName(), workItemTrackingToolViewController);
+        }
 
         DialogFactory dialogFactory = new DialogFactory(
             primaryStage, 
@@ -155,8 +158,6 @@ public class MainToolBarViewController implements Initializable, IViewController
         ControllerUtilities.CenterOnDialog(primaryStage, workItemTrackingToolViewDialog);
 
         workItemTrackingToolViewDialog.showAndWait();        
-    
-        controllerRepository.remove(WorkItemTrackingToolViewController.class.getName());
     }
 
     private Locale getLocale(ActionEvent event) {

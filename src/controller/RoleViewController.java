@@ -211,8 +211,11 @@ public class RoleViewController implements Initializable, IViewController {
     }
     
     private void openRoleDetailsDialog(Role role, DataAction dataAction) throws SQLException, IOException {
-        RoleDetailsViewController roleDetailsViewController = new RoleDetailsViewController(languageService, connection, undoService, roleData);
-        controllerRepository.put(RoleDetailsViewController.class.getName(), roleDetailsViewController);
+        RoleDetailsViewController roleDetailsViewController = (RoleDetailsViewController)controllerRepository.get(RoleDetailsViewController.class.getName());
+        if(roleDetailsViewController == null) {
+            roleDetailsViewController = new RoleDetailsViewController(languageService, connection, undoService, roleData);
+            controllerRepository.put(RoleDetailsViewController.class.getName(), roleDetailsViewController);
+        }
 
         DialogFactory dialogFactory = new DialogFactory(
             primaryStage, 

@@ -241,8 +241,11 @@ public class ProjectViewController implements Initializable, IViewController {
     }
 
     private void openProjectDetailsDialog(Project project, DataAction dataAction) throws IOException {
-        ProjectDetailsViewController projectDetailsViewController = new ProjectDetailsViewController(languageService, connection, undoService, projectData);
-        controllerRepository.put(ProjectDetailsViewController.class.getName(), projectDetailsViewController);
+        ProjectDetailsViewController projectDetailsViewController = (ProjectDetailsViewController)controllerRepository.get(ProjectDetailsViewController.class.getName());
+        if(projectDetailsViewController == null) {
+            projectDetailsViewController = new ProjectDetailsViewController(languageService, connection, undoService, projectData);
+            controllerRepository.put(ProjectDetailsViewController.class.getName(), projectDetailsViewController);
+        }
 
         DialogFactory dialogFactory = new DialogFactory(
             primaryStage, 

@@ -234,8 +234,11 @@ public class SprintViewController implements Initializable, IViewController {
     }
 
     private void openSprintDetailsDialog(Sprint sprint, DataAction dataAction) throws IOException {
-        SprintDetailsViewController sprintDetailsViewController = new SprintDetailsViewController(languageService, connection, undoService, sprintData);
-        controllerRepository.put(SprintDetailsViewController.class.getName(), sprintDetailsViewController);
+        SprintDetailsViewController sprintDetailsViewController = (SprintDetailsViewController)controllerRepository.get(SprintDetailsViewController.class.getName());
+        if(sprintDetailsViewController == null) {
+            sprintDetailsViewController = new SprintDetailsViewController(languageService, connection, undoService, sprintData);
+            controllerRepository.put(SprintDetailsViewController.class.getName(), sprintDetailsViewController);
+        }
 
         DialogFactory dialogFactory = new DialogFactory(
             primaryStage, 

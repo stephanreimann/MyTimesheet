@@ -284,8 +284,11 @@ public class UserViewController implements Initializable, IViewController {
     }
 
     private void openUserDetailsDialog(User user, DataAction dataAction) throws SQLException, IOException {
-        UserDetailsViewController userDetailsViewController = new UserDetailsViewController(languageService, connection, undoService, userData);
-        controllerRepository.put(UserDetailsViewController.class.getName(), userDetailsViewController);
+        UserDetailsViewController userDetailsViewController = (UserDetailsViewController)controllerRepository.get(UserDetailsViewController.class.getName());
+        if(userDetailsViewController == null) {
+            userDetailsViewController = new UserDetailsViewController(languageService, connection, undoService, userData);
+            controllerRepository.put(UserDetailsViewController.class.getName(), userDetailsViewController);
+        }
 
         DialogFactory dialogFactory = new DialogFactory(
             primaryStage, 
