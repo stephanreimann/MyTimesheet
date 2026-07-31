@@ -525,7 +525,7 @@ public class MainMenuBarViewController implements Initializable, IViewController
         SprintViewController sprintViewController = (SprintViewController) controllerRepository.get(SprintViewController.class.getName());
         if(sprintViewController == null) {
             sprintViewController = new SprintViewController(controllerRepository, languageService, connection, undoService, propertiesService);
-            controllerRepository.put(UserViewController.class.getName(), sprintViewController);
+            controllerRepository.put(SprintViewController.class.getName(), sprintViewController);
         }
 
         DialogFactory dialogFactory = new DialogFactory(
@@ -550,7 +550,7 @@ public class MainMenuBarViewController implements Initializable, IViewController
         TrackingItemViewController trackingItemViewController = (TrackingItemViewController) controllerRepository.get(TrackingItemViewController.class.getName());
         if(trackingItemViewController == null) {
             trackingItemViewController = new TrackingItemViewController(controllerRepository, languageService, connection, undoService, propertiesService);
-            controllerRepository.put(UserViewController.class.getName(), trackingItemViewController);
+            controllerRepository.put(TrackingItemViewController.class.getName(), trackingItemViewController);
         }
 
         DialogFactory dialogFactory = new DialogFactory(

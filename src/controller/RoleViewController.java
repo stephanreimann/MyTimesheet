@@ -8,6 +8,7 @@ import commands.role.*;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.*;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.collections.*;
 import javafx.event.ActionEvent;
@@ -154,7 +155,13 @@ public class RoleViewController implements Initializable, IViewController {
         roleDescriptionTableColumn.setCellValueFactory(cellData -> cellData.getValue().getDescriptionProperty());
         roleDescriptionTableColumn.prefWidthProperty().bind(roleTableView.widthProperty().multiply(0.7));
 
-        showRoleDetails(null);
+        Optional<Role> firstRole = roleData.stream().findFirst();
+        if(firstRole != null) {
+            showRoleDetails(firstRole.get());
+            roleTableView.getSelectionModel().select(0);
+        } else {
+            showRoleDetails(null);
+        }
 
         roleTableView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> showRoleDetails(newValue));
                 

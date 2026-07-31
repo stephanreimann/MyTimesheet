@@ -12,6 +12,7 @@ import java.net.URL;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.format.*;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.collections.*;
 import javafx.event.ActionEvent;
@@ -184,7 +185,13 @@ public class HolydayViewController implements Initializable, IViewController {
         holydayStateTableColumn.setCellValueFactory(cellData -> cellData.getValue().getStateProperty());
         holydayStateTableColumn.setSortable(false);
         
-        showHolydayDetails(null);
+        Optional<Holyday> firstHolyday = holydayData.stream().findFirst();
+        if(firstHolyday != null) {
+            showHolydayDetails(firstHolyday.get());
+            holydayTableView.getSelectionModel().select(0);
+        } else {
+            showHolydayDetails(null);
+        }
 
         holydayTableView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> showHolydayDetails(newValue));
                 

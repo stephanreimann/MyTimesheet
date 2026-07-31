@@ -10,6 +10,7 @@ import java.net.URL;
 import java.sql.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -173,7 +174,13 @@ public class SprintViewController implements Initializable, IViewController {
         sprintIdTableColumn.setSortType(TableColumn.SortType.ASCENDING);
         sprintTableView.sort();
 
-        showSprintDetails(null);
+        Optional<Sprint> firstSprint = sprintData.stream().findFirst();
+        if(firstSprint != null) {
+            showSprintDetails(firstSprint.get());
+            sprintTableView.getSelectionModel().select(0);
+        } else {
+            showSprintDetails(null);
+        }
 
         sprintTableView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> showSprintDetails(newValue));
                 
@@ -249,7 +256,6 @@ public class SprintViewController implements Initializable, IViewController {
         sprintDetailsViewDialog.showAndWait();        
     
         controllerRepository.remove(SprintDetailsViewController.class.getName());
-
     }
 
     private boolean isSprintValid(Sprint sprint) {

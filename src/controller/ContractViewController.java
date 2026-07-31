@@ -8,6 +8,7 @@ import commands.contract.*;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.*;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.collections.*;
 import javafx.event.ActionEvent;
@@ -193,7 +194,13 @@ public class ContractViewController implements Initializable, IViewController {
 
         contractNameTableColumn.setCellValueFactory(cellData -> cellData.getValue().getNameProperty());
         
-        showContractDetails(null);
+        Optional<Contract> firstContract = contractData.stream().findAny();
+        if(firstContract != null) {
+            showContractDetails(firstContract.get());
+            contractTableView.getSelectionModel().select(0);
+        } else {
+            showContractDetails(null);
+        }
 
         contractTableView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> showContractDetails(newValue));
                 

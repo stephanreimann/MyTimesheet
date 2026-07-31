@@ -8,6 +8,7 @@ import commands.trackingitem.*;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.*;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.collections.*;
 import javafx.event.ActionEvent;
@@ -173,7 +174,13 @@ public class TrackingItemViewController implements Initializable, IViewControlle
         
         trackingItemNameTableColumn.setCellValueFactory(cellData -> cellData.getValue().getNameProperty());
         
-        showTrackingItemDetails(null);
+        Optional<TrackingItem> firstTrackingItem = trackingItemData.stream().findFirst();
+        if(firstTrackingItem != null) {
+            showTrackingItemDetails(firstTrackingItem.get());
+            trackingItemTableView.getSelectionModel().select(0);
+        } else {
+            showTrackingItemDetails(null);        
+        }
 
         trackingItemTableView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> showTrackingItemDetails(newValue));
                 

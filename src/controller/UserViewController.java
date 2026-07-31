@@ -8,6 +8,7 @@ import commands.user.*;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.*;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.collections.*;
 import javafx.event.ActionEvent;
@@ -185,7 +186,13 @@ public class UserViewController implements Initializable, IViewController {
         userLastNameTableColumn.setCellValueFactory(cellData -> cellData.getValue().getLastnameProperty());
         userLastNameTableColumn.prefWidthProperty().bind(userTableView.widthProperty().multiply(0.5));
             
-        showUserDetails(null);
+        Optional<User> firstUser = userData.stream().findFirst();
+        if(firstUser != null) {
+            showUserDetails(firstUser.get());
+            userTableView.getSelectionModel().select(0);
+        } else {
+            showUserDetails(null);
+        }
            
         userTableView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> showUserDetails(newValue));        
 

@@ -8,6 +8,7 @@ import commands.project.*;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.*;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.collections.*;
 import javafx.event.ActionEvent;
@@ -169,7 +170,13 @@ public class ProjectViewController implements Initializable, IViewController {
         projectNameTableColumn.setCellValueFactory(cellData -> cellData.getValue().getNameProperty());
         projectNameTableColumn.prefWidthProperty().bind(projectTableView.widthProperty().multiply(0.3));
 
-        showProjectDetails(null);
+        Optional<Project> firstProject = projectData.stream().findFirst();
+        if(firstProject != null) {
+            showProjectDetails(firstProject.get());
+            projectTableView.getSelectionModel().select(0);
+        } else {
+            showProjectDetails(null);
+        }
 
         projectTableView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> showProjectDetails(newValue));
                 

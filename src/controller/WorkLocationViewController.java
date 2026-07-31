@@ -8,6 +8,7 @@ import commands.worklocation.*;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.*;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.collections.*;
 import javafx.event.ActionEvent;
@@ -160,7 +161,13 @@ public class WorkLocationViewController implements Initializable, IViewControlle
         worklocationDescriptionTableColumn.setCellValueFactory(cellData -> cellData.getValue().getDescriptionProperty());
         worklocationDescriptionTableColumn.prefWidthProperty().bind(worklocationTableView.widthProperty().multiply(0.7));
 
-        showWorklocationDetails(null);
+        Optional<Worklocation> firstWorklocation = worklocationData.stream().findFirst();
+        if(firstWorklocation != null) {
+            showWorklocationDetails(firstWorklocation.get());
+            worklocationTableView.getSelectionModel().select(0);
+        } else {
+            showWorklocationDetails(null);
+        }
 
         worklocationTableView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> showWorklocationDetails(newValue));
                 

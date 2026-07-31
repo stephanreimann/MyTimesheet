@@ -8,6 +8,7 @@ import commands.address.*;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.*;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.collections.*;
 import javafx.event.ActionEvent;
@@ -185,7 +186,13 @@ public class AddressViewController implements Initializable, IViewController {
 
         addressTableColumn.setCellValueFactory(cellData -> cellData.getValue().getAddressProperty());
         
-        showAddressDetails(null);
+        Optional<Address> firstAddress = addressData.stream().findAny();
+        if(firstAddress != null) {
+            showAddressDetails(firstAddress.get());
+            addressTableView.getSelectionModel().select(0);
+        } else {
+            showAddressDetails(null);
+        }
 
         addressTableView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> showAddressDetails(newValue));
                 
