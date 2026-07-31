@@ -299,8 +299,7 @@ public class Workrecord {
     
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(User.class.getSimpleName());
-        sb.append(": ");
+        StringBuilder sb = new StringBuilder();
         sb.append(id.getValue()).append(", ");
         sb.append(user.getValue()).append(", ");
         sb.append(project.getValue()).append(", ");

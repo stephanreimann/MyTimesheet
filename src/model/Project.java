@@ -188,15 +188,8 @@ public class Project {
     
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(/*Project.class.getSimpleName()*/);
-        //sb.append(": ");
-        //sb.append(id.getValue()).append(", ");
-        sb.append(name.getValue());//.append(", ");
-        //sb.append(costunit.getValue()).append(", ");
-        //sb.append(isworktimerelevant.getValue()).append(", ");
-        //sb.append(isvacationrelevant.getValue()).append(", ");
-        //sb.append(iscomptimerelevant.getValue()).append(", ");
-        //sb.append(description.getValue()).append("");
+        StringBuilder sb = new StringBuilder();
+        sb.append(name.getValue());
         return sb.toString();
     }
     

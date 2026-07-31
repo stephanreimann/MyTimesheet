@@ -108,11 +108,8 @@ public class Worklocation {
     
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(/*Worklocation.class.getSimpleName()*/);
-        //sb.append(": ");
-        //sb.append(id.getValue()).append(", ");
-        sb.append(name.getValue());//.append(", ");
-        //sb.append(description.getValue()).append("");
+        StringBuilder sb = new StringBuilder();
+        sb.append(name.getValue());
         return sb.toString();
     }
     

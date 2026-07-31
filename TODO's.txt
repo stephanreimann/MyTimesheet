@@ -21,7 +21,7 @@ To Run set VM options:
     - Create a Setup with all dependencies
 
 4. Design WorkItemTracking
-    Table: Workitem
+    Table: WorkitemDetail
     Id  UserId  WorkrecordId    SprintId    TrackingItemId Starttime (HH:MM) 	Endtime (HH:MM)     Description
     ======================================================================================================================================================================================================================================================
     1   1       1               138         1              00,00		00,00               Sprint Planning
