@@ -9,6 +9,7 @@ import commands.ChangeLanguageCommand;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.*;
@@ -137,10 +138,10 @@ public class MainToolBarViewController implements Initializable, IViewController
     }
 
     @FXML
-    private void workItemTrackingToolAction(ActionEvent event) throws IOException {
+    private void workItemTrackingToolAction(ActionEvent event) throws IOException, SQLException {
         WorkItemTrackingToolViewController workItemTrackingToolViewController = (WorkItemTrackingToolViewController)controllerRepository.get(WorkItemTrackingToolViewController.class.getName());
         if(workItemTrackingToolViewController == null) {
-            workItemTrackingToolViewController = new WorkItemTrackingToolViewController();
+            workItemTrackingToolViewController = new WorkItemTrackingToolViewController(controllerRepository, languageService, connection, undoService);
             controllerRepository.put(WorkItemTrackingToolViewController.class.getName(), workItemTrackingToolViewController);
         }
 
@@ -152,8 +153,8 @@ public class MainToolBarViewController implements Initializable, IViewController
             rb, 
             workItemTrackingToolViewController);
         workItemTrackingToolViewDialog = dialogFactory.create();
-        workItemTrackingToolViewDialog.setWidth(400);
-        workItemTrackingToolViewDialog.setHeight(350);
+        workItemTrackingToolViewDialog.setWidth(512);
+        workItemTrackingToolViewDialog.setHeight(850);
                         
         ControllerUtilities.CenterOnDialog(primaryStage, workItemTrackingToolViewDialog);
 

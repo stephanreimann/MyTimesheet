@@ -34,9 +34,6 @@ public class ApplicationInstanceService {
         final File file = new File(instanceLockName);
         if(file.exists()) {
             file.deleteOnExit();
-            if(file.exists()) {
-                throw new Exception("InstanceLock "+ instanceLockName + " could not be removed, please try to remove it manually!");
-            }
         }
     }
     

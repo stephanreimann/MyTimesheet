@@ -116,15 +116,7 @@ public class Main extends Application {
     }
 
     @Override
-    public void start(Stage primaryStage) throws SQLException, IOException {
-        // Register golbal Handler for all Threads
-        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-            @Override
-            public void uncaughtException(Thread thread, Throwable throwable) { 
-                handleException((Exception) throwable);
-            }
-        });
-        
+    public void start(Stage primaryStage) throws SQLException, IOException {        
         this.primaryStage = primaryStage;
 
         loadSettings();
@@ -381,7 +373,6 @@ public class Main extends Application {
         log.fatal(Arrays.toString(ex.getStackTrace()));
         javafx.application.Platform.runLater(() -> {
             hideSplashScreen();
-            showApplicationAlert(ex, AlertType.ERROR);
             try {
                 applicationInstanceService.forceRemoveOfInstanceLock();
             } catch (Exception ex1) {
