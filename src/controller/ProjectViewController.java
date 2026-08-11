@@ -254,7 +254,7 @@ public class ProjectViewController implements Initializable, IViewController {
             projectDetailsViewResource, 
             rb, 
             projectDetailsViewController);
-        projectDetailsViewDialog = dialogFactory.create();
+        projectDetailsViewDialog = dialogFactory.create(Modality.WINDOW_MODAL);
         projectDetailsViewDialog.setWidth(400);
         projectDetailsViewDialog.setHeight(400);
         

@@ -234,7 +234,7 @@ public class WorkLocationViewController implements Initializable, IViewControlle
             worklocationDetailsViewResource, 
             rb, 
             worklocationDetailsViewController);
-        worklocationDetailsViewDialog = dialogFactory.create();
+        worklocationDetailsViewDialog = dialogFactory.create(Modality.WINDOW_MODAL);
         worklocationDetailsViewDialog.setWidth(400);
         worklocationDetailsViewDialog.setHeight(350);
         

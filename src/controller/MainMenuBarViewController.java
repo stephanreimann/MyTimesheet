@@ -278,7 +278,7 @@ public class MainMenuBarViewController implements Initializable, IViewController
                     settingsViewResource, 
                     rb, 
                     settingsViewController);
-            settingsViewDialog = dialogFactory.create();
+            settingsViewDialog = dialogFactory.create(Modality.WINDOW_MODAL);
         }
         
         ControllerUtilities.CenterOnDialog(primaryStage, settingsViewDialog);
@@ -297,7 +297,7 @@ public class MainMenuBarViewController implements Initializable, IViewController
             xmlEditorViewResource, 
             rb, 
             xmlEditorViewController);
-        xmlEditorViewDialog = dialogFactory.create();
+        xmlEditorViewDialog = dialogFactory.create(Modality.WINDOW_MODAL);
         xmlEditorViewDialog.setWidth(650);
         xmlEditorViewDialog.setHeight(450);
         xmlEditorViewDialog.resizableProperty().setValue(Boolean.TRUE);
@@ -328,7 +328,7 @@ public class MainMenuBarViewController implements Initializable, IViewController
                     userViewResource, 
                     rb, 
                     userViewController);
-            userViewDialog = dialogFactory.create();
+            userViewDialog = dialogFactory.create(Modality.WINDOW_MODAL);
         }
         
         ControllerUtilities.CenterOnDialog(primaryStage, userViewDialog);
@@ -353,7 +353,7 @@ public class MainMenuBarViewController implements Initializable, IViewController
                     roleViewResource, 
                     rb, 
                     roleViewController);
-            roleViewDialog = dialogFactory.create();
+            roleViewDialog = dialogFactory.create(Modality.WINDOW_MODAL);
             roleViewDialog.setWidth(750);
             roleViewDialog.setHeight(500);
         }
@@ -380,7 +380,7 @@ public class MainMenuBarViewController implements Initializable, IViewController
                     addressViewResource, 
                     rb, 
                     addressViewController);
-            addressViewDialog = dialogFactory.create();
+            addressViewDialog = dialogFactory.create(Modality.WINDOW_MODAL);
             addressViewDialog.setWidth(750);
             addressViewDialog.setHeight(500);
         }
@@ -411,7 +411,7 @@ public class MainMenuBarViewController implements Initializable, IViewController
                     contractViewResource, 
                     rb, 
                     contractViewController);
-            contractViewDialog = dialogFactory.create();
+            contractViewDialog = dialogFactory.create(Modality.WINDOW_MODAL);
             contractViewDialog.setWidth(750);
             contractViewDialog.setHeight(500);
         }
@@ -443,7 +443,7 @@ public class MainMenuBarViewController implements Initializable, IViewController
                     holydayViewResource, 
                     rb, 
                     holydayViewController);
-            holydayViewDialog = dialogFactory.create();
+            holydayViewDialog = dialogFactory.create(Modality.WINDOW_MODAL);
             holydayViewDialog.setWidth(700);
             holydayViewDialog.setHeight(500);
         }
@@ -474,7 +474,7 @@ public class MainMenuBarViewController implements Initializable, IViewController
                     projectViewResource, 
                     rb, 
                     projectViewController);
-            projectViewDialog = dialogFactory.create();
+            projectViewDialog = dialogFactory.create(Modality.WINDOW_MODAL);
             projectViewDialog.setWidth(700);
             projectViewDialog.setHeight(500);
         }
@@ -510,7 +510,7 @@ public class MainMenuBarViewController implements Initializable, IViewController
                     worklocationViewResource, 
                     rb, 
                     worklocationViewController);
-            worklocationViewDialog = dialogFactory.create();
+            worklocationViewDialog = dialogFactory.create(Modality.WINDOW_MODAL);
             worklocationViewDialog.setWidth(750);
             worklocationViewDialog.setHeight(500);
         }
@@ -535,7 +535,7 @@ public class MainMenuBarViewController implements Initializable, IViewController
             sprintViewResource, 
             rb, 
             sprintViewController);
-        sprintViewDialog = dialogFactory.create();
+        sprintViewDialog = dialogFactory.create(Modality.WINDOW_MODAL);
         sprintViewDialog.setWidth(650);
         sprintViewDialog.setHeight(450);
         sprintViewDialog.resizableProperty().setValue(Boolean.TRUE);
@@ -560,7 +560,7 @@ public class MainMenuBarViewController implements Initializable, IViewController
             trackingItemViewResource, 
             rb, 
             trackingItemViewController);
-        trackingItemViewDialog = dialogFactory.create();
+        trackingItemViewDialog = dialogFactory.create(Modality.WINDOW_MODAL);
         trackingItemViewDialog.setWidth(650);
         trackingItemViewDialog.setHeight(450);
         trackingItemViewDialog.resizableProperty().setValue(Boolean.TRUE);

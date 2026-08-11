@@ -14,6 +14,7 @@ import javafx.collections.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.*;
 import javafx.scene.control.*;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.TrackingItem;
 import org.apache.logging.log4j.*;
@@ -246,7 +247,7 @@ public class TrackingItemViewController implements Initializable, IViewControlle
             trackingItemDetailsViewResource, 
             rb, 
             trackingItemDetailsViewController);
-        trackingItemDetailsViewDialog = dialogFactory.create();
+        trackingItemDetailsViewDialog = dialogFactory.create(Modality.WINDOW_MODAL);
         trackingItemDetailsViewDialog.setWidth(400);
         trackingItemDetailsViewDialog.setHeight(350);
                 

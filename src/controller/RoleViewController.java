@@ -224,7 +224,7 @@ public class RoleViewController implements Initializable, IViewController {
             roleDetailsViewResource, 
             rb, 
             roleDetailsViewController);
-        roleDetailsViewDialog = dialogFactory.create();
+        roleDetailsViewDialog = dialogFactory.create(Modality.WINDOW_MODAL);
         roleDetailsViewDialog.setWidth(400);
         roleDetailsViewDialog.setHeight(350);
                 

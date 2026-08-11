@@ -18,6 +18,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.Sprint;
 import org.apache.logging.log4j.*;
@@ -247,7 +248,7 @@ public class SprintViewController implements Initializable, IViewController {
             sprintDetailsViewResource, 
             rb, 
             sprintDetailsViewController);
-        sprintDetailsViewDialog = dialogFactory.create();
+        sprintDetailsViewDialog = dialogFactory.create(Modality.WINDOW_MODAL);
         sprintDetailsViewDialog.setWidth(400);
         sprintDetailsViewDialog.setHeight(350);
                 

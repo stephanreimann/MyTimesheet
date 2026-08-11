@@ -293,7 +293,7 @@ public class HolydayViewController implements Initializable, IViewController {
             holydayDetailsViewResource, 
             rb, 
             holydayDetailsViewController);
-        holydayDetailsViewDialog = dialogFactory.create();
+        holydayDetailsViewDialog = dialogFactory.create(Modality.WINDOW_MODAL);
         holydayDetailsViewDialog.setWidth(350);
         holydayDetailsViewDialog.setHeight(250);
         
@@ -323,7 +323,7 @@ public class HolydayViewController implements Initializable, IViewController {
             importHolydaysViewResource, 
             rb, 
             importHolydaysViewController);
-        importHolydaysViewDialog = dialogFactory.create();
+        importHolydaysViewDialog = dialogFactory.create(Modality.WINDOW_MODAL);
         importHolydaysViewDialog.setWidth(450);
         importHolydaysViewDialog.setHeight(450);
                 

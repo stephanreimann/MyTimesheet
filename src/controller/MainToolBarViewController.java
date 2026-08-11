@@ -14,6 +14,7 @@ import java.util.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.*;
 import javafx.scene.control.*;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import properties.TranslationStringProperty;
 import service.*;
@@ -152,7 +153,7 @@ public class MainToolBarViewController implements Initializable, IViewController
             workItemTrackingToolViewResource, 
             rb, 
             workItemTrackingToolViewController);
-        workItemTrackingToolViewDialog = dialogFactory.create();
+        workItemTrackingToolViewDialog = dialogFactory.create(Modality.WINDOW_MODAL);
         workItemTrackingToolViewDialog.setWidth(512);
         workItemTrackingToolViewDialog.setHeight(850);
                         
