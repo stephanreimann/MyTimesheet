@@ -216,6 +216,7 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
     public void updateGuiItems() {
         selectedDateLabel.setText(rb.getString(trackingItemDateResourceKey));
         sprintLabel.setText(rb.getString(trackingItemSprintResourceKey));
+        sprintNumberLabel.setText(rb.getString(sprintNotFoundResourceKey));
         trackingItemShortcutTableColumn.setText(rb.getString(trackingItemShortcutResourceKey));
         trackingItemNameTableColumn.setText(rb.getString(trackingItemNameResourceKey));
         trackingItemStartTimeTableColumn.setText(rb.getString(trackingItemStartTimeResourceKey));
