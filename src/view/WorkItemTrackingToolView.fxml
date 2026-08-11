@@ -28,7 +28,7 @@
                   <Label fx:id="selectedDateLabel" text="%Date" />
                   <DatePicker fx:id="selectedDateDatePicker" onAction="#handleOnSelectedDateChangedAction" />
                   <Label fx:id="sprintLabel" text="%Sprint" />
-                  <Label fx:id="sprintNumberLabel" text="141" />
+                  <Label fx:id="sprintNumberLabel" />
                </items>
             </ToolBar>
 

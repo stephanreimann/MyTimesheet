@@ -62,6 +62,24 @@ public class SprintDAO {
         log.warn("Select: Sprint with Id " + id + " not found");
         return null;
     }
+
+    public Sprint selectSprintForDate(LocalDate date) throws SQLException {
+        StringBuilder statement = new StringBuilder();
+        statement.append("SELECT id, startdate, enddate, numberofsprintdays ");
+        statement.append("FROM sprint ");
+        statement.append("WHERE startdate <= ? AND enddate >= ?;");
+        
+        PreparedStatement dbStatement = connection.prepareStatement(statement.toString());
+        dbStatement.setString(1, date.toString());
+        dbStatement.setString(2, date.toString());
+        ResultSet resultSet = dbStatement.executeQuery();
+        while(resultSet.next()) {
+            Sprint sprint = createSprintFromResultSetEntry(resultSet);
+            return sprint;
+        }
+        log.warn("Select: Sprint for Date " + date.toString() + " not found");
+        return null;
+    }
     
     private Sprint createSprintFromResultSetEntry(ResultSet rs) throws SQLException {
         Long rsId = rs.getLong("id");

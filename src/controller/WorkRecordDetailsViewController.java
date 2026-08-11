@@ -540,6 +540,10 @@ public class WorkRecordDetailsViewController implements Initializable, IViewCont
         return eventManager;
     }
     
+    public Workrecord getSelectedWorkrecord() {
+        return selectedWorkrecord;
+    }
+    
     private void calculateWorkTimeWithBreakfastAndLunchCorrection() {
         newWorkrecordStartTime = workrecordStartTimeTimeSpinner.getValue();
         newWorkrecordEndTime = workrecordEndTimeTimeSpinner.getValue();
