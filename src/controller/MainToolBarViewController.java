@@ -153,7 +153,7 @@ public class MainToolBarViewController implements Initializable, IViewController
             workItemTrackingToolViewResource, 
             rb, 
             workItemTrackingToolViewController);
-        workItemTrackingToolViewDialog = dialogFactory.create(Modality.WINDOW_MODAL);
+        workItemTrackingToolViewDialog = dialogFactory.create(Modality.NONE);
         workItemTrackingToolViewDialog.setWidth(512);
         workItemTrackingToolViewDialog.setHeight(850);
                         

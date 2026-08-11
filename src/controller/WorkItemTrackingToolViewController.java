@@ -44,13 +44,16 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
     private final String editResourceKey = "Edit";
     private final String deleteResourceKey = "Delete";
     
+    private final String trackingItemDateResourceKey = "Date";
+    private final String trackingItemSprintResourceKey = "Sprint";
     private final String sprintNotFoundResourceKey = "SprintNotFound";
     private final String trackingItemShortcutResourceKey = "TrackingItemShortcut";
     private final String trackingItemNameResourceKey = "TrackingItemName";
     private final String trackingItemStartTimeResourceKey  ="TrackingItemStartTime";
     private final String trackingItemEndTimeResourceKey  ="TrackingItemEndTime";
     private final String trackingItemDetailsHeaderResourceKey = "TrackingItemDetailsHeader";
-    
+    private final String trackingItemItemResourceKey = "TrackingItem";
+    private final String trackingItemDescriptionResourceKey = "TrackingItemDescription";
     private final String startTimeButtonToolTipResourceKey = "StartTimeButtonToolTip";
     private final String endTimeButtonToolTipResourceKey = "EndTimeButtonToolTip";
     
@@ -79,7 +82,7 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
     @FXML
     private Label trackingItemDetailsHeaderLabel;
     @FXML
-    private Label trackingItemLabel;
+    private Label trackingItemNameLabel;
     @FXML
     private Label trackingItemStartTimeLabel;
     @FXML
@@ -211,8 +214,22 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
 
     @Override
     public void updateGuiItems() {
+        selectedDateLabel.setText(rb.getString(trackingItemDateResourceKey));
+        sprintLabel.setText(rb.getString(trackingItemSprintResourceKey));
+        trackingItemShortcutTableColumn.setText(rb.getString(trackingItemShortcutResourceKey));
+        trackingItemNameTableColumn.setText(rb.getString(trackingItemNameResourceKey));
+        trackingItemStartTimeTableColumn.setText(rb.getString(trackingItemStartTimeResourceKey));
+        trackingItemEndTimeTableColumn.setText(rb.getString(trackingItemEndTimeResourceKey));
+        trackingItemDetailsHeaderLabel.setText(rb.getString(trackingItemDetailsHeaderResourceKey));        
+        trackingItemNameLabel.setText(rb.getString(trackingItemItemResourceKey));
+        trackingItemStartTimeLabel.setText(rb.getString(trackingItemStartTimeResourceKey));
         trackingItemStartTimeButton.setTooltip(new Tooltip(rb.getString(startTimeButtonToolTipResourceKey)));
+        trackingItemEndTimeLabel.setText(rb.getString(trackingItemEndTimeResourceKey));        
         trackingItemEndTimeButton.setTooltip(new Tooltip(rb.getString(endTimeButtonToolTipResourceKey)));
+        trackingItemDescriptionLabel.setText(rb.getString(trackingItemDescriptionResourceKey));
+        newButton.setText(rb.getString(newResourceKey));
+        editButton.setText(rb.getString(editResourceKey));
+        deleteButton.setText(rb.getString(deleteResourceKey));    
     }
 
     @Override
