@@ -10,7 +10,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.GridPane?>
 
-<ToolBar xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
+<ToolBar xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml">
     <items>
         <Button fx:id="undoButton" onAction="#undoAction" text="">
             <graphic>

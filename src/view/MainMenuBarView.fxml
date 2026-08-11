@@ -8,7 +8,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.input.KeyCodeCombination?>
 
-<MenuBar xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
+<MenuBar xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml">
     <menus>
       <Menu fx:id="fileMenu" mnemonicParsing="false" text="%File">
         <items>
