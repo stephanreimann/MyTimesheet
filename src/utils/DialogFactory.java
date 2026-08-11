@@ -34,9 +34,9 @@ public class DialogFactory {
         this.dialogController = dialogController;
     }
     
-    public Stage create() throws IOException {
+    public Stage create(Modality modality) throws IOException {
         Stage stage = new Stage();
-        stage.initModality(Modality.WINDOW_MODAL);
+        stage.initModality(modality);
         stage.initOwner(primaryStage);        
         stage.setAlwaysOnTop(true);
         stage.setResizable(false);
