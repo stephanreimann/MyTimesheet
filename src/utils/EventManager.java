@@ -32,12 +32,18 @@ public class EventManager implements IEventManager {
     @Override
     public void subscribeEventToListener(String eventType, IEventListener listener) {
         List<IEventListener> eventListeners = listeners.get(eventType);
+        if(eventListeners == null) {
+            throw new IllegalArgumentException("No listener registered for Event: " + eventType);
+        }
         eventListeners.add(listener);
     }
 
     @Override
     public void unsubscribeEventFromListener(String eventType, IEventListener listener) {
         List<IEventListener> eventListeners = listeners.get(eventType);
+        if(eventListeners == null) {
+            throw new IllegalArgumentException("No listener registered for Event: " + eventType);
+        }
         eventListeners.remove(listener);
     }
 
