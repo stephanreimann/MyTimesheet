@@ -29,15 +29,14 @@ import service.UndoService;
 import sqlite.SprintDAO;
 import sqlite.TrackingItemDAO;
 import utils.EventManager;
+import utils.IEventListener;
 
 /**
  *
  * @author adrest18
  */
-class WorkItemTrackingToolViewController implements Initializable, IViewController {
+class WorkItemTrackingToolViewController implements Initializable, IViewController, IEventListener {
 
-    private final String workItemTrackingDateChangedEvent = "WorkItemTrackingDateChanged";
-    
     private static final String COLOR_LIGHT_RED = "Red";
 
     private final String timeNowIcon = "icons/timeNow.png";
@@ -58,6 +57,9 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
     private final String trackingItemDescriptionResourceKey = "TrackingItemDescription";
     private final String startTimeButtonToolTipResourceKey = "StartTimeButtonToolTip";
     private final String endTimeButtonToolTipResourceKey = "EndTimeButtonToolTip";
+    
+    private final String workItemTrackingDateChangedEvent = "WorkItemTrackingDateChanged";
+    private final String selectedWorkRecordChangedEvent = "SelectedWorkRecordChanged";
     
     @FXML
     private ToolBar trackingItemToolBar;
@@ -259,6 +261,16 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
 
     }
     
+    @Override
+    public void update(String eventType, Object source) {
+        switch (eventType) {
+            case selectedWorkRecordChangedEvent -> {
+                Workrecord workrecord = (Workrecord)source;
+                selectedDateDatePicker.setValue(workrecord.getDate());
+            }
+        }
+    }
+    
     public EventManager getEventManager() {
         return eventManager;
     }
@@ -278,5 +290,5 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
                 log.info("Sprint for date " + date + " not found, please update sprint referencedata!");                
             }
     }
-    
+
 }

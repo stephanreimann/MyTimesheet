@@ -43,6 +43,7 @@ public class MainToolBarViewController implements Initializable, IViewController
     private final String workItemTrackingToolViewResource = "/view/WorkItemTrackingToolView.fxml";
     
     private final String workItemTrackingDateChangedEvent = "WorkItemTrackingDateChanged";
+    private final String selectedWorkRecordChangedEvent = "SelectedWorkRecordChanged";
     
     private Stage primaryStage;
     private Stage workItemTrackingToolViewDialog;
@@ -150,9 +151,12 @@ public class MainToolBarViewController implements Initializable, IViewController
             workItemTrackingToolViewController = new WorkItemTrackingToolViewController(controllerRepository, languageService, connection, undoService);
             controllerRepository.put(WorkItemTrackingToolViewController.class.getName(), workItemTrackingToolViewController);
             
-            workItemTrackingToolViewController.getEventManager().registerEventType(workItemTrackingDateChangedEvent);
+            //Register WorkItemTrackingToolViewController for selectedWorkRecordChangedEvent
+            WorkRecordViewController workRecordViewController = (WorkRecordViewController)controllerRepository.get(WorkRecordViewController.class.getName());
+            workRecordViewController.getEventManager().subscribeEventToListener(selectedWorkRecordChangedEvent, workItemTrackingToolViewController);            
             
             //This controller will be informed about the date changed action
+            workItemTrackingToolViewController.getEventManager().registerEventType(workItemTrackingDateChangedEvent);
             WorkRecordDetailsViewController workRecordDetailsViewController = (WorkRecordDetailsViewController)this.controllerRepository.get(WorkRecordDetailsViewController.class.getName());
             workItemTrackingToolViewController.getEventManager().subscribeEventToListener(workItemTrackingDateChangedEvent, workRecordDetailsViewController);
         }

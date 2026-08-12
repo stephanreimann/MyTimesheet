@@ -827,7 +827,8 @@ public class WorkRecordDetailsViewController implements Initializable, IViewCont
     }
     
     private void handleSetTodayButtonClickAction(ActionEvent event) {
-        workRecordViewController.selectWorkrecordOf(LocalDate.now());
+        LocalDate date = LocalDate.now();
+        workRecordViewController.selectWorkrecordOf(date);
     }
 
     private void handleSetStartTimeButtonClickAction(ActionEvent event) {
