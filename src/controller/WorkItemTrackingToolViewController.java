@@ -36,6 +36,8 @@ import utils.EventManager;
  */
 class WorkItemTrackingToolViewController implements Initializable, IViewController {
 
+    private final String workItemTrackingDateChangedEvent = "WorkItemTrackingDateChanged";
+    
     private static final String COLOR_LIGHT_RED = "Red";
 
     private final String timeNowIcon = "icons/timeNow.png";
@@ -136,6 +138,7 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
         this.sprintDAO = new SprintDAO(connection);
         this.trackingItemDAO = new TrackingItemDAO(connection);
         this.workRecordDetailsViewController = (WorkRecordDetailsViewController)controllerRepository.get(WorkRecordDetailsViewController.class.getName());
+        this.eventManager = new EventManager();
     }
     
     @FXML
@@ -182,8 +185,11 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
         trackingItemDetailsGridPane.add(trackingItemStartTimeTimeSpinner, 2, 2);
         trackingItemDetailsGridPane.add(trackingItemEndTimeTimeSpinner, 2, 3);
         
-        selectedDateDatePicker.valueProperty().addListener((ObservableValue<? extends LocalDate> observable, LocalDate oldValue, LocalDate newValue) -> {
+        selectedDateDatePicker.valueProperty().addListener((var observable, var oldValue, var newValue) -> {
             trySetSprintNumberLabel(newValue);
+    
+            //Fire event that selected date for tracking workitems has changed
+            eventManager.notifyListenerOfEvent(workItemTrackingDateChangedEvent, newValue);
         });
         trackingItemStartTimeTimeSpinner.valueProperty().addListener((ObservableValue<? extends LocalTime> observable, LocalTime oldValue, LocalTime newValue) -> {
 
@@ -251,6 +257,10 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
     @Override
     public void preCloseAction() {
 
+    }
+    
+    public EventManager getEventManager() {
+        return eventManager;
     }
     
     private void trySetSprintNumberLabel(LocalDate date) {

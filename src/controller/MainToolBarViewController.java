@@ -20,6 +20,7 @@ import properties.TranslationStringProperty;
 import service.*;
 import utils.ControllerUtilities;
 import utils.DialogFactory;
+import utils.EventManager;
 
 /**
  *
@@ -41,6 +42,8 @@ public class MainToolBarViewController implements Initializable, IViewController
     private final String workItemTrackingToolViewDialogTitleResourceKey = "WorkItemTrackingToolViewTitle";
     private final String workItemTrackingToolViewResource = "/view/WorkItemTrackingToolView.fxml";
     
+    private final String workItemTrackingDateChangedEvent = "WorkItemTrackingDateChanged";
+    
     private Stage primaryStage;
     private Stage workItemTrackingToolViewDialog;
     private final LanguageService languageService;
@@ -49,6 +52,7 @@ public class MainToolBarViewController implements Initializable, IViewController
     private MenuItem activeMenuItem;
     private ResourceBundle rb;
     private final ControllerRepository controllerRepository;
+    private final EventManager eventManager;
     
     @FXML
     private Button undoButton;
@@ -86,6 +90,7 @@ public class MainToolBarViewController implements Initializable, IViewController
         this.connection = connection;        
         this.undoService = undoService;
         this.controllerRepository = ControllerRepository.getInstance();
+        this.eventManager = new EventManager();
     }
 
     @Override
@@ -144,6 +149,12 @@ public class MainToolBarViewController implements Initializable, IViewController
         if(workItemTrackingToolViewController == null) {
             workItemTrackingToolViewController = new WorkItemTrackingToolViewController(controllerRepository, languageService, connection, undoService);
             controllerRepository.put(WorkItemTrackingToolViewController.class.getName(), workItemTrackingToolViewController);
+            
+            workItemTrackingToolViewController.getEventManager().registerEventType(workItemTrackingDateChangedEvent);
+            
+            //This controller will be informed about the date changed action
+            WorkRecordDetailsViewController workRecordDetailsViewController = (WorkRecordDetailsViewController)this.controllerRepository.get(WorkRecordDetailsViewController.class.getName());
+            workItemTrackingToolViewController.getEventManager().subscribeEventToListener(workItemTrackingDateChangedEvent, workRecordDetailsViewController);
         }
 
         DialogFactory dialogFactory = new DialogFactory(
