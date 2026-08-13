@@ -115,6 +115,9 @@ public class MainToolBarViewController implements Initializable, IViewController
         redoButton.setText(rb.getString(redoResourceKey));
         redoTooltip.setText(rb.getString(redoResourceKey));
         workItemTrackingToolTooltip.setText(rb.getString(workItemTrackingToolResourceKey));
+        if(workItemTrackingToolViewDialog != null) {
+            workItemTrackingToolViewDialog.setTitle(rb.getString(workItemTrackingToolViewDialogTitleResourceKey));
+        }
     }
 
     public MenuItem GetActiveMenuItem() {
