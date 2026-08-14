@@ -259,7 +259,6 @@ public class Database {
         String sprintTableSchema = new StringBuilder()  
         .append("CREATE TABLE WorkItem (")
 	.append("Id                 INTEGER NOT NULL,")
-	.append("UserId             INTEGER NOT NULL,")
 	.append("WorkrecordId       INTEGER NOT NULL,")
 	.append("SprintId           INTEGER NOT NULL,")
 	.append("TrackingItemId     INTEGER NOT NULL,")

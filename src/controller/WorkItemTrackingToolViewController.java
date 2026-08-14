@@ -12,7 +12,10 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.*;
 import javafx.scene.control.*;
@@ -21,6 +24,7 @@ import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import model.Sprint;
 import model.TrackingItem;
+import model.WorkItemTrackingData;
 import model.Workrecord;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -28,6 +32,7 @@ import service.LanguageService;
 import service.UndoService;
 import sqlite.SprintDAO;
 import sqlite.TrackingItemDAO;
+import sqlite.WorkItemDAO;
 import utils.EventManager;
 import utils.IEventListener;
 
@@ -72,15 +77,15 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
     @FXML
     private Label sprintNumberLabel;
     @FXML
-    private TableView trackingItemTableView;
+    private TableView<WorkItemTrackingData> trackingItemTableView;
     @FXML
-    private TableColumn trackingItemShortcutTableColumn;
+    private TableColumn<WorkItemTrackingData, String> trackingItemShortcutTableColumn;
     @FXML
-    private TableColumn trackingItemNameTableColumn;
+    private TableColumn<WorkItemTrackingData, String> trackingItemNameTableColumn;
     @FXML
-    private TableColumn trackingItemStartTimeTableColumn;
+    private TableColumn<WorkItemTrackingData, LocalTime> trackingItemStartTimeTableColumn;
     @FXML
-    private TableColumn trackingItemEndTimeTableColumn;
+    private TableColumn<WorkItemTrackingData, LocalTime> trackingItemEndTimeTableColumn;
     @FXML
     private GridPane trackingItemDetailsGridPane;
     @FXML
@@ -122,8 +127,13 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
     private LocalTimeSpinner trackingItemStartTimeTimeSpinner;
     private LocalTimeSpinner trackingItemEndTimeTimeSpinner;
 
+    private Sprint sprint;
     private final SprintDAO sprintDAO;
     private final TrackingItemDAO trackingItemDAO;
+    private final WorkItemDAO workItemDao;
+
+    private ObservableList<WorkItemTrackingData> workItemTrackingData;
+    
     private final WorkRecordDetailsViewController workRecordDetailsViewController;
     private Workrecord actualSelectedWorkrecord;
     
@@ -139,6 +149,8 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
         this.undoService = undoService;
         this.sprintDAO = new SprintDAO(connection);
         this.trackingItemDAO = new TrackingItemDAO(connection);
+        this.workItemDao = new WorkItemDAO(connection);
+        this.workItemTrackingData = FXCollections.observableArrayList();  
         this.workRecordDetailsViewController = (WorkRecordDetailsViewController)controllerRepository.get(WorkRecordDetailsViewController.class.getName());
         this.eventManager = new EventManager();
     }
@@ -177,7 +189,7 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
     @SuppressWarnings("unchecked")
     public void initialize(URL location, ResourceBundle rb) {
         this.rb = rb;
-    
+            
         trackingItemStartTimeButton.setGraphic(new ImageView(timeNowIcon));
         trackingItemEndTimeButton.setGraphic(new ImageView(timeNowIcon));
         
@@ -213,10 +225,13 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
 
         try {
             trackingItemChoiceBox.getItems().addAll(trackingItemDAO.selectAll());
-            trackingItemChoiceBox.getSelectionModel().select(0);
         } catch (SQLException ex) {
-            log.fatal(ex.getMessage());
+            java.util.logging.Logger.getLogger(WorkItemTrackingToolViewController.class.getName()).log(Level.SEVERE, null, ex);
         }
+        trackingItemChoiceBox.getSelectionModel().select(0);
+            
+        workItemTrackingData.add(new WorkItemTrackingData("FD", "Feature Development", LocalTime.of(1, 0), LocalTime.of(2, 0)));
+        trackingItemTableView.setItems(workItemTrackingData);
         
     }
 
@@ -277,7 +292,7 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
     
     private void trySetSprintNumberLabel(LocalDate date) {
             try {
-                Sprint sprint = sprintDAO.selectSprintForDate(date);
+                sprint = sprintDAO.selectSprintForDate(date);
                 if(sprint == null) {
                     sprintNumberLabel.setText(rb.getString(sprintNotFoundResourceKey));
                     sprintNumberLabel.setStyle("-fx-text-fill: " + COLOR_LIGHT_RED + ";");

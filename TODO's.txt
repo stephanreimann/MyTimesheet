@@ -22,22 +22,22 @@ To Run set VM options:
 
 4. Design WorkItemTracking
     Table: WorkItem
-    Id  UserId  WorkrecordId    SprintId    TrackingItemId Starttime (HH:MM) 	Endtime (HH:MM)     Description
+    Id  WorkrecordId    SprintId    TrackingItemId Starttime (HH:MM) 	Endtime (HH:MM)     Description
     ======================================================================================================================================================================================================================================================
-    1   1       1               138         1              00,00		00,00               Sprint Planning
-    2   1       1               138         2              00,00		00,00               Product Backlog Item 5797411: Support multiple AND‑combined conditions in trigger expressions
-    3   1       1               138         3              00,00		00,00               Bug 6118935: Error in Step7 Smoke Test: Exception in PLCSimAdvancedBug 6118935: Error in Step7 Smoke Test: Exception in PLCSimAdvanced
-    4   1       1               138         4              00,00		00,00               ⬇️ Merge Relevant for SPL_03_W ⬇️ ⏳/⚠️-✅-❌
-                                                                                                    RGT on jupiter:         [✅]
-                                                                                                    ✅	5793_21.01.00.00_01.37.0015 TPE.Step7_SPL_03_W.rgt.ERL
-                                                                                                    ✅	5762_21.01.00.00_01.37.0008 TPE.Step7_SPL_T.rgt.ERL <= For duplicate check!
-                                                                                                    QG2:                    [✅] 
-                                                                                                    5803_21.01.00.00_01.37.0008	TPE.Step7_SPL_03_W.rgs.ERL
-                                                                                                    ⬆️ Merge Relevant for SPL_03_W ⬆️
-                                                                                                    QG3:                    [⏳]
-                                                                                                    8696_21.01.00.00_01.37.0009	TPE.Step7_SPL_T.rgl.ERL
-    5   1       1               138         5              00,00		00,00               Product Backlog Item 5797415: Redesing of xxxx
-    6   1       1               138         6              00,00		00,00               This and That
+    1   1               138         1              08,00		09,00               Sprint Planning
+    2   1               138         2              09,00		11,00               Product Backlog Item 5797411: Support multiple AND‑combined conditions in trigger expressions
+    3   1               138         3              11,45		13,00               Bug 6118935: Error in Step7 Smoke Test: Exception in PLCSimAdvancedBug 6118935: Error in Step7 Smoke Test: Exception in PLCSimAdvanced
+    4   1               138         4              13,00		13,30               ⬇️ Merge Relevant for SPL_03_W ⬇️ ⏳/⚠️-✅-❌
+                                                                                              RGT on jupiter:         [✅]
+                                                                                              ✅	5793_21.01.00.00_01.37.0015 TPE.Step7_SPL_03_W.rgt.ERL
+                                                                                              ✅	5762_21.01.00.00_01.37.0008 TPE.Step7_SPL_T.rgt.ERL <= For duplicate check!
+                                                                                              QG2:                    [✅] 
+                                                                                              5803_21.01.00.00_01.37.0008	TPE.Step7_SPL_03_W.rgs.ERL
+                                                                                            ⬆️ Merge Relevant for SPL_03_W ⬆️
+                                                                                            QG3:                    [⏳]
+                                                                                            8696_21.01.00.00_01.37.0009	TPE.Step7_SPL_T.rgl.ERL
+    5   1               138         5              13,30		15,00               Product Backlog Item 5797415: Redesing of xxxx
+    6   1               138         6              15,00		15,45               This and That
 
     Table: Sprint
     Id  	StartDate	EndDate		NumberOfSprintDays

@@ -4,7 +4,6 @@
  */
 package model;
 
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,10 +51,9 @@ public class WorkItemTest {
         //Assert
         Assert.assertNotNull(workItem);
         Assert.assertEquals(Long.valueOf(1), workItem.getId());
-        Assert.assertNull(workItem.getUser());
-        Assert.assertNull(workItem.getWorkrecord());
-        Assert.assertNull(workItem.getSprint());
-        Assert.assertNull(workItem.getTrackingItem());
+        Assert.assertEquals(Long.valueOf(0), workItem.getWorkrecordId());
+        Assert.assertEquals(Long.valueOf(0), workItem.getSprintId());
+        Assert.assertEquals(Long.valueOf(0), workItem.getTrackingItemId());
         Assert.assertNull(workItem.getStartTime());
         Assert.assertNull(workItem.getEndTime());
         Assert.assertNull(workItem.getDescription());
@@ -65,29 +63,22 @@ public class WorkItemTest {
     public void T01_Parameterized_Ctor_Called_Returns_WithParameterInitialized_Instance() {
         //Arrange
         Long id = 1L;
-        String description = "TestDescription";
-        Role role = new Role(1L, "Admin", "The Administrator role has access to all application features");
-        Address addresse = new Address(1L, "Humboldtstrasse", 90L, "Etage",2L, "Rechts", "Nürenberg", "Bayern", 90495L, "Deutschland");
-        Contract contract = new Contract(1L, "7 hours contract", 7L, 10L, 30L, "31.03", LocalTime.of(0, 15), LocalTime.of(9, 0), LocalTime.of(0, 30), LocalTime.of(12, 0), LocalTime.of(5, 0, 0), LocalTime.of(22, 0, 0));
-        User user = new User(1L, role, addresse, contract, "Stephan", "Reimann", "stephan", "password", 30L);
-        Project project = new Project(1L, "TestProject", "AAAA.BBBB.CCCC.DDDD", "TRUE", "TRUE", "TRUE", "TestDescription");
-        Worklocation worklocation = new Worklocation(1L, "Homeoffice", "Worklocation is Homeoffice");
-        Workrecord workrecord = new Workrecord(id, user, project, LocalDate.now(), LocalTime.now(), LocalTime.now(), LocalTime.now(), LocalTime.now().toString(), LocalTime.now().toString(), 0, worklocation, description);
-        Sprint sprint = new Sprint(id, LocalDate.now(), LocalDate.now(), 10L);
-        TrackingItem trackingItem = new TrackingItem(1L, "Scrum", "S", "All task related to SCRUM activities");
+        Long workrecordId = 1L;
+        Long sprintId = 1L;
+        Long trackingItemId = 1L;
         LocalTime starttime = LocalTime.now();
         LocalTime endtime = LocalTime.now();
+        String description = "TestDescription";
 
         //Act
-        WorkItem workItem = new WorkItem(id, user, workrecord, sprint, trackingItem, starttime, endtime, description);
+        WorkItem workItem = new WorkItem(id, workrecordId, sprintId, trackingItemId, starttime, endtime, description);
         
         //Assert
         Assert.assertNotNull(workItem);
         Assert.assertEquals(id, workItem.getId());
-        Assert.assertEquals(user, workItem.getUser());
-        Assert.assertEquals(workrecord, workItem.getWorkrecord());
-        Assert.assertEquals(sprint, workItem.getSprint());
-        Assert.assertEquals(trackingItem, workItem.getTrackingItem());
+        Assert.assertEquals(workrecordId, workItem.getWorkrecordId());
+        Assert.assertEquals(sprintId, workItem.getSprintId());
+        Assert.assertEquals(trackingItemId, workItem.getTrackingItemId());
         Assert.assertEquals(starttime, workItem.getStartTime());
         Assert.assertEquals(endtime, workItem.getEndTime());
         Assert.assertEquals(description, workItem.getDescription());
@@ -97,19 +88,13 @@ public class WorkItemTest {
     public void T10_Requesting_HashCode_Twice_For_Same_Project_Instance_Returns_Identical_HashCode() {
         //Arrange
         Long id = 1L;
-        String description = "TestDescription";
-        Role role = new Role(1L, "Admin", "The Administrator role has access to all application features");
-        Address addresse = new Address(1L, "Humboldtstrasse", 90L, "Etage",2L, "Rechts", "Nürenberg", "Bayern", 90495L, "Deutschland");
-        Contract contract = new Contract(1L, "7 hours contract", 7L, 10L, 30L, "31.03", LocalTime.of(0, 15), LocalTime.of(9, 0), LocalTime.of(0, 30), LocalTime.of(12, 0), LocalTime.of(5, 0, 0), LocalTime.of(22, 0, 0));
-        User user = new User(1L, role, addresse, contract, "Stephan", "Reimann", "stephan", "password", 30L);
-        Project project = new Project(1L, "TestProject", "AAAA.BBBB.CCCC.DDDD", "TRUE", "TRUE", "TRUE", "TestDescription");
-        Worklocation worklocation = new Worklocation(1L, "Homeoffice", "Worklocation is Homeoffice");
-        Workrecord workrecord = new Workrecord(id, user, project, LocalDate.now(), LocalTime.now(), LocalTime.now(), LocalTime.now(), LocalTime.now().toString(), LocalTime.now().toString(), 0, worklocation, description);
-        Sprint sprint = new Sprint(id, LocalDate.now(), LocalDate.now(), 10L);
-        TrackingItem trackingItem = new TrackingItem(1L, "Scrum", "S", "All task related to SCRUM activities");
+        Long workrecordId = 1L;
+        Long sprintId = 1L;
+        Long trackingItemId = 1L;
         LocalTime starttime = LocalTime.now();
         LocalTime endtime = LocalTime.now();
-        WorkItem workItem = new WorkItem(id, user, workrecord, sprint, trackingItem, starttime, endtime, description);
+        String description = "TestDescription";
+        WorkItem workItem = new WorkItem(id, workrecordId, sprintId, trackingItemId, starttime, endtime, description);
 
         //Act
         Integer hashCode_FirstCall = workItem.hashCode();
@@ -122,20 +107,14 @@ public class WorkItemTest {
     @Test()
     public void T11_Requesting_HashCode_For_Different_Workrecords_Instance_Returns_Different_HashCode() {
         //Arrange
-        String description = "TestDescription";
-        Role role = new Role(1L, "Admin", "The Administrator role has access to all application features");
-        Address addresse = new Address(1L, "Humboldtstrasse", 90L, "Etage",2L, "Rechts", "Nürenberg", "Bayern", 90495L, "Deutschland");
-        Contract contract = new Contract(1L, "7 hours contract", 7L, 10L, 30L, "31.03", LocalTime.of(0, 15), LocalTime.of(9, 0), LocalTime.of(0, 30), LocalTime.of(12, 0), LocalTime.of(5, 0, 0), LocalTime.of(22, 0, 0));
-        User user = new User(1L, role, addresse, contract, "Stephan", "Reimann", "stephan", "password", 30L);
-        Project project = new Project(1L, "TestProject", "AAAA.BBBB.CCCC.DDDD", "TRUE", "TRUE", "TRUE", "TestDescription");
-        Worklocation worklocation = new Worklocation(1L, "Homeoffice", "Worklocation is Homeoffice");
-        Workrecord workrecord = new Workrecord(1L, user, project, LocalDate.now(), LocalTime.now(), LocalTime.now(), LocalTime.now(), LocalTime.now().toString(), LocalTime.now().toString(), 0, worklocation, description);
-        Sprint sprint = new Sprint(1L, LocalDate.now(), LocalDate.now(), 10L);
-        TrackingItem trackingItem = new TrackingItem(1L, "Scrum", "S", "All task related to SCRUM activities");
+        Long workrecordId = 1L;
+        Long sprintId = 1L;
+        Long trackingItemId = 1L;
         LocalTime starttime = LocalTime.now();
         LocalTime endtime = LocalTime.now();
-        WorkItem workItem1 = new WorkItem(1L, user, workrecord, sprint, trackingItem, starttime, endtime, description);
-        WorkItem workItem2 = new WorkItem(2L, user, workrecord, sprint, trackingItem, starttime, endtime, description);
+        String description = "TestDescription";
+        WorkItem workItem1 = new WorkItem(1L, workrecordId, sprintId, trackingItemId, starttime, endtime, description);
+        WorkItem workItem2 = new WorkItem(2L, workrecordId, sprintId, trackingItemId, starttime, endtime, description);
 
         //Act
         Integer hashCode1 = workItem1.hashCode();
@@ -148,20 +127,14 @@ public class WorkItemTest {
     @Test()
     public void T20_Compare_Equal_Workrecords_Returns_True() {
         //Arrange
-        String description = "TestDescription";
-        Role role = new Role(1L, "Admin", "The Administrator role has access to all application features");
-        Address addresse = new Address(1L, "Humboldtstrasse", 90L, "Etage",2L, "Rechts", "Nürenberg", "Bayern", 90495L, "Deutschland");
-        Contract contract = new Contract(1L, "7 hours contract", 7L, 10L, 30L, "31.03", LocalTime.of(0, 15), LocalTime.of(9, 0), LocalTime.of(0, 30), LocalTime.of(12, 0), LocalTime.of(5, 0, 0), LocalTime.of(22, 0, 0));
-        User user = new User(1L, role, addresse, contract, "Stephan", "Reimann", "stephan", "password", 30L);
-        Project project = new Project(1L, "TestProject", "AAAA.BBBB.CCCC.DDDD", "TRUE", "TRUE", "TRUE", "TestDescription");
-        Worklocation worklocation = new Worklocation(1L, "Homeoffice", "Worklocation is Homeoffice");
-        Workrecord workrecord = new Workrecord(1L, user, project, LocalDate.now(), LocalTime.now(), LocalTime.now(), LocalTime.now(), LocalTime.now().toString(), LocalTime.now().toString(), 0, worklocation, description);
-        Sprint sprint = new Sprint(1L, LocalDate.now(), LocalDate.now(), 10L);
-        TrackingItem trackingItem = new TrackingItem(1L, "Scrum", "S", "All task related to SCRUM activities");
+        Long workrecordId = 1L;
+        Long sprintId = 1L;
+        Long trackingItemId = 1L;
         LocalTime starttime = LocalTime.now();
         LocalTime endtime = LocalTime.now();
-        WorkItem workItem1 = new WorkItem(1L, user, workrecord, sprint, trackingItem, starttime, endtime, description);
-        WorkItem workItem2 = new WorkItem(1L, user, workrecord, sprint, trackingItem, starttime, endtime, description);
+        String description = "TestDescription";
+        WorkItem workItem1 = new WorkItem(1L, workrecordId, sprintId, trackingItemId, starttime, endtime, description);
+        WorkItem workItem2 = new WorkItem(1L, workrecordId, sprintId, trackingItemId, starttime, endtime, description);
         
         //Act
         boolean result = workItem1.equals(workItem2);
@@ -173,66 +146,36 @@ public class WorkItemTest {
     @Test()
     public void T21_Compare_NotEqual_Workrecords_Returns_False() {
         //Arrange
-        String description = "TestDescription";
-        Role role = new Role(1L, "Admin", "The Administrator role has access to all application features");
-        Address addresse = new Address(1L, "Humboldtstrasse", 90L, "Etage",2L, "Rechts", "Nürenberg", "Bayern", 90495L, "Deutschland");
-        Contract contract = new Contract(1L, "7 hours contract", 7L, 10L, 30L, "31.03", LocalTime.of(0, 15), LocalTime.of(9, 0), LocalTime.of(0, 30), LocalTime.of(12, 0), LocalTime.of(5, 0, 0), LocalTime.of(22, 0, 0));
-        User user = new User(1L, role, addresse, contract, "Stephan", "Reimann", "stephan", "password", 30L);
-        Project project = new Project(1L, "TestProject", "AAAA.BBBB.CCCC.DDDD", "TRUE", "TRUE", "TRUE", "TestDescription");
-        Worklocation worklocation = new Worklocation(1L, "Homeoffice", "Worklocation is Homeoffice");
-        Workrecord workrecord = new Workrecord(1L, user, project, LocalDate.now(), LocalTime.now(), LocalTime.now(), LocalTime.now(), LocalTime.now().toString(), LocalTime.now().toString(), 0, worklocation, description);
-        Sprint sprint = new Sprint(1L, LocalDate.now(), LocalDate.now(), 10L);
-        TrackingItem trackingItem = new TrackingItem(1L, "Scrum", "S", "All task related to SCRUM activities");
+        Long workrecordId = 1L;
+        Long sprintId = 1L;
+        Long trackingItemId = 1L;
         LocalTime starttime = LocalTime.now();
         LocalTime endtime = LocalTime.now();
+        String description = "TestDescription";
 
         List<Pair<WorkItem, WorkItem>> pairList = new ArrayList<>(); 
         pairList.add(
             new Pair(
-                new WorkItem(1L, user, workrecord, sprint, trackingItem, starttime, endtime, description),
-                new WorkItem(2L, user, workrecord, sprint, trackingItem, starttime, endtime, description)
+                new WorkItem(1L, workrecordId, sprintId, trackingItemId, starttime, endtime, description),
+                new WorkItem(2L, workrecordId, sprintId, trackingItemId, starttime, endtime, description)
             )
         );
         pairList.add(
             new Pair(
-                new WorkItem(1L, user, workrecord, sprint, trackingItem, starttime, endtime, description),
-                new WorkItem(1L, null, workrecord, sprint, trackingItem, starttime, endtime, description)
+                new WorkItem(1L, workrecordId, sprintId, trackingItemId, starttime, endtime, description),
+                new WorkItem(1L, workrecordId, sprintId, trackingItemId, starttime.plusHours(1), endtime, description)
             )
         );
         pairList.add(
             new Pair(
-                new WorkItem(1L, user, workrecord, sprint, trackingItem, starttime, endtime, description),
-                new WorkItem(1L, user, null, sprint, trackingItem, starttime, endtime, description)
+                new WorkItem(1L, workrecordId, sprintId, trackingItemId, starttime, endtime, description),
+                new WorkItem(1L, workrecordId, sprintId, trackingItemId, starttime, endtime.plusHours(1), description)
             )
         );
         pairList.add(
             new Pair(
-                new WorkItem(1L, user, workrecord, sprint, trackingItem, starttime, endtime, description),
-                new WorkItem(1L, user, workrecord, null, trackingItem, starttime, endtime, description)
-            )
-        );
-        pairList.add(
-            new Pair(
-                new WorkItem(1L, user, workrecord, sprint, trackingItem, starttime, endtime, description),
-                new WorkItem(1L, user, workrecord, sprint, null, starttime, endtime, description)
-            )
-        );
-        pairList.add(
-            new Pair(
-                new WorkItem(1L, user, workrecord, sprint, trackingItem, starttime, endtime, description),
-                new WorkItem(1L, user, workrecord, sprint, trackingItem, starttime.plusHours(1), endtime, description)
-            )
-        );
-        pairList.add(
-            new Pair(
-                new WorkItem(1L, user, workrecord, sprint, trackingItem, starttime, endtime, description),
-                new WorkItem(1L, user, workrecord, sprint, trackingItem, starttime, endtime.plusHours(1), description)
-            )
-        );
-        pairList.add(
-            new Pair(
-                new WorkItem(1L, user, workrecord, sprint, trackingItem, starttime, endtime, description),
-                new WorkItem(1L, user, workrecord, sprint, trackingItem, starttime, endtime, description + "_")
+                new WorkItem(1L, workrecordId, sprintId, trackingItemId, starttime, endtime, description),
+                new WorkItem(1L, workrecordId, sprintId, trackingItemId, starttime, endtime, description + "_")
             )
         );
 
@@ -251,22 +194,17 @@ public class WorkItemTest {
     @Test()
     public void T30_Print_Workrecord_PrintsResults_In_Expected_PrintFormat() {
         //Arrange
+        Long id = 1L;
+        Long workrecordId = 1L;
+        Long sprintId = 1L;
+        Long trackingItemId = 1L;
+        LocalTime starttime = LocalTime.of(1, 0);
+        LocalTime endtime = LocalTime.of(1, 0);
         String description = "TestDescription";
-        Role role = new Role(1L, "Admin", "The Administrator role has access to all application features");
-        Address addresse = new Address(1L, "Humboldtstrasse", 90L, "Etage",2L, "Rechts", "Nürenberg", "Bayern", 90495L, "Deutschland");
-        Contract contract = new Contract(1L, "7 hours contract", 7L, 10L, 30L, "31.03", LocalTime.of(0, 15), LocalTime.of(9, 0), LocalTime.of(0, 30), LocalTime.of(12, 0), LocalTime.of(5, 0, 0), LocalTime.of(22, 0, 0));
-        User user = new User(1L, role, addresse, contract, "Stephan", "Reimann", "stephan", "password", 30L);
-        Project project = new Project(1L, "TestProject", "AAAA.BBBB.CCCC.DDDD", "TRUE", "TRUE", "TRUE", "TestDescription");
-        Worklocation worklocation = new Worklocation(1L, "Homeoffice", "Worklocation is Homeoffice");
-        Workrecord workrecord = new Workrecord(1L, user, project, LocalDate.now(), LocalTime.now(), LocalTime.now(), LocalTime.now(), LocalTime.now().toString(), LocalTime.now().toString(), 0, worklocation, description);
-        Sprint sprint = new Sprint(1L, LocalDate.now(), LocalDate.now(), 10L);
-        TrackingItem trackingItem = new TrackingItem(1L, "Scrum", "S", "All task related to SCRUM activities");
-        LocalTime starttime = LocalTime.of(1, 0, 0, 0);
-        LocalTime endtime = LocalTime.of(1, 0, 0, 0);
         
-        String expectedPrintResult = "1, 1, 1, 1, 1, 01:00, 01:00, TestDescription";
+        String expectedPrintResult = "1, 1, 1, 1, 01:00, 01:00, TestDescription";
 
-        WorkItem workItem = new WorkItem(1L, user, workrecord, sprint, trackingItem, starttime, endtime, description);
+        WorkItem workItem = new WorkItem(id, workrecordId, sprintId, trackingItemId, starttime, endtime, description);
         
         //Act
         String printResult = workItem.toString();

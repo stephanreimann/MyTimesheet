@@ -20,10 +20,9 @@ import javafx.beans.property.StringProperty;
 public class WorkItem {
 
     private final LongProperty id = new SimpleLongProperty();
-    private final ObjectProperty<User> user = new SimpleObjectProperty<>();
-    private final ObjectProperty<Workrecord> workrecord = new SimpleObjectProperty<>();
-    private final ObjectProperty<Sprint> sprint = new SimpleObjectProperty<>();
-    private final ObjectProperty<TrackingItem> trackingItem = new SimpleObjectProperty<>();
+    private final LongProperty workrecordId = new SimpleLongProperty();
+    private final LongProperty sprintId = new SimpleLongProperty();
+    private final LongProperty trackingItemId = new SimpleLongProperty();
     private final ObjectProperty<LocalTime> starttime = new SimpleObjectProperty<>();
     private final ObjectProperty<LocalTime> endtime = new SimpleObjectProperty<>();
     private final StringProperty description = new SimpleStringProperty();
@@ -32,14 +31,13 @@ public class WorkItem {
         this.id.set(id);
     }
     
-    public WorkItem(Long id, User user, Workrecord workrecord, Sprint sprint, 
-                TrackingItem trackingItem, LocalTime starttime, LocalTime endtime, 
+    public WorkItem(Long id, Long workrecordId, Long sprintId, 
+                Long trackingItemId, LocalTime starttime, LocalTime endtime, 
                 String description) {
         this.id.set(id);
-        this.user.set(user);
-        this.workrecord.set(workrecord);
-        this.sprint.set(sprint);
-        this.trackingItem.set(trackingItem);
+        this.workrecordId.set(workrecordId);
+        this.sprintId.set(sprintId);
+        this.trackingItemId.set(trackingItemId);
         this.starttime.set(starttime);
         this.endtime.set(endtime);
         this.description.set(description);
@@ -47,10 +45,9 @@ public class WorkItem {
     
     public WorkItem(WorkItem workitem) {
         this.id.set(workitem.getId());
-        this.user.set(workitem.getUser());
-        this.workrecord.set(workitem.getWorkrecord());
-        this.sprint.set(workitem.getSprint());
-        this.trackingItem.set(workitem.getTrackingItem());
+        this.workrecordId.set(workitem.getWorkrecordId());
+        this.sprintId.set(workitem.getSprintId());
+        this.trackingItemId.set(workitem.getTrackingItemId());
         this.starttime.set(workitem.getStartTime());
         this.endtime.set(workitem.getEndTime());
         this.description.set(workitem.getDescription());
@@ -69,56 +66,43 @@ public class WorkItem {
         return id;
     }
     // </editor-fold>
-    // <editor-fold defaultstate="collapsed" desc="User Property">
-    public User getUser() {
-        return user.get();
+    // <editor-fold defaultstate="collapsed" desc="WorkrecordId Property">
+    public Long getWorkrecordId() {
+        return workrecordId.get();
     }
     
-    public void setUser(User value) {
-        user.set(value);
+    public void setWorkrecord(Long value) {
+        workrecordId.set(value);
     }
     
-    public ObjectProperty<User> getUserProperty() {
-        return user;
+    public LongProperty getWorkrecordProperty() {
+        return workrecordId;
     }
     // </editor-fold>
-    // <editor-fold defaultstate="collapsed" desc="Workrecord Property">
-    public Workrecord getWorkrecord() {
-        return workrecord.get();
+    // <editor-fold defaultstate="collapsed" desc="SprintId Property">
+    public Long getSprintId() {
+        return sprintId.get();
     }
     
-    public void setWorkrecord(Workrecord value) {
-        workrecord.set(value);
+    public void setSprintId(Long value) {
+        sprintId.set(value);
     }
     
-    public ObjectProperty<Workrecord> getWorkrecordProperty() {
-        return workrecord;
+    public LongProperty getSprintIdProperty() {
+        return sprintId;
     }
     // </editor-fold>
-    // <editor-fold defaultstate="collapsed" desc="Sprint Property">
-    public Sprint getSprint() {
-        return sprint.get();
+    // <editor-fold defaultstate="collapsed" desc="TrackingItemId Property">
+    public Long getTrackingItemId() {
+        return trackingItemId.get();
     }
     
-    public void setSprint(Sprint value) {
-        sprint.set(value);
+    public void setTrackingItemId(Long value) {
+        trackingItemId.set(value);
     }
     
-    public ObjectProperty<Sprint> getSprintProperty() {
-        return sprint;
-    }
-    // </editor-fold>
-    // <editor-fold defaultstate="collapsed" desc="TrackingItem Property">
-    public TrackingItem getTrackingItem() {
-        return trackingItem.get();
-    }
-    
-    public void setTrackingItem(TrackingItem value) {
-        trackingItem.set(value);
-    }
-    
-    public ObjectProperty<TrackingItem> getTrackingItemProperty() {
-        return trackingItem;
+    public LongProperty getTrackingItemIdProperty() {
+        return trackingItemId;
     }
     // </editor-fold>
     // <editor-fold defaultstate="collapsed" desc="StartTime Property">
@@ -165,10 +149,9 @@ public class WorkItem {
     public int hashCode() {
         int hash = 4;
         hash = 53 * hash + Objects.hashCode(this.id);
-        hash = 53 * hash + Objects.hashCode(this.user);
-        hash = 53 * hash + Objects.hashCode(this.workrecord);
-        hash = 53 * hash + Objects.hashCode(this.sprint);
-        hash = 53 * hash + Objects.hashCode(this.trackingItem);
+        hash = 53 * hash + Objects.hashCode(this.workrecordId);
+        hash = 53 * hash + Objects.hashCode(this.sprintId);
+        hash = 53 * hash + Objects.hashCode(this.trackingItemId);
         hash = 53 * hash + Objects.hashCode(this.starttime);
         hash = 53 * hash + Objects.hashCode(this.endtime);
         hash = 53 * hash + Objects.hashCode(this.description);
@@ -190,22 +173,18 @@ public class WorkItem {
         if (!this.id.getValue().equals(other.id.getValue())) {
             return false;
         }
-        if(this.user.getValue() == null || 
-           this.workrecord.getValue() == null ||
-           this.sprint.getValue() == null ||
-           this.trackingItem.getValue() == null) {
+        if(this.workrecordId.getValue() == null ||
+           this.sprintId.getValue() == null ||
+           this.trackingItemId.getValue() == null) {
             return false;
         }
-        if (!this.user.getValue().equals(other.user.getValue())) {
+        if (!this.workrecordId.getValue().equals(other.workrecordId.getValue())) {
             return false;
         }
-        if (!this.workrecord.getValue().equals(other.workrecord.getValue())) {
+        if (!this.sprintId.getValue().equals(other.sprintId.getValue())) {
             return false;
         }
-        if (!this.sprint.getValue().equals(other.sprint.getValue())) {
-            return false;
-        }
-        if (!this.trackingItem.getValue().equals(other.trackingItem.getValue())) {
+        if (!this.trackingItemId.getValue().equals(other.trackingItemId.getValue())) {
             return false;
         } 
         if (!this.starttime.getValue().equals(other.starttime.getValue())) {
@@ -221,10 +200,9 @@ public class WorkItem {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(id.getValue()).append(", ");
-        sb.append(user.getValue().getId()).append(", ");
-        sb.append(workrecord.getValue().getId()).append(", ");
-        sb.append(sprint.getValue().getId()).append(", ");
-        sb.append(trackingItem.getValue().getId()).append(", ");
+        sb.append(workrecordId.getValue()).append(", ");
+        sb.append(sprintId.getValue()).append(", ");
+        sb.append(trackingItemId.getValue()).append(", ");
         sb.append(starttime.getValue()).append(", ");
         sb.append(endtime.getValue()).append(", ");
         sb.append(description.getValue()).append("");
