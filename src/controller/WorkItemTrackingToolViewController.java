@@ -189,7 +189,14 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
     @SuppressWarnings("unchecked")
     public void initialize(URL location, ResourceBundle rb) {
         this.rb = rb;
-            
+        
+        //HOWTO: Cell Value Factory
+        //The cell must know which part of WorkItemTrackingData it needs to display. 
+        trackingItemShortcutTableColumn.setCellValueFactory(cellData -> cellData.getValue().getShortcutProperty());
+        trackingItemNameTableColumn.setCellValueFactory(cellData -> cellData.getValue().getNameProperty());
+        trackingItemStartTimeTableColumn.setCellValueFactory(cellData -> cellData.getValue().getStartTimeProperty());
+        trackingItemEndTimeTableColumn.setCellValueFactory(cellData -> cellData.getValue().getEndTimeProperty());
+        
         trackingItemStartTimeButton.setGraphic(new ImageView(timeNowIcon));
         trackingItemEndTimeButton.setGraphic(new ImageView(timeNowIcon));
         
@@ -230,6 +237,7 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
         }
         trackingItemChoiceBox.getSelectionModel().select(0);
             
+        
         workItemTrackingData.add(new WorkItemTrackingData("FD", "Feature Development", LocalTime.of(1, 0), LocalTime.of(2, 0)));
         trackingItemTableView.setItems(workItemTrackingData);
         
@@ -281,7 +289,9 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
         switch (eventType) {
             case selectedWorkRecordChangedEvent -> {
                 Workrecord workrecord = (Workrecord)source;
-                selectedDateDatePicker.setValue(workrecord.getDate());
+                if(workrecord != null) {
+                    selectedDateDatePicker.setValue(workrecord.getDate());
+                }
             }
         }
     }
