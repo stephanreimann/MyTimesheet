@@ -191,21 +191,24 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
         this.rb = rb;
         
         //HOWTO: Cell Value Factory
-        //The cell must know which part of WorkItemTrackingData it needs to display. 
+        //The cell must know which part of WorkItemTrackingData it needs to display.
+        //initTableColumn
         trackingItemShortcutTableColumn.setCellValueFactory(cellData -> cellData.getValue().getShortcutProperty());
         trackingItemNameTableColumn.setCellValueFactory(cellData -> cellData.getValue().getNameProperty());
         trackingItemStartTimeTableColumn.setCellValueFactory(cellData -> cellData.getValue().getStartTimeProperty());
         trackingItemEndTimeTableColumn.setCellValueFactory(cellData -> cellData.getValue().getEndTimeProperty());
         
+        //init StartTimeTracking
         trackingItemStartTimeButton.setGraphic(new ImageView(timeNowIcon));
-        trackingItemEndTimeButton.setGraphic(new ImageView(timeNowIcon));
-        
         trackingItemStartTimeTimeSpinner = new LocalTimeSpinner();
-        trackingItemEndTimeTimeSpinner = new LocalTimeSpinner();
-
         trackingItemDetailsGridPane.add(trackingItemStartTimeTimeSpinner, 2, 2);
+
+        //initEndTimeTracking
+        trackingItemEndTimeButton.setGraphic(new ImageView(timeNowIcon));
+        trackingItemEndTimeTimeSpinner = new LocalTimeSpinner();
         trackingItemDetailsGridPane.add(trackingItemEndTimeTimeSpinner, 2, 3);
         
+        //initListener
         selectedDateDatePicker.valueProperty().addListener((var observable, var oldValue, var newValue) -> {
             trySetSprintNumberLabel(newValue);
     
@@ -222,6 +225,7 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
 
         });
         
+        //initDatePickerBySelectedWorkrecord
         actualSelectedWorkrecord = workRecordDetailsViewController.getSelectedWorkrecord();
         if(actualSelectedWorkrecord != null) {
             selectedDateDatePicker.setValue(actualSelectedWorkrecord.getDate());
@@ -230,6 +234,7 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
         }
         trySetSprintNumberLabel(selectedDateDatePicker.getValue());
 
+        //initTrackingItemChoiceBox
         try {
             trackingItemChoiceBox.getItems().addAll(trackingItemDAO.selectAll());
         } catch (SQLException ex) {
@@ -237,7 +242,7 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
         }
         trackingItemChoiceBox.getSelectionModel().select(0);
             
-        
+        //initAndLoadTrackingItemTableView
         workItemTrackingData.add(new WorkItemTrackingData("FD", "Feature Development", LocalTime.of(1, 0), LocalTime.of(2, 0)));
         trackingItemTableView.setItems(workItemTrackingData);
         
