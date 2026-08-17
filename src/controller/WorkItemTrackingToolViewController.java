@@ -185,25 +185,37 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
     public void initialize(URL location, ResourceBundle rb) {
         this.rb = rb;
         
+        initTableColumn();
+        initStartTimeTracking();
+        initEndTimeTracking();
+        initListener();
+        initDatePickerBySelectedWorkrecord();
+        initTrackingItemChoiceBox();
+        initTrackingItemTableView();
+    }
+
+    private void initTableColumn() {
         //HOWTO: Cell Value Factory
         //The cell must know which part of WorkItemTrackingData it needs to display.
-        //initTableColumn
         trackingItemShortcutTableColumn.setCellValueFactory(cellData -> cellData.getValue().getShortcutProperty());
         trackingItemNameTableColumn.setCellValueFactory(cellData -> cellData.getValue().getNameProperty());
         trackingItemStartTimeTableColumn.setCellValueFactory(cellData -> cellData.getValue().getStartTimeProperty());
         trackingItemEndTimeTableColumn.setCellValueFactory(cellData -> cellData.getValue().getEndTimeProperty());
-        
-        //init StartTimeTracking
+    }
+
+    private void initStartTimeTracking() {
         trackingItemStartTimeButton.setGraphic(new ImageView(timeNowIcon));
         trackingItemStartTimeTimeSpinner = new LocalTimeSpinner();
         trackingItemDetailsGridPane.add(trackingItemStartTimeTimeSpinner, 2, 2);
+    }
 
-        //initEndTimeTracking
+    private void initEndTimeTracking() {
         trackingItemEndTimeButton.setGraphic(new ImageView(timeNowIcon));
         trackingItemEndTimeTimeSpinner = new LocalTimeSpinner();
         trackingItemDetailsGridPane.add(trackingItemEndTimeTimeSpinner, 2, 3);
-        
-        //initListener
+    }
+
+    private void initListener() {
         selectedDateDatePicker.valueProperty().addListener((var observable, var oldValue, var newValue) -> {
             trySetSprintNumberLabel(newValue);
     
@@ -217,10 +229,27 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
 
         });
         trackingItemChoiceBox.valueProperty().addListener((ObservableValue<? extends TrackingItem> obs, TrackingItem oldValue, TrackingItem newValue) ->  {
-
+            
         });
-        
-        //initDatePickerBySelectedWorkrecord
+    }
+
+    private void trySetSprintNumberLabel(LocalDate date) {
+            try {
+                sprint = sprintDAO.selectSprintForDate(date);
+                if(sprint == null) {
+                    sprintNumberLabel.setText(rb.getString(sprintNotFoundResourceKey));
+                    sprintNumberLabel.setStyle("-fx-text-fill: " + COLOR_LIGHT_RED + ";");
+                    log.info("Sprint for date " + date + " not found, please update sprint referencedata!");                
+                } else {
+                    sprintNumberLabel.setText(sprint.getId().toString());
+                    sprintNumberLabel.setStyle("");
+                }
+            } catch (SQLException ex) {
+                log.info("Sprint for date " + date + " not found, please update sprint referencedata!");                
+            }
+    }
+
+    private void initDatePickerBySelectedWorkrecord() {
         actualSelectedWorkrecord = workRecordDetailsViewController.getSelectedWorkrecord();
         if(actualSelectedWorkrecord != null) {
             selectedDateDatePicker.setValue(actualSelectedWorkrecord.getDate());
@@ -228,16 +257,9 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
             selectedDateDatePicker.setValue(LocalDate.now());
         }
         trySetSprintNumberLabel(selectedDateDatePicker.getValue());
-
-        initTrackingIemChoiceBox();
-            
-        //initTrackingItemTableView
-        workItemTrackingData.add(new WorkItemTrackingData("FD", "Feature Development", LocalTime.of(1, 0), LocalTime.of(2, 0)));
-        trackingItemTableView.setItems(workItemTrackingData);
-        
     }
 
-    private void initTrackingIemChoiceBox() {
+    private void initTrackingItemChoiceBox() {
         try {
             trackingItemChoiceBox.getItems().clear();
             trackingItemChoiceBox.getItems().addAll(trackingItemDAO.selectAll());
@@ -246,6 +268,11 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
         } catch (SQLException ex) {
             log.fatal("No TrackingItems could be loaded!");
         }
+    }
+
+    private void initTrackingItemTableView() {
+        workItemTrackingData.add(new WorkItemTrackingData("FD", "Feature Development", LocalTime.of(1, 0), LocalTime.of(2, 0)));
+        trackingItemTableView.setItems(workItemTrackingData);
     }
 
     @Override
@@ -296,7 +323,7 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
     public void update(String eventType, Object source) {
         switch (eventType) {
             case newTrackingItemEvent, editTrackingItemEvent, deleteTrackingItemEvent -> {
-                initTrackingIemChoiceBox();
+                initTrackingItemChoiceBox();
             }
             case selectedWorkRecordChangedEvent -> {
                 Workrecord workrecord = (Workrecord)source;
@@ -311,20 +338,4 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
         return eventManager;
     }
     
-    private void trySetSprintNumberLabel(LocalDate date) {
-            try {
-                sprint = sprintDAO.selectSprintForDate(date);
-                if(sprint == null) {
-                    sprintNumberLabel.setText(rb.getString(sprintNotFoundResourceKey));
-                    sprintNumberLabel.setStyle("-fx-text-fill: " + COLOR_LIGHT_RED + ";");
-                    log.info("Sprint for date " + date + " not found, please update sprint referencedata!");                
-                } else {
-                    sprintNumberLabel.setText(sprint.getId().toString());
-                    sprintNumberLabel.setStyle("");
-                }
-            } catch (SQLException ex) {
-                log.info("Sprint for date " + date + " not found, please update sprint referencedata!");                
-            }
-    }
-
 }
