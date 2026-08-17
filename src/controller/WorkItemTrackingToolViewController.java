@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.*;
 import java.time.*;
+import java.util.List;
 import java.util.ResourceBundle;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.*;
@@ -127,9 +128,10 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
     private WorkItem workItem;
     private final WorkItemDAO workItemDao;
 
-    private ObservableList<WorkItem> workItemData;
+    private ObservableList<WorkItem> workItemData = FXCollections.observableArrayList();
     
     private final WorkRecordDetailsViewController workRecordDetailsViewController;
+    private final WorkRecordViewController workRecordViewController;
     private Workrecord actualSelectedWorkrecord;
     
     public WorkItemTrackingToolViewController(ControllerRepository controllerRepository, LanguageService languageService, Connection connection, UndoService undoService) throws SQLException {
@@ -147,6 +149,7 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
         this.workItemDao = new WorkItemDAO(connection);
 
         this.workRecordDetailsViewController = (WorkRecordDetailsViewController)controllerRepository.get(WorkRecordDetailsViewController.class.getName());
+        this.workRecordViewController = (WorkRecordViewController)controllerRepository.get(WorkRecordViewController.class.getName());
         this.eventManager = new EventManager();
     }
     
@@ -167,7 +170,16 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
     
     @FXML
     private void handleOnSelectedDateChangedAction(ActionEvent event) throws SQLException, IOException {
-
+        DatePicker datePicker = (DatePicker)event.getSource();
+        LocalDate date = datePicker.getValue();
+        User selectedUser = workRecordViewController.getSelectedUser();
+        List<Workrecord> workRecords = workRecordDetailsViewController.getWorkrecordDao().selectAll(selectedUser, date); 
+        if(workRecords != null && !workRecords.isEmpty()) {
+            actualSelectedWorkrecord = workRecords.getFirst();
+        } else {
+            actualSelectedWorkrecord = null;
+        }
+        initWorkItemData();
     }
     
     @FXML
@@ -185,14 +197,19 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
     public void initialize(URL location, ResourceBundle rb) {
         this.rb = rb;
         
-        this.workItemData = FXCollections.observableArrayList();
-        
+        trackingItemTableView.setItems(workItemData);
+
         initTableColumn();
         initStartTimeTracking();
         initEndTimeTracking();
         initListener();
         initDatePickerBySelectedWorkrecord();
         initTrackingItemChoiceBox();
+        try {
+            initWorkItemData();
+        } catch (SQLException ex) {
+            log.fatal("No WorkItemData could be loaded!");
+        }
     }
 
     private void initTableColumn() {
@@ -271,6 +288,17 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
         }
     }
 
+    private void initWorkItemData() throws SQLException {
+        workItemData.clear();
+        if(actualSelectedWorkrecord != null) {
+            List<WorkItem> workItemsOfActualSelectedWorkrecord = workItemDao.selectAll(actualSelectedWorkrecord.getId());
+            for(int idx = 0; idx < workItemsOfActualSelectedWorkrecord.size(); idx++) {
+                var workItem = workItemsOfActualSelectedWorkrecord.get(idx);
+                workItemData.add(workItem);
+            }
+        }
+    }
+    
     @Override
     public void updateGuiItems() {
         selectedDateLabel.setText(rb.getString(trackingItemDateResourceKey));

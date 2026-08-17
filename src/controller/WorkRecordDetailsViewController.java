@@ -550,6 +550,11 @@ public class WorkRecordDetailsViewController implements Initializable, IViewCont
     public Workrecord getSelectedWorkrecord() {
         return selectedWorkrecord;
     }
+
+    public WorkrecordDAO getWorkrecordDao() {
+        return workrecordDao;
+    }
+    
     
     private void calculateWorkTimeWithBreakfastAndLunchCorrection() {
         newWorkrecordStartTime = workrecordStartTimeTimeSpinner.getValue();
