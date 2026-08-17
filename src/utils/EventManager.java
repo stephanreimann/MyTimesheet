@@ -35,7 +35,9 @@ public class EventManager implements IEventManager {
         if(eventListeners == null) {
             throw new IllegalArgumentException("No listener registered for Event: " + eventType);
         }
-        eventListeners.add(listener);
+        if(!eventListeners.contains(listener)) {
+            eventListeners.add(listener);
+        }
     }
 
     @Override
@@ -44,7 +46,9 @@ public class EventManager implements IEventManager {
         if(eventListeners == null) {
             throw new IllegalArgumentException("No listener registered for Event: " + eventType);
         }
-        eventListeners.remove(listener);
+        if(eventListeners.contains(listener)) {
+            eventListeners.remove(listener);
+        }
     }
 
     @Override

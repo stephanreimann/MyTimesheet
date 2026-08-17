@@ -44,6 +44,10 @@ public class MainToolBarViewController implements Initializable, IViewController
     
     private final String workItemTrackingDateChangedEvent = "WorkItemTrackingDateChanged";
     private final String selectedWorkRecordChangedEvent = "SelectedWorkRecordChanged";
+
+    private final String newTrackingItemEvent = "NewTrackingItem";
+    private final String editTrackingItemEvent = "EditTrackingItem";
+    private final String deleteTrackingItemEvent = "DeleteTrackingItem";
     
     private Stage primaryStage;
     private Stage workItemTrackingToolViewDialog;
@@ -124,6 +128,10 @@ public class MainToolBarViewController implements Initializable, IViewController
         return activeMenuItem;
     }
 
+    public Button getWorkItemTrackingToolButton() {
+        return workItemTrackingToolButton;
+    }
+    
     public void toggleUndoRedoButtons() {
         undoButton.disableProperty().set(undoService.isUndoStackEmpty());
         redoButton.disableProperty().set(undoService.isRedoStackEmpty());
@@ -148,36 +156,47 @@ public class MainToolBarViewController implements Initializable, IViewController
     }
 
     @FXML
-    private void workItemTrackingToolAction(ActionEvent event) throws IOException, SQLException {
+    private void workItemTrackingToolAction(ActionEvent event) throws IOException, SQLException {      
         WorkItemTrackingToolViewController workItemTrackingToolViewController = (WorkItemTrackingToolViewController)controllerRepository.get(WorkItemTrackingToolViewController.class.getName());
         if(workItemTrackingToolViewController == null) {
             workItemTrackingToolViewController = new WorkItemTrackingToolViewController(controllerRepository, languageService, connection, undoService);
             controllerRepository.put(WorkItemTrackingToolViewController.class.getName(), workItemTrackingToolViewController);
             
-            //Register WorkItemTrackingToolViewController for selectedWorkRecordChangedEvent
-            WorkRecordViewController workRecordViewController = (WorkRecordViewController)controllerRepository.get(WorkRecordViewController.class.getName());
-            workRecordViewController.getEventManager().subscribeEventToListener(selectedWorkRecordChangedEvent, workItemTrackingToolViewController);            
-            
             //This controller will be informed about the date changed action
             workItemTrackingToolViewController.getEventManager().registerEventType(workItemTrackingDateChangedEvent);
             WorkRecordDetailsViewController workRecordDetailsViewController = (WorkRecordDetailsViewController)this.controllerRepository.get(WorkRecordDetailsViewController.class.getName());
             workItemTrackingToolViewController.getEventManager().subscribeEventToListener(workItemTrackingDateChangedEvent, workRecordDetailsViewController);
-        }
 
-        DialogFactory dialogFactory = new DialogFactory(
-            primaryStage, 
-            workItemTrackingToolViewDialogTitleResourceKey, 
-            workItemTrackingToolViewDialogIcon, 
-            workItemTrackingToolViewResource, 
-            rb, 
-            workItemTrackingToolViewController);
-        workItemTrackingToolViewDialog = dialogFactory.create(Modality.NONE);
-        workItemTrackingToolViewDialog.setWidth(512);
-        workItemTrackingToolViewDialog.setHeight(850);
+            //Register WorkItemTrackingToolViewController for selectedWorkRecordChangedEvent
+            WorkRecordViewController workRecordViewController = (WorkRecordViewController)controllerRepository.get(WorkRecordViewController.class.getName());
+            workRecordViewController.getEventManager().subscribeEventToListener(selectedWorkRecordChangedEvent, workItemTrackingToolViewController);            
+
+            //Register WorkItemTrackingToolViewController for newTrackingItemEvent, editTrackingItemEvent, deleteTrackingItemEvent
+            TrackingItemViewController trackingItemViewController = (TrackingItemViewController)controllerRepository.get(TrackingItemViewController.class.getName());
+            if(trackingItemViewController != null) {
+                trackingItemViewController.getEventManager().subscribeEventToListener(newTrackingItemEvent, workItemTrackingToolViewController);
+                trackingItemViewController.getEventManager().subscribeEventToListener(editTrackingItemEvent, workItemTrackingToolViewController);
+                trackingItemViewController.getEventManager().subscribeEventToListener(deleteTrackingItemEvent, workItemTrackingToolViewController);
+            }
+
+            DialogFactory dialogFactory = new DialogFactory(
+                primaryStage, 
+                workItemTrackingToolViewDialogTitleResourceKey, 
+                workItemTrackingToolViewDialogIcon, 
+                workItemTrackingToolViewResource, 
+                rb, 
+                workItemTrackingToolViewController);
+            workItemTrackingToolViewDialog = dialogFactory.create(Modality.NONE);
+            workItemTrackingToolViewDialog.setWidth(512);
+            workItemTrackingToolViewDialog.setHeight(850);
                         
-        ControllerUtilities.CenterOnDialog(primaryStage, workItemTrackingToolViewDialog);
-
-        workItemTrackingToolViewDialog.showAndWait();        
+            ControllerUtilities.CenterOnDialog(primaryStage, workItemTrackingToolViewDialog);
+        }
+        
+        if(!workItemTrackingToolViewDialog.isShowing()) {
+            workItemTrackingToolButton.disableProperty().set(true);
+            workItemTrackingToolViewDialog.showAndWait();        
+        }
     }
 
     private Locale getLocale(ActionEvent event) {

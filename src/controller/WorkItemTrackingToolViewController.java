@@ -7,15 +7,11 @@ package controller;
 import controls.LocalTimeSpinner;
 import java.io.IOException;
 import java.net.URL;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.sql.*;
+import java.time.*;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import javafx.collections.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.*;
 import javafx.scene.control.*;
@@ -23,18 +19,11 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import model.Sprint;
-import model.TrackingItem;
-import model.WorkItemTrackingData;
-import model.Workrecord;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import service.LanguageService;
-import service.UndoService;
-import sqlite.SprintDAO;
-import sqlite.TrackingItemDAO;
-import sqlite.WorkItemDAO;
-import utils.EventManager;
-import utils.IEventListener;
+import model.*;
+import org.apache.logging.log4j.*;
+import service.*;
+import sqlite.*;
+import utils.*;
 
 /**
  *
@@ -65,6 +54,10 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
     
     private final String workItemTrackingDateChangedEvent = "WorkItemTrackingDateChanged";
     private final String selectedWorkRecordChangedEvent = "SelectedWorkRecordChanged";
+    
+    private final String newTrackingItemEvent = "NewTrackingItem";
+    private final String editTrackingItemEvent = "EditTrackingItem";
+    private final String deleteTrackingItemEvent = "DeleteTrackingItem";
     
     @FXML
     private ToolBar trackingItemToolBar;
@@ -129,7 +122,9 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
 
     private Sprint sprint;
     private final SprintDAO sprintDAO;
+    private TrackingItem trackingItem;
     private final TrackingItemDAO trackingItemDAO;
+    private WorkItem workItem;
     private final WorkItemDAO workItemDao;
 
     private ObservableList<WorkItemTrackingData> workItemTrackingData;
@@ -234,18 +229,23 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
         }
         trySetSprintNumberLabel(selectedDateDatePicker.getValue());
 
-        //initTrackingItemChoiceBox
-        try {
-            trackingItemChoiceBox.getItems().addAll(trackingItemDAO.selectAll());
-        } catch (SQLException ex) {
-            java.util.logging.Logger.getLogger(WorkItemTrackingToolViewController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        trackingItemChoiceBox.getSelectionModel().select(0);
+        initTrackingIemChoiceBox();
             
-        //initAndLoadTrackingItemTableView
+        //initTrackingItemTableView
         workItemTrackingData.add(new WorkItemTrackingData("FD", "Feature Development", LocalTime.of(1, 0), LocalTime.of(2, 0)));
         trackingItemTableView.setItems(workItemTrackingData);
         
+    }
+
+    private void initTrackingIemChoiceBox() {
+        try {
+            trackingItemChoiceBox.getItems().clear();
+            trackingItemChoiceBox.getItems().addAll(trackingItemDAO.selectAll());
+            trackingItemChoiceBox.getSelectionModel().select(0);
+            trackingItem = trackingItemChoiceBox.getValue();
+        } catch (SQLException ex) {
+            log.fatal("No TrackingItems could be loaded!");
+        }
     }
 
     @Override
@@ -286,12 +286,19 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
 
     @Override
     public void preCloseAction() {
+        MainToolBarViewController mainToolBarViewController = (MainToolBarViewController)controllerRepository.get(MainToolBarViewController.class.getName());
+        if(mainToolBarViewController != null) {
+            mainToolBarViewController.getWorkItemTrackingToolButton().disableProperty().set(false);
+        }
 
     }
     
     @Override
     public void update(String eventType, Object source) {
         switch (eventType) {
+            case newTrackingItemEvent, editTrackingItemEvent, deleteTrackingItemEvent -> {
+                initTrackingIemChoiceBox();
+            }
             case selectedWorkRecordChangedEvent -> {
                 Workrecord workrecord = (Workrecord)source;
                 if(workrecord != null) {

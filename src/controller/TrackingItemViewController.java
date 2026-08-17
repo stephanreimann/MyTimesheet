@@ -119,6 +119,14 @@ public class TrackingItemViewController implements Initializable, IViewControlle
         this.eventManager.registerEventType(newTrackingItemEvent);
         this.eventManager.registerEventType(editTrackingItemEvent);
         this.eventManager.registerEventType(deleteTrackingItemEvent);
+    
+        WorkItemTrackingToolViewController workItemTrackingToolViewController = (WorkItemTrackingToolViewController)controllerRepository.get(WorkItemTrackingToolViewController.class.getName());
+        if(workItemTrackingToolViewController != null) {
+            this.eventManager.subscribeEventToListener(newTrackingItemEvent, workItemTrackingToolViewController);
+            this.eventManager.subscribeEventToListener(editTrackingItemEvent, workItemTrackingToolViewController);
+            this.eventManager.subscribeEventToListener(deleteTrackingItemEvent, workItemTrackingToolViewController);
+        }
+
     }
 
     @FXML
@@ -219,6 +227,10 @@ public class TrackingItemViewController implements Initializable, IViewControlle
 
     }
 
+    public EventManager getEventManager() {
+        return eventManager;
+    }
+    
     private void showTrackingItemDetails(TrackingItem trackingItem) {
         if(trackingItem != null) {
             trackingItemIdLabelValue.setText(trackingItem.getId().toString());
