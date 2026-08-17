@@ -293,8 +293,7 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
         if(actualSelectedWorkrecord != null) {
             List<WorkItem> workItemsOfActualSelectedWorkrecord = workItemDao.selectAll(actualSelectedWorkrecord.getId());
             for(int idx = 0; idx < workItemsOfActualSelectedWorkrecord.size(); idx++) {
-                var workItem = workItemsOfActualSelectedWorkrecord.get(idx);
-                workItemData.add(workItem);
+                workItemData.add( workItemsOfActualSelectedWorkrecord.get(idx));
             }
         }
     }
