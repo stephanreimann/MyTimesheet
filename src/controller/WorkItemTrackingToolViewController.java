@@ -128,7 +128,7 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
     private WorkItem workItem;
     private final WorkItemDAO workItemDao;
 
-    private ObservableList<WorkItem> workItemData = FXCollections.observableArrayList();
+    private final ObservableList<WorkItem> workItemData = FXCollections.observableArrayList();
     
     private final WorkRecordDetailsViewController workRecordDetailsViewController;
     private final WorkRecordViewController workRecordViewController;
