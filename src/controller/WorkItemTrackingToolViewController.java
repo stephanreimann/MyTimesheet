@@ -290,7 +290,6 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
         if(mainToolBarViewController != null) {
             mainToolBarViewController.getWorkItemTrackingToolButton().disableProperty().set(false);
         }
-
     }
     
     @Override
