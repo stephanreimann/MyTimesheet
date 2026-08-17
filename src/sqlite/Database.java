@@ -265,6 +265,8 @@ public class Database {
 	.append("Starttime          TEXT NOT NULL,")
         .append("Endtime            TEXT NOT NULL,")
 	.append("Description        TEXT,")
+	.append("Shortcut           TEXT NOT NULL,")
+	.append("Name               TEXT NOT NULL,")
 	.append("PRIMARY KEY(Id AUTOINCREMENT)")
         .append(");")        
         .toString();

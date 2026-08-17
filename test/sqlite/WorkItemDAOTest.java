@@ -9,21 +9,12 @@ import java.io.FileNotFoundException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
-import model.Address;
-import model.Contract;
-import model.Project;
-import model.Role;
-import model.Sprint;
 import model.TrackingItem;
-import model.User;
 import model.WorkItem;
-import model.Worklocation;
-import model.Workrecord;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -97,10 +88,16 @@ public class WorkItemDAOTest {
         Long trackingItemId = 1L;
         LocalTime starttime = LocalTime.of(1, 0);
         LocalTime endtime = LocalTime.of(1, 0);
-        String description = "TestDescription";
+        String description = "All task related to SCRUM activities";
+        String shortcut = "S";
+        String name = "Scrum";
+
+        TrackingItem trackingItem1 = new TrackingItem(1L, "Scrum", "S", "All task related to SCRUM activities");
+        TrackingItemDAO trackingItemDAO = new TrackingItemDAO(connection);
+        trackingItemDAO.create(trackingItem1);     
         
-        WorkItem workItem1 = new WorkItem(1L, workrecordId, sprintId, trackingItemId, starttime, endtime, description);        
-        WorkItem workItem2 = new WorkItem(2L, workrecordId, sprintId, trackingItemId, starttime, endtime, description);        
+        WorkItem workItem1 = new WorkItem(1L, workrecordId, sprintId, trackingItemId, starttime, endtime, description, shortcut, name);        
+        WorkItem workItem2 = new WorkItem(2L, workrecordId, sprintId, trackingItemId, starttime, endtime, description, shortcut, name);        
 
         WorkItemDAO workItemDAO = new WorkItemDAO(connection);
         workItemDAO.create(workItem1);
@@ -146,8 +143,10 @@ public class WorkItemDAOTest {
         LocalTime starttime = LocalTime.of(1, 0);
         LocalTime endtime = LocalTime.of(1, 0);
         String description = "TestDescription";
+        String shortcut = "TestShortcut";
+        String name = "TestName";
         
-        WorkItem workItem = new WorkItem(1L, workrecordId, sprintId, trackingItemId, starttime, endtime, description);        
+        WorkItem workItem = new WorkItem(1L, workrecordId, sprintId, trackingItemId, starttime, endtime, description, shortcut, name);        
 
         WorkItemDAO workItemDAO = new WorkItemDAO(connection);
 
@@ -167,8 +166,10 @@ public class WorkItemDAOTest {
         LocalTime starttime = LocalTime.of(1, 0);
         LocalTime endtime = LocalTime.of(1, 0);
         String description = "TestDescription";
+        String shortcut = "TestShortcut";
+        String name = "TestName";
         
-        WorkItem workItem = new WorkItem(1L, workrecordId, sprintId, trackingItemId, starttime, endtime, description);        
+        WorkItem workItem = new WorkItem(1L, workrecordId, sprintId, trackingItemId, starttime, endtime, description, shortcut, name);        
 
         WorkItemDAO workItemDAO = new WorkItemDAO(connection);
         workItemDAO.create(workItem);
@@ -186,9 +187,15 @@ public class WorkItemDAOTest {
         Long trackingItemId = 1L;
         LocalTime starttime = LocalTime.of(1, 0);
         LocalTime endtime = LocalTime.of(1, 0);
-        String description = "TestDescription";
+        String description = "All task related to SCRUM activities";
+        String shortcut = "S";
+        String name = "Scrum";
+
+        TrackingItem trackingItem1 = new TrackingItem(1L, "Scrum", "S", "All task related to SCRUM activities");
+        TrackingItemDAO trackingItemDAO = new TrackingItemDAO(connection);
+        trackingItemDAO.create(trackingItem1);     
                
-        WorkItem modifiedWorkItem = new WorkItem(1L, workrecordId, sprintId, trackingItemId, starttime, endtime, description);        
+        WorkItem modifiedWorkItem = new WorkItem(1L, workrecordId, sprintId, trackingItemId, starttime, endtime, description, shortcut, name);        
 
         WorkItemDAO workItemDAO = new WorkItemDAO(connection);
 
@@ -208,8 +215,10 @@ public class WorkItemDAOTest {
         LocalTime starttime = LocalTime.of(1, 0);
         LocalTime endtime = LocalTime.of(1, 0);
         String description = "TestDescription";
+        String shortcut = "TestShortcut";
+        String name = "TestName";
         
-        WorkItem originalWorkItem = new WorkItem(1L, workrecordId, sprintId, trackingItemId, starttime, endtime, description);        
+        WorkItem originalWorkItem = new WorkItem(1L, workrecordId, sprintId, trackingItemId, starttime, endtime, description, shortcut, name);        
 
         WorkItemDAO workItemDAO = new WorkItemDAO(connection);
 
@@ -228,12 +237,18 @@ public class WorkItemDAOTest {
         Long trackingItemId = 1L;
         LocalTime starttime = LocalTime.of(1, 0);
         LocalTime endtime = LocalTime.of(1, 0);
-        String description = "TestDescription";
+        String description = "All task related to SCRUM activities";
+        String shortcut = "S";
+        String name = "Scrum";
+
+        TrackingItem trackingItem1 = new TrackingItem(1L, "Scrum", "S", "All task related to SCRUM activities");
+        TrackingItemDAO trackingItemDAO = new TrackingItemDAO(connection);
+        trackingItemDAO.create(trackingItem1);     
         
         String modifiedDescription = "modified TestDescription";
         
-        WorkItem originalWorkItem = new WorkItem(1L, workrecordId, sprintId, trackingItemId, starttime, endtime, description);        
-        WorkItem modifiedWorkItem = new WorkItem(1L, workrecordId, sprintId, trackingItemId, starttime, endtime, modifiedDescription);        
+        WorkItem originalWorkItem = new WorkItem(1L, workrecordId, sprintId, trackingItemId, starttime, endtime, description, shortcut, name);        
+        WorkItem modifiedWorkItem = new WorkItem(1L, workrecordId, sprintId, trackingItemId, starttime, endtime, modifiedDescription, shortcut, name);        
 
         WorkItemDAO workItemDAO = new WorkItemDAO(connection);
         workItemDAO.create(originalWorkItem);
@@ -256,11 +271,13 @@ public class WorkItemDAOTest {
         LocalTime starttime = LocalTime.of(1, 0);
         LocalTime endtime = LocalTime.of(1, 0);
         String description = "TestDescription";
+        String shortcut = "TestShortcut";
+        String name = "TestName";
         
         String modifiedDescription = "modified TestDescription";
         
-        WorkItem originalWorkItem = new WorkItem(1L, workrecordId, sprintId, trackingItemId, starttime, endtime, description);        
-        WorkItem modifiedWorkItem = new WorkItem(1L, workrecordId, sprintId, trackingItemId, starttime, endtime, modifiedDescription);        
+        WorkItem originalWorkItem = new WorkItem(1L, workrecordId, sprintId, trackingItemId, starttime, endtime, description, shortcut, name);        
+        WorkItem modifiedWorkItem = new WorkItem(1L, workrecordId, sprintId, trackingItemId, starttime, endtime, modifiedDescription, shortcut, name);        
 
         WorkItemDAO workItemDAO = new WorkItemDAO(connection);
 
@@ -280,12 +297,18 @@ public class WorkItemDAOTest {
         Long trackingItemId = 1L;
         LocalTime starttime = LocalTime.of(1, 0);
         LocalTime endtime = LocalTime.of(1, 0);
-        String description = "TestDescription";
+        String description = "All task related to SCRUM activities";
+        String shortcut = "S";
+        String name = "Scrum";
+
+        TrackingItem trackingItem1 = new TrackingItem(1L, "Scrum", "S", "All task related to SCRUM activities");
+        TrackingItemDAO trackingItemDAO = new TrackingItemDAO(connection);
+        trackingItemDAO.create(trackingItem1);     
         
         String modifiedDescription = "modified TestDescription";
         
-        WorkItem originalWorkItem = new WorkItem(1L, workrecordId, sprintId, trackingItemId, starttime, endtime, description);        
-        WorkItem modifiedWorkItem = new WorkItem(2L, workrecordId, sprintId, trackingItemId, starttime, endtime, modifiedDescription);        
+        WorkItem originalWorkItem = new WorkItem(1L, workrecordId, sprintId, trackingItemId, starttime, endtime, description, shortcut, name);        
+        WorkItem modifiedWorkItem = new WorkItem(2L, workrecordId, sprintId, trackingItemId, starttime, endtime, modifiedDescription, shortcut, name);        
 
         WorkItemDAO workItemDAO = new WorkItemDAO(connection);
         workItemDAO.create(originalWorkItem);
@@ -318,8 +341,10 @@ public class WorkItemDAOTest {
         LocalTime starttime = LocalTime.of(1, 0);
         LocalTime endtime = LocalTime.of(1, 0);
         String description = "TestDescription";
+        String shortcut = "TestShortcut";
+        String name = "TestName";
         
-        WorkItem workItem = new WorkItem(1L, workrecordId, sprintId, trackingItemId, starttime, endtime, description);        
+        WorkItem workItem = new WorkItem(1L, workrecordId, sprintId, trackingItemId, starttime, endtime, description, shortcut, name);        
 
         WorkItemDAO workItemDAO = new WorkItemDAO(connection);
 
@@ -339,8 +364,10 @@ public class WorkItemDAOTest {
         LocalTime starttime = LocalTime.of(1, 0);
         LocalTime endtime = LocalTime.of(1, 0);
         String description = "TestDescription";
+        String shortcut = "TestShortcut";
+        String name = "TestName";
         
-        WorkItem workItem = new WorkItem(1L, workrecordId, sprintId, trackingItemId, starttime, endtime, description);        
+        WorkItem workItem = new WorkItem(1L, workrecordId, sprintId, trackingItemId, starttime, endtime, description, shortcut, name);        
 
         WorkItemDAO workItemDAO = new WorkItemDAO(connection);
         workItemDAO.create(workItem);
@@ -362,8 +389,10 @@ public class WorkItemDAOTest {
         LocalTime starttime = LocalTime.of(1, 0);
         LocalTime endtime = LocalTime.of(1, 0);
         String description = "TestDescription";
+        String shortcut = "TestShortcut";
+        String name = "TestName";
         
-        WorkItem workItem = new WorkItem(1L, workrecordId, sprintId, trackingItemId, starttime, endtime, description);        
+        WorkItem workItem = new WorkItem(1L, workrecordId, sprintId, trackingItemId, starttime, endtime, description, shortcut, name);        
 
         WorkItemDAO workItemDAO = new WorkItemDAO(connection);
         workItemDAO.create(workItem);
@@ -384,8 +413,10 @@ public class WorkItemDAOTest {
         LocalTime starttime = LocalTime.of(1, 0);
         LocalTime endtime = LocalTime.of(1, 0);
         String description = "TestDescription";
+        String shortcut = "TestShortcut";
+        String name = "TestName";
         
-        WorkItem workItem = new WorkItem(1L, workrecordId, sprintId, trackingItemId, starttime, endtime, description);        
+        WorkItem workItem = new WorkItem(1L, workrecordId, sprintId, trackingItemId, starttime, endtime, description, shortcut, name);        
 
         WorkItemDAO workItemDAO = new WorkItemDAO(connection);
         workItemDAO.create(workItem);
@@ -415,27 +446,7 @@ public class WorkItemDAOTest {
         boolean result = false;
         
         StringBuilder statement = new StringBuilder();
-        statement.append("DELETE FROM role ");
-        
-        try {
-            PreparedStatement dbStatement = connection.prepareStatement(statement.toString());
-            result = dbStatement.execute();
-        } catch (SQLException e) {
-            return result;
-        }
-
-        statement = new StringBuilder();
-        statement.append("DELETE FROM address ");
-        
-        try {
-            PreparedStatement dbStatement = connection.prepareStatement(statement.toString());
-            result = dbStatement.execute();
-        } catch (SQLException e) {
-            return result;
-        }
-
-        statement = new StringBuilder();
-        statement.append("DELETE FROM user ");
+        statement.append("DELETE FROM workitem ");
         
         try {
             PreparedStatement dbStatement = connection.prepareStatement(statement.toString());
@@ -444,56 +455,6 @@ public class WorkItemDAOTest {
             return result;
         }
         
-        statement = new StringBuilder();
-        statement.append("DELETE FROM project ");
-        
-        try {
-            PreparedStatement dbStatement = connection.prepareStatement(statement.toString());
-            result = dbStatement.execute();
-        } catch (SQLException e) {
-            return result;
-        }
-
-        statement = new StringBuilder();
-        statement.append("DELETE FROM contract ");
-        
-        try {
-            PreparedStatement dbStatement = connection.prepareStatement(statement.toString());
-            result = dbStatement.execute();
-        } catch (SQLException e) {
-            return result;
-        }
-
-        statement = new StringBuilder();
-        statement.append("DELETE FROM worklocation ");
-        
-        try {
-            PreparedStatement dbStatement = connection.prepareStatement(statement.toString());
-            result = dbStatement.execute();
-        } catch (SQLException e) {
-            return result;
-        }
-        
-        statement = new StringBuilder();
-        statement.append("DELETE FROM workrecord ");
-        
-        try {
-            PreparedStatement dbStatement = connection.prepareStatement(statement.toString());
-            result = dbStatement.execute();
-        } catch (SQLException e) {
-            return result;
-        }
-
-        statement = new StringBuilder();
-        statement.append("DELETE FROM sprint ");
-        
-        try {
-            PreparedStatement dbStatement = connection.prepareStatement(statement.toString());
-            result = dbStatement.execute();
-        } catch (SQLException e) {
-            return result;
-        }
-
         statement = new StringBuilder();
         statement.append("DELETE FROM trackingitem ");
         
@@ -504,97 +465,6 @@ public class WorkItemDAOTest {
             return result;
         }
 
-        statement = new StringBuilder();
-        statement.append("DELETE FROM workitem ");
-        
-        try {
-            PreparedStatement dbStatement = connection.prepareStatement(statement.toString());
-            result = dbStatement.execute();
-        } catch (SQLException e) {
-            return result;
-        }
-
-        statement = new StringBuilder();        
-        statement.append("DELETE FROM SQLITE_SEQUENCE WHERE name='Role'");
-        try {
-            PreparedStatement dbStatement = connection.prepareStatement(statement.toString());
-            result = dbStatement.execute();
-        } catch (SQLException e) {
-            return result;
-        }
-        
-        statement = new StringBuilder();        
-        statement.append("DELETE FROM SQLITE_SEQUENCE WHERE name='Address'");
-        try {
-            PreparedStatement dbStatement = connection.prepareStatement(statement.toString());
-            result = dbStatement.execute();
-        } catch (SQLException e) {
-            return result;
-        }
-
-        statement = new StringBuilder();        
-        statement.append("DELETE FROM SQLITE_SEQUENCE WHERE name='Project'");
-        try {
-            PreparedStatement dbStatement = connection.prepareStatement(statement.toString());
-            result = dbStatement.execute();
-        } catch (SQLException e) {
-            return result;
-        }
-
-        statement = new StringBuilder();        
-        statement.append("DELETE FROM SQLITE_SEQUENCE WHERE name='User'");
-        try {
-            PreparedStatement dbStatement = connection.prepareStatement(statement.toString());
-            result = dbStatement.execute();
-        } catch (SQLException e) {
-            return result;
-        }
-
-        statement = new StringBuilder();        
-        statement.append("DELETE FROM SQLITE_SEQUENCE WHERE name='Contract'");
-        try {
-            PreparedStatement dbStatement = connection.prepareStatement(statement.toString());
-            result = dbStatement.execute();
-        } catch (SQLException e) {
-            return result;
-        }
-
-        statement = new StringBuilder();        
-        statement.append("DELETE FROM SQLITE_SEQUENCE WHERE name='Worklocation'");
-        try {
-            PreparedStatement dbStatement = connection.prepareStatement(statement.toString());
-            result = dbStatement.execute();
-        } catch (SQLException e) {
-            return result;
-        }
-
-        statement = new StringBuilder();        
-        statement.append("DELETE FROM SQLITE_SEQUENCE WHERE name='Workrecord'");
-        try {
-            PreparedStatement dbStatement = connection.prepareStatement(statement.toString());
-            result = dbStatement.execute();
-        } catch (SQLException e) {
-            return result;
-        }
-
-        statement = new StringBuilder();        
-        statement.append("DELETE FROM SQLITE_SEQUENCE WHERE name='Sprint'");
-        try {
-            PreparedStatement dbStatement = connection.prepareStatement(statement.toString());
-            result = dbStatement.execute();
-        } catch (SQLException e) {
-            return result;
-        }
-
-        statement = new StringBuilder();        
-        statement.append("DELETE FROM SQLITE_SEQUENCE WHERE name='TrackingItem'");
-        try {
-            PreparedStatement dbStatement = connection.prepareStatement(statement.toString());
-            result = dbStatement.execute();
-        } catch (SQLException e) {
-            return result;
-        }
-        
         statement = new StringBuilder();        
         statement.append("DELETE FROM SQLITE_SEQUENCE WHERE name='WorkItem'");
         try {
@@ -604,6 +474,15 @@ public class WorkItemDAOTest {
             return result;
         }
         
+        statement = new StringBuilder();        
+        statement.append("DELETE FROM SQLITE_SEQUENCE WHERE name='TrackingItem'");
+        try {
+            PreparedStatement dbStatement = connection.prepareStatement(statement.toString());
+            result = dbStatement.execute();
+        } catch (SQLException e) {
+            return result;
+        }
+
         return result;
     }
     

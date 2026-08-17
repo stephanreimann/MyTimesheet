@@ -156,6 +156,7 @@ public class WorkrecordTest {
     }
 
     @Test()
+    @SuppressWarnings("unchecked")
     public void T21_Compare_NotEqual_Workrecords_Returns_False() {
         //Arrange
         LocalDate dateNow = LocalDate.now();
@@ -265,7 +266,7 @@ public class WorkrecordTest {
         LocalDate dateNow = LocalDate.now(); 
         LocalTime timeNow = LocalTime.now();
         
-        String expectedPrintResult = "User: 1, Reimann, TestProject, " + dateNow.toString() + ", " + timeNow.toString() + ", " + timeNow.toString() + ", " + timeNow.toString() + ", 01:00:00, 01:00:00, 00:00:01, 0, Homeoffice, TestDescription";
+        String expectedPrintResult = "1, Reimann, TestProject, " + dateNow.toString() + ", " + timeNow.toString() + ", " + timeNow.toString() + ", " + timeNow.toString() + ", 01:00:00, 01:00:00, 00:00:01, 0, Homeoffice, TestDescription";
 
         Workrecord workrecord = new Workrecord(1L, 
                         new User(1L, new Role(1L, "Admin", "The Administrator role has access to all application features"), 

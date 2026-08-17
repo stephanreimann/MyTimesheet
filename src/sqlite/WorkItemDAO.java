@@ -7,16 +7,7 @@ package sqlite;
 import java.sql.*;
 import java.time.*;
 import java.util.*;
-import model.Address;
-import model.Contract;
-import model.Project;
-import model.Role;
-import model.Sprint;
-import model.TrackingItem;
-import model.User;
 import model.WorkItem;
-import model.Worklocation;
-import model.Workrecord;
 import org.apache.logging.log4j.*;
 
 /**
@@ -37,8 +28,9 @@ public class WorkItemDAO {
 
     private StringBuilder getBaseSelectStatement() {
         StringBuilder statement = new StringBuilder();
-        statement.append("SELECT id, workrecordid, sprintid, trackingitemid, starttime, endtime, description ");
+        statement.append("SELECT workitem.id, workitem.workrecordid, workitem.sprintid, workitem.trackingitemid, workitem.starttime, workitem.endtime, workitem.description, trackingitem.shortcut, trackingitem.name ");
         statement.append("FROM workitem ");
+        statement.append("JOIN trackingitem ON workitem.TrackingItemId = trackingitem.Id ");
         return statement;
     }
     
@@ -62,6 +54,27 @@ public class WorkItemDAO {
         return resultList;
     }
     
+    public List<WorkItem> selectAll(Long id) throws SQLException {
+        List<WorkItem> resultList = new ArrayList<>();
+        
+        StringBuilder statement = getBaseSelectStatement();
+        statement.append("WHERE workitem.workrecordid = ?;");
+        
+        try(PreparedStatement dbStatement = connection.prepareStatement(statement.toString())) {
+            dbStatement.setString(1, Long.toString(id));
+            Instant start = Instant.now();
+            ResultSet rs = dbStatement.executeQuery();
+            while(rs.next()) {
+                resultList.add(createWorkItemFromResultSetEntry(rs));
+            }
+            Instant finish = Instant.now();
+            long timeElapsed = Duration.between(start, finish).toMillis();
+            log.debug(String.format("WorkItemDAO.selectAll(%d) returns %d workItems.", id, resultList.size()));
+            log.debug("Elapsed time: " + timeElapsed + "ms");        
+        }
+        return resultList;
+    }
+
     private WorkItem createWorkItemFromResultSetEntry(ResultSet resultSet) throws SQLException {
         long rsId = resultSet.getLong("id");
         long rsWorkrecordId = resultSet.getLong("workrecordid");
@@ -70,8 +83,10 @@ public class WorkItemDAO {
         LocalTime rsStartTime = LocalTime.parse(resultSet.getString("starttime"));
         LocalTime rsEndTime = LocalTime.parse(resultSet.getString("endtime"));
         String rsDescription = resultSet.getString("description");
+        String rsShortcut = resultSet.getString("shortcut");
+        String rsName = resultSet.getString("name");
 
-        return new WorkItem(rsId, rsWorkrecordId, rsSprintId, rsTrackingItemId, rsStartTime, rsEndTime, rsDescription);
+        return new WorkItem(rsId, rsWorkrecordId, rsSprintId, rsTrackingItemId, rsStartTime, rsEndTime, rsDescription, rsShortcut, rsName);
     }
     
     public boolean create(WorkItem workItem) throws SQLException {
@@ -79,8 +94,8 @@ public class WorkItemDAO {
 
         boolean result;
         StringBuilder statement = new StringBuilder();
-        statement.append("INSERT INTO workitem (id, workrecordid, sprintid, trackingitemid, starttime, endtime, description) ");
-        statement.append("VALUES (?, ?, ?, ?, ?, ?, ?)");
+        statement.append("INSERT INTO workitem (id, workrecordid, sprintid, trackingitemid, starttime, endtime, description, shortcut, name) ");
+        statement.append("VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
         
         try(PreparedStatement dbStatement = connection.prepareStatement(statement.toString())) {
             dbStatement.setLong(1, workItem.getId());
@@ -90,6 +105,8 @@ public class WorkItemDAO {
             dbStatement.setString(5, workItem.getStartTime().toString());
             dbStatement.setString(6, workItem.getEndTime().toString());
             dbStatement.setString(7, workItem.getDescription());
+            dbStatement.setString(8, workItem.getShortcut());
+            dbStatement.setString(9, workItem.getName());
 
             Instant start = Instant.now();
             result = dbStatement.executeUpdate() > 0;
@@ -113,7 +130,7 @@ public class WorkItemDAO {
         boolean result;
         StringBuilder statement = new StringBuilder();
         statement.append("UPDATE workitem ");
-        statement.append("SET id = ?, workrecordid = ?, sprintid = ?, trackingitemid = ?, starttime = ?, endtime = ?, description = ? ");
+        statement.append("SET id = ?, workrecordid = ?, sprintid = ?, trackingitemid = ?, starttime = ?, endtime = ?, description = ?, shortcut = ?, name = ? ");
         statement.append("WHERE id = ?;");
         
         try(PreparedStatement dbStatement = connection.prepareStatement(statement.toString())) {
@@ -124,7 +141,9 @@ public class WorkItemDAO {
             dbStatement.setString(5, modified.getStartTime().toString());
             dbStatement.setString(6, modified.getEndTime().toString());
             dbStatement.setString(7, modified.getDescription());
-            dbStatement.setLong(8, original.getId());
+            dbStatement.setString(8, modified.getShortcut());
+            dbStatement.setString(9, modified.getName());
+            dbStatement.setLong(10, original.getId());
             
             Instant start = Instant.now();
             result = dbStatement.executeUpdate() > 0;

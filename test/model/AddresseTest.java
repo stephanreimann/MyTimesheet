@@ -145,6 +145,7 @@ public class AddresseTest {
     }
 
     @Test()
+    @SuppressWarnings("unchecked")
     public void T21_Compare_Different_Addresses_Returns_False() {
         //Arrange
         List<Pair<Address, Address>> pairList = new ArrayList<>(); 

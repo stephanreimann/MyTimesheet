@@ -4,7 +4,6 @@
  */
 package model;
 
-import model.Worklocation;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.util.Pair;
@@ -98,6 +97,7 @@ public class WorklocationTest {
     }
    
     @Test()
+    @SuppressWarnings("unchecked")
     public void T21_Compare_NotEqual_Worklocations_Returns_False() {
         //Arrange
         List<Pair<Worklocation, Worklocation>> pairList = new ArrayList<>(); 

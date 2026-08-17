@@ -99,7 +99,7 @@ public class RoleViewController implements Initializable, IViewController {
         this.undoService = undoService;
         this.propertiesService = propertiesService;
         this.roleDao = new RoleDAO(connection);
-        this.roleData = FXCollections.observableArrayList(this.roleDao.selectAll());        
+        this.roleData = FXCollections.observableArrayList(this.roleDao.selectAll());
         this.eventManager = new EventManager();
         this.eventManager.registerEventType(newRoleEvent);
         this.eventManager.registerEventType(editRoleEvent);

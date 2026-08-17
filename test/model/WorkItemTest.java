@@ -69,9 +69,11 @@ public class WorkItemTest {
         LocalTime starttime = LocalTime.now();
         LocalTime endtime = LocalTime.now();
         String description = "TestDescription";
+        String shortcut = "TestShortcut";
+        String name = "TestName";
 
         //Act
-        WorkItem workItem = new WorkItem(id, workrecordId, sprintId, trackingItemId, starttime, endtime, description);
+        WorkItem workItem = new WorkItem(id, workrecordId, sprintId, trackingItemId, starttime, endtime, description, shortcut, name);
         
         //Assert
         Assert.assertNotNull(workItem);
@@ -82,6 +84,8 @@ public class WorkItemTest {
         Assert.assertEquals(starttime, workItem.getStartTime());
         Assert.assertEquals(endtime, workItem.getEndTime());
         Assert.assertEquals(description, workItem.getDescription());
+        Assert.assertEquals(shortcut, workItem.getShortcut());
+        Assert.assertEquals(name, workItem.getName());
     }    
 
     @Test()
@@ -94,7 +98,9 @@ public class WorkItemTest {
         LocalTime starttime = LocalTime.now();
         LocalTime endtime = LocalTime.now();
         String description = "TestDescription";
-        WorkItem workItem = new WorkItem(id, workrecordId, sprintId, trackingItemId, starttime, endtime, description);
+        String shortcut = "TestShortcut";
+        String name = "TestName";
+        WorkItem workItem = new WorkItem(id, workrecordId, sprintId, trackingItemId, starttime, endtime, description, shortcut, name);
 
         //Act
         Integer hashCode_FirstCall = workItem.hashCode();
@@ -113,8 +119,10 @@ public class WorkItemTest {
         LocalTime starttime = LocalTime.now();
         LocalTime endtime = LocalTime.now();
         String description = "TestDescription";
-        WorkItem workItem1 = new WorkItem(1L, workrecordId, sprintId, trackingItemId, starttime, endtime, description);
-        WorkItem workItem2 = new WorkItem(2L, workrecordId, sprintId, trackingItemId, starttime, endtime, description);
+        String shortcut = "TestShortcut";
+        String name = "TestName";
+        WorkItem workItem1 = new WorkItem(1L, workrecordId, sprintId, trackingItemId, starttime, endtime, description, shortcut, name);
+        WorkItem workItem2 = new WorkItem(2L, workrecordId, sprintId, trackingItemId, starttime, endtime, description, shortcut, name);
 
         //Act
         Integer hashCode1 = workItem1.hashCode();
@@ -133,8 +141,10 @@ public class WorkItemTest {
         LocalTime starttime = LocalTime.now();
         LocalTime endtime = LocalTime.now();
         String description = "TestDescription";
-        WorkItem workItem1 = new WorkItem(1L, workrecordId, sprintId, trackingItemId, starttime, endtime, description);
-        WorkItem workItem2 = new WorkItem(1L, workrecordId, sprintId, trackingItemId, starttime, endtime, description);
+        String shortcut = "TestShortcut";
+        String name = "TestName";
+        WorkItem workItem1 = new WorkItem(1L, workrecordId, sprintId, trackingItemId, starttime, endtime, description, shortcut, name);
+        WorkItem workItem2 = new WorkItem(1L, workrecordId, sprintId, trackingItemId, starttime, endtime, description, shortcut, name);
         
         //Act
         boolean result = workItem1.equals(workItem2);
@@ -144,6 +154,7 @@ public class WorkItemTest {
     }
     
     @Test()
+    @SuppressWarnings("unchecked")
     public void T21_Compare_NotEqual_Workrecords_Returns_False() {
         //Arrange
         Long workrecordId = 1L;
@@ -152,30 +163,62 @@ public class WorkItemTest {
         LocalTime starttime = LocalTime.now();
         LocalTime endtime = LocalTime.now();
         String description = "TestDescription";
+        String shortcut = "TestShortcut";
+        String name = "TestName";
 
         List<Pair<WorkItem, WorkItem>> pairList = new ArrayList<>(); 
         pairList.add(
             new Pair(
-                new WorkItem(1L, workrecordId, sprintId, trackingItemId, starttime, endtime, description),
-                new WorkItem(2L, workrecordId, sprintId, trackingItemId, starttime, endtime, description)
+                new WorkItem(1L, workrecordId, sprintId, trackingItemId, starttime, endtime, description, shortcut, name),
+                new WorkItem(2L, workrecordId, sprintId, trackingItemId, starttime, endtime, description, shortcut, name)
             )
         );
         pairList.add(
             new Pair(
-                new WorkItem(1L, workrecordId, sprintId, trackingItemId, starttime, endtime, description),
-                new WorkItem(1L, workrecordId, sprintId, trackingItemId, starttime.plusHours(1), endtime, description)
+                new WorkItem(1L, 1L, sprintId, trackingItemId, starttime, endtime, description, shortcut, name),
+                new WorkItem(1L, 2L, sprintId, trackingItemId, starttime, endtime, description, shortcut, name)
             )
         );
         pairList.add(
             new Pair(
-                new WorkItem(1L, workrecordId, sprintId, trackingItemId, starttime, endtime, description),
-                new WorkItem(1L, workrecordId, sprintId, trackingItemId, starttime, endtime.plusHours(1), description)
+                new WorkItem(1L, workrecordId, 1L, trackingItemId, starttime, endtime, description, shortcut, name),
+                new WorkItem(1L, workrecordId, 2L, trackingItemId, starttime, endtime, description, shortcut, name)
             )
         );
         pairList.add(
             new Pair(
-                new WorkItem(1L, workrecordId, sprintId, trackingItemId, starttime, endtime, description),
-                new WorkItem(1L, workrecordId, sprintId, trackingItemId, starttime, endtime, description + "_")
+                new WorkItem(1L, workrecordId, sprintId, 1L, starttime, endtime, description, shortcut, name),
+                new WorkItem(1L, workrecordId, sprintId, 2L, starttime, endtime, description, shortcut, name)
+            )
+        );
+        pairList.add(
+            new Pair(
+                new WorkItem(1L, workrecordId, sprintId, trackingItemId, starttime, endtime, description, shortcut, name),
+                new WorkItem(1L, workrecordId, sprintId, trackingItemId, starttime.plusHours(1), endtime, description, shortcut, name)
+            )
+        );
+        pairList.add(
+            new Pair(
+                new WorkItem(1L, workrecordId, sprintId, trackingItemId, starttime, endtime, description, shortcut, name),
+                new WorkItem(1L, workrecordId, sprintId, trackingItemId, starttime, endtime.plusHours(1), description, shortcut, name)
+            )
+        );
+        pairList.add(
+            new Pair(
+                new WorkItem(1L, workrecordId, sprintId, trackingItemId, starttime, endtime, description, shortcut, name),
+                new WorkItem(1L, workrecordId, sprintId, trackingItemId, starttime, endtime, description.concat("Test"), shortcut, name)
+            )
+        );
+        pairList.add(
+            new Pair(
+                new WorkItem(1L, workrecordId, sprintId, trackingItemId, starttime, endtime, description, shortcut, name),
+                new WorkItem(1L, workrecordId, sprintId, trackingItemId, starttime, endtime, description, shortcut.concat("X"), name)
+            )
+        );
+        pairList.add(
+            new Pair(
+                new WorkItem(1L, workrecordId, sprintId, trackingItemId, starttime, endtime, description, shortcut, name),
+                new WorkItem(1L, workrecordId, sprintId, trackingItemId, starttime, endtime, description, shortcut, name.concat("Test"))
             )
         );
 
@@ -201,10 +244,12 @@ public class WorkItemTest {
         LocalTime starttime = LocalTime.of(1, 0);
         LocalTime endtime = LocalTime.of(1, 0);
         String description = "TestDescription";
+        String shortcut = "TestShortcut";
+        String name = "TestName";
         
-        String expectedPrintResult = "1, 1, 1, 1, 01:00, 01:00, TestDescription";
+        String expectedPrintResult = "1, 1, 1, 1, 01:00, 01:00, TestDescription, TestShortcut, TestName";
 
-        WorkItem workItem = new WorkItem(id, workrecordId, sprintId, trackingItemId, starttime, endtime, description);
+        WorkItem workItem = new WorkItem(id, workrecordId, sprintId, trackingItemId, starttime, endtime, description, shortcut, name);
         
         //Act
         String printResult = workItem.toString();

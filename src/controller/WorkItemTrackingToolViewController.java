@@ -70,15 +70,15 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
     @FXML
     private Label sprintNumberLabel;
     @FXML
-    private TableView<WorkItemTrackingData> trackingItemTableView;
+    private TableView<WorkItem> trackingItemTableView;
     @FXML
-    private TableColumn<WorkItemTrackingData, String> trackingItemShortcutTableColumn;
+    private TableColumn<WorkItem, String> trackingItemShortcutTableColumn;
     @FXML
-    private TableColumn<WorkItemTrackingData, String> trackingItemNameTableColumn;
+    private TableColumn<WorkItem, String> trackingItemNameTableColumn;
     @FXML
-    private TableColumn<WorkItemTrackingData, LocalTime> trackingItemStartTimeTableColumn;
+    private TableColumn<WorkItem, LocalTime> trackingItemStartTimeTableColumn;
     @FXML
-    private TableColumn<WorkItemTrackingData, LocalTime> trackingItemEndTimeTableColumn;
+    private TableColumn<WorkItem, LocalTime> trackingItemEndTimeTableColumn;
     @FXML
     private GridPane trackingItemDetailsGridPane;
     @FXML
@@ -127,7 +127,7 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
     private WorkItem workItem;
     private final WorkItemDAO workItemDao;
 
-    private ObservableList<WorkItemTrackingData> workItemTrackingData;
+    private ObservableList<WorkItem> workItemData;
     
     private final WorkRecordDetailsViewController workRecordDetailsViewController;
     private Workrecord actualSelectedWorkrecord;
@@ -145,7 +145,7 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
         this.sprintDAO = new SprintDAO(connection);
         this.trackingItemDAO = new TrackingItemDAO(connection);
         this.workItemDao = new WorkItemDAO(connection);
-        this.workItemTrackingData = FXCollections.observableArrayList();  
+
         this.workRecordDetailsViewController = (WorkRecordDetailsViewController)controllerRepository.get(WorkRecordDetailsViewController.class.getName());
         this.eventManager = new EventManager();
     }
@@ -185,13 +185,14 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
     public void initialize(URL location, ResourceBundle rb) {
         this.rb = rb;
         
+        this.workItemData = FXCollections.observableArrayList();
+        
         initTableColumn();
         initStartTimeTracking();
         initEndTimeTracking();
         initListener();
         initDatePickerBySelectedWorkrecord();
         initTrackingItemChoiceBox();
-        initTrackingItemTableView();
     }
 
     private void initTableColumn() {
@@ -218,7 +219,7 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
     private void initListener() {
         selectedDateDatePicker.valueProperty().addListener((var observable, var oldValue, var newValue) -> {
             trySetSprintNumberLabel(newValue);
-    
+
             //Fire event that selected date for tracking workitems has changed
             eventManager.notifyListenerOfEvent(workItemTrackingDateChangedEvent, newValue);
         });
@@ -268,11 +269,6 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
         } catch (SQLException ex) {
             log.fatal("No TrackingItems could be loaded!");
         }
-    }
-
-    private void initTrackingItemTableView() {
-        workItemTrackingData.add(new WorkItemTrackingData("FD", "Feature Development", LocalTime.of(1, 0), LocalTime.of(2, 0)));
-        trackingItemTableView.setItems(workItemTrackingData);
     }
 
     @Override

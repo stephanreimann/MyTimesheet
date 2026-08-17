@@ -26,6 +26,8 @@ public class WorkItem {
     private final ObjectProperty<LocalTime> starttime = new SimpleObjectProperty<>();
     private final ObjectProperty<LocalTime> endtime = new SimpleObjectProperty<>();
     private final StringProperty description = new SimpleStringProperty();
+    private final StringProperty shortcut = new SimpleStringProperty();
+    private final StringProperty name = new SimpleStringProperty();
     
     public WorkItem(Long id) {
         this.id.set(id);
@@ -33,7 +35,7 @@ public class WorkItem {
     
     public WorkItem(Long id, Long workrecordId, Long sprintId, 
                 Long trackingItemId, LocalTime starttime, LocalTime endtime, 
-                String description) {
+                String description, String shortcut, String name) {
         this.id.set(id);
         this.workrecordId.set(workrecordId);
         this.sprintId.set(sprintId);
@@ -41,6 +43,8 @@ public class WorkItem {
         this.starttime.set(starttime);
         this.endtime.set(endtime);
         this.description.set(description);
+        this.shortcut.set(shortcut);
+        this.name.set(name);
     }
     
     public WorkItem(WorkItem workitem) {
@@ -51,6 +55,8 @@ public class WorkItem {
         this.starttime.set(workitem.getStartTime());
         this.endtime.set(workitem.getEndTime());
         this.description.set(workitem.getDescription());
+        this.shortcut.set(workitem.getShortcut());
+        this.name.set(workitem.getName());
     }
 
     // <editor-fold defaultstate="collapsed" desc="Id Property">
@@ -144,6 +150,32 @@ public class WorkItem {
         return description;
     }
     // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="Shortcut Property">
+    public String getShortcut() {
+        return shortcut.get();
+    }
+    
+    public void setShortcut(String value) {
+        shortcut.set(value);
+    }
+    
+    public StringProperty getShortcutProperty() {
+        return shortcut;
+    }
+    // </editor-fold>
+    // <editor-fold defaultstate="collapsed" desc="Name Property">
+    public String getName() {
+        return name.get();
+    }
+    
+    public void setName(String value) {
+        name.set(value);
+    }
+    
+    public StringProperty getNameProperty() {
+        return name;
+    }
+    // </editor-fold>
 
     @Override
     public int hashCode() {
@@ -155,6 +187,8 @@ public class WorkItem {
         hash = 53 * hash + Objects.hashCode(this.starttime);
         hash = 53 * hash + Objects.hashCode(this.endtime);
         hash = 53 * hash + Objects.hashCode(this.description);
+        hash = 53 * hash + Objects.hashCode(this.shortcut);
+        hash = 53 * hash + Objects.hashCode(this.name);
         return hash;
     }
 
@@ -193,6 +227,12 @@ public class WorkItem {
         if (!this.endtime.getValue().equals(other.endtime.getValue())) {
             return false;
         }
+        if (!this.shortcut.getValue().equals(other.shortcut.getValue())) {
+            return false;
+        }
+        if (!this.name.getValue().equals(other.name.getValue())) {
+            return false;
+        }
         return this.description.getValue().equals(other.description.getValue());
     }
     
@@ -205,7 +245,9 @@ public class WorkItem {
         sb.append(trackingItemId.getValue()).append(", ");
         sb.append(starttime.getValue()).append(", ");
         sb.append(endtime.getValue()).append(", ");
-        sb.append(description.getValue()).append("");
+        sb.append(description.getValue()).append(", ");
+        sb.append(shortcut.getValue()).append(", ");
+        sb.append(name.getValue()).append("");
         return sb.toString();
     }
 

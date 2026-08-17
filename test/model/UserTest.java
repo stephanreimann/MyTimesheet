@@ -146,6 +146,7 @@ public class UserTest {
     }
 
     @Test()
+    @SuppressWarnings("unchecked")
     public void T21_Compare_Different_Users_Returns_False() {
         //Arrange
         Long userId = 1L;

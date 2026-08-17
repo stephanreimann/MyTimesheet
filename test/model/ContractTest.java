@@ -210,6 +210,7 @@ public class ContractTest {
     }
 
     @Test()
+    @SuppressWarnings("unchecked")
     public void T21_Compare_Different_Contracts_Returns_False() {
         //Arrange
         List<Pair<Contract, Contract>> pairList = new ArrayList<>(); 
