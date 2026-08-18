@@ -238,6 +238,9 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
             showTrackinItemDetails(null);
         }
 
+        trackingItemTableView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> showTrackinItemDetails(newValue));
+                
+        languageService.updateGuiItems();        
     }
 
     private void initCellValueFactoryTableColumns() {
