@@ -12,6 +12,7 @@ import java.time.*;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.*;
 import javafx.event.ActionEvent;
@@ -33,8 +34,10 @@ import utils.*;
  */
 class WorkItemTrackingToolViewController implements Initializable, IViewController, IEventListener {
 
+    private enum DataAction { NEW, EDIT, DELETE, UNDEF };
+    private DataAction dataAction;
+    
     private static final String COLOR_LIGHT_RED = "Red";
-
     private final String timeNowIcon = "icons/timeNow.png";
     
     private final String newResourceKey = "New";
@@ -153,6 +156,7 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
         this.workRecordDetailsViewController = (WorkRecordDetailsViewController)controllerRepository.get(WorkRecordDetailsViewController.class.getName());
         this.workRecordViewController = (WorkRecordViewController)controllerRepository.get(WorkRecordViewController.class.getName());
         this.eventManager = new EventManager();
+        this.dataAction = DataAction.UNDEF;
     }
     
     @FXML
@@ -185,10 +189,10 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
             }
             Optional<WorkItem> firstWorkItem = workItemData.stream().findFirst();
             if(!firstWorkItem.isEmpty()) {
-                showTrackinItemDetails(firstWorkItem.get());
+                showTrackingItemDetails(firstWorkItem.get());
                 trackingItemTableView.getSelectionModel().select(0);
             } else {
-                showTrackinItemDetails(null);
+                showTrackingItemDetails(null);
             }
         }
     }
@@ -214,7 +218,7 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
         initCellValueFactoryTableColumns();
         initStartTimeTimeSpinner();
         initEndTimeTimeSpinner();
-        initValuePropertyListeners();
+        initListeners();
         initDatePickerBySelectedWorkrecord();
         initTrackingItemChoiceBox();
         
@@ -232,14 +236,14 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
         
         Optional<WorkItem> firstWorkItem = workItemData.stream().findFirst();
         if(!firstWorkItem.isEmpty()) {
-            showTrackinItemDetails(firstWorkItem.get());
+            showTrackingItemDetails(firstWorkItem.get());
             trackingItemTableView.getSelectionModel().select(0);
         } else {
-            showTrackinItemDetails(null);
+            showTrackingItemDetails(null);
         }
 
-        trackingItemTableView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> showTrackinItemDetails(newValue));
-                
+        isInputValid();
+
         languageService.updateGuiItems();        
     }
 
@@ -264,21 +268,31 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
         trackingItemDetailsGridPane.add(trackingItemEndTimeTimeSpinner, 2, 3);
     }
 
-    private void initValuePropertyListeners() {
+    private void initListeners() {
         selectedDateDatePicker.valueProperty().addListener((var observable, var oldValue, var newValue) -> {
             trySetSprintNumberLabel(newValue);
-
-            //Fire event that selected date for tracking workitems has changed
             eventManager.notifyListenerOfEvent(workItemTrackingDateChangedEvent, newValue);
+            isInputValid();
         });
         trackingItemStartTimeTimeSpinner.valueProperty().addListener((ObservableValue<? extends LocalTime> observable, LocalTime oldValue, LocalTime newValue) -> {
 
+            isInputValid();
         });
         trackingItemEndTimeTimeSpinner.valueProperty().addListener((ObservableValue<? extends LocalTime> observable, LocalTime oldValue, LocalTime newValue) -> {
 
+            isInputValid();
         });
         trackingItemChoiceBox.valueProperty().addListener((ObservableValue<? extends TrackingItem> obs, TrackingItem oldValue, TrackingItem newValue) ->  {
             
+            isInputValid();
+        });
+        trackingItemTableView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            showTrackingItemDetails(newValue);
+            isInputValid();
+        });
+        trackingItemDescriptionValue.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
+            
+            isInputValid();
         });
     }
 
@@ -319,6 +333,76 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
         }
     }
 
+    // <editor-fold defaultstate="collapsed" desc="Input Validation Rules">
+    private boolean isInputValid() {
+        boolean result = false;
+
+        switch(dataAction) {
+            case DataAction.NEW -> {
+                boolean r1 = isInputFilled();
+                boolean r2 = isInputUnique();
+                
+                result = r1 && r2;
+            }
+            case DataAction.EDIT -> {
+                boolean r1 = isInputFilled();
+                boolean r2 = isInputUnique();
+                boolean r3 = hasInputChanged();
+
+                result = r1 && r2 && r3;       
+            }
+            case DataAction.DELETE -> {
+                result = true;
+            }
+            case DataAction.UNDEF -> {
+                result = true;
+            }
+        }
+        
+        if(result) {
+            switch(dataAction) {
+                case DataAction.NEW -> {
+
+                }
+                case DataAction.EDIT -> {
+
+                }
+                case DataAction.DELETE -> {
+
+                }
+                case DataAction.UNDEF -> {
+                    newButton.setDisable(false);
+                    editButton.setDisable(true);
+                    deleteButton.setDisable(true);
+                }
+            }
+            return true;
+        } else {
+            newButton.setDisable(true);
+            editButton.setDisable(true);
+            deleteButton.setDisable(true);
+            return false;
+        }        
+    }
+
+    private boolean isInputFilled() {
+        boolean result = false;
+        
+        return result;
+    }
+
+    private boolean isInputUnique() {
+        boolean result = false;
+        
+        return result;
+    }
+
+    private boolean hasInputChanged() {
+        boolean result = false;
+        
+        return result;
+    }
+    
     @Override
     public void updateGuiItems() {
         selectedDateLabel.setText(rb.getString(trackingItemDateResourceKey));
@@ -382,7 +466,7 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
         return eventManager;
     }
 
-    private void showTrackinItemDetails(WorkItem workItem) {
+    private void showTrackingItemDetails(WorkItem workItem) {
         if(workItem != null) {
             ObservableList<TrackingItem> items = trackingItemChoiceBox.getItems();
             for(int idx = 0; idx < items.size(); idx++) {
