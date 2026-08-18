@@ -382,6 +382,13 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
     private void showTrackinItemDetails(WorkItem workItem) {
         if(workItem != null) {
             ObservableList<TrackingItem> items = trackingItemChoiceBox.getItems();
+            for(int idx = 0; idx < items.size(); idx++) {
+                if(items.get(idx).getName().equals(workItem.getName()))
+                {
+                    trackingItemChoiceBox.getSelectionModel().select(items.get(idx));
+                    break;
+                }
+            }
             items.forEach(element -> {
                 if(element.getName().equals(workItem.getName()))
                 {
