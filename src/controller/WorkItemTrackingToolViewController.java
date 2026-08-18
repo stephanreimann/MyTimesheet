@@ -132,7 +132,6 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
     
     private final WorkRecordDetailsViewController workRecordDetailsViewController;
     private final WorkRecordViewController workRecordViewController;
-    private Workrecord actualSelectedWorkrecord;
     
     public WorkItemTrackingToolViewController(ControllerRepository controllerRepository, LanguageService languageService, Connection connection, UndoService undoService) throws SQLException {
         if(controllerRepository == null) throw new NullPointerException("controllerRepository");
@@ -175,11 +174,10 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
         User selectedUser = workRecordViewController.getSelectedUser();
         List<Workrecord> workRecords = workRecordDetailsViewController.getWorkrecordDao().selectAll(selectedUser, date); 
         if(workRecords != null && !workRecords.isEmpty()) {
-            actualSelectedWorkrecord = workRecords.getFirst();
+            initWorkItemData(workRecords.getFirst());
         } else {
-            actualSelectedWorkrecord = null;
+            initWorkItemData(null);
         }
-        initWorkItemData();
     }
     
     @FXML
@@ -199,20 +197,20 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
         
         trackingItemTableView.setItems(workItemData);
 
-        initTableColumn();
-        initStartTimeTracking();
-        initEndTimeTracking();
-        initListener();
+        initCellValueFactoryTableColumns();
+        initStartTimeTimeSpinner();
+        initEndTimeTimeSpinner();
+        initValuePropertyListeners();
         initDatePickerBySelectedWorkrecord();
         initTrackingItemChoiceBox();
         try {
-            initWorkItemData();
+            initWorkItemData(workRecordDetailsViewController.getSelectedWorkrecord());
         } catch (SQLException ex) {
             log.fatal("No WorkItemData could be loaded!");
         }
     }
 
-    private void initTableColumn() {
+    private void initCellValueFactoryTableColumns() {
         //HOWTO: Cell Value Factory
         //The cell must know which part of WorkItemTrackingData it needs to display.
         trackingItemShortcutTableColumn.setCellValueFactory(cellData -> cellData.getValue().getShortcutProperty());
@@ -221,19 +219,19 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
         trackingItemEndTimeTableColumn.setCellValueFactory(cellData -> cellData.getValue().getEndTimeProperty());
     }
 
-    private void initStartTimeTracking() {
+    private void initStartTimeTimeSpinner() {
         trackingItemStartTimeButton.setGraphic(new ImageView(timeNowIcon));
         trackingItemStartTimeTimeSpinner = new LocalTimeSpinner();
         trackingItemDetailsGridPane.add(trackingItemStartTimeTimeSpinner, 2, 2);
     }
 
-    private void initEndTimeTracking() {
+    private void initEndTimeTimeSpinner() {
         trackingItemEndTimeButton.setGraphic(new ImageView(timeNowIcon));
         trackingItemEndTimeTimeSpinner = new LocalTimeSpinner();
         trackingItemDetailsGridPane.add(trackingItemEndTimeTimeSpinner, 2, 3);
     }
 
-    private void initListener() {
+    private void initValuePropertyListeners() {
         selectedDateDatePicker.valueProperty().addListener((var observable, var oldValue, var newValue) -> {
             trySetSprintNumberLabel(newValue);
 
@@ -268,9 +266,9 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
     }
 
     private void initDatePickerBySelectedWorkrecord() {
-        actualSelectedWorkrecord = workRecordDetailsViewController.getSelectedWorkrecord();
-        if(actualSelectedWorkrecord != null) {
-            selectedDateDatePicker.setValue(actualSelectedWorkrecord.getDate());
+        Workrecord selectedWorkrecord = workRecordDetailsViewController.getSelectedWorkrecord();
+        if(selectedWorkrecord != null) {
+            selectedDateDatePicker.setValue(selectedWorkrecord.getDate());
         } else {
             selectedDateDatePicker.setValue(LocalDate.now());
         }
@@ -288,10 +286,10 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
         }
     }
 
-    private void initWorkItemData() throws SQLException {
+    private void initWorkItemData(Workrecord workrecord) throws SQLException {
         workItemData.clear();
-        if(actualSelectedWorkrecord != null) {
-            List<WorkItem> workItemsOfActualSelectedWorkrecord = workItemDao.selectAll(actualSelectedWorkrecord.getId());
+        if(workrecord != null) {
+            List<WorkItem> workItemsOfActualSelectedWorkrecord = workItemDao.selectAll(workrecord.getId());
             for(int idx = 0; idx < workItemsOfActualSelectedWorkrecord.size(); idx++) {
                 workItemData.add( workItemsOfActualSelectedWorkrecord.get(idx));
             }
