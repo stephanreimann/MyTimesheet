@@ -71,6 +71,7 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
     private Label sprintLabel;
     @FXML
     private Label sprintNumberLabel;
+    
     @FXML
     private TableView<WorkItem> trackingItemTableView;
     @FXML
@@ -81,6 +82,7 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
     private TableColumn<WorkItem, LocalTime> trackingItemStartTimeTableColumn;
     @FXML
     private TableColumn<WorkItem, LocalTime> trackingItemEndTimeTableColumn;
+    
     @FXML
     private GridPane trackingItemDetailsGridPane;
     @FXML
@@ -176,22 +178,29 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
 
         workItemData.clear();
 
-        if(firstWorkrecord != null && !firstWorkrecord.isEmpty()) {
+        if(!firstWorkrecord.isEmpty()) {
             List<WorkItem> workItemsOfActualSelectedWorkrecord = workItemDao.selectAll(firstWorkrecord.get().getId());
             for(int idx = 0; idx < workItemsOfActualSelectedWorkrecord.size(); idx++) {
                 workItemData.add( workItemsOfActualSelectedWorkrecord.get(idx));
+            }
+            Optional<WorkItem> firstWorkItem = workItemData.stream().findFirst();
+            if(!firstWorkItem.isEmpty()) {
+                showTrackinItemDetails(firstWorkItem.get());
+                trackingItemTableView.getSelectionModel().select(0);
+            } else {
+                showTrackinItemDetails(null);
             }
         }
     }
     
     @FXML
     private void handleOnSetStartTimeButtonClickAction(ActionEvent event) {
-
+        trackingItemStartTimeTimeSpinner.getValueFactory().setValue(LocalTime.now());
     }
 
     @FXML
     private void handleOnSetEndTimeButtonClickAction(ActionEvent event) throws SQLException {
-
+        trackingItemEndTimeTimeSpinner.getValueFactory().setValue(LocalTime.now());
     }
     
     @Override
@@ -220,6 +229,15 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
         } catch (SQLException ex) {
             log.fatal("No WorkItemData could be loaded!");
         }
+        
+        Optional<WorkItem> firstWorkItem = workItemData.stream().findFirst();
+        if(!firstWorkItem.isEmpty()) {
+            showTrackinItemDetails(firstWorkItem.get());
+            trackingItemTableView.getSelectionModel().select(0);
+        } else {
+            showTrackinItemDetails(null);
+        }
+
     }
 
     private void initCellValueFactoryTableColumns() {
@@ -359,6 +377,26 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
     
     public EventManager getEventManager() {
         return eventManager;
+    }
+
+    private void showTrackinItemDetails(WorkItem workItem) {
+        if(workItem != null) {
+            ObservableList<TrackingItem> items = trackingItemChoiceBox.getItems();
+            items.forEach(element -> {
+                if(element.getName().equals(workItem.getName()))
+                {
+                    trackingItemChoiceBox.getSelectionModel().select(element);
+                }
+            });
+            trackingItemStartTimeTimeSpinner.getValueFactory().setValue(workItem.getStartTime());
+            trackingItemEndTimeTimeSpinner.getValueFactory().setValue(workItem.getEndTime());
+            trackingItemDescriptionValue.setText(workItem.getDescription());
+        } else {
+            trackingItemChoiceBox.getSelectionModel().select(0);
+            trackingItemStartTimeTimeSpinner.getValueFactory().setValue(LocalTime.MIN);
+            trackingItemEndTimeTimeSpinner.getValueFactory().setValue(LocalTime.MIN);
+            trackingItemDescriptionValue.setText("");
+        }
     }
     
 }
