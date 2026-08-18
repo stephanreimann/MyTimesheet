@@ -10,6 +10,7 @@ import java.net.URL;
 import java.sql.*;
 import java.time.*;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.*;
@@ -170,13 +171,16 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
     @FXML
     private void handleOnSelectedDateChangedAction(ActionEvent event) throws SQLException, IOException {
         DatePicker datePicker = (DatePicker)event.getSource();
-        LocalDate date = datePicker.getValue();
-        User selectedUser = workRecordViewController.getSelectedUser();
-        List<Workrecord> workRecords = workRecordDetailsViewController.getWorkrecordDao().selectAll(selectedUser, date); 
-        if(workRecords != null && !workRecords.isEmpty()) {
-            initWorkItemData(workRecords.getFirst());
-        } else {
-            initWorkItemData(null);
+        List<Workrecord> workRecords = workRecordDetailsViewController.getWorkrecordDao().selectAll(workRecordViewController.getSelectedUser(), datePicker.getValue());
+        Optional<Workrecord> firstWorkrecord = workRecords.stream().findFirst();
+
+        workItemData.clear();
+
+        if(firstWorkrecord != null && !firstWorkrecord.isEmpty()) {
+            List<WorkItem> workItemsOfActualSelectedWorkrecord = workItemDao.selectAll(firstWorkrecord.get().getId());
+            for(int idx = 0; idx < workItemsOfActualSelectedWorkrecord.size(); idx++) {
+                workItemData.add( workItemsOfActualSelectedWorkrecord.get(idx));
+            }
         }
     }
     
@@ -195,6 +199,7 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
     public void initialize(URL location, ResourceBundle rb) {
         this.rb = rb;
         
+        workItemData.clear();
         trackingItemTableView.setItems(workItemData);
 
         initCellValueFactoryTableColumns();
@@ -203,8 +208,15 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
         initValuePropertyListeners();
         initDatePickerBySelectedWorkrecord();
         initTrackingItemChoiceBox();
+        
         try {
-            initWorkItemData(workRecordDetailsViewController.getSelectedWorkrecord());
+            Workrecord selectedWorkrecord = workRecordDetailsViewController.getSelectedWorkrecord();
+            if(selectedWorkrecord != null) {
+                List<WorkItem> workItemsOfActualSelectedWorkrecord = workItemDao.selectAll(selectedWorkrecord.getId());
+                for(int idx = 0; idx < workItemsOfActualSelectedWorkrecord.size(); idx++) {
+                    workItemData.add( workItemsOfActualSelectedWorkrecord.get(idx));
+                }
+            }
         } catch (SQLException ex) {
             log.fatal("No WorkItemData could be loaded!");
         }
@@ -286,16 +298,6 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
         }
     }
 
-    private void initWorkItemData(Workrecord workrecord) throws SQLException {
-        workItemData.clear();
-        if(workrecord != null) {
-            List<WorkItem> workItemsOfActualSelectedWorkrecord = workItemDao.selectAll(workrecord.getId());
-            for(int idx = 0; idx < workItemsOfActualSelectedWorkrecord.size(); idx++) {
-                workItemData.add( workItemsOfActualSelectedWorkrecord.get(idx));
-            }
-        }
-    }
-    
     @Override
     public void updateGuiItems() {
         selectedDateLabel.setText(rb.getString(trackingItemDateResourceKey));
