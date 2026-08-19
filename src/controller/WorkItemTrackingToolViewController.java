@@ -63,6 +63,7 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
     private final String editTrackingItemEvent = "EditTrackingItem";
     private final String deleteTrackingItemEvent = "DeleteTrackingItem";
     
+    // <editor-fold defaultstate="collapsed" desc="FXML Member">
     @FXML
     private ToolBar trackingItemToolBar;
     @FXML
@@ -112,6 +113,7 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
     private Button editButton;
     @FXML
     private Button deleteButton;
+    // </editor-fold>
     
     private final Logger log = LogManager.getLogger(WorkItemTrackingToolViewController.class.getName());
 
@@ -128,7 +130,6 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
 
     private Sprint sprint;
     private final SprintDAO sprintDAO;
-    private TrackingItem trackingItem;
     private final TrackingItemDAO trackingItemDAO;
     private WorkItem workItem;
     private final WorkItemDAO workItemDao;
@@ -326,7 +327,6 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
             trackingItemChoiceBox.getItems().clear();
             trackingItemChoiceBox.getItems().addAll(trackingItemDAO.selectAll());
             trackingItemChoiceBox.getSelectionModel().select(0);
-            trackingItem = trackingItemChoiceBox.getValue();
         } catch (SQLException ex) {
             log.fatal("No TrackingItems could be loaded!");
         }
