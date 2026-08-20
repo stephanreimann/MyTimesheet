@@ -196,7 +196,6 @@ public class WorkRecordDetailsViewController implements Initializable, IViewCont
 
     @FXML
     private void newAction(ActionEvent event) throws SQLException {
-        Long id = workrecordDao.getNextId();
         Workrecord newWorkrecord = new Workrecord(workrecordDao.getNextId());
         newWorkrecord.setUser(workRecordViewController.getSelectedUser());
         newWorkrecord.setDate(workrecordDate == null? LocalDate.now(): workrecordDate);

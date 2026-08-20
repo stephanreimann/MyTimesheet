@@ -77,11 +77,11 @@ public class WorkItem {
         return workrecordId.get();
     }
     
-    public void setWorkrecord(Long value) {
+    public void setWorkrecordId(Long value) {
         workrecordId.set(value);
     }
     
-    public LongProperty getWorkrecordProperty() {
+    public LongProperty getWorkrecordIdProperty() {
         return workrecordId;
     }
     // </editor-fold>

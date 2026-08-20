@@ -4,6 +4,7 @@
  */
 package controller;
 
+import command.workitemtracking.NewWorkItemCommand;
 import controls.LocalTimeSpinner;
 import java.io.IOException;
 import java.net.URL;
@@ -138,6 +139,7 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
     
     private final WorkRecordDetailsViewController workRecordDetailsViewController;
     private final WorkRecordViewController workRecordViewController;
+    private Workrecord selectedWorkrecord;
     
     public WorkItemTrackingToolViewController(ControllerRepository controllerRepository, LanguageService languageService, Connection connection, UndoService undoService) throws SQLException {
         if(controllerRepository == null) throw new NullPointerException("controllerRepository");
@@ -157,11 +159,24 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
         this.workRecordViewController = (WorkRecordViewController)controllerRepository.get(WorkRecordViewController.class.getName());
         this.eventManager = new EventManager();
         this.dataAction = DataAction.UNDEF;
+        this.selectedWorkrecord = workRecordDetailsViewController.getSelectedWorkrecord();
     }
     
     @FXML
     private void newAction(ActionEvent event) throws SQLException, IOException {
-
+        WorkItem newWorkItem = new WorkItem(workItemDao.getNextId());
+        newWorkItem.setWorkrecordId(selectedWorkrecord.getId());
+        newWorkItem.setSprintId(sprint.getId());
+        newWorkItem.setTrackingItemId(trackingItemChoiceBox.getSelectionModel().getSelectedItem().getId());
+        newWorkItem.setStartTime(trackingItemStartTimeTimeSpinner.getValue());
+        newWorkItem.setEndTime(trackingItemEndTimeTimeSpinner.getValue());
+        newWorkItem.setDescription(trackingItemDescriptionValue.getText());
+        newWorkItem.setShortcut(trackingItemChoiceBox.getSelectionModel().getSelectedItem().getShortcut());
+        newWorkItem.setName(trackingItemChoiceBox.getSelectionModel().getSelectedItem().getName());
+        if(isInputFilled()) {
+            NewWorkItemCommand cmd = new NewWorkItemCommand(controllerRepository, eventManager, trackingItemTableView, newWorkItem, workItemDao);
+            undoService.execute(cmd);
+        }
     }
     
     @FXML
@@ -453,9 +468,9 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
                 initTrackingItemChoiceBox();
             }
             case selectedWorkRecordChangedEvent -> {
-                Workrecord workrecord = (Workrecord)source;
-                if(workrecord != null) {
-                    selectedDateDatePicker.setValue(workrecord.getDate());
+                selectedWorkrecord = (Workrecord)source;
+                if(selectedWorkrecord != null) {
+                    selectedDateDatePicker.setValue(selectedWorkrecord.getDate());
                 }
             }
         }
