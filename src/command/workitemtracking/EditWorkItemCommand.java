@@ -17,7 +17,7 @@ import utils.EventManager;
  */
 public class EditWorkItemCommand implements ICommand {
 
-    public EditWorkItemCommand(ControllerRepository controllerRepository, EventManager events, TableView<WorkItem> trackingItemTableView, WorkItem newWorkItem, WorkItemDAO workItemDao) {
+    public EditWorkItemCommand(ControllerRepository controllerRepository, EventManager events, TableView<WorkItem> trackingItemTableView, WorkItem originalWorkItem, WorkItem modifiedWorkItem, WorkItemDAO workItemDao) {
 
     }
     
