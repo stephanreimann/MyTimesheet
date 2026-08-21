@@ -425,19 +425,19 @@ class WorkItemTrackingToolViewController implements Initializable, IViewControll
     }
 
     private boolean isInputFilled() {
-        boolean result = false;
+        boolean result = true;
         
         return result;
     }
 
     private boolean isInputUnique() {
-        boolean result = false;
+        boolean result = true;
         
         return result;
     }
 
     private boolean hasInputChanged() {
-        boolean result = false;
+        boolean result = true;
         
         return result;
     }

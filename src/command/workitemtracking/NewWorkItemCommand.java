@@ -5,9 +5,11 @@
 package command.workitemtracking;
 
 import commands.ICommand;
-import controller.ControllerRepository;
+import controller.*;
+import java.sql.SQLException;
 import javafx.scene.control.TableView;
 import model.WorkItem;
+import org.apache.logging.log4j.*;
 import sqlite.WorkItemDAO;
 import utils.EventManager;
 
@@ -17,28 +19,79 @@ import utils.EventManager;
  */
 public class NewWorkItemCommand implements ICommand {
 
+    private final String newWorkItemEvent = "NewWorkItem";
+    
+    private final MainToolBarViewController mainToolBarViewController;
+    private final MainMenuBarViewController mainMenuBarViewController;
+    private final EventManager events;
+    private TableView<WorkItem> trackingItemTableView;
+    private WorkItemDAO workItemDao;
+    private final WorkItem newWorkItem;
+    private final Logger log = LogManager.getLogger(NewWorkItemCommand.class.getName());
+    
     public NewWorkItemCommand(ControllerRepository controllerRepository, EventManager events, TableView<WorkItem> trackingItemTableView, WorkItem newWorkItem, WorkItemDAO workItemDao) {
-
+        if(controllerRepository == null) throw new NullPointerException("controllerRepository");
+        if(events == null) throw new NullPointerException("events");
+        if(trackingItemTableView == null) throw new NullPointerException("trackingItemTableView");
+        if(newWorkItem == null) throw new NullPointerException("newWorkItem");
+        if(workItemDao == null) throw new NullPointerException("workItemDao");
+        
+        this.mainToolBarViewController = (MainToolBarViewController) controllerRepository.get(MainToolBarViewController.class.getName());
+        this.mainMenuBarViewController = (MainMenuBarViewController) controllerRepository.get(MainMenuBarViewController.class.getName());
+        
+        this.events = events;
+        this.trackingItemTableView = trackingItemTableView;
+        this.newWorkItem = newWorkItem;
+        this.workItemDao = workItemDao;
     }
     
     @Override
     public boolean execute() {
-        return false;
+        try {
+            trackingItemTableView.getItems().add(newWorkItem);
+            if(!workItemDao.create(newWorkItem)) {
+                log.error("Adding trackingitem failed");
+                return false;
+            } else {
+                mainToolBarViewController.toggleUndoRedoButtons();
+                mainMenuBarViewController.toggleUndoRedoMenuItems();
+                trackingItemTableView.getSelectionModel().select(newWorkItem);
+                events.notifyListenerOfEvent(newWorkItemEvent, this);
+                return true;
+            }
+        } catch (SQLException ex) {
+            log.fatal(ex);
+            return false;
+        }
     }
 
     @Override
     public boolean undo() {
-        return false;
+        try {
+            trackingItemTableView.getItems().remove(newWorkItem);
+            if(!workItemDao.delete(newWorkItem)) {
+                log.error("Undo adding of trackingitem failed");
+                return false;
+            } else {
+                mainToolBarViewController.toggleUndoRedoButtons();
+                mainMenuBarViewController.toggleUndoRedoMenuItems();
+                events.notifyListenerOfEvent(newWorkItemEvent, this);
+                return true;
+            }
+        } catch (SQLException ex) {
+            log.fatal(ex);
+            return false;
+        }
     }
 
     @Override
     public boolean redo() {
-        return false;
+        return execute();
     }
 
     @Override
     public String getText() {
-        return "";
+        return "Create Trackingitem[" + newWorkItem.toString() + "]";
     }
     
 }
