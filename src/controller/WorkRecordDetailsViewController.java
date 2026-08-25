@@ -89,7 +89,7 @@ public class WorkRecordDetailsViewController implements Initializable, IViewCont
     private final String defaultLocationChangedEvent = "DefaultLocationChanged";
     private final String useLastWorkrecordConfigurationChangedEvent = "UseLastWorkrecordConfigurationChanged";
 
-    private final String workItemTrackingDateChangedEvent = "WorkItemTrackingDateChanged";
+    private final String workItemDateChangedEvent = "WorkItemDateChanged";
     
     private final Logger log = LogManager.getLogger(WorkRecordDetailsViewController.class.getName());
     
@@ -191,7 +191,7 @@ public class WorkRecordDetailsViewController implements Initializable, IViewCont
         this.eventManager.registerEventType(newWorkrecordEvent);
         this.eventManager.registerEventType(editWorkrecordEvent);
         this.eventManager.registerEventType(deleteWorkrecordEvent);
-        this.eventManager.registerEventType(workItemTrackingDateChangedEvent);
+        this.eventManager.registerEventType(workItemDateChangedEvent);
     }
 
     @FXML
@@ -535,10 +535,11 @@ public class WorkRecordDetailsViewController implements Initializable, IViewCont
                 boolean workrecordAutomaticCreation = (Boolean)source;
                 //Actually we do not need dynamic behaviour!
             }
-            case workItemTrackingDateChangedEvent -> {
+            case workItemDateChangedEvent -> {
                 LocalDate date = (LocalDate)source;
                 workRecordViewController.selectWorkrecordOf(date);
             }
+
         }
     }
 

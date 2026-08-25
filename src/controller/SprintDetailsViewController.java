@@ -229,7 +229,7 @@ public class SprintDetailsViewController implements Initializable, IViewControll
     public void showSprintDetails(Sprint sprint) {
         this.sprint = sprint;
         
-        //We save the actual ho information to be able to 
+        //We save the actual sprint information to be able to 
         //check for changes of each Information at validation of Innput.
         saveActualSprintInformation(sprint);
         

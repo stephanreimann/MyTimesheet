@@ -120,7 +120,7 @@ public class TrackingItemViewController implements Initializable, IViewControlle
         this.eventManager.registerEventType(editTrackingItemEvent);
         this.eventManager.registerEventType(deleteTrackingItemEvent);
     
-        WorkItemTrackingToolViewController workItemTrackingToolViewController = (WorkItemTrackingToolViewController)controllerRepository.get(WorkItemTrackingToolViewController.class.getName());
+        WorkItemViewController workItemTrackingToolViewController = (WorkItemViewController)controllerRepository.get(WorkItemViewController.class.getName());
         if(workItemTrackingToolViewController != null) {
             this.eventManager.subscribeEventToListener(newTrackingItemEvent, workItemTrackingToolViewController);
             this.eventManager.subscribeEventToListener(editTrackingItemEvent, workItemTrackingToolViewController);
