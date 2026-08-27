@@ -197,7 +197,7 @@ class WorkItemViewController implements Initializable, IViewController, IEventLi
         newWorkItem.setDescription(trackingItemDescriptionValue.getText());
         newWorkItem.setShortcut(trackingItemChoiceBox.getSelectionModel().getSelectedItem().getShortcut());
         newWorkItem.setName(trackingItemChoiceBox.getSelectionModel().getSelectedItem().getName());
-        if(isInputFilled()) {
+        if(isInputValid()) {
             NewWorkItemCommand cmd = new NewWorkItemCommand(controllerRepository, eventManager, trackingItemTableView, newWorkItem, workItemDao);
             undoService.execute(cmd);
         }
@@ -215,7 +215,7 @@ class WorkItemViewController implements Initializable, IViewController, IEventLi
             modifiedWorkItem.setDescription(trackingItemDescriptionValue.getText());
             modifiedWorkItem.setShortcut(trackingItemChoiceBox.getSelectionModel().getSelectedItem().getShortcut());
             modifiedWorkItem.setName(trackingItemChoiceBox.getSelectionModel().getSelectedItem().getName());
-            if(!selectedWorkItem.equals(modifiedWorkItem)) {
+            if(!selectedWorkItem.equals(modifiedWorkItem) && isInputValid()) {
                 EditWorkItemCommand cmd = new EditWorkItemCommand(controllerRepository, eventManager, trackingItemTableView, selectedWorkItem, modifiedWorkItem, workItemDao);
                 undoService.execute(cmd);
             }
@@ -246,9 +246,8 @@ class WorkItemViewController implements Initializable, IViewController, IEventLi
 
         if(firstWorkrecord.isPresent()) {
             List<WorkItem> workItemsOfActualSelectedWorkrecord = workItemDao.selectAll(firstWorkrecord.get().getId());
-            for(int idx = 0; idx < workItemsOfActualSelectedWorkrecord.size(); idx++) {
-                workItemData.add( workItemsOfActualSelectedWorkrecord.get(idx));
-            }
+            workItemData.addAll(workItemsOfActualSelectedWorkrecord);
+
             Optional<WorkItem> firstWorkItem = workItemData.stream().findFirst();
             if(firstWorkItem.isPresent()) {
                 showTrackingItemDetails(firstWorkItem.get());
@@ -341,6 +340,13 @@ class WorkItemViewController implements Initializable, IViewController, IEventLi
                 newSprintId = 0L;
             }
         });
+        trackingItemTableView.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends WorkItem> observable, WorkItem oldValue, WorkItem newValue) -> {
+            if(newValue != null) {
+                newWorkrecordId = newValue.getWorkrecordId();
+            }
+            showTrackingItemDetails(newValue);
+            isInputValid();
+        });
         trackingItemStartTimeTimeSpinner.valueProperty().addListener((ObservableValue<? extends LocalTime> observable, LocalTime oldValue, LocalTime newValue) -> {
             newStartTime = newValue;
             isInputValid();
@@ -355,13 +361,6 @@ class WorkItemViewController implements Initializable, IViewController, IEventLi
                 newShortcut = newValue.getShortcut();
                 newName = newValue.getName();
             }
-            isInputValid();
-        });
-        trackingItemTableView.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends WorkItem> observable, WorkItem oldValue, WorkItem newValue) -> {
-            if(newValue != null) {
-                newWorkrecordId = newValue.getWorkrecordId();
-            }
-            showTrackingItemDetails(newValue);
             isInputValid();
         });
         trackingItemDescriptionValue.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
