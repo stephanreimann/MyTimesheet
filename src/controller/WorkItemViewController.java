@@ -10,10 +10,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.*;
 import java.time.*;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.*;
 import javafx.event.ActionEvent;
@@ -71,6 +68,7 @@ class WorkItemViewController implements Initializable, IViewController, IEventLi
     
     // <editor-fold defaultstate="collapsed" desc="FXML Member">
     @FXML
+    @SuppressWarnings("unused")
     private ToolBar trackingItemToolBar;
     @FXML
     private Label selectedDateLabel;
@@ -126,6 +124,7 @@ class WorkItemViewController implements Initializable, IViewController, IEventLi
     private Stage primaryStage;
     private final ControllerRepository controllerRepository;
     private final LanguageService languageService;
+    @SuppressWarnings("unused")
     private final Connection connection;
     private final UndoService undoService;
     private ResourceBundle rb;
@@ -186,6 +185,7 @@ class WorkItemViewController implements Initializable, IViewController, IEventLi
     }
     
     @FXML
+    @SuppressWarnings("unused")
     private void newAction(ActionEvent event) throws SQLException, IOException {
         dataAction = DataAction.NEW;
         WorkItem newWorkItem = new WorkItem(workItemDao.getNextId());
@@ -204,6 +204,7 @@ class WorkItemViewController implements Initializable, IViewController, IEventLi
     }
     
     @FXML
+    @SuppressWarnings("unused")
     private void editAction(ActionEvent event) throws SQLException, IOException {
         dataAction = DataAction.EDIT;
         if(selectedWorkItem != null) {
@@ -226,6 +227,7 @@ class WorkItemViewController implements Initializable, IViewController, IEventLi
     }
 
     @FXML
+    @SuppressWarnings("unused")
     private void deleteAction(ActionEvent event) throws SQLException, IOException {
         dataAction = DataAction.DELETE;
         if(selectedWorkItem != null) {
@@ -237,6 +239,7 @@ class WorkItemViewController implements Initializable, IViewController, IEventLi
     }
     
     @FXML
+    @SuppressWarnings("unused")
     private void handleOnSelectedDateChangedAction(ActionEvent event) throws SQLException, IOException {
         DatePicker datePicker = (DatePicker)event.getSource();
         List<Workrecord> workRecords = workRecordDetailsViewController.getWorkrecordDao().selectAll(workRecordViewController.getSelectedUser(), datePicker.getValue());
@@ -259,11 +262,13 @@ class WorkItemViewController implements Initializable, IViewController, IEventLi
     }
     
     @FXML
+    @SuppressWarnings("unused")
     private void handleOnSetStartTimeButtonClickAction(ActionEvent event) {
         trackingItemStartTimeTimeSpinner.getValueFactory().setValue(LocalTime.now());
     }
 
     @FXML
+    @SuppressWarnings("unused")
     private void handleOnSetEndTimeButtonClickAction(ActionEvent event) {
         trackingItemEndTimeTimeSpinner.getValueFactory().setValue(LocalTime.now());
     }
@@ -461,12 +466,16 @@ class WorkItemViewController implements Initializable, IViewController, IEventLi
     }
 
     private boolean hasInputChanged() {
-        return newTrackingItemId != oldTrackingItemId
+        return newId != oldId
+        || newWorkrecordId != oldWorkrecordId
+        || newSprintId != oldSprintId     
+        || newTrackingItemId != oldTrackingItemId
         || !Objects.equals(newStartTime, oldStartTime)
         || !Objects.equals(newEndTime, oldEndTime)
         || !Objects.equals(newDescription, oldDescription)
         || !Objects.equals(newShortcut, oldShortcut)
-        || !Objects.equals(newName, oldName);    }
+        || !Objects.equals(newName, oldName);    
+    }
     
     @Override
     public void updateGuiItems() {
