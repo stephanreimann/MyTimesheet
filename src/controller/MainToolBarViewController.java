@@ -157,10 +157,10 @@ public class MainToolBarViewController implements Initializable, IViewController
 
     @FXML
     private void workItemAction(ActionEvent event) throws IOException, SQLException {      
-        WorkItemViewController workItemViewController = (WorkItemViewController)controllerRepository.get(WorkItemViewController.class.getName());
-        if(workItemViewController == null) {
-            workItemViewController = new WorkItemViewController(controllerRepository, languageService, connection, undoService);
-            controllerRepository.put(WorkItemViewController.class.getName(), workItemViewController);
+        //WorkItemViewController workItemViewController = (WorkItemViewController)controllerRepository.get(WorkItemViewController.class.getName());
+        //if(workItemViewController == null) {
+            WorkItemViewController workItemViewController = new WorkItemViewController(controllerRepository, languageService, connection, undoService);
+            //controllerRepository.put(WorkItemViewController.class.getName(), workItemViewController);
             
             //This controller will be informed about the date changed action
             workItemViewController.getEventManager().registerEventType(workItemDateChangedEvent);
@@ -178,7 +178,7 @@ public class MainToolBarViewController implements Initializable, IViewController
                 trackingItemViewController.getEventManager().subscribeEventToListener(editTrackingItemEvent, workItemViewController);
                 trackingItemViewController.getEventManager().subscribeEventToListener(deleteTrackingItemEvent, workItemViewController);
             }
-
+            
             DialogFactory dialogFactory = new DialogFactory(
                 primaryStage, 
                 workItemViewTitleResourceKey, 
@@ -189,9 +189,9 @@ public class MainToolBarViewController implements Initializable, IViewController
             workItemTrackingToolViewDialog = dialogFactory.create(Modality.NONE);
             workItemTrackingToolViewDialog.setWidth(512);
             workItemTrackingToolViewDialog.setHeight(850);
-                        
+            
             ControllerUtilities.CenterOnDialog(primaryStage, workItemTrackingToolViewDialog);
-        }
+        //}
         
         if(!workItemTrackingToolViewDialog.isShowing()) {
             workItemButton.disableProperty().set(true);

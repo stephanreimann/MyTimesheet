@@ -51,7 +51,7 @@ public class EditWorkItemCommand implements ICommand {
     @Override
     public boolean execute() {
         try {
-            trackingItemTableView.getItems().remove(modifiedWorkItem);
+            trackingItemTableView.getItems().remove(originalWorkItem);
             trackingItemTableView.getItems().add(modifiedWorkItem);
             if(!workItemDao.update(originalWorkItem, modifiedWorkItem)) {
                 log.error("Editing trackingitem failed");

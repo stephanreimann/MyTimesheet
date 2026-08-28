@@ -209,6 +209,7 @@ class WorkItemViewController implements Initializable, IViewController, IEventLi
         dataAction = DataAction.EDIT;
         if(selectedWorkItem != null) {
             WorkItem modifiedWorkItem = new WorkItem(selectedWorkItem.getId());
+            modifiedWorkItem.setWorkrecordId(selectedWorkrecord.getId());
             modifiedWorkItem.setSprintId(selectedWorkItem.getSprintId());
             modifiedWorkItem.setTrackingItemId(trackingItemChoiceBox.getSelectionModel().getSelectedItem().getId());
             modifiedWorkItem.setStartTime(trackingItemStartTimeTimeSpinner.getValue());
@@ -219,6 +220,10 @@ class WorkItemViewController implements Initializable, IViewController, IEventLi
             if(!selectedWorkItem.equals(modifiedWorkItem) && isInputValid()) {
                 EditWorkItemCommand cmd = new EditWorkItemCommand(controllerRepository, eventManager, trackingItemTableView, selectedWorkItem, modifiedWorkItem, workItemDao);
                 undoService.execute(cmd);
+
+                workItemData.clear();
+                List<WorkItem> workItemsOfActualSelectedWorkrecord = workItemDao.selectAll(modifiedWorkItem.getId());
+                workItemData.addAll(workItemsOfActualSelectedWorkrecord);
             }
         } else {
             ControllerUtilities.showNoItemSelectedAlert(primaryStage, rb, noTrackingItemSelectionAlertTitle, noTrackingItemSelectionAlertHeader, noTrackingItemSelectionAlertContent);
@@ -412,49 +417,31 @@ class WorkItemViewController implements Initializable, IViewController, IEventLi
     }
 
     // <editor-fold defaultstate="collapsed" desc="Input Validation Rules">
-    private boolean isInputValid() {
-        boolean result = false;
-        
+    public boolean isInputValid() {
+        boolean result = true;
+ 
+        // 1. disable all buttons
+        newButton.setDisable(false);
+        editButton.setDisable(false);
+        deleteButton.setDisable(false);
+                
         if(dataAction != null) {
             switch(dataAction) {
                 case DataAction.NEW -> {
-                    boolean r1 = isInputFilled();
-                    boolean r2 = isInputUnique();
-                    boolean r3 = isSelectedWorkrecordValid();
 
-                    result = r1 && r2 && r3;
+                    break;
                 }
                 case DataAction.EDIT -> {
-                    boolean r1 = isInputFilled();
-                    boolean r2 = isInputUnique();
-                    boolean r3 = hasInputChanged();
 
-                    result = r1 && r2 && r3;       
+                    break;
                 }
                 case DataAction.DELETE -> {
-                    result = true;
+
+                    break;
                 }
             }
-
-            if(result) {
-                newButton.setDisable(false);
-                editButton.setDisable(false);
-                deleteButton.setDisable(false);
-            } else {
-                newButton.setDisable(true);
-                editButton.setDisable(true);
-                deleteButton.setDisable(false); // DELETE should always be enabled if item selected
-            }
-        } else if(isInputFilled() && isSelectedWorkrecordValid()) {
-            newButton.setDisable(false);
-            editButton.setDisable(true);
-            deleteButton.setDisable(true);
-        } else {
-            newButton.setDisable(true);
-            editButton.setDisable(true);
-            deleteButton.setDisable(true);
         }
-        
+                
         return result;
     }
     
@@ -462,39 +449,55 @@ class WorkItemViewController implements Initializable, IViewController, IEventLi
         boolean result;
         LocalTime startTime = trackingItemStartTimeTimeSpinner.getValue();
         LocalTime endTime = trackingItemEndTimeTimeSpinner.getValue();
-        String description = trackingItemDescriptionValue.getText();
         
         boolean r1 = trackingItemChoiceBox.getSelectionModel().getSelectedItem() != null;
-        boolean r2 = !(startTime.equals(LocalTime.MIN) || startTime.isAfter(endTime));
-        boolean r3 = !(endTime.equals(LocalTime.MIN) || endTime.isBefore(startTime));
-        boolean r4 = !startTime.equals(endTime);
-        boolean r5 = !description.isEmpty();
+        boolean r2 = startTime.equals(LocalTime.MIN);
+        boolean r3 = endTime.equals(LocalTime.MIN);
+        boolean r4 = startTime.isBefore(endTime);
         
-        result = r1 && r2 && r3 && r4 && r5;
+        result = r1 && !r2 && !r3 && r4;
         
         return result;
     }
 
     private boolean isInputUnique() {
-        boolean result = true;
+        boolean result;
+        
+        boolean r1 = isStartTimeUnique(trackingItemStartTimeTimeSpinner.getValue());
+        boolean r2 = isEndTimeUnique(trackingItemEndTimeTimeSpinner.getValue());
+
+        result = r1 && r2;
         
         return result;
     }
 
-    private boolean isSelectedWorkrecordValid() {
+    private boolean isStartTimeUnique(LocalTime startTime) {
+        List<WorkItem> result = workItemData.stream().filter(c -> c.getStartTime().equals(startTime)).toList();
+        return result.isEmpty();
+    }
+
+    private boolean isEndTimeUnique(LocalTime endTime) {
+        List<WorkItem> result = workItemData.stream().filter(c -> c.getEndTime().equals(endTime)).toList();
+        return result.isEmpty();
+    }
+
+    private boolean doesSelectedWorkrecordExist() {
         return selectedWorkrecord != null && !selectedWorkrecord.getWorktime().equals(LocalTime.MIN);
     }
     
+    private boolean isWorkItemUnique(WorkItem workItem) {
+        if(workItem != null) {
+           List<WorkItem> result = workItemData.stream().filter(c -> c.getId().equals(workItem.getId())).toList();
+           return result.isEmpty(); 
+        }
+        return true;
+    }
+    
     private boolean hasInputChanged() {
-        return newId != oldId
-        || newWorkrecordId != oldWorkrecordId
-        || newSprintId != oldSprintId     
-        || newTrackingItemId != oldTrackingItemId
+        return newTrackingItemId != oldTrackingItemId
         || !Objects.equals(newStartTime, oldStartTime)
         || !Objects.equals(newEndTime, oldEndTime)
-        || !Objects.equals(newDescription, oldDescription)
-        || !Objects.equals(newShortcut, oldShortcut)
-        || !Objects.equals(newName, oldName);    
+        || !Objects.equals(newDescription, oldDescription);
     }
     
     @Override
