@@ -264,13 +264,13 @@ class WorkItemViewController implements Initializable, IViewController, IEventLi
     @FXML
     @SuppressWarnings("unused")
     private void handleOnSetStartTimeButtonClickAction(ActionEvent event) {
-        trackingItemStartTimeTimeSpinner.getValueFactory().setValue(LocalTime.now());
+        trackingItemStartTimeTimeSpinner.getValueFactory().setValue(trackingItemStartTimeTimeSpinner.formatLocalTime(LocalTime.now(), LocalTimeSpinner.TimeFormat.HH_MM));
     }
 
     @FXML
     @SuppressWarnings("unused")
     private void handleOnSetEndTimeButtonClickAction(ActionEvent event) {
-        trackingItemEndTimeTimeSpinner.getValueFactory().setValue(LocalTime.now());
+        trackingItemEndTimeTimeSpinner.getValueFactory().setValue(trackingItemEndTimeTimeSpinner.formatLocalTime(LocalTime.now(), LocalTimeSpinner.TimeFormat.HH_MM));
     }
     
     @Override
