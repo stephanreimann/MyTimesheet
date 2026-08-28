@@ -459,7 +459,7 @@ class WorkItemViewController implements Initializable, IViewController, IEventLi
     }
     
     private boolean isInputFilled() {
-        boolean result = false;
+        boolean result;
         LocalTime startTime = trackingItemStartTimeTimeSpinner.getValue();
         LocalTime endTime = trackingItemEndTimeTimeSpinner.getValue();
         String description = trackingItemDescriptionValue.getText();
@@ -503,7 +503,7 @@ class WorkItemViewController implements Initializable, IViewController, IEventLi
         sprintLabel.setText(rb.getString(trackingItemSprintResourceKey));
 
         try {
-            long sprintNumber = Long.parseLong(sprintNumberLabelValue.getText());
+            long _ = Long.parseLong(sprintNumberLabelValue.getText());
         } catch (NumberFormatException ex) {
             sprintNumberLabelValue.setText(rb.getString(sprintNotFoundResourceKey));
         }
