@@ -54,9 +54,11 @@ public class EventManager implements IEventManager {
     @Override
     public void notifyListenerOfEvent(String eventType, Object source) {
         List<IEventListener> eventListeners = listeners.get(eventType);
-        for (IEventListener listener : eventListeners) {
-            if(listener != null) {
-                listener.update(eventType, source);
+        if(eventListeners != null) {
+            for (IEventListener listener : eventListeners) {
+                if(listener != null) {
+                    listener.update(eventType, source);
+                }
             }
         }
     }
