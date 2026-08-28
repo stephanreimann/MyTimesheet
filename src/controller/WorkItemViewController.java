@@ -347,17 +347,18 @@ class WorkItemViewController implements Initializable, IViewController, IEventLi
         });
         trackingItemTableView.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends WorkItem> observable, WorkItem oldValue, WorkItem newValue) -> {
             if(newValue != null) {
+                newId = newValue.getId();
                 newWorkrecordId = newValue.getWorkrecordId();
             }
             showTrackingItemDetails(newValue);
             isInputValid();
         });
         trackingItemStartTimeTimeSpinner.valueProperty().addListener((ObservableValue<? extends LocalTime> observable, LocalTime oldValue, LocalTime newValue) -> {
-            newStartTime = newValue;
+            newStartTime = trackingItemStartTimeTimeSpinner.formatLocalTime(trackingItemStartTimeTimeSpinner.getValue(), LocalTimeSpinner.TimeFormat.HH_MM);
             isInputValid();
         });
         trackingItemEndTimeTimeSpinner.valueProperty().addListener((ObservableValue<? extends LocalTime> observable, LocalTime oldValue, LocalTime newValue) -> {
-            newEndTime = newValue;
+            newEndTime = trackingItemEndTimeTimeSpinner.formatLocalTime(trackingItemEndTimeTimeSpinner.getValue(), LocalTimeSpinner.TimeFormat.HH_MM);
             isInputValid();
         });
         trackingItemChoiceBox.valueProperty().addListener((ObservableValue<? extends TrackingItem> observable, TrackingItem oldValue, TrackingItem newValue) ->  {
@@ -399,7 +400,7 @@ class WorkItemViewController implements Initializable, IViewController, IEventLi
         }
         trySetSprintNumberLabel(selectedDateDatePicker.getValue());
     }
-
+    
     private void initTrackingItemChoiceBox() {
         try {
             trackingItemChoiceBox.getItems().clear();
@@ -410,10 +411,6 @@ class WorkItemViewController implements Initializable, IViewController, IEventLi
         }
     }
 
-    private boolean isSelectedWorkrecordValid() {
-        return selectedWorkrecord != null && !selectedWorkrecord.getWorktime().equals(LocalTime.MIN);
-    }
-    
     // <editor-fold defaultstate="collapsed" desc="Input Validation Rules">
     private boolean isInputValid() {
         boolean result = false;
@@ -448,15 +445,34 @@ class WorkItemViewController implements Initializable, IViewController, IEventLi
                 editButton.setDisable(true);
                 deleteButton.setDisable(false); // DELETE should always be enabled if item selected
             }
+        } else if(isInputFilled() && isSelectedWorkrecordValid()) {
+            newButton.setDisable(false);
+            editButton.setDisable(true);
+            deleteButton.setDisable(true);
+        } else {
+            newButton.setDisable(true);
+            editButton.setDisable(true);
+            deleteButton.setDisable(true);
         }
+        
         return result;
     }
     
     private boolean isInputFilled() {
-        return trackingItemChoiceBox.getSelectionModel().getSelectedItem() != null
-        && trackingItemStartTimeTimeSpinner.getValue() != null
-        && trackingItemEndTimeTimeSpinner.getValue() != null
-        && !trackingItemDescriptionValue.getText().isBlank();        
+        boolean result = false;
+        LocalTime startTime = trackingItemStartTimeTimeSpinner.getValue();
+        LocalTime endTime = trackingItemEndTimeTimeSpinner.getValue();
+        String description = trackingItemDescriptionValue.getText();
+        
+        boolean r1 = trackingItemChoiceBox.getSelectionModel().getSelectedItem() != null;
+        boolean r2 = !(startTime.equals(LocalTime.MIN) || startTime.isAfter(endTime));
+        boolean r3 = !(endTime.equals(LocalTime.MIN) || endTime.isBefore(startTime));
+        boolean r4 = !startTime.equals(endTime);
+        boolean r5 = !description.isEmpty();
+        
+        result = r1 && r2 && r3 && r4 && r5;
+        
+        return result;
     }
 
     private boolean isInputUnique() {
@@ -465,6 +481,10 @@ class WorkItemViewController implements Initializable, IViewController, IEventLi
         return result;
     }
 
+    private boolean isSelectedWorkrecordValid() {
+        return selectedWorkrecord != null && !selectedWorkrecord.getWorktime().equals(LocalTime.MIN);
+    }
+    
     private boolean hasInputChanged() {
         return newId != oldId
         || newWorkrecordId != oldWorkrecordId
@@ -481,7 +501,13 @@ class WorkItemViewController implements Initializable, IViewController, IEventLi
     public void updateGuiItems() {
         selectedDateLabel.setText(rb.getString(trackingItemDateResourceKey));
         sprintLabel.setText(rb.getString(trackingItemSprintResourceKey));
-        sprintNumberLabelValue.setText(rb.getString(sprintNotFoundResourceKey));
+
+        try {
+            long sprintNumber = Long.parseLong(sprintNumberLabelValue.getText());
+        } catch (NumberFormatException ex) {
+            sprintNumberLabelValue.setText(rb.getString(sprintNotFoundResourceKey));
+        }
+        
         trackingItemShortcutTableColumn.setText(rb.getString(trackingItemShortcutResourceKey));
         trackingItemNameTableColumn.setText(rb.getString(trackingItemNameResourceKey));
         trackingItemStartTimeTableColumn.setText(rb.getString(trackingItemStartTimeResourceKey));

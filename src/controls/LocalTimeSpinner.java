@@ -119,6 +119,29 @@ public class LocalTimeSpinner extends Spinner<LocalTime> {
         editingMode.addListener((obs, oldMode, newMode) -> newMode.select(this));
     }
 
+    public LocalTime formatLocalTime(LocalTime time, TimeFormat format) {
+        if (time == null) return null;
+        String formatted = time.format(format.getFormatter());
+        return LocalTime.parse(formatted, format.getFormatter());
+    }
+
+    public enum TimeFormat {
+        HH_MM("HH:mm"),
+        HH_MM_SS("HH:mm:ss"),
+        HH_MM_SS_SSS("HH:mm:ss.SSS"),
+        H_MM_AM_PM("h:mm a");
+
+        private final DateTimeFormatter formatter;
+
+        TimeFormat(String pattern) {
+            this.formatter = DateTimeFormatter.ofPattern(pattern);
+        }
+
+        public DateTimeFormatter getFormatter() {
+            return formatter;
+        }
+    }
+
     // Mode represents the unit that is currently being edited.
     // For convenience expose methods for incrementing and decrementing that
     // unit, and for selecting the appropriate portion in a spinner's editor
