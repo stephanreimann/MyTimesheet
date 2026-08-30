@@ -200,7 +200,6 @@ class WorkItemViewController implements Initializable, IViewController, IEventLi
         if(isInputValid()) {
             NewWorkItemCommand cmd = new NewWorkItemCommand(controllerRepository, eventManager, trackingItemTableView, newWorkItem, workItemDao);
             undoService.execute(cmd);
-
             refreshWorkItemData();
         }
     }
@@ -222,7 +221,6 @@ class WorkItemViewController implements Initializable, IViewController, IEventLi
             if(!selectedWorkItem.equals(modifiedWorkItem) && isInputValid()) {
                 EditWorkItemCommand cmd = new EditWorkItemCommand(controllerRepository, eventManager, trackingItemTableView, selectedWorkItem, modifiedWorkItem, workItemDao);
                 undoService.execute(cmd);
-
                 refreshWorkItemData();
             }
         } else {
@@ -238,7 +236,6 @@ class WorkItemViewController implements Initializable, IViewController, IEventLi
         if(selectedWorkItem != null) {
             DeleteWorkItemCommand cmd = new DeleteWorkItemCommand(controllerRepository, eventManager, trackingItemTableView, selectedWorkItem, workItemDao);
             undoService.execute(cmd);
-
             refreshWorkItemData();
         } else {
             ControllerUtilities.showNoItemSelectedAlert(primaryStage, rb, noTrackingItemSelectionAlertTitle, noTrackingItemSelectionAlertHeader, noTrackingItemSelectionAlertContent);
@@ -258,19 +255,13 @@ class WorkItemViewController implements Initializable, IViewController, IEventLi
         List<Workrecord> workRecords = workRecordDetailsViewController.getWorkrecordDao().selectAll(workRecordViewController.getSelectedUser(), datePicker.getValue());
         Optional<Workrecord> firstWorkrecord = workRecords.stream().findFirst();
 
-        workItemData.clear();
-
         if(firstWorkrecord.isPresent()) {
+            workItemData.clear();
+
             List<WorkItem> workItemsOfActualSelectedWorkrecord = workItemDao.selectAll(firstWorkrecord.get().getId());
             workItemData.addAll(workItemsOfActualSelectedWorkrecord);
 
-            Optional<WorkItem> firstWorkItem = workItemData.stream().findFirst();
-            if(firstWorkItem.isPresent()) {
-                showTrackingItemDetails(firstWorkItem.get());
-                trackingItemTableView.getSelectionModel().select(0);
-            } else {
-                showTrackingItemDetails(null);
-            }
+            refreshTrackingItemDetails();
         }
     }
     
@@ -311,13 +302,7 @@ class WorkItemViewController implements Initializable, IViewController, IEventLi
             log.fatal("No WorkItemData could be loaded!");
         }
         
-        Optional<WorkItem> firstWorkItem = workItemData.stream().findFirst();
-        if(!firstWorkItem.isEmpty()) {
-            showTrackingItemDetails(firstWorkItem.get());
-            trackingItemTableView.getSelectionModel().select(0);
-        } else {
-            showTrackingItemDetails(null);
-        }
+        refreshTrackingItemDetails();
 
         isInputValid();
 
@@ -421,6 +406,16 @@ class WorkItemViewController implements Initializable, IViewController, IEventLi
             trackingItemChoiceBox.getSelectionModel().select(0);
         } catch (SQLException ex) {
             log.fatal("No TrackingItems could be loaded!");
+        }
+    }
+
+    private void refreshTrackingItemDetails() {
+        Optional<WorkItem> firstWorkItem = workItemData.stream().findFirst();
+        if(firstWorkItem.isPresent()) {
+            showTrackingItemDetails(firstWorkItem.get());
+            trackingItemTableView.getSelectionModel().select(0);
+        } else {
+            showTrackingItemDetails(null);
         }
     }
 
