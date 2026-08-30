@@ -200,6 +200,8 @@ class WorkItemViewController implements Initializable, IViewController, IEventLi
         if(isInputValid()) {
             NewWorkItemCommand cmd = new NewWorkItemCommand(controllerRepository, eventManager, trackingItemTableView, newWorkItem, workItemDao);
             undoService.execute(cmd);
+
+            refreshWorkItemData();
         }
     }
     
@@ -221,9 +223,7 @@ class WorkItemViewController implements Initializable, IViewController, IEventLi
                 EditWorkItemCommand cmd = new EditWorkItemCommand(controllerRepository, eventManager, trackingItemTableView, selectedWorkItem, modifiedWorkItem, workItemDao);
                 undoService.execute(cmd);
 
-                workItemData.clear();
-                List<WorkItem> workItemsOfActualSelectedWorkrecord = workItemDao.selectAll(modifiedWorkItem.getId());
-                workItemData.addAll(workItemsOfActualSelectedWorkrecord);
+                refreshWorkItemData();
             }
         } else {
             ControllerUtilities.showNoItemSelectedAlert(primaryStage, rb, noTrackingItemSelectionAlertTitle, noTrackingItemSelectionAlertHeader, noTrackingItemSelectionAlertContent);
@@ -238,9 +238,17 @@ class WorkItemViewController implements Initializable, IViewController, IEventLi
         if(selectedWorkItem != null) {
             DeleteWorkItemCommand cmd = new DeleteWorkItemCommand(controllerRepository, eventManager, trackingItemTableView, selectedWorkItem, workItemDao);
             undoService.execute(cmd);
+
+            refreshWorkItemData();
         } else {
             ControllerUtilities.showNoItemSelectedAlert(primaryStage, rb, noTrackingItemSelectionAlertTitle, noTrackingItemSelectionAlertHeader, noTrackingItemSelectionAlertContent);
         }
+    }
+
+    private void refreshWorkItemData() throws SQLException {
+        workItemData.clear();
+        List<WorkItem> workItemsOfActualSelectedWorkrecord = workItemDao.selectAll(selectedWorkrecord.getId());
+        workItemData.addAll(workItemsOfActualSelectedWorkrecord);
     }
     
     @FXML
