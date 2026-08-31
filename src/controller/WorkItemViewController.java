@@ -181,7 +181,6 @@ class WorkItemViewController implements Initializable, IViewController, IEventLi
         this.workRecordDetailsViewController = (WorkRecordDetailsViewController)controllerRepository.get(WorkRecordDetailsViewController.class.getName());
         this.workRecordViewController = (WorkRecordViewController)controllerRepository.get(WorkRecordViewController.class.getName());
         this.eventManager = new EventManager();
-        this.selectedWorkrecord = workRecordDetailsViewController.getSelectedWorkrecord();
     }
     
     @FXML
@@ -285,15 +284,16 @@ class WorkItemViewController implements Initializable, IViewController, IEventLi
         workItemData.clear();
         trackingItemTableView.setItems(workItemData);
 
+        selectedWorkrecord = workRecordDetailsViewController.getSelectedWorkrecord();
+        
         initCellValueFactoryTableColumns();
         initStartTimeTimeSpinner();
         initEndTimeTimeSpinner();
         initListeners();
-        initDatePickerBySelectedWorkrecord();
+        initDatePickerBySelectedWorkrecord(selectedWorkrecord);
         initTrackingItemChoiceBox();
         
         try {
-            selectedWorkrecord = workRecordDetailsViewController.getSelectedWorkrecord();
             if(selectedWorkrecord != null) {
                 List<WorkItem> workItemsOfActualSelectedWorkrecord = workItemDao.selectAll(selectedWorkrecord.getId());
                 workItemData.addAll(workItemsOfActualSelectedWorkrecord);
@@ -389,8 +389,7 @@ class WorkItemViewController implements Initializable, IViewController, IEventLi
             }
     }
 
-    private void initDatePickerBySelectedWorkrecord() {
-        selectedWorkrecord = workRecordDetailsViewController.getSelectedWorkrecord();
+    private void initDatePickerBySelectedWorkrecord(Workrecord selectedWorkrecord) {
         if(selectedWorkrecord != null) {
             selectedDateDatePicker.setValue(selectedWorkrecord.getDate());
         } else {
@@ -423,11 +422,44 @@ class WorkItemViewController implements Initializable, IViewController, IEventLi
     public boolean isInputValid() {
         boolean result = true;
  
-        // 1. disable all buttons
+        // enable all buttons
         newButton.setDisable(false);
         editButton.setDisable(false);
         deleteButton.setDisable(false);
                 
+        //0. When is a workitem valid?
+        //      a) When trackingitem is selected
+        //      b) When starttime != 00:00
+        //      c) When endtime != 00:00
+        //      d) When starttime < endtime
+        
+        //1. If no workrecord exists, disable new, disable edit, disable delete
+        
+        //2. If workrecord exists and no workitem exists enable new, disable edit, disable delete
+        
+        //3. If workrecord and workitem exists enable new, enable edit, enable delete
+        
+        //4. What attributes of a workitem can be changed?
+        //      a) trackingItem
+        //      b) starttime
+        //      c) endtime
+        //      d) description
+        
+        //5. When is a workitem new?
+        //      a) When 0. and  2. is fullfilled
+        //      b) When new startime >= existing endtime
+        //      c) When new endtime <= exsisting starttime
+        
+        //6. When has a existing workitem changed?
+        //      a) When 4. and !2. and !5b. and !5c.
+        //----------------------------------------------------------------------
+        //               |  exsistig wi  |
+        //      | new wi |             
+        //                               | new wi |
+        //          | chaged wi |
+        //                 | chaged wi |
+        //                          | chaged wi |
+        
         if(dataAction != null) {
             switch(dataAction) {
                 case DataAction.NEW -> {
@@ -482,18 +514,6 @@ class WorkItemViewController implements Initializable, IViewController, IEventLi
     private boolean isEndTimeUnique(LocalTime endTime) {
         List<WorkItem> result = workItemData.stream().filter(c -> c.getEndTime().equals(endTime)).toList();
         return result.isEmpty();
-    }
-
-    private boolean doesSelectedWorkrecordExist() {
-        return selectedWorkrecord != null && !selectedWorkrecord.getWorktime().equals(LocalTime.MIN);
-    }
-    
-    private boolean isWorkItemUnique(WorkItem workItem) {
-        if(workItem != null) {
-           List<WorkItem> result = workItemData.stream().filter(c -> c.getId().equals(workItem.getId())).toList();
-           return result.isEmpty(); 
-        }
-        return true;
     }
     
     private boolean hasInputChanged() {
