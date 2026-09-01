@@ -4,7 +4,7 @@
  */
 package controller;
 
-import command.workitemtracking.*;
+import command.workitem.*;
 import controls.LocalTimeSpinner;
 import java.io.IOException;
 import java.net.URL;
@@ -237,7 +237,7 @@ class WorkItemViewController implements Initializable, IViewController, IEventLi
     @SuppressWarnings("unused")
     private void deleteAction(ActionEvent event) throws SQLException, IOException {
         dataAction = DataAction.DELETE;
-        if(selectedWorkItem != null) {
+        if(isInputValid() && selectedWorkItem != null) {
             DeleteWorkItemCommand cmd = new DeleteWorkItemCommand(controllerRepository, eventManager, trackingItemTableView, selectedWorkItem, workItemDao);
             undoService.execute(cmd);
             refreshWorkItemData();
@@ -311,9 +311,6 @@ class WorkItemViewController implements Initializable, IViewController, IEventLi
         }
         
         refreshTrackingItemDetails();
-
-        isInputValid();
-
         languageService.updateGuiItems();        
     }
 
@@ -428,39 +425,35 @@ class WorkItemViewController implements Initializable, IViewController, IEventLi
 
     // <editor-fold defaultstate="collapsed" desc="Input Validation Rules">
     public boolean isInputValid() {
-        boolean result = true;
- 
-        // disable all buttons
-        newButton.setDisable(true);
-        editButton.setDisable(true);
-        deleteButton.setDisable(true);
-        
+        boolean result = true; 
         LocalDate date = selectedDateDatePicker.getValue();
 
         if(dataAction != null) {
             switch(dataAction) {
                 case DataAction.NEW -> {
-                    result = isWorkItemNew(date);
-                    if(result) {
-                        newButton.setDisable(false);
-                    } else {
-                        newButton.setDisable(true);
-                    }
+                    boolean r1 = isWorkItemNew(date);
+                    boolean r2 = hasWorkItemChanged();
+                    result = r1 && !r2;
                     break;
                 }
                 case DataAction.EDIT -> {
-                    boolean r1 = !isWorkItemNew(date);
+                    boolean r1 = isWorkItemNew(date);
                     boolean r2 = hasWorkItemChanged();
-                    result = r1 && r2;
-                    if(result) {
-                        editButton.setDisable(false);
-                    } else {
-                        editButton.setDisable(true);
-                    }
+                    result = !r1 && r2;
                     break;
                 }
                 case DataAction.DELETE -> {
-                    result = true;
+                    Workrecord workrecord = getWorkrecordOfDate(date);
+                    List<WorkItem> workItems = getWorkItemsForWorkrecord(workrecord);
+                    for(int i = 0; i < workItems.size(); i++) {
+                        WorkItem workItem = workItems.get(i);
+                        if(workItem.equals(trackingItemTableView.getSelectionModel().getSelectedItem())) {
+                            result = true;
+                            break;
+                        } else {
+                            result = false;
+                        }                        
+                    }
                     break;
                 }
                 case DataAction.NONE -> {
@@ -484,7 +477,7 @@ class WorkItemViewController implements Initializable, IViewController, IEventLi
                     //3. If workrecord exists for date and workitem exists for workrecord and workitem has changed and workitem is valid
                     //   enable new, enable edit, enable delete
                     else if(r1 && r2 && r3 && r4) {
-                        newButton.setDisable(false);
+                        newButton.setDisable(true);
                         editButton.setDisable(false);
                         deleteButton.setDisable(false);
                     } 
@@ -492,8 +485,14 @@ class WorkItemViewController implements Initializable, IViewController, IEventLi
                     //   disable new, enable edit, enable delete
                     else if(r1 && r2 && !r3 && r4) {
                         newButton.setDisable(true);
-                        editButton.setDisable(false);
+                        editButton.setDisable(true);
                         deleteButton.setDisable(false);
+                    }
+                    //5. 
+                    else {
+                        newButton.setDisable(true);
+                        editButton.setDisable(true);
+                        deleteButton.setDisable(true);
                     }
                     break;
                 }
@@ -513,10 +512,8 @@ class WorkItemViewController implements Initializable, IViewController, IEventLi
         boolean r2 = !startTime.equals(LocalTime.MIN);
         boolean r3 = !endTime.equals(LocalTime.MIN);
         boolean r4 = startTime.isBefore(endTime);
-        boolean r5 = isStartTimeUnique(startTime);
-        boolean r6 = isEndTimeUnique(endTime);
         
-        result = r1 && r2 && r3 && r4 && r5 && r6;
+        result = r1 && r2 && r3 && r4;
         
         return result;
     }
