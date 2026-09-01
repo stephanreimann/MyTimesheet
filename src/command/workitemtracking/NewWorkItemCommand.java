@@ -55,7 +55,6 @@ public class NewWorkItemCommand implements ICommand {
             } else {
                 mainToolBarViewController.toggleUndoRedoButtons();
                 mainMenuBarViewController.toggleUndoRedoMenuItems();
-                trackingItemTableView.getSelectionModel().select(newWorkItem);
                 events.notifyListenerOfEvent(newWorkItemEvent, this);
                 return true;
             }

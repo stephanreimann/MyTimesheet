@@ -59,7 +59,6 @@ public class EditWorkItemCommand implements ICommand {
             } else {
                 mainToolBarViewController.toggleUndoRedoButtons();
                 mainMenuBarViewController.toggleUndoRedoMenuItems();
-                trackingItemTableView.getSelectionModel().select(modifiedWorkItem);
                 events.notifyListenerOfEvent(editWorkItemEvent, this);
                 return true;
             }
