@@ -431,9 +431,7 @@ class WorkItemViewController implements Initializable, IViewController, IEventLi
         if(dataAction != null) {
             switch(dataAction) {
                 case DataAction.NEW -> {
-                    boolean r1 = isWorkItemNew(date);
-                    boolean r2 = hasWorkItemChanged();
-                    result = r1 && !r2;
+                    result = isWorkItemNew(date);
                     break;
                 }
                 case DataAction.EDIT -> {
@@ -459,8 +457,9 @@ class WorkItemViewController implements Initializable, IViewController, IEventLi
                 case DataAction.NONE -> {
                     boolean r1 = workrecordExistsForDate(date);
                     boolean r2 = workrecordHasWorkItems(getWorkrecordOfDate(date));
-                    boolean r3 = hasWorkItemChanged();
-                    boolean r4 = isWorkItemValid();
+                    boolean r3 = isWorkItemNew(date);
+                    boolean r4 = hasWorkItemChanged();
+                    boolean r5 = isWorkItemValid();
 
                     //1. If no workrecord exists for date => disable new, disable edit, disable delete        
                     if(!r1) {
@@ -469,26 +468,26 @@ class WorkItemViewController implements Initializable, IViewController, IEventLi
                         deleteButton.setDisable(true);
                     } 
                     //2. If workrecord exists for date and no workitem exists for workrecord and workitem is valid enable new, disable edit, disable delete
-                    else if (r1 && !r2 && r4) {
+                    else if (r1 && !r2 && r5) {
                         newButton.setDisable(false);
                         editButton.setDisable(true);
                         deleteButton.setDisable(true);
                     } 
                     //3. If workrecord exists for date and workitem exists for workrecord and workitem has changed and workitem is valid
                     //   enable new, enable edit, enable delete
-                    else if(r1 && r2 && r3 && r4) {
+                    else if(r1 && r2 && r4 && r5) {
                         newButton.setDisable(true);
                         editButton.setDisable(false);
                         deleteButton.setDisable(false);
                     } 
                     //4. If workrecord exists for date and workitem exists for workrecord and workitem has not changed and workitem is valid
                     //   disable new, enable edit, enable delete
-                    else if(r1 && r2 && !r3 && r4) {
+                    else if(r1 && r2 && !r4 && r5) {
                         newButton.setDisable(true);
                         editButton.setDisable(true);
                         deleteButton.setDisable(false);
                     }
-                    //5. 
+                    //5. We disable all buttons
                     else {
                         newButton.setDisable(true);
                         editButton.setDisable(true);
