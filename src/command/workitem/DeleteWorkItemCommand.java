@@ -5,9 +5,7 @@
 package command.workitem;
 
 import commands.ICommand;
-import controller.ControllerRepository;
-import controller.MainMenuBarViewController;
-import controller.MainToolBarViewController;
+import controller.*;
 import java.sql.SQLException;
 import javafx.scene.control.TableView;
 import model.WorkItem;
@@ -26,6 +24,7 @@ public class DeleteWorkItemCommand implements ICommand {
  
     private final MainToolBarViewController mainToolBarViewController;
     private final MainMenuBarViewController mainMenuBarViewController;
+    private final WorkItemViewController workItemViewController;
     private final EventManager events;
     private TableView<WorkItem> trackingItemTableView;
     private WorkItem selectedWorkItem;
@@ -41,6 +40,7 @@ public class DeleteWorkItemCommand implements ICommand {
 
         this.mainToolBarViewController = (MainToolBarViewController) controllerRepository.get(MainToolBarViewController.class.getName());
         this.mainMenuBarViewController = (MainMenuBarViewController) controllerRepository.get(MainMenuBarViewController.class.getName());
+        this.workItemViewController = (WorkItemViewController) controllerRepository.get(WorkItemViewController.class.getName());
         
         this.events = events;
         this.trackingItemTableView = trackingItemTableView;
@@ -58,6 +58,8 @@ public class DeleteWorkItemCommand implements ICommand {
             } else {
                 mainToolBarViewController.toggleUndoRedoButtons();
                 mainMenuBarViewController.toggleUndoRedoMenuItems();
+                trackingItemTableView.getSelectionModel().select(0);
+                workItemViewController.refreshButtonState();
                 events.notifyListenerOfEvent(deleteWorkItemEvent, this);
                 return true;
             }
@@ -78,6 +80,7 @@ public class DeleteWorkItemCommand implements ICommand {
                 mainToolBarViewController.toggleUndoRedoButtons();
                 mainMenuBarViewController.toggleUndoRedoMenuItems();
                 trackingItemTableView.getSelectionModel().select(selectedWorkItem);
+                workItemViewController.refreshButtonState();
                 events.notifyListenerOfEvent(deleteWorkItemEvent, this);
                 return true;
             }

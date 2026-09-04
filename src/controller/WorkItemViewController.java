@@ -30,11 +30,8 @@ import utils.*;
  *
  * @author adrest18
  */
-class WorkItemViewController implements Initializable, IViewController, IEventListener {
+public class WorkItemViewController implements Initializable, IViewController, IEventListener {
 
-    private enum DataAction { NEW, EDIT, DELETE, NONE };
-    private DataAction dataAction = DataAction.NONE;
-    
     private static final String COLOR_LIGHT_RED = "Red";
     private final String timeNowIcon = "icons/timeNow.png";
     
@@ -63,8 +60,8 @@ class WorkItemViewController implements Initializable, IViewController, IEventLi
     private final String deleteTrackingItemEvent = "DeleteTrackingItem";
     
     private final String noTrackingItemSelectionAlertTitle = "NoSelectionAlertTitle";
-    private final String noTrackingItemSelectionAlertHeader = "NoTrackingItemSelectionAlertHeader";
-    private final String noTrackingItemSelectionAlertContent = "NoTrackingItemSelectionAlertContent";
+    private final String noTrackingItemSelectionAlertHeader = "NoWorkItemSelectionAlertHeader";
+    private final String noTrackingItemSelectionAlertContent = "NoWorkItemSelectionAlertContent";
     
     // <editor-fold defaultstate="collapsed" desc="FXML Member">
     @FXML
@@ -136,7 +133,6 @@ class WorkItemViewController implements Initializable, IViewController, IEventLi
     private Sprint sprint;
     private final SprintDAO sprintDAO;
     private final TrackingItemDAO trackingItemDAO;
-    private WorkItem selectedWorkItem;
     private final WorkItemDAO workItemDao;
 
     private long oldId;
@@ -186,7 +182,8 @@ class WorkItemViewController implements Initializable, IViewController, IEventLi
     @FXML
     @SuppressWarnings("unused")
     private void newAction(ActionEvent event) throws SQLException, IOException {
-        dataAction = DataAction.NEW;
+        LocalDate date = selectedDateDatePicker.getValue();
+        
         WorkItem newWorkItem = new WorkItem(workItemDao.getNextId());
         newWorkItem.setWorkrecordId(selectedWorkrecord.getId());
         newWorkItem.setSprintId(Long.valueOf(sprintNumberLabelValue.getText()));
@@ -196,20 +193,19 @@ class WorkItemViewController implements Initializable, IViewController, IEventLi
         newWorkItem.setDescription(trackingItemDescriptionValue.getText());
         newWorkItem.setShortcut(trackingItemChoiceBox.getSelectionModel().getSelectedItem().getShortcut());
         newWorkItem.setName(trackingItemChoiceBox.getSelectionModel().getSelectedItem().getName());
-        if(isInputValid()) {
+        
+        if(isWorkItemValid() && isWorkItemNew(date)) {
             NewWorkItemCommand cmd = new NewWorkItemCommand(controllerRepository, eventManager, trackingItemTableView, newWorkItem, workItemDao);
             undoService.execute(cmd);
             refreshWorkItemData();
-            trackingItemTableView.getSelectionModel().select(newWorkItem);
         }
-        dataAction = DataAction.NONE;
-        isInputValid();
     }
     
     @FXML
     @SuppressWarnings("unused")
     private void editAction(ActionEvent event) throws SQLException, IOException {
-        dataAction = DataAction.EDIT;
+        WorkItem selectedWorkItem = trackingItemTableView.getSelectionModel().getSelectedItem();
+
         if(selectedWorkItem != null) {
             WorkItem modifiedWorkItem = new WorkItem(selectedWorkItem.getId());
             modifiedWorkItem.setWorkrecordId(selectedWorkrecord.getId());
@@ -220,41 +216,35 @@ class WorkItemViewController implements Initializable, IViewController, IEventLi
             modifiedWorkItem.setDescription(trackingItemDescriptionValue.getText());
             modifiedWorkItem.setShortcut(trackingItemChoiceBox.getSelectionModel().getSelectedItem().getShortcut());
             modifiedWorkItem.setName(trackingItemChoiceBox.getSelectionModel().getSelectedItem().getName());
-            if(isInputValid() && !selectedWorkItem.equals(modifiedWorkItem)) {
+
+            if(!selectedWorkItem.equals(modifiedWorkItem)) {
                 EditWorkItemCommand cmd = new EditWorkItemCommand(controllerRepository, eventManager, trackingItemTableView, selectedWorkItem, modifiedWorkItem, workItemDao);
                 undoService.execute(cmd);
                 refreshWorkItemData();
-                trackingItemTableView.getSelectionModel().select(modifiedWorkItem);                
             }
         } else {
             ControllerUtilities.showNoItemSelectedAlert(primaryStage, rb, noTrackingItemSelectionAlertTitle, noTrackingItemSelectionAlertHeader, noTrackingItemSelectionAlertContent);
         }
-        dataAction = DataAction.NONE;
-        isInputValid();
+
+        refreshButtonState();
     }
 
     @FXML
     @SuppressWarnings("unused")
     private void deleteAction(ActionEvent event) throws SQLException, IOException {
-        dataAction = DataAction.DELETE;
-        if(isInputValid() && selectedWorkItem != null) {
+        WorkItem selectedWorkItem = trackingItemTableView.getSelectionModel().getSelectedItem();
+
+        if(selectedWorkItem != null) {
             DeleteWorkItemCommand cmd = new DeleteWorkItemCommand(controllerRepository, eventManager, trackingItemTableView, selectedWorkItem, workItemDao);
             undoService.execute(cmd);
             refreshWorkItemData();
-            trackingItemTableView.getSelectionModel().select(0);
         } else {
             ControllerUtilities.showNoItemSelectedAlert(primaryStage, rb, noTrackingItemSelectionAlertTitle, noTrackingItemSelectionAlertHeader, noTrackingItemSelectionAlertContent);
         }
-        dataAction = DataAction.NONE;
-        isInputValid();
+
+        refreshButtonState();
     }
 
-    public void refreshWorkItemData() throws SQLException {
-        workItemData.clear();
-        List<WorkItem> workItemsOfActualSelectedWorkrecord = workItemDao.selectAll(selectedWorkrecord.getId());
-        workItemData.addAll(workItemsOfActualSelectedWorkrecord);
-    }
-    
     @FXML
     @SuppressWarnings("unused")
     private void handleOnSelectedDateChangedAction(ActionEvent event) throws SQLException, IOException {
@@ -311,9 +301,85 @@ class WorkItemViewController implements Initializable, IViewController, IEventLi
         }
         
         refreshTrackingItemDetails();
+        refreshButtonState();
         languageService.updateGuiItems();        
     }
 
+    @Override
+    public ResourceBundle getResourceBundle() {
+        return rb;
+    }
+
+    @Override
+    public void setResourceBundle(ResourceBundle rb) {
+        this.rb = rb;
+    }
+
+    @Override
+    public void setPrimaryStage(Stage primaryStage) {
+        this.primaryStage = primaryStage;
+    }
+
+    @Override
+    public void preCloseAction() {
+        MainToolBarViewController mainToolBarViewController = (MainToolBarViewController)controllerRepository.get(MainToolBarViewController.class.getName());
+        if(mainToolBarViewController != null) {
+            mainToolBarViewController.getWorkItemButton().disableProperty().set(false);
+        }
+    }
+    
+    @Override
+    public void update(String eventType, Object source) {
+        switch (eventType) {
+            case newTrackingItemEvent, editTrackingItemEvent, deleteTrackingItemEvent -> {
+                initTrackingItemChoiceBox();
+            }
+            case selectedWorkRecordChangedEvent -> {
+                selectedWorkrecord = (Workrecord)source;
+                if(selectedWorkrecord != null) {
+                    selectedDateDatePicker.setValue(selectedWorkrecord.getDate());
+                }
+            }
+        }
+    }
+
+    @Override
+    public void updateGuiItems() {
+        selectedDateLabel.setText(rb.getString(trackingItemDateResourceKey));
+        sprintLabel.setText(rb.getString(trackingItemSprintResourceKey));
+
+        try {
+            long _ = Long.parseLong(sprintNumberLabelValue.getText());
+        } catch (NumberFormatException ex) {
+            sprintNumberLabelValue.setText(rb.getString(sprintNotFoundResourceKey));
+        }
+        
+        trackingItemShortcutTableColumn.setText(rb.getString(trackingItemShortcutResourceKey));
+        trackingItemNameTableColumn.setText(rb.getString(trackingItemNameResourceKey));
+        trackingItemStartTimeTableColumn.setText(rb.getString(trackingItemStartTimeResourceKey));
+        trackingItemEndTimeTableColumn.setText(rb.getString(trackingItemEndTimeResourceKey));
+        trackingItemDetailsHeaderLabel.setText(rb.getString(trackingItemDetailsHeaderResourceKey));        
+        trackingItemNameLabel.setText(rb.getString(trackingItemItemResourceKey));
+        trackingItemStartTimeLabel.setText(rb.getString(trackingItemStartTimeResourceKey));
+        trackingItemStartTimeButton.setTooltip(new Tooltip(rb.getString(startTimeButtonToolTipResourceKey)));
+        trackingItemEndTimeLabel.setText(rb.getString(trackingItemEndTimeResourceKey));        
+        trackingItemEndTimeButton.setTooltip(new Tooltip(rb.getString(endTimeButtonToolTipResourceKey)));
+        trackingItemDescriptionLabel.setText(rb.getString(trackingItemDescriptionResourceKey));
+        newButton.setText(rb.getString(newResourceKey));
+        editButton.setText(rb.getString(editResourceKey));
+        deleteButton.setText(rb.getString(deleteResourceKey));    
+    }
+    
+    public EventManager getEventManager() {
+        return eventManager;
+    }
+    
+    public void refreshWorkItemData() throws SQLException {
+        workItemData.clear();
+        List<WorkItem> workItemsOfActualSelectedWorkrecord = workItemDao.selectAll(selectedWorkrecord.getId());
+        workItemData.addAll(workItemsOfActualSelectedWorkrecord);
+    }
+    
     private void initCellValueFactoryTableColumns() {
         //HOWTO: Cell Value Factory
         //The cell must know which part of WorkItemTrackingData it needs to display.
@@ -339,7 +405,7 @@ class WorkItemViewController implements Initializable, IViewController, IEventLi
         selectedDateDatePicker.valueProperty().addListener((var observable, var oldValue, var newValue) -> {
             trySetSprintNumberLabel(newValue);
             eventManager.notifyListenerOfEvent(workItemDateChangedEvent, newValue);
-            isInputValid();
+            refreshButtonState();
         });
         sprintNumberLabelValue.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
             try {
@@ -349,20 +415,20 @@ class WorkItemViewController implements Initializable, IViewController, IEventLi
             }
         });
         trackingItemTableView.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends WorkItem> observable, WorkItem oldValue, WorkItem newValue) -> {
-            if(newValue != null) {
+            if(oldValue != null && newValue != null) {
                 newId = newValue.getId();
                 newWorkrecordId = newValue.getWorkrecordId();
+                showTrackingItemDetails(newValue);
+                refreshButtonState();
             }
-            showTrackingItemDetails(newValue);
-            isInputValid();
         });
         trackingItemStartTimeTimeSpinner.valueProperty().addListener((ObservableValue<? extends LocalTime> observable, LocalTime oldValue, LocalTime newValue) -> {
             newStartTime = trackingItemStartTimeTimeSpinner.formatLocalTime(trackingItemStartTimeTimeSpinner.getValue(), LocalTimeSpinner.TimeFormat.HH_MM);
-            isInputValid();
+            refreshButtonState();
         });
         trackingItemEndTimeTimeSpinner.valueProperty().addListener((ObservableValue<? extends LocalTime> observable, LocalTime oldValue, LocalTime newValue) -> {
             newEndTime = trackingItemEndTimeTimeSpinner.formatLocalTime(trackingItemEndTimeTimeSpinner.getValue(), LocalTimeSpinner.TimeFormat.HH_MM);
-            isInputValid();
+            refreshButtonState();
         });
         trackingItemChoiceBox.valueProperty().addListener((ObservableValue<? extends TrackingItem> observable, TrackingItem oldValue, TrackingItem newValue) ->  {
             if(newValue != null) {
@@ -370,11 +436,11 @@ class WorkItemViewController implements Initializable, IViewController, IEventLi
                 newShortcut = newValue.getShortcut();
                 newName = newValue.getName();
             }
-            isInputValid();
+            refreshButtonState();
         });
         trackingItemDescriptionValue.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
             newDescription = newValue;
-            isInputValid();
+            refreshButtonState();
         });
     }
 
@@ -423,82 +489,59 @@ class WorkItemViewController implements Initializable, IViewController, IEventLi
         }
     }
 
-    // <editor-fold defaultstate="collapsed" desc="Input Validation Rules">
-    public boolean isInputValid() {
-        boolean result = true; 
+    public void refreshButtonState() {
         LocalDate date = selectedDateDatePicker.getValue();
 
-        if(dataAction != null) {
-            switch(dataAction) {
-                case DataAction.NEW -> {
-                    result = isWorkItemNew(date);
-                    break;
-                }
-                case DataAction.EDIT -> {
-                    boolean r1 = isWorkItemNew(date);
-                    boolean r2 = hasWorkItemChanged();
-                    result = !r1 && r2;
-                    break;
-                }
-                case DataAction.DELETE -> {
-                    Workrecord workrecord = getWorkrecordOfDate(date);
-                    List<WorkItem> workItems = getWorkItemsForWorkrecord(workrecord);
-                    for(int i = 0; i < workItems.size(); i++) {
-                        WorkItem workItem = workItems.get(i);
-                        if(workItem.equals(trackingItemTableView.getSelectionModel().getSelectedItem())) {
-                            result = true;
-                            break;
-                        } else {
-                            result = false;
-                        }                        
-                    }
-                    break;
-                }
-                case DataAction.NONE -> {
-                    boolean r1 = workrecordExistsForDate(date);
-                    boolean r2 = workrecordHasWorkItems(getWorkrecordOfDate(date));
-                    boolean r3 = isWorkItemNew(date);
-                    boolean r4 = hasWorkItemChanged();
-                    boolean r5 = isWorkItemValid();
+        //First we disable all buttons
+        newButton.setDisable(true);
+        editButton.setDisable(true);
+        deleteButton.setDisable(true);
+        
+        boolean r1 = workrecordExistsForDate(date);
+        boolean r2 = workrecordHasWorkItems(getWorkrecordOfDate(date));
+        boolean r3 = isWorkItemNew(date);
+        boolean r4 = hasWorkItemChanged();
+        boolean r5 = isWorkItemValid();
+        boolean r6 = isWorkItemSelected();
 
-                    //1. If no workrecord exists for date => disable new, disable edit, disable delete        
-                    if(!r1) {
-                        newButton.setDisable(true);
-                        editButton.setDisable(true);
-                        deleteButton.setDisable(true);
-                    } 
-                    //2. If workrecord exists for date and no workitem exists for workrecord and workitem is valid enable new, disable edit, disable delete
-                    else if (r1 && !r2 && r5) {
-                        newButton.setDisable(false);
-                        editButton.setDisable(true);
-                        deleteButton.setDisable(true);
-                    } 
-                    //3. If workrecord exists for date and workitem exists for workrecord and workitem has changed and workitem is valid
-                    //   enable new, enable edit, enable delete
-                    else if(r1 && r2 && r4 && r5) {
-                        newButton.setDisable(true);
-                        editButton.setDisable(false);
-                        deleteButton.setDisable(false);
-                    } 
-                    //4. If workrecord exists for date and workitem exists for workrecord and workitem has not changed and workitem is valid
-                    //   disable new, enable edit, enable delete
-                    else if(r1 && r2 && !r4 && r5) {
-                        newButton.setDisable(true);
-                        editButton.setDisable(true);
-                        deleteButton.setDisable(false);
-                    }
-                    //5. We disable all buttons
-                    else {
-                        newButton.setDisable(true);
-                        editButton.setDisable(true);
-                        deleteButton.setDisable(true);
-                    }
-                    break;
-                }
-            }
+        System.out.println("--------------------------------------------------");
+        System.out.println("Workrecord exists for " + date + " == " + r1);
+        System.out.println("Workrecord has Workitems for " + date + " == " + r2);
+        System.out.println("Workitem is new for " + date + " == " + r3);
+        System.out.println("Workitem has changed == " + r4);
+        System.out.println("Workitem is valid == " + r5);
+        System.out.println("Workitem selected in View == " + r6);
+        System.out.println("--------------------------------------------------");
+       
+        //No Workrecord => all buttons disabled
+        if(!r1) {
+            newButton.setDisable(true);
+            editButton.setDisable(true);
+            deleteButton.setDisable(true);
         }
-                
-        return result;
+        if(r2) {
+            editButton.setDisable(false);
+        }
+        if(r3) {
+            newButton.setDisable(false);
+            editButton.setDisable(true);
+        }
+        if(r4 && !r3) {
+            editButton.setDisable(false);
+            deleteButton.setDisable(false);
+        }
+        if(!r5) {
+            newButton.setDisable(true);
+            editButton.setDisable(true);
+            deleteButton.setDisable(true);
+        }
+        if(r6) {
+            deleteButton.setDisable(false);
+        }
+    }
+    
+    private boolean isWorkItemSelected() {
+        return trackingItemTableView.getSelectionModel().getSelectedItem() != null;
     }
     
     private boolean isWorkItemValid() {
@@ -538,13 +581,16 @@ class WorkItemViewController implements Initializable, IViewController, IEventLi
             LocalTime existingWorkItemStartTime = workItem.getStartTime();
             LocalTime existingWorkItemEndTime = workItem.getEndTime();
 
-            boolean r1 = workItemExistsForWorkrecord(workItem, workrecord);
-            boolean r2 = newWorkItemEndTime.isBefore(existingWorkItemStartTime);
-            boolean r3 = newWorkItemStartTime.isAfter(existingWorkItemEndTime);
-            boolean r4 = isStartTimeUnique(newWorkItemStartTime);
-            boolean r5 = isEndTimeUnique(newWorkItemEndTime);
+            boolean r1 = newWorkItemEndTime.isBefore(existingWorkItemStartTime);
+            boolean r2 = newWorkItemEndTime.equals(existingWorkItemStartTime);
             
-            result = r1 && r2 && r3 && r4 && r5;
+            boolean r3 = newWorkItemStartTime.isAfter(existingWorkItemEndTime);
+            boolean r4 = newWorkItemStartTime.equals(existingWorkItemEndTime);
+            
+            boolean r5 = isStartTimeUnique(newWorkItemStartTime);
+            boolean r6 = isEndTimeUnique(newWorkItemEndTime);
+            
+            result = (r1 || r2 || r3 || r4) && r5 && r6;
         }
         
         return result;
@@ -608,82 +654,12 @@ class WorkItemViewController implements Initializable, IViewController, IEventLi
         return result.isEmpty();
     }
         
-    @Override
-    public void updateGuiItems() {
-        selectedDateLabel.setText(rb.getString(trackingItemDateResourceKey));
-        sprintLabel.setText(rb.getString(trackingItemSprintResourceKey));
-
-        try {
-            long _ = Long.parseLong(sprintNumberLabelValue.getText());
-        } catch (NumberFormatException ex) {
-            sprintNumberLabelValue.setText(rb.getString(sprintNotFoundResourceKey));
-        }
-        
-        trackingItemShortcutTableColumn.setText(rb.getString(trackingItemShortcutResourceKey));
-        trackingItemNameTableColumn.setText(rb.getString(trackingItemNameResourceKey));
-        trackingItemStartTimeTableColumn.setText(rb.getString(trackingItemStartTimeResourceKey));
-        trackingItemEndTimeTableColumn.setText(rb.getString(trackingItemEndTimeResourceKey));
-        trackingItemDetailsHeaderLabel.setText(rb.getString(trackingItemDetailsHeaderResourceKey));        
-        trackingItemNameLabel.setText(rb.getString(trackingItemItemResourceKey));
-        trackingItemStartTimeLabel.setText(rb.getString(trackingItemStartTimeResourceKey));
-        trackingItemStartTimeButton.setTooltip(new Tooltip(rb.getString(startTimeButtonToolTipResourceKey)));
-        trackingItemEndTimeLabel.setText(rb.getString(trackingItemEndTimeResourceKey));        
-        trackingItemEndTimeButton.setTooltip(new Tooltip(rb.getString(endTimeButtonToolTipResourceKey)));
-        trackingItemDescriptionLabel.setText(rb.getString(trackingItemDescriptionResourceKey));
-        newButton.setText(rb.getString(newResourceKey));
-        editButton.setText(rb.getString(editResourceKey));
-        deleteButton.setText(rb.getString(deleteResourceKey));    
-    }
-
-    @Override
-    public ResourceBundle getResourceBundle() {
-        return rb;
-    }
-
-    @Override
-    public void setResourceBundle(ResourceBundle rb) {
-        this.rb = rb;
-    }
-
-    @Override
-    public void setPrimaryStage(Stage primaryStage) {
-        this.primaryStage = primaryStage;
-    }
-
-    @Override
-    public void preCloseAction() {
-        MainToolBarViewController mainToolBarViewController = (MainToolBarViewController)controllerRepository.get(MainToolBarViewController.class.getName());
-        if(mainToolBarViewController != null) {
-            mainToolBarViewController.getWorkItemButton().disableProperty().set(false);
-        }
-    }
-    
-    @Override
-    public void update(String eventType, Object source) {
-        switch (eventType) {
-            case newTrackingItemEvent, editTrackingItemEvent, deleteTrackingItemEvent -> {
-                initTrackingItemChoiceBox();
-            }
-            case selectedWorkRecordChangedEvent -> {
-                selectedWorkrecord = (Workrecord)source;
-                if(selectedWorkrecord != null) {
-                    selectedDateDatePicker.setValue(selectedWorkrecord.getDate());
-                }
-            }
-        }
-    }
-    
-    public EventManager getEventManager() {
-        return eventManager;
-    }
-
     private void showTrackingItemDetails(WorkItem workItem) {
         if(workItem != null) {
             //We save the actual workitem information to be able to 
             //check for changes of each Information at validation of Innput.
             saveActualWorkItemInformation(workItem);
 
-            selectedWorkItem = workItem;
             ObservableList<TrackingItem> items = trackingItemChoiceBox.getItems();
             items.stream()
                     .filter(item -> item.getName().equals(workItem.getName()))

@@ -157,45 +157,46 @@ public class MainToolBarViewController implements Initializable, IViewController
 
     @FXML
     private void workItemAction(ActionEvent event) throws IOException, SQLException {      
-        //WorkItemViewController workItemViewController = (WorkItemViewController)controllerRepository.get(WorkItemViewController.class.getName());
-        //if(workItemViewController == null) {
-            WorkItemViewController workItemViewController = new WorkItemViewController(controllerRepository, languageService, connection, undoService);
-            //controllerRepository.put(WorkItemViewController.class.getName(), workItemViewController);
+        WorkItemViewController workItemViewController = new WorkItemViewController(controllerRepository, languageService, connection, undoService);
+        controllerRepository.put(WorkItemViewController.class.getName(), workItemViewController);
             
-            //This controller will be informed about the date changed action
-            workItemViewController.getEventManager().registerEventType(workItemDateChangedEvent);
-            WorkRecordDetailsViewController workRecordDetailsViewController = (WorkRecordDetailsViewController)this.controllerRepository.get(WorkRecordDetailsViewController.class.getName());
-            workItemViewController.getEventManager().subscribeEventToListener(workItemDateChangedEvent, workRecordDetailsViewController);
+        //This controller will be informed about the date changed action
+        workItemViewController.getEventManager().registerEventType(workItemDateChangedEvent);
+        WorkRecordDetailsViewController workRecordDetailsViewController = (WorkRecordDetailsViewController)this.controllerRepository.get(WorkRecordDetailsViewController.class.getName());
+        workItemViewController.getEventManager().subscribeEventToListener(workItemDateChangedEvent, workRecordDetailsViewController);
 
-            //Register WorkItemTrackingToolViewController for selectedWorkRecordChangedEvent
-            WorkRecordViewController workRecordViewController = (WorkRecordViewController)controllerRepository.get(WorkRecordViewController.class.getName());
-            workRecordViewController.getEventManager().subscribeEventToListener(selectedWorkRecordChangedEvent, workItemViewController);            
+        //Register WorkItemTrackingToolViewController for selectedWorkRecordChangedEvent
+        WorkRecordViewController workRecordViewController = (WorkRecordViewController)controllerRepository.get(WorkRecordViewController.class.getName());
+        workRecordViewController.getEventManager().subscribeEventToListener(selectedWorkRecordChangedEvent, workItemViewController);            
 
-            //Register WorkItemTrackingToolViewController for newTrackingItemEvent, editTrackingItemEvent, deleteTrackingItemEvent
-            TrackingItemViewController trackingItemViewController = (TrackingItemViewController)controllerRepository.get(TrackingItemViewController.class.getName());
-            if(trackingItemViewController != null) {
-                trackingItemViewController.getEventManager().subscribeEventToListener(newTrackingItemEvent, workItemViewController);
-                trackingItemViewController.getEventManager().subscribeEventToListener(editTrackingItemEvent, workItemViewController);
-                trackingItemViewController.getEventManager().subscribeEventToListener(deleteTrackingItemEvent, workItemViewController);
-            }
+        //Register WorkItemTrackingToolViewController for newTrackingItemEvent, editTrackingItemEvent, deleteTrackingItemEvent
+        TrackingItemViewController trackingItemViewController = (TrackingItemViewController)controllerRepository.get(TrackingItemViewController.class.getName());
+        if(trackingItemViewController != null) {
+            trackingItemViewController.getEventManager().subscribeEventToListener(newTrackingItemEvent, workItemViewController);
+            trackingItemViewController.getEventManager().subscribeEventToListener(editTrackingItemEvent, workItemViewController);
+            trackingItemViewController.getEventManager().subscribeEventToListener(deleteTrackingItemEvent, workItemViewController);
+        }
             
-            DialogFactory dialogFactory = new DialogFactory(
-                primaryStage, 
-                workItemViewTitleResourceKey, 
-                workItemTrackingToolViewDialogIcon, 
-                workItemViewResource, 
-                rb, 
-                workItemViewController);
-            workItemTrackingToolViewDialog = dialogFactory.create(Modality.NONE);
-            workItemTrackingToolViewDialog.setWidth(512);
-            workItemTrackingToolViewDialog.setHeight(850);
+        DialogFactory dialogFactory = new DialogFactory(
+            primaryStage, 
+            workItemViewTitleResourceKey, 
+            workItemTrackingToolViewDialogIcon, 
+            workItemViewResource, 
+            rb, 
+            workItemViewController);
+        workItemTrackingToolViewDialog = dialogFactory.create(Modality.NONE);
+        workItemTrackingToolViewDialog.setWidth(512);
+        workItemTrackingToolViewDialog.setHeight(850);
             
-            ControllerUtilities.CenterOnDialog(primaryStage, workItemTrackingToolViewDialog);
-        //}
+        ControllerUtilities.CenterOnDialog(primaryStage, workItemTrackingToolViewDialog);
         
         if(!workItemTrackingToolViewDialog.isShowing()) {
             workItemButton.disableProperty().set(true);
             workItemTrackingToolViewDialog.showAndWait();        
+        }
+        
+        if(controllerRepository.contains(WorkItemViewController.class.getName())) {
+            controllerRepository.remove(WorkItemViewController.class.getName());
         }
     }
 

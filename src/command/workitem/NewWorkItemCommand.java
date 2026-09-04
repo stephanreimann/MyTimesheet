@@ -23,6 +23,7 @@ public class NewWorkItemCommand implements ICommand {
     
     private final MainToolBarViewController mainToolBarViewController;
     private final MainMenuBarViewController mainMenuBarViewController;
+    private final WorkItemViewController workItemViewController;
     private final EventManager events;
     private TableView<WorkItem> trackingItemTableView;
     private WorkItemDAO workItemDao;
@@ -38,6 +39,7 @@ public class NewWorkItemCommand implements ICommand {
         
         this.mainToolBarViewController = (MainToolBarViewController) controllerRepository.get(MainToolBarViewController.class.getName());
         this.mainMenuBarViewController = (MainMenuBarViewController) controllerRepository.get(MainMenuBarViewController.class.getName());
+        this.workItemViewController = (WorkItemViewController) controllerRepository.get(WorkItemViewController.class.getName());
         
         this.events = events;
         this.trackingItemTableView = trackingItemTableView;
@@ -55,6 +57,8 @@ public class NewWorkItemCommand implements ICommand {
             } else {
                 mainToolBarViewController.toggleUndoRedoButtons();
                 mainMenuBarViewController.toggleUndoRedoMenuItems();
+                trackingItemTableView.getSelectionModel().select(newWorkItem);                
+                workItemViewController.refreshButtonState();
                 events.notifyListenerOfEvent(newWorkItemEvent, this);
                 return true;
             }
@@ -74,6 +78,8 @@ public class NewWorkItemCommand implements ICommand {
             } else {
                 mainToolBarViewController.toggleUndoRedoButtons();
                 mainMenuBarViewController.toggleUndoRedoMenuItems();
+                trackingItemTableView.getSelectionModel().select(0);                
+                workItemViewController.refreshButtonState();
                 events.notifyListenerOfEvent(newWorkItemEvent, this);
                 return true;
             }
