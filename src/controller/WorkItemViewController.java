@@ -518,6 +518,7 @@ public class WorkItemViewController implements Initializable, IViewController, I
             newButton.setDisable(true);
             editButton.setDisable(true);
             deleteButton.setDisable(true);
+            return;
         }
         if(r2) {
             editButton.setDisable(false);
@@ -604,10 +605,12 @@ public class WorkItemViewController implements Initializable, IViewController, I
     }
     
     private boolean workrecordHasWorkItems(Workrecord workrecord) {
-        List<WorkItem> workItems = getWorkItemsForWorkrecord(workrecord);
-        for(int i = 0; i < workItems.size(); i++) {
-            if(workItemExistsForWorkrecord(workItems.get(i), workrecord)) {
-                return true;
+        if(workrecord != null) {
+            List<WorkItem> workItems = getWorkItemsForWorkrecord(workrecord);
+            for(int i = 0; i < workItems.size(); i++) {
+                if(workItemExistsForWorkrecord(workItems.get(i), workrecord)) {
+                    return true;
+                }
             }
         }
         return false;
