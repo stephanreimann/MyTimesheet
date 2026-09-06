@@ -194,7 +194,7 @@ public class WorkItemViewController implements Initializable, IViewController, I
         newWorkItem.setShortcut(trackingItemChoiceBox.getSelectionModel().getSelectedItem().getShortcut());
         newWorkItem.setName(trackingItemChoiceBox.getSelectionModel().getSelectedItem().getName());
         
-        if(isWorkItemValid() && isWorkItemNew(date)) {
+        if(isWorkItemValid(date) && isWorkItemNew(date)) {
             NewWorkItemCommand cmd = new NewWorkItemCommand(controllerRepository, eventManager, trackingItemTableView, newWorkItem, workItemDao);
             undoService.execute(cmd);
             refreshWorkItemData();
@@ -491,17 +491,12 @@ public class WorkItemViewController implements Initializable, IViewController, I
 
     public void refreshButtonState() {
         LocalDate date = selectedDateDatePicker.getValue();
-
-        //First we disable all buttons
-        newButton.setDisable(true);
-        editButton.setDisable(true);
-        deleteButton.setDisable(true);
         
         boolean r1 = workrecordExistsForDate(date);
         boolean r2 = workrecordHasWorkItems(getWorkrecordOfDate(date));
         boolean r3 = isWorkItemNew(date);
         boolean r4 = hasWorkItemChanged();
-        boolean r5 = isWorkItemValid();
+        boolean r5 = isWorkItemValid(date);
         boolean r6 = isWorkItemSelected();
 
         System.out.println("--------------------------------------------------");
@@ -512,32 +507,34 @@ public class WorkItemViewController implements Initializable, IViewController, I
         System.out.println("Workitem is valid == " + r5);
         System.out.println("Workitem selected in View == " + r6);
         System.out.println("--------------------------------------------------");
-       
-        //No Workrecord => all buttons disabled
-        if(!r1) {
+
+        //We start with all buttons enabled
+        newButton.setDisable(false);
+        editButton.setDisable(false);
+        deleteButton.setDisable(false);
+    
+        if(!workrecordExistsForDate(date)) {
             newButton.setDisable(true);
             editButton.setDisable(true);
             deleteButton.setDisable(true);
-            return;
         }
-        if(r2) {
-            editButton.setDisable(false);
-        }
-        if(r3) {
+        
+        if(isWorkItemNew(date) && isWorkItemValid(date)) {
             newButton.setDisable(false);
-            editButton.setDisable(true);
-        }
-        if(r4 && !r3) {
-            editButton.setDisable(false);
-            deleteButton.setDisable(false);
-        }
-        if(!r5) {
+        } else {
             newButton.setDisable(true);
-            editButton.setDisable(true);
-            deleteButton.setDisable(true);
         }
-        if(r6) {
+
+        if(hasWorkItemChanged()) {
+            editButton.setDisable(false);
+        } else {
+            editButton.setDisable(true);
+        }
+        
+        if(isWorkItemSelected()) {
             deleteButton.setDisable(false);
+        } else {
+            deleteButton.setDisable(true);
         }
     }
     
@@ -545,8 +542,9 @@ public class WorkItemViewController implements Initializable, IViewController, I
         return trackingItemTableView.getSelectionModel().getSelectedItem() != null;
     }
     
-    private boolean isWorkItemValid() {
+    private boolean isWorkItemValid(LocalDate date) {
         boolean result;
+        boolean innerResult = true;
         
         LocalTime startTime = trackingItemStartTimeTimeSpinner.getValue();
         LocalTime endTime = trackingItemEndTimeTimeSpinner.getValue();
@@ -555,8 +553,28 @@ public class WorkItemViewController implements Initializable, IViewController, I
         boolean r2 = !startTime.equals(LocalTime.MIN);
         boolean r3 = !endTime.equals(LocalTime.MIN);
         boolean r4 = startTime.isBefore(endTime);
+
+        Workrecord workrecord = getWorkrecordOfDate(date);
+        List<WorkItem> workItems = getWorkItemsForWorkrecord(workrecord);
+        for(int i = 0; i < workItems.size(); i++) {
+            WorkItem workItem = workItems.get(i);
+            
+            LocalTime existingWorkItemStartTime = workItem.getStartTime();
+            LocalTime existingWorkItemEndTime = workItem.getEndTime();
+            
+            boolean r5 = endTime.isBefore(existingWorkItemStartTime);
+            boolean r6 = endTime.equals(existingWorkItemStartTime);
+            
+            boolean r7 = startTime.isAfter(existingWorkItemEndTime);
+            boolean r8 = startTime.equals(existingWorkItemEndTime);
+            
+            boolean r9 = isStartTimeUnique(startTime);
+            boolean r10 = isEndTimeUnique(endTime);
+            
+            innerResult = (r1 || r2 || r3 || r4) && r5 && r6; 
+        }
         
-        result = r1 && r2 && r3 && r4;
+        result = r1 && r2 && r3 && r4 && innerResult;
         
         return result;
     }
@@ -566,35 +584,7 @@ public class WorkItemViewController implements Initializable, IViewController, I
     }
 
     private boolean isWorkItemNew(LocalDate date) {
-        boolean result = true;        
-        
-        if(!isWorkItemValid()) return false;
-        if(!workrecordExistsForDate(date)) return false;
-        
-        LocalTime newWorkItemStartTime = trackingItemStartTimeTimeSpinner.getValue();
-        LocalTime newWorkItemEndTime = trackingItemEndTimeTimeSpinner.getValue();
-
-        Workrecord workrecord = getWorkrecordOfDate(date);
-        List<WorkItem> workItems = getWorkItemsForWorkrecord(workrecord);
-        for(int i = 0; i < workItems.size(); i++) {
-            WorkItem workItem = workItems.get(i);
-
-            LocalTime existingWorkItemStartTime = workItem.getStartTime();
-            LocalTime existingWorkItemEndTime = workItem.getEndTime();
-
-            boolean r1 = newWorkItemEndTime.isBefore(existingWorkItemStartTime);
-            boolean r2 = newWorkItemEndTime.equals(existingWorkItemStartTime);
-            
-            boolean r3 = newWorkItemStartTime.isAfter(existingWorkItemEndTime);
-            boolean r4 = newWorkItemStartTime.equals(existingWorkItemEndTime);
-            
-            boolean r5 = isStartTimeUnique(newWorkItemStartTime);
-            boolean r6 = isEndTimeUnique(newWorkItemEndTime);
-            
-            result = (r1 || r2 || r3 || r4) && r5 && r6;
-        }
-        
-        return result;
+        return !workrecordExistsForDate(date);
     }
     
     private boolean workItemExistsForWorkrecord(WorkItem workItem, Workrecord workrecord) {
@@ -617,6 +607,10 @@ public class WorkItemViewController implements Initializable, IViewController, I
     }
     
     private boolean hasWorkItemChanged() {
+        if(oldTrackingItemId == 0) {
+            return false;
+        }
+        
         return newTrackingItemId != oldTrackingItemId
         || !Objects.equals(newStartTime, oldStartTime)
         || !Objects.equals(newEndTime, oldEndTime)
@@ -640,7 +634,9 @@ public class WorkItemViewController implements Initializable, IViewController, I
         List<WorkItem> workItems = new ArrayList<>();
         
         try {
-            workItems = workItemDao.selectAll(workrecord.getId());
+            if(workrecord != null) {
+                workItems = workItemDao.selectAll(workrecord.getId());
+            }
         } catch (SQLException ex) {
             log.fatal("No Workitems could be loaded!");    
         }
