@@ -194,7 +194,7 @@ public class WorkItemViewController implements Initializable, IViewController, I
         newWorkItem.setShortcut(trackingItemChoiceBox.getSelectionModel().getSelectedItem().getShortcut());
         newWorkItem.setName(trackingItemChoiceBox.getSelectionModel().getSelectedItem().getName());
         
-        if(isWorkItemValid(date) && isWorkItemNew(date)) {
+        if(isWorkItemValid(date)) {
             NewWorkItemCommand cmd = new NewWorkItemCommand(controllerRepository, eventManager, trackingItemTableView, newWorkItem, workItemDao);
             undoService.execute(cmd);
             refreshWorkItemData();
@@ -494,18 +494,16 @@ public class WorkItemViewController implements Initializable, IViewController, I
         
         boolean r1 = workrecordExistsForDate(date);
         boolean r2 = workrecordHasWorkItems(getWorkrecordOfDate(date));
-        boolean r3 = isWorkItemNew(date);
-        boolean r4 = hasWorkItemChanged();
-        boolean r5 = isWorkItemValid(date);
-        boolean r6 = isWorkItemSelected();
+        boolean r3 = hasWorkItemChanged();
+        boolean r4 = isWorkItemValid(date);
+        boolean r5 = isWorkItemSelected();
 
         System.out.println("--------------------------------------------------");
         System.out.println("Workrecord exists for " + date + " == " + r1);
         System.out.println("Workrecord has Workitems for " + date + " == " + r2);
-        System.out.println("Workitem is new for " + date + " == " + r3);
-        System.out.println("Workitem has changed == " + r4);
-        System.out.println("Workitem is valid == " + r5);
-        System.out.println("Workitem selected in View == " + r6);
+        System.out.println("Workitem has changed == " + r3);
+        System.out.println("Workitem is valid == " + r4);
+        System.out.println("Workitem selected in View == " + r5);
         System.out.println("--------------------------------------------------");
 
         //We start with all buttons enabled
@@ -519,7 +517,7 @@ public class WorkItemViewController implements Initializable, IViewController, I
             deleteButton.setDisable(true);
         }
         
-        if(isWorkItemNew(date) && isWorkItemValid(date)) {
+        if(isWorkItemValid(date)) {
             newButton.setDisable(false);
         } else {
             newButton.setDisable(true);
@@ -571,7 +569,7 @@ public class WorkItemViewController implements Initializable, IViewController, I
             boolean r9 = isStartTimeUnique(startTime);
             boolean r10 = isEndTimeUnique(endTime);
             
-            innerResult = (r1 || r2 || r3 || r4) && r5 && r6; 
+            innerResult = (r5 || r6 || r7 || r8) && r9 && r10; 
         }
         
         result = r1 && r2 && r3 && r4 && innerResult;
@@ -581,10 +579,6 @@ public class WorkItemViewController implements Initializable, IViewController, I
 
     private boolean workrecordExistsForDate(LocalDate date) {
         return getWorkrecordOfDate(date) != null;
-    }
-
-    private boolean isWorkItemNew(LocalDate date) {
-        return !workrecordExistsForDate(date);
     }
     
     private boolean workItemExistsForWorkrecord(WorkItem workItem, Workrecord workrecord) {
