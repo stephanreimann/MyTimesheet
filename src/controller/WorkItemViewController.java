@@ -184,7 +184,8 @@ public class WorkItemViewController implements Initializable, IViewController, I
     private void newAction(ActionEvent event) throws SQLException, IOException {
         LocalDate date = selectedDateDatePicker.getValue();
         
-        WorkItem newWorkItem = new WorkItem(workItemDao.getNextId());
+        long newId = workItemDao.getNextId();
+        WorkItem newWorkItem = new WorkItem(newId);
         newWorkItem.setWorkrecordId(selectedWorkrecord.getId());
         newWorkItem.setSprintId(Long.valueOf(sprintNumberLabelValue.getText()));
         newWorkItem.setTrackingItemId(trackingItemChoiceBox.getSelectionModel().getSelectedItem().getId());
@@ -194,11 +195,13 @@ public class WorkItemViewController implements Initializable, IViewController, I
         newWorkItem.setShortcut(trackingItemChoiceBox.getSelectionModel().getSelectedItem().getShortcut());
         newWorkItem.setName(trackingItemChoiceBox.getSelectionModel().getSelectedItem().getName());
         
-        if(isWorkItemValid(date)) {
+        if(isInputValid(true)) {
             NewWorkItemCommand cmd = new NewWorkItemCommand(controllerRepository, eventManager, trackingItemTableView, newWorkItem, workItemDao);
             undoService.execute(cmd);
             refreshWorkItemData();
-        }
+            selectWorkItemById(newId);
+            refreshButtonState();
+        }    
     }
     
     @FXML
@@ -217,10 +220,15 @@ public class WorkItemViewController implements Initializable, IViewController, I
             modifiedWorkItem.setShortcut(trackingItemChoiceBox.getSelectionModel().getSelectedItem().getShortcut());
             modifiedWorkItem.setName(trackingItemChoiceBox.getSelectionModel().getSelectedItem().getName());
 
-            if(!selectedWorkItem.equals(modifiedWorkItem)) {
+            if(hasWorkItemChanged()) { // Double check before executing command
                 EditWorkItemCommand cmd = new EditWorkItemCommand(controllerRepository, eventManager, trackingItemTableView, selectedWorkItem, modifiedWorkItem, workItemDao);
                 undoService.execute(cmd);
+                
                 refreshWorkItemData();
+                
+                // CRITICAL: Re-select and re-save info so 'hasWorkItemChanged' becomes false again
+                selectWorkItemById(modifiedWorkItem.getId()); 
+                saveActualWorkItemInformation(modifiedWorkItem); 
             }
         } else {
             ControllerUtilities.showNoItemSelectedAlert(primaryStage, rb, noTrackingItemSelectionAlertTitle, noTrackingItemSelectionAlertHeader, noTrackingItemSelectionAlertContent);
@@ -238,6 +246,8 @@ public class WorkItemViewController implements Initializable, IViewController, I
             DeleteWorkItemCommand cmd = new DeleteWorkItemCommand(controllerRepository, eventManager, trackingItemTableView, selectedWorkItem, workItemDao);
             undoService.execute(cmd);
             refreshWorkItemData();
+            showTrackingItemDetails(null);
+            refreshButtonState();
         } else {
             ControllerUtilities.showNoItemSelectedAlert(primaryStage, rb, noTrackingItemSelectionAlertTitle, noTrackingItemSelectionAlertHeader, noTrackingItemSelectionAlertContent);
         }
@@ -380,6 +390,16 @@ public class WorkItemViewController implements Initializable, IViewController, I
         workItemData.addAll(workItemsOfActualSelectedWorkrecord);
     }
     
+    private void selectWorkItemById(long id) {
+        workItemData.stream()
+            .filter(item -> item.getId() == id)
+            .findFirst()
+            .ifPresent(item -> {
+                trackingItemTableView.getSelectionModel().select(item);
+                // The selection listener will automatically trigger showTrackingItemDetails(item)
+            });
+    }
+ 
     private void initCellValueFactoryTableColumns() {
         //HOWTO: Cell Value Factory
         //The cell must know which part of WorkItemTrackingData it needs to display.
@@ -489,126 +509,77 @@ public class WorkItemViewController implements Initializable, IViewController, I
         }
     }
 
+    private boolean isInputValid(boolean isNew) {
+        LocalTime startTime = trackingItemStartTimeTimeSpinner.getValue();
+        LocalTime endTime = trackingItemEndTimeTimeSpinner.getValue();
+        TrackingItem selectedTracking = trackingItemChoiceBox.getSelectionModel().getSelectedItem();
+        // 1. Basic Validity
+        if (selectedTracking == null) return false;
+        if (startTime.equals(LocalTime.MIN) || endTime.equals(LocalTime.MIN)) return false;
+        if (!startTime.isBefore(endTime)) return false;
+        // 2. Overlap Check against existing data in the table
+        WorkItem selectedItem = trackingItemTableView.getSelectionModel().getSelectedItem();
+        
+        for (WorkItem item : workItemData) {
+            // If we are validating for an EDIT, ignore the item we are currently editing
+            if (!isNew && selectedItem != null && item.getId() == selectedItem.getId()) {
+                continue;
+            }
+            // Standard Overlap Formula: (StartA < EndB) AND (EndA > StartB)
+            if (startTime.isBefore(item.getEndTime()) && endTime.isAfter(item.getStartTime())) {
+                log.info("Overlap detected with existing item: " + item.getName());
+                return false; 
+            }
+        }
+        return true;
+    }
+
+    private boolean hasWorkItemChanged() {
+        if (!isWorkItemSelected()) return false;
+        
+        TrackingItem currentChoice = trackingItemChoiceBox.getValue();
+        long currentTrackingId = (currentChoice != null) ? currentChoice.getId() : 0L;
+        
+        LocalTime currentStart = trackingItemStartTimeTimeSpinner.getValue();
+        LocalTime currentEnd = trackingItemEndTimeTimeSpinner.getValue();
+        String currentDesc = trackingItemDescriptionValue.getText();
+        
+        // Check if any field differs from the "old" baseline
+        boolean changed = currentTrackingId != oldTrackingItemId
+            || !Objects.equals(currentStart, oldStartTime)
+            || !Objects.equals(currentEnd, oldEndTime)
+            || !Objects.equals(currentDesc, oldDescription);
+            
+        return changed;
+    }
+
     public void refreshButtonState() {
         LocalDate date = selectedDateDatePicker.getValue();
+        boolean recordExists = workrecordExistsForDate(date);
+        boolean itemSelected = isWorkItemSelected();
         
-        boolean r1 = workrecordExistsForDate(date);
-        boolean r2 = workrecordHasWorkItems(getWorkrecordOfDate(date));
-        boolean r3 = hasWorkItemChanged();
-        boolean r4 = isWorkItemValid(date);
-        boolean r5 = isWorkItemSelected();
-
-        System.out.println("--------------------------------------------------");
-        System.out.println("Workrecord exists for " + date + " == " + r1);
-        System.out.println("Workrecord has Workitems for " + date + " == " + r2);
-        System.out.println("Workitem has changed == " + r3);
-        System.out.println("Workitem is valid == " + r4);
-        System.out.println("Workitem selected in View == " + r5);
-        System.out.println("--------------------------------------------------");
-
-        //We start with all buttons enabled
-        newButton.setDisable(false);
-        editButton.setDisable(false);
-        deleteButton.setDisable(false);
-    
-        if(!workrecordExistsForDate(date)) {
-            newButton.setDisable(true);
-            editButton.setDisable(true);
-            deleteButton.setDisable(true);
-        }
+        // Logic for NEW: Must have a workrecord and the input must not overlap with ANY item
+        boolean canCreateNew = recordExists && isInputValid(true);
         
-        if(isWorkItemValid(date)) {
-            newButton.setDisable(false);
-        } else {
-            newButton.setDisable(true);
-        }
-
-        if(hasWorkItemChanged()) {
-            editButton.setDisable(false);
-        } else {
-            editButton.setDisable(true);
-        }
+        // Logic for EDIT: Must have a selection, valid input (ignoring self-overlap), and actual changes
+        boolean canEditExisting = itemSelected && isInputValid(false) && hasWorkItemChanged();
         
-        if(isWorkItemSelected()) {
-            deleteButton.setDisable(false);
-        } else {
-            deleteButton.setDisable(true);
+        newButton.setDisable(!canCreateNew);
+        editButton.setDisable(!canEditExisting);
+        deleteButton.setDisable(!itemSelected);
+        
+        if (log.isDebugEnabled()) {
+            log.debug(String.format("State: RecordExists=%b, Selected=%b, ValidNew=%b, ValidEdit=%b", 
+                      recordExists, itemSelected, canCreateNew, canEditExisting));
         }
     }
-    
+
     private boolean isWorkItemSelected() {
         return trackingItemTableView.getSelectionModel().getSelectedItem() != null;
     }
     
-    private boolean isWorkItemValid(LocalDate date) {
-        boolean result;
-        boolean innerResult = true;
-        
-        LocalTime startTime = trackingItemStartTimeTimeSpinner.getValue();
-        LocalTime endTime = trackingItemEndTimeTimeSpinner.getValue();
-        
-        boolean r1 = trackingItemChoiceBox.getSelectionModel().getSelectedItem() != null;
-        boolean r2 = !startTime.equals(LocalTime.MIN);
-        boolean r3 = !endTime.equals(LocalTime.MIN);
-        boolean r4 = startTime.isBefore(endTime);
-
-        Workrecord workrecord = getWorkrecordOfDate(date);
-        List<WorkItem> workItems = getWorkItemsForWorkrecord(workrecord);
-        for(int i = 0; i < workItems.size(); i++) {
-            WorkItem workItem = workItems.get(i);
-            
-            LocalTime existingWorkItemStartTime = workItem.getStartTime();
-            LocalTime existingWorkItemEndTime = workItem.getEndTime();
-            
-            boolean r5 = endTime.isBefore(existingWorkItemStartTime);
-            boolean r6 = endTime.equals(existingWorkItemStartTime);
-            
-            boolean r7 = startTime.isAfter(existingWorkItemEndTime);
-            boolean r8 = startTime.equals(existingWorkItemEndTime);
-            
-            boolean r9 = isStartTimeUnique(startTime);
-            boolean r10 = isEndTimeUnique(endTime);
-            
-            innerResult = (r5 || r6 || r7 || r8) && r9 && r10; 
-        }
-        
-        result = r1 && r2 && r3 && r4 && innerResult;
-        
-        return result;
-    }
-
     private boolean workrecordExistsForDate(LocalDate date) {
         return getWorkrecordOfDate(date) != null;
-    }
-    
-    private boolean workItemExistsForWorkrecord(WorkItem workItem, Workrecord workrecord) {
-        List<WorkItem> workItems = getWorkItemsForWorkrecord(workrecord)
-            .stream()
-            .filter(e -> e.equals(workItem)).toList();
-        return !workItems.isEmpty();
-    }
-    
-    private boolean workrecordHasWorkItems(Workrecord workrecord) {
-        if(workrecord != null) {
-            List<WorkItem> workItems = getWorkItemsForWorkrecord(workrecord);
-            for(int i = 0; i < workItems.size(); i++) {
-                if(workItemExistsForWorkrecord(workItems.get(i), workrecord)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-    
-    private boolean hasWorkItemChanged() {
-        if(oldTrackingItemId == 0) {
-            return false;
-        }
-        
-        return newTrackingItemId != oldTrackingItemId
-        || !Objects.equals(newStartTime, oldStartTime)
-        || !Objects.equals(newEndTime, oldEndTime)
-        || !Objects.equals(newDescription, oldDescription);
     }
     
     private Workrecord getWorkrecordOfDate(LocalDate date) {
@@ -669,14 +640,23 @@ public class WorkItemViewController implements Initializable, IViewController, I
         }
     }
 
-    private void saveActualWorkItemInformation(WorkItem workItem) {
+    private void saveActualWorkItemInformation(WorkItem workItem) {        
+        if (workItem == null) {
+            oldTrackingItemId = 0;
+            oldStartTime = null;
+            oldEndTime = null;
+            oldDescription = "";
+            return;
+        }
+        
+        // This creates the baseline for 'hasWorkItemChanged'
         oldId = workItem.getId();
-        oldWorkrecordId = workItem.getWorkrecordId();
-        oldSprintId = workItem.getSprintId();
         oldTrackingItemId = workItem.getTrackingItemId();
         oldStartTime = workItem.getStartTime();
         oldEndTime = workItem.getEndTime();
-        oldDescription = workItem.getDescription();
+        oldDescription = workItem.getDescription();        
+        oldWorkrecordId = workItem.getWorkrecordId();
+        oldSprintId = workItem.getSprintId();
         oldShortcut = workItem.getShortcut();
         oldName = workItem.getName();
     }
