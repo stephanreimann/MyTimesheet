@@ -198,9 +198,6 @@ public class WorkItemViewController implements Initializable, IViewController, I
         if(isInputValid(true)) {
             NewWorkItemCommand cmd = new NewWorkItemCommand(controllerRepository, eventManager, trackingItemTableView, newWorkItem, workItemDao);
             undoService.execute(cmd);
-            refreshWorkItemData();
-            selectWorkItemById(newId);
-            refreshButtonState();
         }    
     }
     
@@ -223,12 +220,6 @@ public class WorkItemViewController implements Initializable, IViewController, I
             if(hasWorkItemChanged()) { // Double check before executing command
                 EditWorkItemCommand cmd = new EditWorkItemCommand(controllerRepository, eventManager, trackingItemTableView, selectedWorkItem, modifiedWorkItem, workItemDao);
                 undoService.execute(cmd);
-                
-                refreshWorkItemData();
-                
-                // CRITICAL: Re-select and re-save info so 'hasWorkItemChanged' becomes false again
-                selectWorkItemById(modifiedWorkItem.getId()); 
-                saveActualWorkItemInformation(modifiedWorkItem); 
             }
         } else {
             ControllerUtilities.showNoItemSelectedAlert(primaryStage, rb, noTrackingItemSelectionAlertTitle, noTrackingItemSelectionAlertHeader, noTrackingItemSelectionAlertContent);
@@ -245,9 +236,6 @@ public class WorkItemViewController implements Initializable, IViewController, I
         if(selectedWorkItem != null) {
             DeleteWorkItemCommand cmd = new DeleteWorkItemCommand(controllerRepository, eventManager, trackingItemTableView, selectedWorkItem, workItemDao);
             undoService.execute(cmd);
-            refreshWorkItemData();
-            showTrackingItemDetails(null);
-            refreshButtonState();
         } else {
             ControllerUtilities.showNoItemSelectedAlert(primaryStage, rb, noTrackingItemSelectionAlertTitle, noTrackingItemSelectionAlertHeader, noTrackingItemSelectionAlertContent);
         }
@@ -389,17 +377,7 @@ public class WorkItemViewController implements Initializable, IViewController, I
         List<WorkItem> workItemsOfActualSelectedWorkrecord = workItemDao.selectAll(selectedWorkrecord.getId());
         workItemData.addAll(workItemsOfActualSelectedWorkrecord);
     }
-    
-    private void selectWorkItemById(long id) {
-        workItemData.stream()
-            .filter(item -> item.getId() == id)
-            .findFirst()
-            .ifPresent(item -> {
-                trackingItemTableView.getSelectionModel().select(item);
-                // The selection listener will automatically trigger showTrackingItemDetails(item)
-            });
-    }
- 
+     
     private void initCellValueFactoryTableColumns() {
         //HOWTO: Cell Value Factory
         //The cell must know which part of WorkItemTrackingData it needs to display.
@@ -499,11 +477,11 @@ public class WorkItemViewController implements Initializable, IViewController, I
         }
     }
 
-    private void refreshTrackingItemDetails() {
-        Optional<WorkItem> firstWorkItem = workItemData.stream().findFirst();
-        if(firstWorkItem.isPresent()) {
-            showTrackingItemDetails(firstWorkItem.get());
-            trackingItemTableView.getSelectionModel().select(0);
+    public void refreshTrackingItemDetails() {
+        long workItemCount = workItemData.stream().count();
+        WorkItem workItem = workItemData.get((int)workItemCount-1);
+        if(workItem != null) {
+            showTrackingItemDetails(workItem);
         } else {
             showTrackingItemDetails(null);
         }
@@ -522,7 +500,7 @@ public class WorkItemViewController implements Initializable, IViewController, I
         
         for (WorkItem item : workItemData) {
             // If we are validating for an EDIT, ignore the item we are currently editing
-            if (!isNew && selectedItem != null && item.getId() == selectedItem.getId()) {
+            if (!isNew && selectedItem != null && Objects.equals(item.getId(), selectedItem.getId())) {
                 continue;
             }
             // Standard Overlap Formula: (StartA < EndB) AND (EndA > StartB)
@@ -595,29 +573,6 @@ public class WorkItemViewController implements Initializable, IViewController, I
         return null;
     }
     
-    private List<WorkItem> getWorkItemsForWorkrecord(Workrecord workrecord) {
-        List<WorkItem> workItems = new ArrayList<>();
-        
-        try {
-            if(workrecord != null) {
-                workItems = workItemDao.selectAll(workrecord.getId());
-            }
-        } catch (SQLException ex) {
-            log.fatal("No Workitems could be loaded!");    
-        }
-        return workItems;
-    }
-    
-    private boolean isStartTimeUnique(LocalTime startTime) {
-        List<WorkItem> result = workItemData.stream().filter(c -> c.getStartTime().equals(startTime)).toList();
-        return result.isEmpty();
-    }
-
-    private boolean isEndTimeUnique(LocalTime endTime) {
-        List<WorkItem> result = workItemData.stream().filter(c -> c.getEndTime().equals(endTime)).toList();
-        return result.isEmpty();
-    }
-        
     private void showTrackingItemDetails(WorkItem workItem) {
         if(workItem != null) {
             //We save the actual workitem information to be able to 

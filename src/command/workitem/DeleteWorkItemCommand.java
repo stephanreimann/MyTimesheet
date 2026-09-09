@@ -58,6 +58,7 @@ public class DeleteWorkItemCommand implements ICommand {
             } else {
                 mainToolBarViewController.toggleUndoRedoButtons();
                 mainMenuBarViewController.toggleUndoRedoMenuItems();
+                workItemViewController.refreshWorkItemData();
                 trackingItemTableView.getSelectionModel().select(0);
                 workItemViewController.refreshButtonState();
                 events.notifyListenerOfEvent(deleteWorkItemEvent, this);
@@ -79,6 +80,7 @@ public class DeleteWorkItemCommand implements ICommand {
             } else {
                 mainToolBarViewController.toggleUndoRedoButtons();
                 mainMenuBarViewController.toggleUndoRedoMenuItems();
+                workItemViewController.refreshWorkItemData();
                 trackingItemTableView.getSelectionModel().select(selectedWorkItem);
                 workItemViewController.refreshButtonState();
                 events.notifyListenerOfEvent(deleteWorkItemEvent, this);

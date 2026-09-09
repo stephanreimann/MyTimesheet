@@ -57,6 +57,7 @@ public class NewWorkItemCommand implements ICommand {
             } else {
                 mainToolBarViewController.toggleUndoRedoButtons();
                 mainMenuBarViewController.toggleUndoRedoMenuItems();
+                workItemViewController.refreshWorkItemData();
                 trackingItemTableView.getSelectionModel().select(newWorkItem);                
                 workItemViewController.refreshButtonState();
                 events.notifyListenerOfEvent(newWorkItemEvent, this);
@@ -78,6 +79,7 @@ public class NewWorkItemCommand implements ICommand {
             } else {
                 mainToolBarViewController.toggleUndoRedoButtons();
                 mainMenuBarViewController.toggleUndoRedoMenuItems();
+                workItemViewController.refreshWorkItemData();
                 trackingItemTableView.getSelectionModel().select(0);                
                 workItemViewController.refreshButtonState();
                 events.notifyListenerOfEvent(newWorkItemEvent, this);
