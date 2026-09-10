@@ -199,7 +199,7 @@ public class WorkItemViewController implements Initializable, IViewController, I
         if(isInputValid(true)) {
             NewWorkItemCommand cmd = new NewWorkItemCommand(controllerRepository, eventManager, trackingItemTableView, newWorkItem, workItemDao);
             undoService.execute(cmd);
-        }    
+        }
     }
     
     @FXML
@@ -225,8 +225,6 @@ public class WorkItemViewController implements Initializable, IViewController, I
         } else {
             ControllerUtilities.showNoItemSelectedAlert(primaryStage, rb, noTrackingItemSelectionAlertTitle, noTrackingItemSelectionAlertHeader, noTrackingItemSelectionAlertContent);
         }
-
-        refreshButtonState();
     }
 
     @FXML
@@ -240,8 +238,6 @@ public class WorkItemViewController implements Initializable, IViewController, I
         } else {
             ControllerUtilities.showNoItemSelectedAlert(primaryStage, rb, noTrackingItemSelectionAlertTitle, noTrackingItemSelectionAlertHeader, noTrackingItemSelectionAlertContent);
         }
-
-        refreshButtonState();
     }
 
     @FXML
@@ -257,7 +253,7 @@ public class WorkItemViewController implements Initializable, IViewController, I
             List<WorkItem> workItemsOfActualSelectedWorkrecord = workItemDao.selectAll(firstWorkrecord.get().getId());
             workItemData.addAll(workItemsOfActualSelectedWorkrecord);
 
-            refreshTrackingItemDetails();
+            selectTrackingItemAndRefreshDetails();
         }
     }
     
@@ -299,7 +295,7 @@ public class WorkItemViewController implements Initializable, IViewController, I
             log.fatal("No WorkItemData could be loaded!");
         }
         
-        refreshTrackingItemDetails();
+        selectTrackingItemAndRefreshDetails();
         refreshButtonState();
         languageService.updateGuiItems();        
     }
@@ -417,6 +413,7 @@ public class WorkItemViewController implements Initializable, IViewController, I
             if(oldValue != null && newValue != null) {
                 newId = newValue.getId();
                 newWorkrecordId = newValue.getWorkrecordId();
+                trackingItemTableView.getSelectionModel().select(newValue);
                 showTrackingItemDetails(newValue);
                 refreshButtonState();
             }
@@ -478,26 +475,29 @@ public class WorkItemViewController implements Initializable, IViewController, I
         }
     }
 
-    public void refreshTrackingItemDetails() {
+    public void selectTrackingItemAndRefreshDetails() {
         long workItemCount = workItemData.stream().count();
         if(workItemCount > 0) {
             WorkItem workItem = workItemData.get((int)workItemCount-1);
             if(workItem != null) {
+                trackingItemTableView.getSelectionModel().select(workItem);  
                 showTrackingItemDetails(workItem);
-            } else {
-                showTrackingItemDetails(null);
+                return;
             }
         }
+        showTrackingItemDetails(null);
     }
 
     private boolean isInputValid(boolean isNew) {
         LocalTime startTime = trackingItemStartTimeTimeSpinner.getValue();
         LocalTime endTime = trackingItemEndTimeTimeSpinner.getValue();
         TrackingItem selectedTracking = trackingItemChoiceBox.getSelectionModel().getSelectedItem();
+        
         // 1. Basic Validity
         if (selectedTracking == null) return false;
         if (startTime.equals(LocalTime.MIN) || endTime.equals(LocalTime.MIN)) return false;
         if (!startTime.isBefore(endTime)) return false;
+        
         // 2. Overlap Check against existing data in the table
         WorkItem selectedItem = trackingItemTableView.getSelectionModel().getSelectedItem();
         
@@ -557,7 +557,8 @@ public class WorkItemViewController implements Initializable, IViewController, I
     }
 
     private boolean isWorkItemSelected() {
-        return trackingItemTableView.getSelectionModel().getSelectedItem() != null;
+        WorkItem workItem = trackingItemTableView.getSelectionModel().getSelectedItem();
+        return workItem != null;
     }
     
     private boolean workrecordExistsForDate(LocalDate date) {

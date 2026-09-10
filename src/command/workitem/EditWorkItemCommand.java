@@ -62,7 +62,7 @@ public class EditWorkItemCommand implements ICommand {
                 mainToolBarViewController.toggleUndoRedoButtons();
                 mainMenuBarViewController.toggleUndoRedoMenuItems();
                 workItemViewController.refreshWorkItemData();
-                trackingItemTableView.getSelectionModel().select(modifiedWorkItem);
+                workItemViewController.selectTrackingItemAndRefreshDetails();
                 workItemViewController.refreshButtonState();
                 events.notifyListenerOfEvent(editWorkItemEvent, this);
                 return true;
@@ -85,7 +85,7 @@ public class EditWorkItemCommand implements ICommand {
                 mainToolBarViewController.toggleUndoRedoButtons();
                 mainMenuBarViewController.toggleUndoRedoMenuItems();
                 workItemViewController.refreshWorkItemData();
-                trackingItemTableView.getSelectionModel().select(originalWorkItem);
+                workItemViewController.selectTrackingItemAndRefreshDetails();
                 workItemViewController.refreshButtonState();
                 events.notifyListenerOfEvent(editWorkItemEvent, this);
                 return true;
@@ -108,7 +108,7 @@ public class EditWorkItemCommand implements ICommand {
                 mainToolBarViewController.toggleUndoRedoButtons();
                 mainMenuBarViewController.toggleUndoRedoMenuItems();
                 workItemViewController.refreshWorkItemData();
-                trackingItemTableView.getSelectionModel().select(modifiedWorkItem);
+                workItemViewController.selectTrackingItemAndRefreshDetails();
                 workItemViewController.refreshButtonState();
                 events.notifyListenerOfEvent(editWorkItemEvent, this);
                 return true;
