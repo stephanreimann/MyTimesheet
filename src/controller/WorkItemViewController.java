@@ -30,6 +30,7 @@ import utils.*;
  *
  * @author adrest18
  */
+//@SuppressWarnings("unused")
 public class WorkItemViewController implements Initializable, IViewController, IEventListener {
 
     private static final String COLOR_LIGHT_RED = "Red";
@@ -184,8 +185,8 @@ public class WorkItemViewController implements Initializable, IViewController, I
     private void newAction(ActionEvent event) throws SQLException, IOException {
         LocalDate date = selectedDateDatePicker.getValue();
         
-        long newId = workItemDao.getNextId();
-        WorkItem newWorkItem = new WorkItem(newId);
+        long nextId = workItemDao.getNextId();
+        WorkItem newWorkItem = new WorkItem(nextId);
         newWorkItem.setWorkrecordId(selectedWorkrecord.getId());
         newWorkItem.setSprintId(Long.valueOf(sprintNumberLabelValue.getText()));
         newWorkItem.setTrackingItemId(trackingItemChoiceBox.getSelectionModel().getSelectedItem().getId());
@@ -479,11 +480,13 @@ public class WorkItemViewController implements Initializable, IViewController, I
 
     public void refreshTrackingItemDetails() {
         long workItemCount = workItemData.stream().count();
-        WorkItem workItem = workItemData.get((int)workItemCount-1);
-        if(workItem != null) {
-            showTrackingItemDetails(workItem);
-        } else {
-            showTrackingItemDetails(null);
+        if(workItemCount > 0) {
+            WorkItem workItem = workItemData.get((int)workItemCount-1);
+            if(workItem != null) {
+                showTrackingItemDetails(workItem);
+            } else {
+                showTrackingItemDetails(null);
+            }
         }
     }
 
@@ -512,6 +515,7 @@ public class WorkItemViewController implements Initializable, IViewController, I
         return true;
     }
 
+    @SuppressWarnings("null")
     private boolean hasWorkItemChanged() {
         if (!isWorkItemSelected()) return false;
         
