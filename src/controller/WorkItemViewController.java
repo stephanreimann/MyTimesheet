@@ -594,8 +594,18 @@ public class WorkItemViewController implements Initializable, IViewController, I
             trackingItemDescriptionValue.setText(workItem.getDescription());
         } else {
             trackingItemChoiceBox.getSelectionModel().select(0);
-            trackingItemStartTimeTimeSpinner.getValueFactory().setValue(LocalTime.MIN);
-            trackingItemEndTimeTimeSpinner.getValueFactory().setValue(LocalTime.MIN);
+            if(selectedWorkrecord != null) {
+                LocalTime workrecordStartTime = selectedWorkrecord.getStarttime();
+                trackingItemStartTimeTimeSpinner.getValueFactory().setValue(workrecordStartTime);
+                trackingItemStartTimeTimeSpinner.formatLocalTime(trackingItemStartTimeTimeSpinner.getValue(), LocalTimeSpinner.TimeFormat.HH_MM);
+
+                LocalTime workrecordEndTime = selectedWorkrecord.getEndtime();
+                trackingItemEndTimeTimeSpinner.getValueFactory().setValue(workrecordEndTime);
+                trackingItemEndTimeTimeSpinner.formatLocalTime(trackingItemEndTimeTimeSpinner.getValue(), LocalTimeSpinner.TimeFormat.HH_MM);
+            } else {
+                trackingItemStartTimeTimeSpinner.getValueFactory().setValue(LocalTime.MIN);
+                trackingItemEndTimeTimeSpinner.getValueFactory().setValue(LocalTime.MIN);
+            }
             trackingItemDescriptionValue.setText("");
         }
     }
