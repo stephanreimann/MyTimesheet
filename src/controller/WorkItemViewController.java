@@ -550,10 +550,8 @@ public class WorkItemViewController implements Initializable, IViewController, I
         editButton.setDisable(!canEditExisting);
         deleteButton.setDisable(!itemSelected);
         
-        if (log.isDebugEnabled()) {
-            log.debug(String.format("State: RecordExists=%b, Selected=%b, ValidNew=%b, ValidEdit=%b", 
-                      recordExists, itemSelected, canCreateNew, canEditExisting));
-        }
+        log.info(String.format("State: RecordExists=%b, Selected=%b, ValidNew=%b, ValidEdit=%b", recordExists, itemSelected, canCreateNew, canEditExisting));
+        log.info(String.format("ButtonState: New enabled=%b, Edit enabled=%b, Delete enabled=%b", canCreateNew, canEditExisting, itemSelected));
     }
 
     private boolean isWorkItemSelected() {
