@@ -1,7 +1,7 @@
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
+ */ 
 package controller;
 
 import command.workitem.*;
@@ -11,7 +11,6 @@ import java.net.URL;
 import java.sql.*;
 import java.time.*;
 import java.util.*;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.*;
@@ -27,10 +26,8 @@ import sqlite.*;
 import utils.*;
 
 /**
- *
- * @author adrest18
+ * Controller for managing WorkItems per WorkRecord/Sprint.
  */
-//@SuppressWarnings("unused")
 public class WorkItemViewController implements Initializable, IViewController, IEventListener {
 
     private static final String COLOR_LIGHT_RED = "Red";
@@ -45,8 +42,8 @@ public class WorkItemViewController implements Initializable, IViewController, I
     private final String sprintNotFoundResourceKey = "SprintNotFound";
     private final String trackingItemShortcutResourceKey = "TrackingItemShortcut";
     private final String trackingItemNameResourceKey = "TrackingItemName";
-    private final String trackingItemStartTimeResourceKey  ="TrackingItemStartTime";
-    private final String trackingItemEndTimeResourceKey  ="TrackingItemEndTime";
+    private final String trackingItemStartTimeResourceKey = "TrackingItemStartTime";
+    private final String trackingItemEndTimeResourceKey = "TrackingItemEndTime";
     private final String trackingItemDetailsHeaderResourceKey = "TrackingItemDetailsHeader";
     private final String trackingItemItemResourceKey = "TrackingItem";
     private final String trackingItemDescriptionResourceKey = "TrackingItemDescription";
@@ -64,57 +61,33 @@ public class WorkItemViewController implements Initializable, IViewController, I
     private final String noTrackingItemSelectionAlertHeader = "NoWorkItemSelectionAlertHeader";
     private final String noTrackingItemSelectionAlertContent = "NoWorkItemSelectionAlertContent";
     
-    // <editor-fold defaultstate="collapsed" desc="FXML Member">
-    @FXML
-    @SuppressWarnings("unused")
-    private ToolBar trackingItemToolBar;
-    @FXML
-    private Label selectedDateLabel;
-    @FXML
-    private DatePicker selectedDateDatePicker;
-    @FXML
-    private Label sprintLabel;
-    @FXML
-    private Label sprintNumberLabelValue;
+    // <editor-fold defaultstate="collapsed" desc="FXML Members">
+    @FXML private ToolBar trackingItemToolBar;
+    @FXML private Label selectedDateLabel;
+    @FXML private DatePicker selectedDateDatePicker;
+    @FXML private Label sprintLabel;
+    @FXML private Label sprintNumberLabelValue;
     
-    @FXML
-    private TableView<WorkItem> trackingItemTableView;
-    @FXML
-    private TableColumn<WorkItem, String> trackingItemShortcutTableColumn;
-    @FXML
-    private TableColumn<WorkItem, String> trackingItemNameTableColumn;
-    @FXML
-    private TableColumn<WorkItem, LocalTime> trackingItemStartTimeTableColumn;
-    @FXML
-    private TableColumn<WorkItem, LocalTime> trackingItemEndTimeTableColumn;
+    @FXML private TableView<WorkItem> trackingItemTableView;
+    @FXML private TableColumn<WorkItem, String> trackingItemShortcutTableColumn;
+    @FXML private TableColumn<WorkItem, String> trackingItemNameTableColumn;
+    @FXML private TableColumn<WorkItem, LocalTime> trackingItemStartTimeTableColumn;
+    @FXML private TableColumn<WorkItem, LocalTime> trackingItemEndTimeTableColumn;
     
-    @FXML
-    private GridPane trackingItemDetailsGridPane;
-    @FXML
-    private Label trackingItemDetailsHeaderLabel;
-    @FXML
-    private Label trackingItemNameLabel;
-    @FXML
-    private Label trackingItemStartTimeLabel;
-    @FXML
-    private Button trackingItemStartTimeButton;
-    @FXML
-    private Label trackingItemEndTimeLabel;
-    @FXML
-    private Button trackingItemEndTimeButton;
-    @FXML
-    private Label trackingItemDescriptionLabel;
-    @FXML
-    private ChoiceBox<TrackingItem> trackingItemChoiceBox;
-    @FXML
-    private TextArea trackingItemDescriptionValue;
+    @FXML private GridPane trackingItemDetailsGridPane;
+    @FXML private Label trackingItemDetailsHeaderLabel;
+    @FXML private Label trackingItemNameLabel;
+    @FXML private Label trackingItemStartTimeLabel;
+    @FXML private Button trackingItemStartTimeButton;
+    @FXML private Label trackingItemEndTimeLabel;
+    @FXML private Button trackingItemEndTimeButton;
+    @FXML private Label trackingItemDescriptionLabel;
+    @FXML private ChoiceBox<TrackingItem> trackingItemChoiceBox;
+    @FXML private TextArea trackingItemDescriptionValue;
     
-    @FXML
-    private Button newButton;
-    @FXML
-    private Button editButton;
-    @FXML
-    private Button deleteButton;
+    @FXML private Button newButton;
+    @FXML private Button editButton;
+    @FXML private Button deleteButton;
     // </editor-fold>
     
     private final Logger log = LogManager.getLogger(WorkItemViewController.class.getName());
@@ -122,11 +95,10 @@ public class WorkItemViewController implements Initializable, IViewController, I
     private Stage primaryStage;
     private final ControllerRepository controllerRepository;
     private final LanguageService languageService;
-    @SuppressWarnings("unused")
     private final Connection connection;
     private final UndoService undoService;
     private ResourceBundle rb;
-    private EventManager eventManager;
+    private final EventManager eventManager;
 
     private LocalTimeSpinner trackingItemStartTimeTimeSpinner;
     private LocalTimeSpinner trackingItemEndTimeTimeSpinner;
@@ -136,24 +108,11 @@ public class WorkItemViewController implements Initializable, IViewController, I
     private final TrackingItemDAO trackingItemDAO;
     private final WorkItemDAO workItemDao;
 
-    private long oldId;
-    private long newId;
-    private long oldWorkrecordId;
-    private long newWorkrecordId;
-    private long oldSprintId;
-    private long newSprintId;
+    // WorkItem baseline snapshot for change detection
     private long oldTrackingItemId;
-    private long newTrackingItemId;
     private LocalTime oldStartTime;
-    private LocalTime newStartTime;
     private LocalTime oldEndTime;
-    private LocalTime newEndTime;
-    private String oldDescription;
-    private String newDescription;
-    private String oldShortcut;
-    private String newShortcut;
-    private String oldName;
-    private String newName;
+    private String oldDescription = "";
             
     private final ObservableList<WorkItem> workItemData = FXCollections.observableArrayList();
     
@@ -162,10 +121,10 @@ public class WorkItemViewController implements Initializable, IViewController, I
     private Workrecord selectedWorkrecord;
     
     public WorkItemViewController(ControllerRepository controllerRepository, LanguageService languageService, Connection connection, UndoService undoService) throws SQLException {
-        if(controllerRepository == null) throw new NullPointerException("controllerRepository");
-        if(languageService == null) throw new NullPointerException("languageService");
-        if(connection == null) throw new NullPointerException("connection");
-        if(undoService == null) throw new NullPointerException("undoService");
+        if (controllerRepository == null) throw new NullPointerException("controllerRepository");
+        if (languageService == null) throw new NullPointerException("languageService");
+        if (connection == null) throw new NullPointerException("connection");
+        if (undoService == null) throw new NullPointerException("undoService");
 
         this.controllerRepository = controllerRepository;
         this.languageService = languageService;
@@ -175,64 +134,63 @@ public class WorkItemViewController implements Initializable, IViewController, I
         this.trackingItemDAO = new TrackingItemDAO(connection);
         this.workItemDao = new WorkItemDAO(connection);
 
-        this.workRecordDetailsViewController = (WorkRecordDetailsViewController)controllerRepository.get(WorkRecordDetailsViewController.class.getName());
-        this.workRecordViewController = (WorkRecordViewController)controllerRepository.get(WorkRecordViewController.class.getName());
+        this.workRecordDetailsViewController = (WorkRecordDetailsViewController) controllerRepository.get(WorkRecordDetailsViewController.class.getName());
+        this.workRecordViewController = (WorkRecordViewController) controllerRepository.get(WorkRecordViewController.class.getName());
         this.eventManager = new EventManager();
     }
     
     @FXML
-    @SuppressWarnings("unused")
     private void newAction(ActionEvent event) throws SQLException, IOException {
-        LocalDate date = selectedDateDatePicker.getValue();
-        
+        if (!isInputValid(true) || selectedWorkrecord == null || sprint == null) {
+            return;
+        }
+
+        TrackingItem selectedTracking = trackingItemChoiceBox.getSelectionModel().getSelectedItem();
         long nextId = workItemDao.getNextId();
+        
         WorkItem newWorkItem = new WorkItem(nextId);
         newWorkItem.setWorkrecordId(selectedWorkrecord.getId());
-        newWorkItem.setSprintId(Long.valueOf(sprintNumberLabelValue.getText()));
-        newWorkItem.setTrackingItemId(trackingItemChoiceBox.getSelectionModel().getSelectedItem().getId());
+        newWorkItem.setSprintId(sprint.getId());
+        newWorkItem.setTrackingItemId(selectedTracking.getId());
         newWorkItem.setStartTime(trackingItemStartTimeTimeSpinner.getValue());
         newWorkItem.setEndTime(trackingItemEndTimeTimeSpinner.getValue());
         newWorkItem.setDescription(trackingItemDescriptionValue.getText());
-        newWorkItem.setShortcut(trackingItemChoiceBox.getSelectionModel().getSelectedItem().getShortcut());
-        newWorkItem.setName(trackingItemChoiceBox.getSelectionModel().getSelectedItem().getName());
+        newWorkItem.setShortcut(selectedTracking.getShortcut());
+        newWorkItem.setName(selectedTracking.getName());
         
-        if(isInputValid(true)) {
-            NewWorkItemCommand cmd = new NewWorkItemCommand(controllerRepository, eventManager, trackingItemTableView, newWorkItem, workItemDao);
-            undoService.execute(cmd);
-        }
+        NewWorkItemCommand cmd = new NewWorkItemCommand(controllerRepository, eventManager, trackingItemTableView, newWorkItem, workItemDao);
+        undoService.execute(cmd);
     }
     
     @FXML
-    @SuppressWarnings("unused")
     private void editAction(ActionEvent event) throws SQLException, IOException {
         WorkItem selectedWorkItem = trackingItemTableView.getSelectionModel().getSelectedItem();
 
-        if(selectedWorkItem != null) {
+        if (selectedWorkItem != null && isInputValid(false) && hasWorkItemChanged()) {
+            TrackingItem selectedTracking = trackingItemChoiceBox.getSelectionModel().getSelectedItem();
+
             WorkItem modifiedWorkItem = new WorkItem(selectedWorkItem.getId());
             modifiedWorkItem.setWorkrecordId(selectedWorkrecord.getId());
             modifiedWorkItem.setSprintId(selectedWorkItem.getSprintId());
-            modifiedWorkItem.setTrackingItemId(trackingItemChoiceBox.getSelectionModel().getSelectedItem().getId());
+            modifiedWorkItem.setTrackingItemId(selectedTracking.getId());
             modifiedWorkItem.setStartTime(trackingItemStartTimeTimeSpinner.getValue());
             modifiedWorkItem.setEndTime(trackingItemEndTimeTimeSpinner.getValue());
             modifiedWorkItem.setDescription(trackingItemDescriptionValue.getText());
-            modifiedWorkItem.setShortcut(trackingItemChoiceBox.getSelectionModel().getSelectedItem().getShortcut());
-            modifiedWorkItem.setName(trackingItemChoiceBox.getSelectionModel().getSelectedItem().getName());
+            modifiedWorkItem.setShortcut(selectedTracking.getShortcut());
+            modifiedWorkItem.setName(selectedTracking.getName());
 
-            if(hasWorkItemChanged()) { // Double check before executing command
-                EditWorkItemCommand cmd = new EditWorkItemCommand(controllerRepository, eventManager, trackingItemTableView, selectedWorkItem, modifiedWorkItem, workItemDao);
-                undoService.execute(cmd);
-            }
-        } else {
+            EditWorkItemCommand cmd = new EditWorkItemCommand(controllerRepository, eventManager, trackingItemTableView, selectedWorkItem, modifiedWorkItem, workItemDao);
+            undoService.execute(cmd);
+        } else if (selectedWorkItem == null) {
             ControllerUtilities.showNoItemSelectedAlert(primaryStage, rb, noTrackingItemSelectionAlertTitle, noTrackingItemSelectionAlertHeader, noTrackingItemSelectionAlertContent);
         }
     }
 
     @FXML
-    @SuppressWarnings("unused")
     private void deleteAction(ActionEvent event) throws SQLException, IOException {
         WorkItem selectedWorkItem = trackingItemTableView.getSelectionModel().getSelectedItem();
 
-        if(selectedWorkItem != null) {
+        if (selectedWorkItem != null) {
             DeleteWorkItemCommand cmd = new DeleteWorkItemCommand(controllerRepository, eventManager, trackingItemTableView, selectedWorkItem, workItemDao);
             undoService.execute(cmd);
         } else {
@@ -241,36 +199,30 @@ public class WorkItemViewController implements Initializable, IViewController, I
     }
 
     @FXML
-    @SuppressWarnings("unused")
     private void handleOnSelectedDateChangedAction(ActionEvent event) throws SQLException, IOException {
-        DatePicker datePicker = (DatePicker)event.getSource();
-        List<Workrecord> workRecords = workRecordDetailsViewController.getWorkrecordDao().selectAll(workRecordViewController.getSelectedUser(), datePicker.getValue());
-        Optional<Workrecord> firstWorkrecord = workRecords.stream().findFirst();
-
-        if(firstWorkrecord.isPresent()) {
-            workItemData.clear();
-
-            List<WorkItem> workItemsOfActualSelectedWorkrecord = workItemDao.selectAll(firstWorkrecord.get().getId());
-            workItemData.addAll(workItemsOfActualSelectedWorkrecord);
-
-            selectTrackingItemAndRefreshDetails();
-        }
+        DatePicker datePicker = (DatePicker) event.getSource();
+        LocalDate newDate = datePicker.getValue();
+        
+        selectedWorkrecord = getWorkrecordOfDate(newDate);
+        refreshWorkItemData();
+        selectTrackingItemAndRefreshDetails();
     }
     
     @FXML
-    @SuppressWarnings("unused")
     private void handleOnSetStartTimeButtonClickAction(ActionEvent event) {
-        trackingItemStartTimeTimeSpinner.getValueFactory().setValue(trackingItemStartTimeTimeSpinner.formatLocalTime(LocalTime.now(), LocalTimeSpinner.TimeFormat.HH_MM));
+        trackingItemStartTimeTimeSpinner.getValueFactory().setValue(
+            trackingItemStartTimeTimeSpinner.formatLocalTime(LocalTime.now(), LocalTimeSpinner.TimeFormat.HH_MM)
+        );
     }
 
     @FXML
-    @SuppressWarnings("unused")
     private void handleOnSetEndTimeButtonClickAction(ActionEvent event) {
-        trackingItemEndTimeTimeSpinner.getValueFactory().setValue(trackingItemEndTimeTimeSpinner.formatLocalTime(LocalTime.now(), LocalTimeSpinner.TimeFormat.HH_MM));
+        trackingItemEndTimeTimeSpinner.getValueFactory().setValue(
+            trackingItemEndTimeTimeSpinner.formatLocalTime(LocalTime.now(), LocalTimeSpinner.TimeFormat.HH_MM)
+        );
     }
     
     @Override
-    @SuppressWarnings("unchecked")
     public void initialize(URL location, ResourceBundle rb) {
         this.rb = rb;
         
@@ -287,12 +239,12 @@ public class WorkItemViewController implements Initializable, IViewController, I
         initTrackingItemChoiceBox();
         
         try {
-            if(selectedWorkrecord != null) {
-                List<WorkItem> workItemsOfActualSelectedWorkrecord = workItemDao.selectAll(selectedWorkrecord.getId());
-                workItemData.addAll(workItemsOfActualSelectedWorkrecord);
+            if (selectedWorkrecord != null) {
+                List<WorkItem> workItems = workItemDao.selectAll(selectedWorkrecord.getId());
+                workItemData.addAll(workItems);
             }
         } catch (SQLException ex) {
-            log.fatal("No WorkItemData could be loaded!");
+            log.fatal("No WorkItemData could be loaded!", ex);
         }
         
         selectTrackingItemAndRefreshDetails();
@@ -317,8 +269,8 @@ public class WorkItemViewController implements Initializable, IViewController, I
 
     @Override
     public void preCloseAction() {
-        MainToolBarViewController mainToolBarViewController = (MainToolBarViewController)controllerRepository.get(MainToolBarViewController.class.getName());
-        if(mainToolBarViewController != null) {
+        MainToolBarViewController mainToolBarViewController = (MainToolBarViewController) controllerRepository.get(MainToolBarViewController.class.getName());
+        if (mainToolBarViewController != null) {
             mainToolBarViewController.getWorkItemButton().disableProperty().set(false);
         }
     }
@@ -326,13 +278,17 @@ public class WorkItemViewController implements Initializable, IViewController, I
     @Override
     public void update(String eventType, Object source) {
         switch (eventType) {
-            case newTrackingItemEvent, editTrackingItemEvent, deleteTrackingItemEvent -> {
-                initTrackingItemChoiceBox();
-            }
+            case newTrackingItemEvent, editTrackingItemEvent, deleteTrackingItemEvent -> initTrackingItemChoiceBox();
             case selectedWorkRecordChangedEvent -> {
-                selectedWorkrecord = (Workrecord)source;
-                if(selectedWorkrecord != null) {
+                selectedWorkrecord = (Workrecord) source;
+                if (selectedWorkrecord != null) {
                     selectedDateDatePicker.setValue(selectedWorkrecord.getDate());
+                    try {
+                        refreshWorkItemData();
+                        selectTrackingItemAndRefreshDetails();
+                    } catch (SQLException ex) {
+                        log.error("Failed to update work items for new workrecord", ex);
+                    }
                 }
             }
         }
@@ -343,9 +299,7 @@ public class WorkItemViewController implements Initializable, IViewController, I
         selectedDateLabel.setText(rb.getString(trackingItemDateResourceKey));
         sprintLabel.setText(rb.getString(trackingItemSprintResourceKey));
 
-        try {
-            long _ = Long.parseLong(sprintNumberLabelValue.getText());
-        } catch (NumberFormatException ex) {
+        if (sprint == null) {
             sprintNumberLabelValue.setText(rb.getString(sprintNotFoundResourceKey));
         }
         
@@ -371,13 +325,13 @@ public class WorkItemViewController implements Initializable, IViewController, I
     
     public void refreshWorkItemData() throws SQLException {
         workItemData.clear();
-        List<WorkItem> workItemsOfActualSelectedWorkrecord = workItemDao.selectAll(selectedWorkrecord.getId());
-        workItemData.addAll(workItemsOfActualSelectedWorkrecord);
+        if (selectedWorkrecord != null) {
+            List<WorkItem> workItemsOfActualSelectedWorkrecord = workItemDao.selectAll(selectedWorkrecord.getId());
+            workItemData.addAll(workItemsOfActualSelectedWorkrecord);
+        }
     }
      
     private void initCellValueFactoryTableColumns() {
-        //HOWTO: Cell Value Factory
-        //The cell must know which part of WorkItemTrackingData it needs to display.
         trackingItemShortcutTableColumn.setCellValueFactory(cellData -> cellData.getValue().getShortcutProperty());
         trackingItemNameTableColumn.setCellValueFactory(cellData -> cellData.getValue().getNameProperty());
         trackingItemStartTimeTableColumn.setCellValueFactory(cellData -> cellData.getValue().getStartTimeProperty());
@@ -397,67 +351,44 @@ public class WorkItemViewController implements Initializable, IViewController, I
     }
 
     private void initListeners() {
-        selectedDateDatePicker.valueProperty().addListener((var observable, var oldValue, var newValue) -> {
-            trySetSprintNumberLabel(newValue);
-            eventManager.notifyListenerOfEvent(workItemDateChangedEvent, newValue);
+        selectedDateDatePicker.valueProperty().addListener((obs, oldVal, newVal) -> {
+            trySetSprintNumberLabel(newVal);
+            eventManager.notifyListenerOfEvent(workItemDateChangedEvent, newVal);
             refreshButtonState();
         });
-        sprintNumberLabelValue.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
-            try {
-                newSprintId = Long.parseLong(newValue);
-            } catch (NumberFormatException ex) {
-                newSprintId = 0L;
-            }
-        });
-        trackingItemTableView.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends WorkItem> observable, WorkItem oldValue, WorkItem newValue) -> {
-            if(oldValue != null && newValue != null) {
-                newId = newValue.getId();
-                newWorkrecordId = newValue.getWorkrecordId();
-                trackingItemTableView.getSelectionModel().select(newValue);
-                showTrackingItemDetails(newValue);
-                refreshButtonState();
-            }
-        });
-        trackingItemStartTimeTimeSpinner.valueProperty().addListener((ObservableValue<? extends LocalTime> observable, LocalTime oldValue, LocalTime newValue) -> {
-            newStartTime = trackingItemStartTimeTimeSpinner.formatLocalTime(trackingItemStartTimeTimeSpinner.getValue(), LocalTimeSpinner.TimeFormat.HH_MM);
+
+        trackingItemTableView.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            showTrackingItemDetails(newVal);
             refreshButtonState();
         });
-        trackingItemEndTimeTimeSpinner.valueProperty().addListener((ObservableValue<? extends LocalTime> observable, LocalTime oldValue, LocalTime newValue) -> {
-            newEndTime = trackingItemEndTimeTimeSpinner.formatLocalTime(trackingItemEndTimeTimeSpinner.getValue(), LocalTimeSpinner.TimeFormat.HH_MM);
-            refreshButtonState();
-        });
-        trackingItemChoiceBox.valueProperty().addListener((ObservableValue<? extends TrackingItem> observable, TrackingItem oldValue, TrackingItem newValue) ->  {
-            if(newValue != null) {
-                newTrackingItemId = newValue.getId();
-                newShortcut = newValue.getShortcut();
-                newName = newValue.getName();
-            }
-            refreshButtonState();
-        });
-        trackingItemDescriptionValue.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
-            newDescription = newValue;
-            refreshButtonState();
-        });
+
+        trackingItemStartTimeTimeSpinner.valueProperty().addListener((obs, oldVal, newVal) -> refreshButtonState());
+        trackingItemEndTimeTimeSpinner.valueProperty().addListener((obs, oldVal, newVal) -> refreshButtonState());
+        trackingItemChoiceBox.valueProperty().addListener((obs, oldVal, newVal) -> refreshButtonState());
+        trackingItemDescriptionValue.textProperty().addListener((obs, oldVal, newVal) -> refreshButtonState());
     }
 
     private void trySetSprintNumberLabel(LocalDate date) {
-            try {
-                sprint = sprintDAO.selectSprintForDate(date);
-                if(sprint == null) {
-                    sprintNumberLabelValue.setText(rb.getString(sprintNotFoundResourceKey));
-                    sprintNumberLabelValue.setStyle("-fx-text-fill: " + COLOR_LIGHT_RED + ";");
-                    log.info("Sprint for date " + date + " not found, please update sprint referencedata!");                
-                } else {
-                    sprintNumberLabelValue.setText(sprint.getId().toString());
-                    sprintNumberLabelValue.setStyle("");
-                }
-            } catch (SQLException ex) {
-                log.info("Sprint for date " + date + " not found, please update sprint referencedata!");                
+        try {
+            sprint = sprintDAO.selectSprintForDate(date);
+            if (sprint == null) {
+                sprintNumberLabelValue.setText(rb.getString(sprintNotFoundResourceKey));
+                sprintNumberLabelValue.setStyle("-fx-text-fill: " + COLOR_LIGHT_RED + ";");
+                log.info("Sprint for date {} not found, please update sprint referencedata!", date);                
+            } else {
+                sprintNumberLabelValue.setText(sprint.getId().toString());
+                sprintNumberLabelValue.setStyle("");
             }
+        } catch (SQLException ex) {
+            sprint = null;
+            sprintNumberLabelValue.setText(rb.getString(sprintNotFoundResourceKey));
+            sprintNumberLabelValue.setStyle("-fx-text-fill: " + COLOR_LIGHT_RED + ";");
+            log.info("Sprint for date {} not found, please update sprint referencedata!", date);                
+        }
     }
 
     private void initDatePickerBySelectedWorkrecord(Workrecord selectedWorkrecord) {
-        if(selectedWorkrecord != null) {
+        if (selectedWorkrecord != null) {
             selectedDateDatePicker.setValue(selectedWorkrecord.getDate());
         } else {
             selectedDateDatePicker.setValue(LocalDate.now());
@@ -468,24 +399,25 @@ public class WorkItemViewController implements Initializable, IViewController, I
     private void initTrackingItemChoiceBox() {
         try {
             trackingItemChoiceBox.getItems().clear();
-            trackingItemChoiceBox.getItems().addAll(trackingItemDAO.selectAll());
-            trackingItemChoiceBox.getSelectionModel().select(0);
+            List<TrackingItem> items = trackingItemDAO.selectAll();
+            trackingItemChoiceBox.getItems().addAll(items);
+            if (!items.isEmpty()) {
+                trackingItemChoiceBox.getSelectionModel().select(0);
+            }
         } catch (SQLException ex) {
-            log.fatal("No TrackingItems could be loaded!");
+            log.fatal("No TrackingItems could be loaded!", ex);
         }
     }
 
     public void selectTrackingItemAndRefreshDetails() {
-        long workItemCount = workItemData.stream().count();
-        if(workItemCount > 0) {
-            WorkItem workItem = workItemData.get((int)workItemCount-1);
-            if(workItem != null) {
-                trackingItemTableView.getSelectionModel().select(workItem);  
-                showTrackingItemDetails(workItem);
-                return;
-            }
+        if (!workItemData.isEmpty()) {
+            WorkItem lastItem = workItemData.get(workItemData.size() - 1);
+            trackingItemTableView.getSelectionModel().select(lastItem);  
+            showTrackingItemDetails(lastItem);
+        } else {
+            trackingItemTableView.getSelectionModel().clearSelection();
+            showTrackingItemDetails(null);
         }
-        showTrackingItemDetails(null);
     }
 
     private boolean isInputValid(boolean isNew) {
@@ -494,28 +426,26 @@ public class WorkItemViewController implements Initializable, IViewController, I
         TrackingItem selectedTracking = trackingItemChoiceBox.getSelectionModel().getSelectedItem();
         
         // 1. Basic Validity
-        if (selectedTracking == null) return false;
-        if (startTime.equals(LocalTime.MIN) || endTime.equals(LocalTime.MIN)) return false;
+        if (selectedTracking == null || startTime == null || endTime == null) return false;
+        if (startTime.equals(LocalTime.MIN) && endTime.equals(LocalTime.MIN)) return false;
         if (!startTime.isBefore(endTime)) return false;
         
-        // 2. Overlap Check against existing data in the table
+        // 2. Overlap Check against existing items
         WorkItem selectedItem = trackingItemTableView.getSelectionModel().getSelectedItem();
         
         for (WorkItem item : workItemData) {
-            // If we are validating for an EDIT, ignore the item we are currently editing
             if (!isNew && selectedItem != null && Objects.equals(item.getId(), selectedItem.getId())) {
-                continue;
+                continue; // Ignore current item when validating an Edit
             }
-            // Standard Overlap Formula: (StartA < EndB) AND (EndA > StartB)
+            // Overlap condition: (StartA < EndB) AND (EndA > StartB)
             if (startTime.isBefore(item.getEndTime()) && endTime.isAfter(item.getStartTime())) {
-                log.info("Overlap detected with existing item: " + item.getName());
+                log.info("Overlap detected with existing item: {}", item.getName());
                 return false; 
             }
         }
         return true;
     }
 
-    @SuppressWarnings("null")
     private boolean hasWorkItemChanged() {
         if (!isWorkItemSelected()) return false;
         
@@ -524,15 +454,12 @@ public class WorkItemViewController implements Initializable, IViewController, I
         
         LocalTime currentStart = trackingItemStartTimeTimeSpinner.getValue();
         LocalTime currentEnd = trackingItemEndTimeTimeSpinner.getValue();
-        String currentDesc = trackingItemDescriptionValue.getText();
+        String currentDesc = trackingItemDescriptionValue.getText() == null ? "" : trackingItemDescriptionValue.getText();
         
-        // Check if any field differs from the "old" baseline
-        boolean changed = currentTrackingId != oldTrackingItemId
+        return currentTrackingId != oldTrackingItemId
             || !Objects.equals(currentStart, oldStartTime)
             || !Objects.equals(currentEnd, oldEndTime)
             || !Objects.equals(currentDesc, oldDescription);
-            
-        return changed;
     }
 
     public void refreshButtonState() {
@@ -540,23 +467,16 @@ public class WorkItemViewController implements Initializable, IViewController, I
         boolean recordExists = workrecordExistsForDate(date);
         boolean itemSelected = isWorkItemSelected();
         
-        // Logic for NEW: Must have a workrecord and the input must not overlap with ANY item
         boolean canCreateNew = recordExists && isInputValid(true);
-        
-        // Logic for EDIT: Must have a selection, valid input (ignoring self-overlap), and actual changes
         boolean canEditExisting = itemSelected && isInputValid(false) && hasWorkItemChanged();
         
         newButton.setDisable(!canCreateNew);
         editButton.setDisable(!canEditExisting);
         deleteButton.setDisable(!itemSelected);
-        
-        log.info(String.format("State: RecordExists=%b, Selected=%b, ValidNew=%b, ValidEdit=%b", recordExists, itemSelected, canCreateNew, canEditExisting));
-        log.info(String.format("ButtonState: New enabled=%b, Edit enabled=%b, Delete enabled=%b", canCreateNew, canEditExisting, itemSelected));
     }
 
     private boolean isWorkItemSelected() {
-        WorkItem workItem = trackingItemTableView.getSelectionModel().getSelectedItem();
-        return workItem != null;
+        return trackingItemTableView.getSelectionModel().getSelectedItem() != null;
     }
     
     private boolean workrecordExistsForDate(LocalDate date) {
@@ -566,40 +486,33 @@ public class WorkItemViewController implements Initializable, IViewController, I
     private Workrecord getWorkrecordOfDate(LocalDate date) {
         try {
             List<Workrecord> workRecords = workRecordDetailsViewController.getWorkrecordDao().selectAll(workRecordViewController.getSelectedUser(), date);
-            Optional<Workrecord> firstWorkrecord = workRecords.stream().findFirst();
-            if(firstWorkrecord.isPresent()) {
-                return firstWorkrecord.get();
-            }
+            return workRecords.stream().findFirst().orElse(null);
         } catch (SQLException ex) {
-            log.fatal("No Workrecords could be loaded!");    
+            log.fatal("No Workrecords could be loaded!", ex);    
         }
         return null;
     }
     
     private void showTrackingItemDetails(WorkItem workItem) {
-        if(workItem != null) {
-            //We save the actual workitem information to be able to 
-            //check for changes of each Information at validation of Innput.
+        if (workItem != null) {
             saveActualWorkItemInformation(workItem);
 
-            ObservableList<TrackingItem> items = trackingItemChoiceBox.getItems();
-            items.stream()
-                    .filter(item -> item.getName().equals(workItem.getName()))
+            trackingItemChoiceBox.getItems().stream()
+                    .filter(item -> Objects.equals(item.getId(), workItem.getTrackingItemId()))
                     .findFirst()
                     .ifPresent(trackingItemChoiceBox.getSelectionModel()::select);
+
             trackingItemStartTimeTimeSpinner.getValueFactory().setValue(workItem.getStartTime());
             trackingItemEndTimeTimeSpinner.getValueFactory().setValue(workItem.getEndTime());
             trackingItemDescriptionValue.setText(workItem.getDescription());
         } else {
-            trackingItemChoiceBox.getSelectionModel().select(0);
-            if(selectedWorkrecord != null) {
-                LocalTime workrecordStartTime = selectedWorkrecord.getStarttime();
-                trackingItemStartTimeTimeSpinner.getValueFactory().setValue(workrecordStartTime);
-                trackingItemStartTimeTimeSpinner.formatLocalTime(trackingItemStartTimeTimeSpinner.getValue(), LocalTimeSpinner.TimeFormat.HH_MM);
-
-                LocalTime workrecordEndTime = selectedWorkrecord.getEndtime();
-                trackingItemEndTimeTimeSpinner.getValueFactory().setValue(workrecordEndTime);
-                trackingItemEndTimeTimeSpinner.formatLocalTime(trackingItemEndTimeTimeSpinner.getValue(), LocalTimeSpinner.TimeFormat.HH_MM);
+            saveActualWorkItemInformation(null);
+            if (!trackingItemChoiceBox.getItems().isEmpty()) {
+                trackingItemChoiceBox.getSelectionModel().select(0);
+            }
+            if (selectedWorkrecord != null) {
+                trackingItemStartTimeTimeSpinner.getValueFactory().setValue(selectedWorkrecord.getStarttime());
+                trackingItemEndTimeTimeSpinner.getValueFactory().setValue(selectedWorkrecord.getEndtime());
             } else {
                 trackingItemStartTimeTimeSpinner.getValueFactory().setValue(LocalTime.MIN);
                 trackingItemEndTimeTimeSpinner.getValueFactory().setValue(LocalTime.MIN);
@@ -610,23 +523,16 @@ public class WorkItemViewController implements Initializable, IViewController, I
 
     private void saveActualWorkItemInformation(WorkItem workItem) {        
         if (workItem == null) {
-            oldTrackingItemId = 0;
+            oldTrackingItemId = 0L;
             oldStartTime = null;
             oldEndTime = null;
             oldDescription = "";
             return;
         }
         
-        // This creates the baseline for 'hasWorkItemChanged'
-        oldId = workItem.getId();
         oldTrackingItemId = workItem.getTrackingItemId();
         oldStartTime = workItem.getStartTime();
         oldEndTime = workItem.getEndTime();
-        oldDescription = workItem.getDescription();        
-        oldWorkrecordId = workItem.getWorkrecordId();
-        oldSprintId = workItem.getSprintId();
-        oldShortcut = workItem.getShortcut();
-        oldName = workItem.getName();
+        oldDescription = workItem.getDescription() == null ? "" : workItem.getDescription();
     }
-    
 }
