@@ -464,6 +464,7 @@ public class WorkItemViewController implements Initializable, IViewController, I
         return true;
     }
 
+    @SuppressWarnings("null")
     private boolean hasWorkItemChanged() {
         if (!isWorkItemSelected()) return false;
         
