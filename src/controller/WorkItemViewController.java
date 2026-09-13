@@ -160,6 +160,7 @@ public class WorkItemViewController implements Initializable, IViewController, I
         
         NewWorkItemCommand cmd = new NewWorkItemCommand(controllerRepository, eventManager, trackingItemTableView, newWorkItem, workItemDao);
         undoService.execute(cmd);
+        sortWorkItems();
     }
     
     @FXML
@@ -181,6 +182,7 @@ public class WorkItemViewController implements Initializable, IViewController, I
 
             EditWorkItemCommand cmd = new EditWorkItemCommand(controllerRepository, eventManager, trackingItemTableView, selectedWorkItem, modifiedWorkItem, workItemDao);
             undoService.execute(cmd);
+            sortWorkItems();
         } else if (selectedWorkItem == null) {
             ControllerUtilities.showNoItemSelectedAlert(primaryStage, rb, noTrackingItemSelectionAlertTitle, noTrackingItemSelectionAlertHeader, noTrackingItemSelectionAlertContent);
         }
@@ -193,6 +195,7 @@ public class WorkItemViewController implements Initializable, IViewController, I
         if (selectedWorkItem != null) {
             DeleteWorkItemCommand cmd = new DeleteWorkItemCommand(controllerRepository, eventManager, trackingItemTableView, selectedWorkItem, workItemDao);
             undoService.execute(cmd);
+            sortWorkItems();
         } else {
             ControllerUtilities.showNoItemSelectedAlert(primaryStage, rb, noTrackingItemSelectionAlertTitle, noTrackingItemSelectionAlertHeader, noTrackingItemSelectionAlertContent);
         }
@@ -247,6 +250,7 @@ public class WorkItemViewController implements Initializable, IViewController, I
             log.fatal("No WorkItemData could be loaded!", ex);
         }
         
+        sortWorkItems();
         selectTrackingItemAndRefreshDetails();
         refreshButtonState();
         languageService.updateGuiItems();        
@@ -323,19 +327,33 @@ public class WorkItemViewController implements Initializable, IViewController, I
         return eventManager;
     }
     
+    @SuppressWarnings("unchecked")
+    public void sortWorkItems() {
+        FXCollections.sort(workItemData, Comparator.comparing(WorkItem::getStartTime, Comparator.nullsFirst(Comparator.naturalOrder())));
+        if (!trackingItemTableView.getSortOrder().contains(trackingItemStartTimeTableColumn)) {
+            trackingItemTableView.getSortOrder().setAll(trackingItemStartTimeTableColumn);
+        }
+        trackingItemTableView.sort();
+    }
+    
     public void refreshWorkItemData() throws SQLException {
         workItemData.clear();
         if (selectedWorkrecord != null) {
             List<WorkItem> workItemsOfActualSelectedWorkrecord = workItemDao.selectAll(selectedWorkrecord.getId());
             workItemData.addAll(workItemsOfActualSelectedWorkrecord);
         }
+        sortWorkItems();
     }
      
+    @SuppressWarnings("unchecked")
     private void initCellValueFactoryTableColumns() {
         trackingItemShortcutTableColumn.setCellValueFactory(cellData -> cellData.getValue().getShortcutProperty());
         trackingItemNameTableColumn.setCellValueFactory(cellData -> cellData.getValue().getNameProperty());
         trackingItemStartTimeTableColumn.setCellValueFactory(cellData -> cellData.getValue().getStartTimeProperty());
         trackingItemEndTimeTableColumn.setCellValueFactory(cellData -> cellData.getValue().getEndTimeProperty());
+
+        trackingItemStartTimeTableColumn.setSortType(TableColumn.SortType.ASCENDING);
+        trackingItemTableView.getSortOrder().setAll(trackingItemStartTimeTableColumn);
     }
 
     private void initStartTimeTimeSpinner() {
