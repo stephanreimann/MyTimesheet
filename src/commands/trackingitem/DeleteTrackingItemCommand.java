@@ -74,7 +74,6 @@ public class DeleteTrackingItemCommand implements ICommand {
             } else {
                 mainToolBarViewController.toggleUndoRedoButtons();
                 mainMenuBarViewController.toggleUndoRedoMenuItems();
-                trackingItemTableView.getSelectionModel().select(selectedTrackingItem);
                 events.notifyListenerOfEvent(deleteTrackingItemEvent, this);                
                 return true;
             }

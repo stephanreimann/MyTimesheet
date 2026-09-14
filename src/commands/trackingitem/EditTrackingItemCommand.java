@@ -59,7 +59,6 @@ public class EditTrackingItemCommand implements ICommand {
             } else {
                 mainToolBarViewController.toggleUndoRedoButtons();
                 mainMenuBarViewController.toggleUndoRedoMenuItems();
-                trackingItemTableView.getSelectionModel().select(modifiedTrackingItem);
                 events.notifyListenerOfEvent(editTrackingItemEvent, this);                
                 return true;
             }
@@ -80,7 +79,6 @@ public class EditTrackingItemCommand implements ICommand {
             } else {
                 mainToolBarViewController.toggleUndoRedoButtons();
                 mainMenuBarViewController.toggleUndoRedoMenuItems();
-                trackingItemTableView.getSelectionModel().select(originalTrackingItem);
                 events.notifyListenerOfEvent(editTrackingItemEvent, this);                
                 return true;
             }
@@ -101,7 +99,6 @@ public class EditTrackingItemCommand implements ICommand {
             } else {
                 mainToolBarViewController.toggleUndoRedoButtons();
                 mainMenuBarViewController.toggleUndoRedoMenuItems();
-                trackingItemTableView.getSelectionModel().select(modifiedTrackingItem);
                 events.notifyListenerOfEvent(editTrackingItemEvent, this);                
                 return true;
             }

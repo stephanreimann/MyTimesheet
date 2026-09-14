@@ -55,7 +55,6 @@ public class NewTrackingItemCommand implements ICommand {
             } else {
                 mainToolBarViewController.toggleUndoRedoButtons();
                 mainMenuBarViewController.toggleUndoRedoMenuItems();
-                trackingItemTableView.getSelectionModel().select(newTrackingItem);
                 events.notifyListenerOfEvent(newTrackingItemEvent, this);                
                 return true;
             }
