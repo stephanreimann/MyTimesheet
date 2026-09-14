@@ -62,6 +62,7 @@ public class WorkItemViewController implements Initializable, IViewController, I
     private final String noTrackingItemSelectionAlertContent = "NoWorkItemSelectionAlertContent";
     
     // <editor-fold defaultstate="collapsed" desc="FXML Members">
+    @SuppressWarnings("unused")
     @FXML private ToolBar trackingItemToolBar;
     @FXML private Label selectedDateLabel;
     @FXML private DatePicker selectedDateDatePicker;
@@ -95,6 +96,7 @@ public class WorkItemViewController implements Initializable, IViewController, I
     private Stage primaryStage;
     private final ControllerRepository controllerRepository;
     private final LanguageService languageService;
+    @SuppressWarnings("unused")
     private final Connection connection;
     private final UndoService undoService;
     private ResourceBundle rb;
@@ -140,6 +142,7 @@ public class WorkItemViewController implements Initializable, IViewController, I
     }
     
     @FXML
+    @SuppressWarnings("unused")
     private void newAction(ActionEvent event) throws SQLException, IOException {
         if (!isInputValid(true) || selectedWorkrecord == null || sprint == null) {
             return;
@@ -164,6 +167,7 @@ public class WorkItemViewController implements Initializable, IViewController, I
     }
     
     @FXML
+    @SuppressWarnings("unused")
     private void editAction(ActionEvent event) throws SQLException, IOException {
         WorkItem selectedWorkItem = trackingItemTableView.getSelectionModel().getSelectedItem();
 
@@ -189,6 +193,7 @@ public class WorkItemViewController implements Initializable, IViewController, I
     }
 
     @FXML
+    @SuppressWarnings("unused")
     private void deleteAction(ActionEvent event) throws SQLException, IOException {
         WorkItem selectedWorkItem = trackingItemTableView.getSelectionModel().getSelectedItem();
 
@@ -202,6 +207,7 @@ public class WorkItemViewController implements Initializable, IViewController, I
     }
 
     @FXML
+    @SuppressWarnings("unused")
     private void handleOnSelectedDateChangedAction(ActionEvent event) throws SQLException, IOException {
         DatePicker datePicker = (DatePicker) event.getSource();
         LocalDate newDate = datePicker.getValue();
@@ -212,6 +218,7 @@ public class WorkItemViewController implements Initializable, IViewController, I
     }
     
     @FXML
+    @SuppressWarnings("unused")
     private void handleOnSetStartTimeButtonClickAction(ActionEvent event) {
         trackingItemStartTimeTimeSpinner.getValueFactory().setValue(
             trackingItemStartTimeTimeSpinner.formatLocalTime(LocalTime.now(), LocalTimeSpinner.TimeFormat.HH_MM)
@@ -219,6 +226,7 @@ public class WorkItemViewController implements Initializable, IViewController, I
     }
 
     @FXML
+    @SuppressWarnings("unused")
     private void handleOnSetEndTimeButtonClickAction(ActionEvent event) {
         trackingItemEndTimeTimeSpinner.getValueFactory().setValue(
             trackingItemEndTimeTimeSpinner.formatLocalTime(LocalTime.now(), LocalTimeSpinner.TimeFormat.HH_MM)
