@@ -5,6 +5,7 @@
 package controller;
 
 import command.workitem.*;
+import controls.DurationSpinner;
 import controls.LocalTimeSpinner;
 import java.io.IOException;
 import java.net.URL;
@@ -44,6 +45,7 @@ public class WorkItemViewController implements Initializable, IViewController, I
     private final String trackingItemNameResourceKey = "TrackingItemName";
     private final String trackingItemStartTimeResourceKey = "TrackingItemStartTime";
     private final String trackingItemEndTimeResourceKey = "TrackingItemEndTime";
+    private final String trackingItemTimeResourceKey = "TrackingItemTime";
     private final String trackingItemDetailsHeaderResourceKey = "TrackingItemDetailsHeader";
     private final String trackingItemItemResourceKey = "TrackingItem";
     private final String trackingItemDescriptionResourceKey = "TrackingItemDescription";
@@ -82,6 +84,7 @@ public class WorkItemViewController implements Initializable, IViewController, I
     @FXML private Button trackingItemStartTimeButton;
     @FXML private Label trackingItemEndTimeLabel;
     @FXML private Button trackingItemEndTimeButton;
+    @FXML private Label trackingItemTimeTableColumn;
     @FXML private Label trackingItemDescriptionLabel;
     @FXML private ChoiceBox<TrackingItem> trackingItemChoiceBox;
     @FXML private TextArea trackingItemDescriptionValue;
@@ -104,7 +107,8 @@ public class WorkItemViewController implements Initializable, IViewController, I
 
     private LocalTimeSpinner trackingItemStartTimeTimeSpinner;
     private LocalTimeSpinner trackingItemEndTimeTimeSpinner;
-
+    private DurationSpinner trackingItemTimeDurationSpinner;
+    
     private Sprint sprint;
     private final SprintDAO sprintDAO;
     private final TrackingItemDAO trackingItemDAO;
@@ -121,6 +125,9 @@ public class WorkItemViewController implements Initializable, IViewController, I
     private final WorkRecordDetailsViewController workRecordDetailsViewController;
     private final WorkRecordViewController workRecordViewController;
     private Workrecord selectedWorkrecord;
+
+    // Flag to prevent recursive listener updates
+    private boolean isSyncing = false;
     
     public WorkItemViewController(ControllerRepository controllerRepository, LanguageService languageService, Connection connection, UndoService undoService) throws SQLException {
         if (controllerRepository == null) throw new NullPointerException("controllerRepository");
@@ -245,6 +252,7 @@ public class WorkItemViewController implements Initializable, IViewController, I
         initCellValueFactoryTableColumns();
         initStartTimeTimeSpinner();
         initEndTimeTimeSpinner();
+        initTimeDurationSpinner();
         initListeners();
         initDatePickerBySelectedWorkrecord(selectedWorkrecord);
         initTrackingItemChoiceBox();
@@ -319,6 +327,7 @@ public class WorkItemViewController implements Initializable, IViewController, I
         trackingItemNameTableColumn.setText(rb.getString(trackingItemNameResourceKey));
         trackingItemStartTimeTableColumn.setText(rb.getString(trackingItemStartTimeResourceKey));
         trackingItemEndTimeTableColumn.setText(rb.getString(trackingItemEndTimeResourceKey));
+        trackingItemTimeTableColumn.setText(rb.getString(trackingItemTimeResourceKey));
         trackingItemDetailsHeaderLabel.setText(rb.getString(trackingItemDetailsHeaderResourceKey));        
         trackingItemNameLabel.setText(rb.getString(trackingItemItemResourceKey));
         trackingItemStartTimeLabel.setText(rb.getString(trackingItemStartTimeResourceKey));
@@ -335,15 +344,6 @@ public class WorkItemViewController implements Initializable, IViewController, I
         return eventManager;
     }
     
-    @SuppressWarnings("unchecked")
-    public void sortWorkItems() {
-        FXCollections.sort(workItemData, Comparator.comparing(WorkItem::getStartTime, Comparator.nullsFirst(Comparator.naturalOrder())));
-        if (!trackingItemTableView.getSortOrder().contains(trackingItemStartTimeTableColumn)) {
-            trackingItemTableView.getSortOrder().setAll(trackingItemStartTimeTableColumn);
-        }
-        trackingItemTableView.sort();
-    }
-    
     public void refreshWorkItemData() throws SQLException {
         workItemData.clear();
         if (selectedWorkrecord != null) {
@@ -353,6 +353,15 @@ public class WorkItemViewController implements Initializable, IViewController, I
         sortWorkItems();
     }
      
+    @SuppressWarnings("unchecked")
+    public void sortWorkItems() {
+        FXCollections.sort(workItemData, Comparator.comparing(WorkItem::getStartTime, Comparator.nullsFirst(Comparator.naturalOrder())));
+        if (!trackingItemTableView.getSortOrder().contains(trackingItemStartTimeTableColumn)) {
+            trackingItemTableView.getSortOrder().setAll(trackingItemStartTimeTableColumn);
+        }
+        trackingItemTableView.sort();
+    }
+    
     @SuppressWarnings("unchecked")
     private void initCellValueFactoryTableColumns() {
         trackingItemShortcutTableColumn.setCellValueFactory(cellData -> cellData.getValue().getShortcutProperty());
@@ -376,6 +385,11 @@ public class WorkItemViewController implements Initializable, IViewController, I
         trackingItemDetailsGridPane.add(trackingItemEndTimeTimeSpinner, 2, 3);
     }
 
+    private void initTimeDurationSpinner() {
+        trackingItemTimeDurationSpinner = new DurationSpinner(false);
+        trackingItemDetailsGridPane.add(trackingItemTimeDurationSpinner, 2, 4);
+    }
+    
     private void initListeners() {
         selectedDateDatePicker.valueProperty().addListener((obs, oldVal, newVal) -> {
             trySetSprintNumberLabel(newVal);
@@ -388,10 +402,62 @@ public class WorkItemViewController implements Initializable, IViewController, I
             refreshButtonState();
         });
 
-        trackingItemStartTimeTimeSpinner.valueProperty().addListener((obs, oldVal, newVal) -> refreshButtonState());
-        trackingItemEndTimeTimeSpinner.valueProperty().addListener((obs, oldVal, newVal) -> refreshButtonState());
-        trackingItemChoiceBox.valueProperty().addListener((obs, oldVal, newVal) -> refreshButtonState());
-        trackingItemDescriptionValue.textProperty().addListener((obs, oldVal, newVal) -> refreshButtonState());
+        // SYNC: StartTime changed -> Update EndTime (maintaining Duration)
+        trackingItemStartTimeTimeSpinner.valueProperty().addListener((obs, oldVal, newVal) -> { 
+            if (!isSyncing && newVal != null) {
+                isSyncing = true;
+                try {
+                    Duration duration = trackingItemTimeDurationSpinner.getValue();
+                    if (duration != null) {
+                        trackingItemEndTimeTimeSpinner.getValueFactory().setValue(newVal.plus(duration));
+                    }
+                } finally {
+                    isSyncing = false;
+                }
+            }
+            refreshButtonState();
+        });
+        
+        // SYNC: EndTime changed -> Update Duration
+        trackingItemEndTimeTimeSpinner.valueProperty().addListener((obs, oldVal, newVal) -> {
+            if (!isSyncing && newVal != null) {
+                isSyncing = true;
+                try {
+                    LocalTime startTime = trackingItemStartTimeTimeSpinner.getValue();
+                    if (startTime != null && newVal.isAfter(startTime)) {
+                        trackingItemTimeDurationSpinner.getValueFactory().setValue(Duration.between(startTime, newVal));
+                    }
+                } finally {
+                    isSyncing = false;
+                }
+            }
+            refreshButtonState();
+        });
+        
+        // SYNC: Duration changed -> Update EndTime
+        trackingItemTimeDurationSpinner.valueProperty().addListener((obs, oldVal, newVal) -> {
+            DurationStyler.styleSpinner(trackingItemTimeDurationSpinner, newVal);
+            if (!isSyncing && newVal != null) {
+                isSyncing = true;
+                try {
+                    LocalTime startTime = trackingItemStartTimeTimeSpinner.getValue();
+                    if (startTime != null) {
+                        trackingItemEndTimeTimeSpinner.getValueFactory().setValue(startTime.plus(newVal));
+                    }
+                } finally {
+                    isSyncing = false;
+                }
+            }
+            refreshButtonState();
+        });
+        
+        trackingItemChoiceBox.valueProperty().addListener((obs, oldVal, newVal) -> {
+            refreshButtonState();
+        });
+        
+        trackingItemDescriptionValue.textProperty().addListener((obs, oldVal, newVal) -> {
+            refreshButtonState();
+        });
     }
 
     private void trySetSprintNumberLabel(LocalDate date) {
@@ -521,30 +587,38 @@ public class WorkItemViewController implements Initializable, IViewController, I
     }
     
     private void showTrackingItemDetails(WorkItem workItem) {
-        if (workItem != null) {
-            saveActualWorkItemInformation(workItem);
+        isSyncing = true; // Disable sync while loading data to avoid jitter
+        try {
+            if (workItem != null) {
+                saveActualWorkItemInformation(workItem);
 
-            trackingItemChoiceBox.getItems().stream()
-                    .filter(item -> Objects.equals(item.getId(), workItem.getTrackingItemId()))
-                    .findFirst()
-                    .ifPresent(trackingItemChoiceBox.getSelectionModel()::select);
+                trackingItemChoiceBox.getItems().stream()
+                        .filter(item -> Objects.equals(item.getId(), workItem.getTrackingItemId()))
+                        .findFirst()
+                        .ifPresent(trackingItemChoiceBox.getSelectionModel()::select);
 
-            trackingItemStartTimeTimeSpinner.getValueFactory().setValue(workItem.getStartTime());
-            trackingItemEndTimeTimeSpinner.getValueFactory().setValue(workItem.getEndTime());
-            trackingItemDescriptionValue.setText(workItem.getDescription());
-        } else {
-            saveActualWorkItemInformation(null);
-            if (!trackingItemChoiceBox.getItems().isEmpty()) {
-                trackingItemChoiceBox.getSelectionModel().select(0);
-            }
-            if (selectedWorkrecord != null) {
-                trackingItemStartTimeTimeSpinner.getValueFactory().setValue(selectedWorkrecord.getStarttime());
-                trackingItemEndTimeTimeSpinner.getValueFactory().setValue(selectedWorkrecord.getEndtime());
+                trackingItemStartTimeTimeSpinner.getValueFactory().setValue(workItem.getStartTime());
+                trackingItemEndTimeTimeSpinner.getValueFactory().setValue(workItem.getEndTime());
+                trackingItemTimeDurationSpinner.getValueFactory().setValue(Duration.between(workItem.getStartTime(), workItem.getEndTime()));
+                trackingItemDescriptionValue.setText(workItem.getDescription());
             } else {
-                trackingItemStartTimeTimeSpinner.getValueFactory().setValue(LocalTime.MIN);
-                trackingItemEndTimeTimeSpinner.getValueFactory().setValue(LocalTime.MIN);
+                saveActualWorkItemInformation(null);
+                if (!trackingItemChoiceBox.getItems().isEmpty()) {
+                    trackingItemChoiceBox.getSelectionModel().select(0);
+                }
+                if (selectedWorkrecord != null) {
+                    trackingItemStartTimeTimeSpinner.getValueFactory().setValue(selectedWorkrecord.getStarttime());
+                    trackingItemEndTimeTimeSpinner.getValueFactory().setValue(selectedWorkrecord.getEndtime());
+                    trackingItemTimeDurationSpinner.getValueFactory().setValue(Duration.between(selectedWorkrecord.getStarttime(), selectedWorkrecord.getEndtime()));
+                } else {
+                    trackingItemStartTimeTimeSpinner.getValueFactory().setValue(LocalTime.MIN);
+                    trackingItemEndTimeTimeSpinner.getValueFactory().setValue(LocalTime.MIN);
+                    trackingItemTimeDurationSpinner.getValueFactory().setValue(Duration.ZERO);
+                }
+                trackingItemDescriptionValue.setText("");
             }
-            trackingItemDescriptionValue.setText("");
+        } finally {
+            isSyncing = false;
         }
     }
 

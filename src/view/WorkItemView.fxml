@@ -18,12 +18,12 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="840.0" maxWidth="512.0" minHeight="825.0" minWidth="512.0" prefHeight="825.0" prefWidth="512.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <VBox fillWidth="true" maxHeight="840.0" maxWidth="512.0" minHeight="840.0" minWidth="512.0" prefHeight="840.0" prefWidth="512.0" spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <VBox fillWidth="true" spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 
          <children>
-            <ToolBar fx:id="trackingItemToolBar" maxHeight="38.0" minHeight="38.0" prefHeight="38.0">
+            <ToolBar fx:id="trackingItemToolBar">
                <items>
                   <Label fx:id="selectedDateLabel" text="%Date" />
                   <DatePicker fx:id="selectedDateDatePicker" onAction="#handleOnSelectedDateChangedAction" />
@@ -41,7 +41,7 @@
                </columns>
             </TableView>
 
-            <Separator prefWidth="200.0" />
+            <Separator />
 
             <VBox fillWidth="true" VBox.vgrow="ALWAYS">
                <padding>
@@ -56,6 +56,7 @@
                         <ColumnConstraints minWidth="250.0" prefWidth="289.0" />
                      </columnConstraints>
                      <rowConstraints>
+                        <RowConstraints vgrow="NEVER" />
                         <RowConstraints vgrow="NEVER" />
                         <RowConstraints vgrow="NEVER" />
                         <RowConstraints vgrow="NEVER" />
@@ -101,7 +102,7 @@
                            </GridPane.margin>
                         </Button>
 
-                        <Label fx:id="trackingItemDescriptionLabel" text="%TrackingItemDescription" GridPane.rowIndex="4">
+                        <Label fx:id="trackingItemDescriptionLabel" text="%TrackingItemDescription" GridPane.rowIndex="5">
                            <GridPane.margin>
                               <Insets bottom="10.0" left="5.0" right="5.0" top="10.0" />
                            </GridPane.margin>
@@ -113,15 +114,20 @@
                            </GridPane.margin>
                         </ChoiceBox>
 
-                        <TextArea fx:id="trackingItemDescriptionValue" minHeight="200.0" prefHeight="200.0" wrapText="true" GridPane.columnSpan="3" GridPane.rowIndex="5">
+                        <TextArea fx:id="trackingItemDescriptionValue" wrapText="true" GridPane.columnSpan="3" GridPane.rowIndex="6">
                            <GridPane.margin>
                               <Insets bottom="5.0" top="5.0" />
                            </GridPane.margin>
                         </TextArea>
+                        <Label fx:id="trackingItemTimeTableColumn" text="%TrackingItemTime" GridPane.rowIndex="4">
+                           <GridPane.margin>
+                              <Insets bottom="10.0" left="5.0" right="5.0" top="10.0" />
+                           </GridPane.margin>
+                        </Label>
                      </children>
                   </GridPane>
 
-                  <HBox alignment="TOP_RIGHT" minHeight="40.0" prefHeight="40.0" spacing="5.0" VBox.vgrow="NEVER">
+                  <HBox alignment="TOP_RIGHT" spacing="5.0" VBox.vgrow="NEVER">
                      <children>
                         <Button fx:id="newButton" mnemonicParsing="false" onAction="#newAction" text="%New" />
                         <Button fx:id="editButton" mnemonicParsing="false" onAction="#editAction" text="%Edit" />
