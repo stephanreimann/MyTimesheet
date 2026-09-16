@@ -5,8 +5,7 @@
 package controller;
 
 import command.workitem.*;
-import controls.DurationSpinner;
-import controls.LocalTimeSpinner;
+import controls.*;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.*;
