@@ -5,7 +5,6 @@
 package controller;
 
 import controls.*;
-import java.io.*;
 import java.net.URL;
 import java.sql.*;
 import java.time.Duration;
@@ -13,7 +12,6 @@ import java.time.LocalTime;
 import java.util.*;
 import org.apache.logging.log4j.*;
 import javafx.beans.value.ObservableValue;
-import javafx.event.ActionEvent;
 import javafx.fxml.*;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
@@ -54,13 +52,17 @@ public class SettingsViewController implements Initializable, IViewController {
     private final String lowerOverallOvertimeThresholdResourceKey = "LowerOverallOvertimeThreshold";
     private final String defaultOvertimeThreshold = Duration.ZERO.toString();
 
+    private final String workitemResourceKey = "WorkItem";
+    
     private final String workrecordAutomaticCreationChangeEvent = "WorkrecordAutomaticCreationChangeEvent";
     private final String defaultProjectChangedEvent = "DefaultProjectChanged";
     private final String defaultLocationChangedEvent = "DefaultLocationChanged";
     private final String useLastWorkrecordConfigurationChangedEvent = "UseLastWorkrecordConfigurationChanged";
     
     @FXML
+    @SuppressWarnings("unused")
     private TabPane settingsTabPane;
+    
     @FXML
     private Tab settingsApplicationTab;
     @FXML
@@ -106,6 +108,11 @@ public class SettingsViewController implements Initializable, IViewController {
     @FXML
     private Label lowerOverallOvertimeThresholdLabel;
 
+    @FXML
+    private Tab settingsWorkitemTab;
+    @FXML
+    private GridPane settingsWorkitemTabGridPane;
+    
     private DurationSpinner workrecordStartTimeDeltaValue;
     private DurationSpinner workrecordEndTimeDeltaValue;
     private DurationSpinner upperOverallOvertimeThresholdValue; 
@@ -116,6 +123,7 @@ public class SettingsViewController implements Initializable, IViewController {
    
     private final Logger log = LogManager.getLogger(SettingsViewController.class.getName());
     
+    @SuppressWarnings("unused")
     private Stage primaryStage;
     private ResourceBundle rb;
     private final PropertiesService propertiesService;
@@ -263,6 +271,8 @@ public class SettingsViewController implements Initializable, IViewController {
         settingsWorktimeTab.setText(rb.getString(worktimeResourceKey));
         upperOverallOvertimeThresholdLabel.setText(rb.getString(upperOverallOvertimeThresholdResourceKey));
         lowerOverallOvertimeThresholdLabel.setText(rb.getString(lowerOverallOvertimeThresholdResourceKey));
+        
+        settingsWorkitemTab.setText(rb.getString(workitemResourceKey));
     }
 
     private void toggleApplicationAlwaysOnTopToggleButton(Boolean isSelected) {
@@ -321,17 +331,7 @@ public class SettingsViewController implements Initializable, IViewController {
 
         workrecordUseLastWorkrecordConfigurationToggleButton.setSelected(isSelected);
     }
-    
-    private File initializeFileChooserAndShowIt(String description, List<String> extensions) throws IOException {
-        String holydaysDirectory = new File(".").getCanonicalPath();
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle(rb.getString("FileChooserTitle"));
-        fileChooser.setInitialDirectory(new File(holydaysDirectory));
-        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter(description, extensions);
-        fileChooser.getExtensionFilters().add(extFilter);
-        return fileChooser.showOpenDialog(primaryStage);
-    }
-    
+        
     @Override
     public ResourceBundle getResourceBundle() {
         return rb;

@@ -49,7 +49,7 @@
                      </children>
                   </GridPane>
                </content></Tab>
-            <Tab fx:id="settingsWorkrecordTab" text="%Workrecord">
+          <Tab fx:id="settingsWorkrecordTab" text="%Workrecord">
                <content>
                   <GridPane fx:id="settingsWorkrecordTabGridPane">
                      <columnConstraints>
@@ -130,7 +130,7 @@
                   </GridPane>
                </content>
             </Tab>
-            <Tab fx:id="settingsWorktimeTab" text="%WorkTime">
+          <Tab fx:id="settingsWorktimeTab" text="%WorkTime">
                <content>
                   <GridPane fx:id="settingsWorktimeTabGridPane">
                      <columnConstraints>
@@ -175,6 +175,13 @@
                   </GridPane>
                </content>
             </Tab>
+          <Tab fx:id="settingsWorkitemTab" text="%WorkItem">
+               <content>
+                  <GridPane fx:id="settingsWorkitemTabGridPane">
+                      
+                  </GridPane>
+               </content>
+          </Tab>
         </tabs>
       </TabPane>
    </children>
