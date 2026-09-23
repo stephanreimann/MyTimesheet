@@ -135,8 +135,8 @@
                   <GridPane fx:id="settingsWorktimeTabGridPane">
                      <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" />
-                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="329.0" minWidth="10.0" prefWidth="329.0" />
-                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="152.0" minWidth="15.0" prefWidth="15.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" />
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES"  />
                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" />
                      </columnConstraints>
                      <rowConstraints>
