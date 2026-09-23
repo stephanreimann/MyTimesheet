@@ -101,6 +101,7 @@ public class SettingsViewController implements Initializable, IViewController {
     private ChoiceBox<Project> workrecordProjectChoiceBox;
     
     @FXML
+    @SuppressWarnings("unused")
     private Tab settingsWorktimeTab;
     @FXML
     private GridPane settingsWorktimeTabGridPane;

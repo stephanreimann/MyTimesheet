@@ -441,7 +441,7 @@ public class Main extends Application {
     private void initMainToolBarView(ResourceBundle rb) throws IOException {
         mainToolBarViewController = (MainToolBarViewController)controllerRepository.get(MainToolBarViewController.class.getName());
         if(mainToolBarViewController == null) {
-            mainToolBarViewController = new MainToolBarViewController(languageService, connection, undoService);
+            mainToolBarViewController = new MainToolBarViewController(languageService, connection, undoService, propertiesService);
             mainToolBarViewController.setResourceBundle(rb);
             mainToolBarViewController.setPrimaryStage(primaryStage);
             controllerRepository.put(MainToolBarViewController.class.getName(), mainToolBarViewController);

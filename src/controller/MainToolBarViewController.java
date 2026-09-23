@@ -54,9 +54,11 @@ public class MainToolBarViewController implements Initializable, IViewController
     private final LanguageService languageService;
     private final Connection connection;
     private final UndoService undoService;
+    private final PropertiesService propertiesService;
     private MenuItem activeMenuItem;
     private ResourceBundle rb;
     private final ControllerRepository controllerRepository;
+    @SuppressWarnings("unused")
     private final EventManager eventManager;
     
     @FXML
@@ -86,14 +88,16 @@ public class MainToolBarViewController implements Initializable, IViewController
     
     public TranslationStringProperty undoButtonText;
 
-    public MainToolBarViewController(LanguageService languageService, Connection connection, UndoService undoService) {
+    public MainToolBarViewController(LanguageService languageService, Connection connection, UndoService undoService, PropertiesService propertiesService) {
         if(languageService == null) throw new NullPointerException("languageService");
         if(connection == null) throw new NullPointerException("connection");
         if(undoService == null) throw new NullPointerException("undoService");
+        if(propertiesService == null) throw new NullPointerException("propertiesService");
         
         this.languageService = languageService;
         this.connection = connection;        
         this.undoService = undoService;
+        this.propertiesService = propertiesService;
         this.controllerRepository = ControllerRepository.getInstance();
         this.eventManager = new EventManager();
     }
@@ -138,16 +142,19 @@ public class MainToolBarViewController implements Initializable, IViewController
     }
 
     @FXML
+    @SuppressWarnings("unused")
     private void undoAction(ActionEvent event) {
         undoService.undo();
     }
 
     @FXML
+    @SuppressWarnings("unused")
     private void redoAction(ActionEvent event) {
         undoService.redo();
     }
 
     @FXML
+    @SuppressWarnings("unused")
     private void changeLanguageAction(ActionEvent event) {
         Locale newLocale = getLocale(event);
         Locale oldLocale = getLocale(activeMenuItem);
@@ -156,8 +163,9 @@ public class MainToolBarViewController implements Initializable, IViewController
     }
 
     @FXML
+    @SuppressWarnings("unused")
     private void workItemAction(ActionEvent event) throws IOException, SQLException {      
-        WorkItemViewController workItemViewController = new WorkItemViewController(controllerRepository, languageService, connection, undoService);
+        WorkItemViewController workItemViewController = new WorkItemViewController(controllerRepository, languageService, connection, undoService, propertiesService);
         controllerRepository.put(WorkItemViewController.class.getName(), workItemViewController);
             
         //This controller will be informed about the date changed action

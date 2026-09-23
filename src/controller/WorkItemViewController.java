@@ -101,6 +101,7 @@ public class WorkItemViewController implements Initializable, IViewController, I
     @SuppressWarnings("unused")
     private final Connection connection;
     private final UndoService undoService;
+    private final PropertiesService propertiesService;
     private ResourceBundle rb;
     private final EventManager eventManager;
 
@@ -128,16 +129,20 @@ public class WorkItemViewController implements Initializable, IViewController, I
     // Flag to prevent recursive listener updates
     private boolean isSyncing = false;
     
-    public WorkItemViewController(ControllerRepository controllerRepository, LanguageService languageService, Connection connection, UndoService undoService) throws SQLException {
+    private LocalTime workitemEndtimeDeltaThreshold;
+            
+    public WorkItemViewController(ControllerRepository controllerRepository, LanguageService languageService, Connection connection, UndoService undoService, PropertiesService propertiesService) throws SQLException {
         if (controllerRepository == null) throw new NullPointerException("controllerRepository");
         if (languageService == null) throw new NullPointerException("languageService");
         if (connection == null) throw new NullPointerException("connection");
         if (undoService == null) throw new NullPointerException("undoService");
+        if (propertiesService == null) throw new NullPointerException("propertiesService");
 
         this.controllerRepository = controllerRepository;
         this.languageService = languageService;
         this.connection = connection;
         this.undoService = undoService;
+        this.propertiesService = propertiesService;
         this.sprintDAO = new SprintDAO(connection);
         this.trackingItemDAO = new TrackingItemDAO(connection);
         this.workItemDao = new WorkItemDAO(connection);
@@ -145,6 +150,15 @@ public class WorkItemViewController implements Initializable, IViewController, I
         this.workRecordDetailsViewController = (WorkRecordDetailsViewController) controllerRepository.get(WorkRecordDetailsViewController.class.getName());
         this.workRecordViewController = (WorkRecordViewController) controllerRepository.get(WorkRecordViewController.class.getName());
         this.eventManager = new EventManager();
+        
+        String thresholdStr = this.propertiesService.getProperty("WorkitemEndtimeDeltaThreshold", "PT0S");
+        try {
+            Duration duration = Duration.parse(thresholdStr);
+            this.workitemEndtimeDeltaThreshold = LocalTime.MIDNIGHT.plus(duration);
+        } catch (Exception ex) {
+            log.warn("Could not parse WorkitemEndtimeDeltaThreshold property: " + thresholdStr + ". Defaulting to 00:00", ex);
+            this.workitemEndtimeDeltaThreshold = LocalTime.MIN;
+        }
     }
     
     @FXML
@@ -234,8 +248,15 @@ public class WorkItemViewController implements Initializable, IViewController, I
     @FXML
     @SuppressWarnings("unused")
     private void handleOnSetEndTimeButtonClickAction(ActionEvent event) {
+        LocalTime timeToSet = trackingItemStartTimeTimeSpinner.getValue();
+
+        if (workitemEndtimeDeltaThreshold != null) {
+            long nanosToAdd = workitemEndtimeDeltaThreshold.toNanoOfDay();
+            timeToSet = timeToSet.plusNanos(nanosToAdd);
+        }        
+
         trackingItemEndTimeTimeSpinner.getValueFactory().setValue(
-            trackingItemEndTimeTimeSpinner.formatLocalTime(LocalTime.now(), LocalTimeSpinner.TimeFormat.HH_MM)
+            trackingItemEndTimeTimeSpinner.formatLocalTime(timeToSet, LocalTimeSpinner.TimeFormat.HH_MM)
         );
     }
     
