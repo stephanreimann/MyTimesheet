@@ -47,13 +47,14 @@ public class SettingsViewController implements Initializable, IViewController {
     private final String locationResourceKey = "Location";
     private final String projectResourceKey = "Project";
     
-    private final String worktimeResourceKey = "WorkTime";
     private final String upperOverallOvertimeThresholdResourceKey = "UpperOverallOvertimeThreshold";
     private final String lowerOverallOvertimeThresholdResourceKey = "LowerOverallOvertimeThreshold";
     private final String defaultOvertimeThreshold = Duration.ZERO.toString();
 
     private final String workitemResourceKey = "WorkItem";
-    
+    private final String workitemEndTimeDeltaResourceKey = "WorkitemEndTimeDelta";
+    private final String defaultWorkitemEndtimeDeltaThreshold = Duration.ZERO.toString();
+
     private final String workrecordAutomaticCreationChangeEvent = "WorkrecordAutomaticCreationChangeEvent";
     private final String defaultProjectChangedEvent = "DefaultProjectChanged";
     private final String defaultLocationChangedEvent = "DefaultLocationChanged";
@@ -112,11 +113,14 @@ public class SettingsViewController implements Initializable, IViewController {
     private Tab settingsWorkitemTab;
     @FXML
     private GridPane settingsWorkitemTabGridPane;
-    
+    @FXML
+    private Label workitemEndTimeDelta;
+        
     private DurationSpinner workrecordStartTimeDeltaValue;
     private DurationSpinner workrecordEndTimeDeltaValue;
-    private DurationSpinner upperOverallOvertimeThresholdValue; 
-    private DurationSpinner lowerOverallOvertimeThresholdValue; 
+    private DurationSpinner upperOverallOvertimeThresholdValue;
+    private DurationSpinner lowerOverallOvertimeThresholdValue;
+    private DurationSpinner workitemEndtimeDeltaValue;
     
     private final WorklocationDAO worklocationDao;
     private final ProjectDAO projectDao;
@@ -210,6 +214,16 @@ public class SettingsViewController implements Initializable, IViewController {
         boolean workrecordAutomaticCreation = Boolean.parseBoolean(propertiesService.getProperty("WorkrecordAutomaticCreation", "true"));
         toggleWorkrecordAutomaticCreationToggleButton(workrecordAutomaticCreation);
         
+        workitemEndtimeDeltaValue = new DurationSpinner();
+        String workitemEndtimeDeltaThreshold = propertiesService.getProperty("WorkitemEndtimeDeltaThreshold", defaultWorkitemEndtimeDeltaThreshold);
+        Duration endtimeDelta = Duration.parse(workitemEndtimeDeltaThreshold);
+        workitemEndtimeDeltaValue.getValueFactory().setValue(endtimeDelta);
+        DurationStyler.styleSpinner(workitemEndtimeDeltaValue, endtimeDelta);
+        settingsWorkitemTabGridPane.add(workitemEndtimeDeltaValue, 1, 1);
+        workitemEndtimeDeltaValue.valueProperty().addListener((ObservableValue<? extends Duration> observable, Duration oldValue, Duration newValue) -> {
+            DurationStyler.styleSpinner(workitemEndtimeDeltaValue, newValue);
+        });
+
         workrecordUseLastWorkrecordConfigurationToggleButton.selectedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
             toggleWorkrecordUseLastWorkrecordConfigurationToggleButton(newValue);
             eventManager.notifyListenerOfEvent(useLastWorkrecordConfigurationChangedEvent, newValue);
@@ -268,11 +282,11 @@ public class SettingsViewController implements Initializable, IViewController {
         workrecordLocationLabel.setText(rb.getString(locationResourceKey));
         workrecordProjectLabel.setText(rb.getString(projectResourceKey));
         
-        settingsWorktimeTab.setText(rb.getString(worktimeResourceKey));
         upperOverallOvertimeThresholdLabel.setText(rb.getString(upperOverallOvertimeThresholdResourceKey));
         lowerOverallOvertimeThresholdLabel.setText(rb.getString(lowerOverallOvertimeThresholdResourceKey));
         
         settingsWorkitemTab.setText(rb.getString(workitemResourceKey));
+        workitemEndTimeDelta.setText(rb.getString(workitemEndTimeDeltaResourceKey));
     }
 
     private void toggleApplicationAlwaysOnTopToggleButton(Boolean isSelected) {
@@ -361,6 +375,7 @@ public class SettingsViewController implements Initializable, IViewController {
         propertiesService.setProperty("ApplicationAlwaysOnTop", String.valueOf(applicationAlwaysOnTopToggleButton.isSelected()));
         propertiesService.setProperty("WorkrecordAutomaticCreation", String.valueOf(workrecordAutomaticCreationToggleButton.isSelected()));
         propertiesService.setProperty("UseLastWorkrecordConfiguration", String.valueOf(workrecordUseLastWorkrecordConfigurationToggleButton.isSelected()));
+        propertiesService.setProperty("WorkitemEndtimeDeltaThreshold", String.valueOf(workitemEndtimeDeltaValue.getValue().toString()));
     }
         
 }

@@ -24,7 +24,7 @@
                     </columnConstraints>
                     <rowConstraints>
                       <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
+                      <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
                         <Label fx:id="applicationAlwaysOnTopLabel" text="%ApplicationOnTop">
@@ -178,7 +178,27 @@
           <Tab fx:id="settingsWorkitemTab" text="%WorkItem">
                <content>
                   <GridPane fx:id="settingsWorkitemTabGridPane">
-                      
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" />
+                        <ColumnConstraints hgrow="SOMETIMES" />
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                     <children>
+                        <Label fx:id="workitemEndTimeDelta" text="%WorkitemEndTimeDelta" GridPane.rowIndex="1">
+                           <GridPane.margin>
+                              <Insets bottom="10.0" left="5.0" right="5.0" top="10.0" />
+                           </GridPane.margin>
+                        </Label>
+                        <Label text="HH:mm" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                           <GridPane.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </GridPane.margin>
+                        </Label>
+                     </children>
                   </GridPane>
                </content>
           </Tab>
