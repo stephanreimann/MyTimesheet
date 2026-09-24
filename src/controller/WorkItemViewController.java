@@ -262,9 +262,10 @@ public class WorkItemViewController implements Initializable, IViewController, I
     private void handleOnSetEndTimeButtonClickAction(ActionEvent event) {
         LocalTime timeToSet = trackingItemStartTimeTimeSpinner.getValue();
 
-        if (workitemEndtimeDeltaThreshold != null) {
-            long secondsToAdd = workitemEndtimeDeltaThreshold.getSecond();
-            timeToSet = timeToSet.plusSeconds(secondsToAdd);
+        if (workitemEndtimeDeltaThreshold != null && !workitemEndtimeDeltaThreshold.equals(LocalTime.MIN)) {
+            long hoursToAdd = workitemEndtimeDeltaThreshold.getHour();
+            long minutesToAdd = workitemEndtimeDeltaThreshold.getMinute();
+            timeToSet = timeToSet.plusHours(hoursToAdd).plusMinutes(minutesToAdd);
         }        
 
         trackingItemEndTimeTimeSpinner.getValueFactory().setValue(
