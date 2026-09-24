@@ -49,6 +49,7 @@ public class WorkItemViewController implements Initializable, IViewController, I
     private final String trackingItemItemResourceKey = "TrackingItem";
     private final String trackingItemDescriptionResourceKey = "TrackingItemDescription";
     private final String startTimeButtonToolTipResourceKey = "StartTimeButtonToolTip";
+    private final String startTimeButtonToolTipForExsistingDataResourceKey = "StartTimeButtonToolTipForExsistingData"; 
     private final String endTimeButtonToolTipResourceKey = "EndTimeButtonToolTip";
     
     private final String workItemDateChangedEvent = "WorkItemDateChanged";
@@ -184,6 +185,7 @@ public class WorkItemViewController implements Initializable, IViewController, I
         NewWorkItemCommand cmd = new NewWorkItemCommand(controllerRepository, eventManager, trackingItemTableView, newWorkItem, workItemDao);
         undoService.execute(cmd);
         sortWorkItems();
+        refreshStartTimeButtonTooltip();
     }
     
     @FXML
@@ -207,6 +209,7 @@ public class WorkItemViewController implements Initializable, IViewController, I
             EditWorkItemCommand cmd = new EditWorkItemCommand(controllerRepository, eventManager, trackingItemTableView, selectedWorkItem, modifiedWorkItem, workItemDao);
             undoService.execute(cmd);
             sortWorkItems();
+            refreshStartTimeButtonTooltip();
         } else if (selectedWorkItem == null) {
             ControllerUtilities.showNoItemSelectedAlert(primaryStage, rb, noTrackingItemSelectionAlertTitle, noTrackingItemSelectionAlertHeader, noTrackingItemSelectionAlertContent);
         }
@@ -221,6 +224,7 @@ public class WorkItemViewController implements Initializable, IViewController, I
             DeleteWorkItemCommand cmd = new DeleteWorkItemCommand(controllerRepository, eventManager, trackingItemTableView, selectedWorkItem, workItemDao);
             undoService.execute(cmd);
             sortWorkItems();
+            refreshStartTimeButtonTooltip();
         } else {
             ControllerUtilities.showNoItemSelectedAlert(primaryStage, rb, noTrackingItemSelectionAlertTitle, noTrackingItemSelectionAlertHeader, noTrackingItemSelectionAlertContent);
         }
@@ -240,8 +244,16 @@ public class WorkItemViewController implements Initializable, IViewController, I
     @FXML
     @SuppressWarnings("unused")
     private void handleOnSetStartTimeButtonClickAction(ActionEvent event) {
+        LocalTime newEndtime = LocalTime.now();
+        
+        if (!workItemData.isEmpty()) {
+            // Get the last index
+            WorkItem lastWorkitem = workItemData.get(workItemData.size() - 1);
+            newEndtime = lastWorkitem.getEndTime();
+        }
+        
         trackingItemStartTimeTimeSpinner.getValueFactory().setValue(
-            trackingItemStartTimeTimeSpinner.formatLocalTime(LocalTime.now(), LocalTimeSpinner.TimeFormat.HH_MM)
+            trackingItemStartTimeTimeSpinner.formatLocalTime(newEndtime, LocalTimeSpinner.TimeFormat.HH_MM)
         );
     }
 
@@ -251,8 +263,8 @@ public class WorkItemViewController implements Initializable, IViewController, I
         LocalTime timeToSet = trackingItemStartTimeTimeSpinner.getValue();
 
         if (workitemEndtimeDeltaThreshold != null) {
-            long nanosToAdd = workitemEndtimeDeltaThreshold.toNanoOfDay();
-            timeToSet = timeToSet.plusNanos(nanosToAdd);
+            long secondsToAdd = workitemEndtimeDeltaThreshold.getSecond();
+            timeToSet = timeToSet.plusSeconds(secondsToAdd);
         }        
 
         trackingItemEndTimeTimeSpinner.getValueFactory().setValue(
@@ -351,7 +363,7 @@ public class WorkItemViewController implements Initializable, IViewController, I
         trackingItemDetailsHeaderLabel.setText(rb.getString(trackingItemDetailsHeaderResourceKey));        
         trackingItemNameLabel.setText(rb.getString(trackingItemItemResourceKey));
         trackingItemStartTimeLabel.setText(rb.getString(trackingItemStartTimeResourceKey));
-        trackingItemStartTimeButton.setTooltip(new Tooltip(rb.getString(startTimeButtonToolTipResourceKey)));
+        refreshStartTimeButtonTooltip();
         trackingItemEndTimeLabel.setText(rb.getString(trackingItemEndTimeResourceKey));        
         trackingItemEndTimeButton.setTooltip(new Tooltip(rb.getString(endTimeButtonToolTipResourceKey)));
         trackingItemDescriptionLabel.setText(rb.getString(trackingItemDescriptionResourceKey));
@@ -364,15 +376,6 @@ public class WorkItemViewController implements Initializable, IViewController, I
         return eventManager;
     }
     
-    public void refreshWorkItemData() throws SQLException {
-        workItemData.clear();
-        if (selectedWorkrecord != null) {
-            List<WorkItem> workItemsOfActualSelectedWorkrecord = workItemDao.selectAll(selectedWorkrecord.getId());
-            workItemData.addAll(workItemsOfActualSelectedWorkrecord);
-        }
-        sortWorkItems();
-    }
-     
     @SuppressWarnings("unchecked")
     public void sortWorkItems() {
         FXCollections.sort(workItemData, Comparator.comparing(WorkItem::getStartTime, Comparator.nullsFirst(Comparator.naturalOrder())));
@@ -444,7 +447,8 @@ public class WorkItemViewController implements Initializable, IViewController, I
                 isSyncing = true;
                 try {
                     LocalTime startTime = trackingItemStartTimeTimeSpinner.getValue();
-                    if (startTime != null && newVal.isAfter(startTime)) {
+                    if (startTime != null && (newVal.isAfter(startTime) || newVal.equals(startTime))) {
+                        System.out.println("Startime = " + startTime + " newValue = " + newVal + " Delta = " + Duration.between(startTime, newVal));
                         trackingItemTimeDurationSpinner.getValueFactory().setValue(Duration.between(startTime, newVal));
                     }
                 } finally {
@@ -588,6 +592,23 @@ public class WorkItemViewController implements Initializable, IViewController, I
         deleteButton.setDisable(!itemSelected);
     }
 
+    private void refreshStartTimeButtonTooltip() {
+        if (!workItemData.isEmpty()) {
+            trackingItemStartTimeButton.setTooltip(new Tooltip(rb.getString(startTimeButtonToolTipForExsistingDataResourceKey)));
+        } else {
+            trackingItemStartTimeButton.setTooltip(new Tooltip(rb.getString(startTimeButtonToolTipResourceKey)));
+        }
+    }
+
+    public void refreshWorkItemData() throws SQLException {
+        workItemData.clear();
+        if (selectedWorkrecord != null) {
+            List<WorkItem> workItemsOfActualSelectedWorkrecord = workItemDao.selectAll(selectedWorkrecord.getId());
+            workItemData.addAll(workItemsOfActualSelectedWorkrecord);
+        }
+        sortWorkItems();
+    }
+     
     private boolean isWorkItemSelected() {
         return trackingItemTableView.getSelectionModel().getSelectedItem() != null;
     }
