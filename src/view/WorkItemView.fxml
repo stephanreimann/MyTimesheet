@@ -32,7 +32,7 @@
                </items>
             </ToolBar>
 
-            <TableView fx:id="trackingItemTableView" minHeight="300.0" prefHeight="300.0" prefWidth="510.0" VBox.vgrow="NEVER">
+            <TableView fx:id="trackingItemTableView" minHeight="250.0" prefHeight="250.0" prefWidth="510.0" VBox.vgrow="NEVER">
                <columns>
                   <TableColumn fx:id="trackingItemShortcutTableColumn" minWidth="50.0" prefWidth="50.0" text="%TrackingItemShortcut" />
                   <TableColumn fx:id="trackingItemNameTableColumn" minWidth="250.0" prefWidth="250.0" text="%TrackingItemName" />
@@ -61,6 +61,7 @@
                         <RowConstraints vgrow="NEVER" />
                         <RowConstraints vgrow="NEVER" />
                         <RowConstraints vgrow="NEVER" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
                         <RowConstraints vgrow="NEVER" />
                         <RowConstraints prefHeight="200.0" vgrow="ALWAYS" />
                      </rowConstraints>
@@ -102,7 +103,7 @@
                            </GridPane.margin>
                         </Button>
 
-                        <Label fx:id="trackingItemDescriptionLabel" text="%TrackingItemDescription" GridPane.rowIndex="5">
+                        <Label fx:id="trackingItemDescriptionLabel" text="%TrackingItemDescription" GridPane.rowIndex="6">
                            <GridPane.margin>
                               <Insets bottom="10.0" left="5.0" right="5.0" top="10.0" />
                            </GridPane.margin>
@@ -114,12 +115,25 @@
                            </GridPane.margin>
                         </ChoiceBox>
 
-                        <TextArea fx:id="trackingItemDescriptionValue" wrapText="true" GridPane.columnSpan="3" GridPane.rowIndex="6">
+                        <TextArea fx:id="trackingItemDescriptionValue" wrapText="true" GridPane.columnSpan="3" GridPane.rowIndex="7">
                            <GridPane.margin>
                               <Insets bottom="5.0" top="5.0" />
                            </GridPane.margin>
                         </TextArea>
                         <Label fx:id="trackingItemTimeTableColumn" text="%TrackingItemTime" GridPane.rowIndex="4">
+                           <GridPane.margin>
+                              <Insets bottom="10.0" left="5.0" right="5.0" top="10.0" />
+                           </GridPane.margin>
+                        </Label>
+                        <Label fx:id="trackingItemSumLabel" text="Σ" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                           <GridPane.margin>
+                              <Insets bottom="10.0" left="5.0" right="5.0" top="10.0" />
+                           </GridPane.margin>
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="trackingItemSumValueLabel" GridPane.columnIndex="2" GridPane.rowIndex="5">
                            <GridPane.margin>
                               <Insets bottom="10.0" left="5.0" right="5.0" top="10.0" />
                            </GridPane.margin>

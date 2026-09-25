@@ -88,6 +88,10 @@ public class WorkItemViewController implements Initializable, IViewController, I
     @FXML private Label trackingItemDescriptionLabel;
     @FXML private ChoiceBox<TrackingItem> trackingItemChoiceBox;
     @FXML private TextArea trackingItemDescriptionValue;
+    @SuppressWarnings("unused")
+    @FXML
+    private Label trackingItemSumLabel;
+    @FXML private Label trackingItemSumValueLabel;
     
     @FXML private Button newButton;
     @FXML private Button editButton;
@@ -289,6 +293,7 @@ public class WorkItemViewController implements Initializable, IViewController, I
         initListeners();
         initDatePickerBySelectedWorkrecord(selectedWorkrecord);
         initTrackingItemChoiceBox();
+        trackingItemSumValueLabel.setText("00:00");
         
         try {
             if (selectedWorkrecord != null) {
@@ -384,6 +389,9 @@ public class WorkItemViewController implements Initializable, IViewController, I
             trackingItemTableView.getSortOrder().setAll(trackingItemStartTimeTableColumn);
         }
         trackingItemTableView.sort();
+        
+        // Update the sum whenever the list is sorted (which happens after every data change)
+        calculateAndDisplaySum();
     }
     
     @SuppressWarnings("unchecked")
@@ -678,4 +686,28 @@ public class WorkItemViewController implements Initializable, IViewController, I
         oldEndTime = workItem.getEndTime();
         oldDescription = workItem.getDescription() == null ? "" : workItem.getDescription();
     }
+    
+    /**
+     * Calculates the total duration of all WorkItems in the current list
+     * and updates the trackingItemSumValueLabel with the formatted result (HH:mm).
+     */
+    private void calculateAndDisplaySum() {
+        Duration totalDuration = Duration.ZERO;
+        
+        for (WorkItem item : workItemData) {
+            LocalTime start = item.getStartTime();
+            LocalTime end = item.getEndTime();
+            
+            if (start != null && end != null) {
+                totalDuration = totalDuration.plus(Duration.between(start, end));
+            }
+        }
+        
+        long hours = totalDuration.toHours();
+        long minutes = totalDuration.toMinutes() % 60;
+        
+        // Format as HH:mm. Using String.format for leading zeros.
+        String formattedSum = String.format("%02d:%02d", hours, minutes);
+        trackingItemSumValueLabel.setText(formattedSum);
+    }    
 }
