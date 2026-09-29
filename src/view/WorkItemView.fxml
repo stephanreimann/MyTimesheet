@@ -5,7 +5,7 @@
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
@@ -31,25 +31,18 @@
                   <Label fx:id="sprintNumberLabelValue" />
                </items>
             </ToolBar>
-
-            <TableView fx:id="trackingItemTableView" minHeight="250.0" prefHeight="250.0" prefWidth="510.0" VBox.vgrow="NEVER">
-               <columns>
-                  <TableColumn fx:id="trackingItemShortcutTableColumn" minWidth="50.0" prefWidth="50.0" text="%TrackingItemShortcut" />
-                  <TableColumn fx:id="trackingItemNameTableColumn" minWidth="250.0" prefWidth="250.0" text="%TrackingItemName" />
-                  <TableColumn fx:id="trackingItemStartTimeTableColumn" minWidth="75.0" prefWidth="75.0" text="%TrackingItemStartTime" />
-                  <TableColumn fx:id="trackingItemEndTimeTableColumn" minWidth="75.0" prefWidth="75.0" text="%TrackingItemEndTime" />
-               </columns>
-            </TableView>
-
-            <Separator />
-
-            <VBox fillWidth="true" VBox.vgrow="ALWAYS">
-               <padding>
-                  <Insets left="5.0" right="5.0" />
-               </padding>
-
-               <children>
-                  <GridPane fx:id="trackingItemDetailsGridPane" VBox.vgrow="NEVER">
+            <SplitPane dividerPositions="0.5" orientation="VERTICAL">
+               <items>
+      
+                  <TableView fx:id="trackingItemTableView" minHeight="100.0">
+                     <columns>
+                        <TableColumn fx:id="trackingItemShortcutTableColumn" minWidth="50.0" prefWidth="50.0" text="%TrackingItemShortcut" />
+                        <TableColumn fx:id="trackingItemNameTableColumn" minWidth="250.0" prefWidth="250.0" text="%TrackingItemName" />
+                        <TableColumn fx:id="trackingItemStartTimeTableColumn" minWidth="75.0" prefWidth="75.0" text="%TrackingItemStartTime" />
+                        <TableColumn fx:id="trackingItemEndTimeTableColumn" minWidth="75.0" prefWidth="75.0" text="%TrackingItemEndTime" />
+                     </columns>
+                  </TableView>
+                  <GridPane fx:id="trackingItemDetailsGridPane">
                      <columnConstraints>
                         <ColumnConstraints halignment="LEFT" maxWidth="187.0" minWidth="171.0" prefWidth="187.0" />
                         <ColumnConstraints halignment="CENTER" />
@@ -65,7 +58,7 @@
                         <RowConstraints vgrow="NEVER" />
                         <RowConstraints prefHeight="200.0" vgrow="ALWAYS" />
                      </rowConstraints>
-
+      
                      <children>
                         <Label fx:id="trackingItemDetailsHeaderLabel" alignment="CENTER" contentDisplay="CENTER" text="%TrackingItemDetailsHeader" textAlignment="CENTER" GridPane.columnSpan="3">
                            <GridPane.margin>
@@ -75,13 +68,13 @@
                               <Font size="14.0" />
                            </font>
                         </Label>
-
+      
                         <Label fx:id="trackingItemNameLabel" text="%TrackingItemName" GridPane.rowIndex="1">
                            <GridPane.margin>
                               <Insets bottom="10.0" left="5.0" right="5.0" top="10.0" />
                            </GridPane.margin>
                         </Label>
-
+      
                         <Label fx:id="trackingItemStartTimeLabel" text="%TrackingItemStartTime" GridPane.rowIndex="2">
                            <GridPane.margin>
                               <Insets bottom="10.0" left="5.0" right="5.0" top="10.0" />
@@ -90,8 +83,9 @@
                         <Button fx:id="trackingItemStartTimeButton" mnemonicParsing="false" onAction="#handleOnSetStartTimeButtonClickAction" GridPane.columnIndex="1" GridPane.rowIndex="2">
                            <GridPane.margin>
                               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                           </GridPane.margin></Button>
-
+                           </GridPane.margin>
+                        </Button>
+      
                         <Label fx:id="trackingItemEndTimeLabel" text="%TrackingItemEndTime" GridPane.rowIndex="3">
                            <GridPane.margin>
                               <Insets bottom="10.0" left="5.0" right="5.0" top="10.0" />
@@ -102,20 +96,20 @@
                               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                            </GridPane.margin>
                         </Button>
-
+      
                         <Label fx:id="trackingItemDescriptionLabel" text="%TrackingItemDescription" GridPane.rowIndex="6">
                            <GridPane.margin>
                               <Insets bottom="10.0" left="5.0" right="5.0" top="10.0" />
                            </GridPane.margin>
                         </Label>
-
+      
                         <ChoiceBox fx:id="trackingItemChoiceBox" maxWidth="1.7976931348623157E308" GridPane.columnIndex="2" GridPane.halignment="LEFT" GridPane.rowIndex="1">
                            <GridPane.margin>
                               <Insets />
                            </GridPane.margin>
                         </ChoiceBox>
-
-                        <TextArea fx:id="trackingItemDescriptionValue" wrapText="true" GridPane.columnSpan="3" GridPane.rowIndex="7">
+      
+                        <TextArea fx:id="trackingItemDescriptionValue" GridPane.columnSpan="3" GridPane.rowIndex="7">
                            <GridPane.margin>
                               <Insets bottom="5.0" top="5.0" />
                            </GridPane.margin>
@@ -140,19 +134,19 @@
                         </Label>
                      </children>
                   </GridPane>
+               </items>
+            </SplitPane>
 
-                  <HBox alignment="TOP_RIGHT" spacing="5.0" VBox.vgrow="NEVER">
-                     <children>
-                        <Button fx:id="newButton" mnemonicParsing="false" onAction="#newAction" text="%New" />
-                        <Button fx:id="editButton" mnemonicParsing="false" onAction="#editAction" text="%Edit" />
-                        <Button fx:id="deleteButton" mnemonicParsing="false" onAction="#deleteAction" text="%Delete" />
-                     </children>
-                     <VBox.margin>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                     </VBox.margin>
-                  </HBox>
+            <HBox alignment="TOP_RIGHT" spacing="5.0" VBox.vgrow="NEVER">
+               <children>
+                  <Button fx:id="newButton" mnemonicParsing="false" onAction="#newAction" text="%New" />
+                  <Button fx:id="editButton" mnemonicParsing="false" onAction="#editAction" text="%Edit" />
+                  <Button fx:id="deleteButton" mnemonicParsing="false" onAction="#deleteAction" text="%Delete" />
                </children>
-            </VBox>
+               <VBox.margin>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </VBox.margin>
+            </HBox>
          </children>
       </VBox>
    </children>
