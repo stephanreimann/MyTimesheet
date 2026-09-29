@@ -4,5 +4,6 @@
 **/logs
 **/logs/app.log
 **/exports
-**/sqlite
+/sqlite/proddb.sqlite
+/sqlite/testdb.sqlite
 properties.xml
