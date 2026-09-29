@@ -100,7 +100,6 @@ public class WorkItemViewController implements Initializable, IViewController, I
     
     private final Logger log = LogManager.getLogger(WorkItemViewController.class.getName());
 
-    
     private Stage primaryStage;
     private final ControllerRepository controllerRepository;
     private final LanguageService languageService;
