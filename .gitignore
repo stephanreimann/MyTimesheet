@@ -4,4 +4,5 @@
 **/logs
 **/logs/app.log
 **/exports
+**/sqlite
 properties.xml
