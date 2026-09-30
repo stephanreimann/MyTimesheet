@@ -40,6 +40,7 @@ public class SprintViewController implements Initializable, IViewController {
     private final String editResourceKey = "Edit";
     private final String deleteResourceKey = "Delete";
     
+    @SuppressWarnings("unused")
     private final String sprintDetailsLabelResourceKey = "SprintDetailsLabel";
     
     private final String sprintIdResourceKey = "SprintId";
@@ -87,6 +88,7 @@ public class SprintViewController implements Initializable, IViewController {
     @FXML
     private Button deleteButton;
     
+    @SuppressWarnings("unused")
     private final Logger log = LogManager.getLogger(SprintViewController.class.getName());
     
     private Stage primaryStage;
@@ -94,6 +96,7 @@ public class SprintViewController implements Initializable, IViewController {
     private final LanguageService languageService;
     private final Connection connection;
     private final UndoService undoService;
+    @SuppressWarnings("unused")
     private final PropertiesService propertiesService;
     private ResourceBundle rb;
     private EventManager eventManager;
@@ -124,6 +127,7 @@ public class SprintViewController implements Initializable, IViewController {
     }
 
     @FXML
+    @SuppressWarnings("unused")
     private void newSprintAction(ActionEvent event) throws SQLException, IOException {
         Sprint newSprint = new Sprint(sprintDao.getNextId());
         openSprintDetailsDialog(newSprint, DataAction.NEW);
@@ -135,6 +139,7 @@ public class SprintViewController implements Initializable, IViewController {
     }
     
     @FXML
+    @SuppressWarnings("unused")
     private void editSprintAction(ActionEvent event) throws SQLException, IOException {
         Sprint selectedSprint = sprintTableView.getSelectionModel().getSelectedItem();
         if(selectedSprint != null) {
@@ -152,6 +157,7 @@ public class SprintViewController implements Initializable, IViewController {
     }
 
     @FXML
+    @SuppressWarnings("unused")
     private void deleteSprintAction(ActionEvent event) throws SQLException, IOException {
         Sprint selectedSprint = sprintTableView.getSelectionModel().getSelectedItem();
         if(selectedSprint != null) {

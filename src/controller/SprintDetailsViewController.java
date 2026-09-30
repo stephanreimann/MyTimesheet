@@ -43,21 +43,28 @@ public class SprintDetailsViewController implements Initializable, IViewControll
 
     private final String dateFormat = "dd.MM.yyyy";
     private final String sprintIdResourceKey = "SprintId";
+    @SuppressWarnings("unused")
     private final String startDateResourceKey = "StartDate";
+    @SuppressWarnings("unused")
     private final String endDateResourceKey = "EndDate";
     private final String numberOfSprintDaysResourceKey = "NumberOfSprintDays";
     private final String acceptResourceKey = "Accept";
     private final String cancelResourceKey = "Cancel";
     private final String endDateBeforStartDateInfoResourceKey = "EndDateBeforStartDate";
     
+    @SuppressWarnings("unused")
     private final Logger log = LogManager.getLogger(SprintDetailsViewController.class.getName());
     
     private Stage primaryStage;
     private Sprint sprint;
+    @SuppressWarnings("unused")
     private final LanguageService languageService;
+    @SuppressWarnings("unused")
     private final Connection connection;
+    @SuppressWarnings("unused")
     private final UndoService undoService;
     private ResourceBundle rb;
+    @SuppressWarnings("unused")
     private final ControllerRepository controllerRepository;
     private final ObservableList<Sprint> sprintData;
     private DataAction dataAction;
@@ -74,8 +81,10 @@ public class SprintDetailsViewController implements Initializable, IViewControll
     @FXML
     private Label sprintIdLabel;
     @FXML
+    @SuppressWarnings("unused")
     private Label sprintStartDateLabel;
     @FXML
+    @SuppressWarnings("unused")
     private Label sprintEndDateLabel;
     @FXML
     private Label numberOfSprintDaysLabel;
@@ -111,6 +120,7 @@ public class SprintDetailsViewController implements Initializable, IViewControll
     }
 
     @FXML
+    @SuppressWarnings("unused")
     private void acceptAction(ActionEvent event) {
         String sprintIdAsString = sprintIdLabelValue.getText();
         if(ControllerUtilities.isNullOrEmpty(sprintIdAsString)) {
@@ -128,6 +138,7 @@ public class SprintDetailsViewController implements Initializable, IViewControll
     }
     
     @FXML
+    @SuppressWarnings("unused")
     private void cancelAction(ActionEvent event) {
         primaryStage.close();
     }
