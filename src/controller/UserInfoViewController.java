@@ -710,15 +710,24 @@ public class UserInfoViewController implements Initializable, IViewController, I
     }
  
     private void setLastSelectedSprint(ChoiceBox<Sprint> selectedSprintChoiceBox) {
-        String lastSelectedSprint = propertiesService.getProperty(selectedSprintResourceKey);
-        ObservableList<Sprint> sprintList = sprintChoiceBox.getItems();
-        for(Sprint sprint : sprintList) {
-            Long id = sprint.getId();
-            Long lastSelectedSprintAsLong = Long.valueOf(lastSelectedSprint);
-            if(id.equals(lastSelectedSprintAsLong)) {
-                selectedSprintChoiceBox.getSelectionModel().select(sprint);
-                break;
-            }
-        }        
+        ObservableList<Sprint> sprintList = selectedSprintChoiceBox.getItems();
+        if (sprintList.isEmpty()) {
+            return;
+        }
+
+        // 1. Determine the target ID once outside the loop
+        String propValue = propertiesService.getProperty(selectedSprintResourceKey);
+        Long targetId;
+        if (propValue != null && !propValue.isBlank()) {
+            targetId = Long.valueOf(propValue);
+        } else {
+            targetId = sprintList.getLast().getId();
+        }
+
+        // 2. Find and select the matching sprint cleanly using streams
+        sprintList.stream()
+                .filter(sprint -> sprint.getId().equals(targetId))
+                .findFirst()
+                .ifPresent(selectedSprintChoiceBox.getSelectionModel()::select);
     }
 }
