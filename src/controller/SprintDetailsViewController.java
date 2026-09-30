@@ -34,6 +34,7 @@ import service.LanguageService;
 import service.UndoService;
 import utils.ControllerUtilities;
 import utils.DateConverter;
+import utils.EventManager;
 
 /**
  *
@@ -51,6 +52,10 @@ public class SprintDetailsViewController implements Initializable, IViewControll
     private final String acceptResourceKey = "Accept";
     private final String cancelResourceKey = "Cancel";
     private final String endDateBeforStartDateInfoResourceKey = "EndDateBeforStartDate";
+
+    private final String newSprintEvent = "NewSprint";
+    private final String editSprintEvent = "EditSprint";
+    private final String deleteSprintEvent = "DeleteSprint";
     
     @SuppressWarnings("unused")
     private final Logger log = LogManager.getLogger(SprintDetailsViewController.class.getName());
@@ -64,6 +69,7 @@ public class SprintDetailsViewController implements Initializable, IViewControll
     @SuppressWarnings("unused")
     private final UndoService undoService;
     private ResourceBundle rb;
+    private EventManager eventManager;
     @SuppressWarnings("unused")
     private final ControllerRepository controllerRepository;
     private final ObservableList<Sprint> sprintData;
@@ -117,6 +123,10 @@ public class SprintDetailsViewController implements Initializable, IViewControll
         this.controllerRepository = ControllerRepository.getInstance();
         
         this.sprintData = sprintData;
+        this.eventManager = new EventManager();
+        this.eventManager.registerEventType(newSprintEvent);
+        this.eventManager.registerEventType(editSprintEvent);
+        this.eventManager.registerEventType(deleteSprintEvent);    
     }
 
     @FXML
@@ -231,6 +241,10 @@ public class SprintDetailsViewController implements Initializable, IViewControll
     @Override
     public void preCloseAction() {
 
+    }
+    
+    public EventManager getEventManager() {
+        return eventManager;
     }
     
     public void setAction(DataAction action) {

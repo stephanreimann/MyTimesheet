@@ -68,6 +68,10 @@ public class MainMenuBarViewController implements Initializable, IViewController
     private final String editWorkLocationEvent = "EditWorkLocation";
     private final String deleteWorkLocationEvent = "DeleteWorkLocation";
 
+    private final String newSprintEvent = "NewSprint";
+    private final String editSprintEvent = "EditSprint";
+    private final String deleteSprintEvent = "DeleteSprint";
+
     private final String newHolydayEvent = "NewHolyday";
     private final String editHolydayEvent = "EditHolyday";
     private final String deleteHolydayEvent = "DeleteHolyday";
@@ -526,6 +530,10 @@ public class MainMenuBarViewController implements Initializable, IViewController
         if(sprintViewController == null) {
             sprintViewController = new SprintViewController(controllerRepository, languageService, connection, undoService, propertiesService);
             controllerRepository.put(SprintViewController.class.getName(), sprintViewController);
+            UserInfoViewController userInfoViewController = (UserInfoViewController)this.controllerRepository.get(UserInfoViewController.class.getName());
+            sprintViewController.getEventManager().subscribeEventToListener(newSprintEvent, userInfoViewController);
+            sprintViewController.getEventManager().subscribeEventToListener(editSprintEvent, userInfoViewController);
+            sprintViewController.getEventManager().subscribeEventToListener(deleteSprintEvent, userInfoViewController);   
         }
 
         DialogFactory dialogFactory = new DialogFactory(

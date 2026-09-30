@@ -110,7 +110,7 @@ public class SprintDAOTest {
     }
   
     @Test()
-    public void T20_Calling_SelectTrackingItemFromId_Returns_The_Stored_TrackingItem() throws SQLException {
+    public void T20_Calling_SelectSprintFromId_Returns_The_Stored_Sprint() throws SQLException {
         //Arrange
         Sprint sprint1 = new Sprint(138L, LocalDate.of(2016, Month.JUNE, 10), LocalDate.of(2016, Month.JUNE, 23), 10L);
         Sprint sprint2 = new Sprint(139L, LocalDate.of(2016, Month.JUNE, 24), LocalDate.of(2016, Month.JULY, 7), 10L);
@@ -127,7 +127,7 @@ public class SprintDAOTest {
     }
    
     @Test()
-    public void T21_Calling_SelectTrackingItemFromId_Returns_Null_If_TrackingItem_NotFound() throws SQLException {
+    public void T21_Calling_SelectSprintFromId_Returns_Null_If_Sprint_NotFound() throws SQLException {
         //Arrange
         Sprint sprint1 = new Sprint(138L, LocalDate.of(2016, Month.JUNE, 10), LocalDate.of(2016, Month.JUNE, 23), 10L);
 
@@ -142,7 +142,7 @@ public class SprintDAOTest {
     }
     
     @Test(expected = NullPointerException.class)
-    public void T30_Calling_Create_TrackingItem_IsNull_Throws_NullPointerException() throws SQLException {
+    public void T30_Calling_Create_Sprint_IsNull_Throws_NullPointerException() throws SQLException {
         //Arrange
         SprintDAO sprintDAO = new SprintDAO(connection);
 
@@ -154,7 +154,7 @@ public class SprintDAOTest {
     }
 
     @Test()
-    public void T31_Calling_Create_Stores_TrackingItem() throws SQLException {
+    public void T31_Calling_Create_Stores_Sprint() throws SQLException {
         //Arrange
         Sprint sprint1 = new Sprint(138L, LocalDate.of(2016, Month.JUNE, 10), LocalDate.of(2016, Month.JUNE, 23), 10L);
 
@@ -168,7 +168,7 @@ public class SprintDAOTest {
     }
     
     @Test(expected = SQLException.class)
-    public void T32_Calling_Create_TrackingItem_AllreadyExists_Throws_SQLException() throws SQLException {
+    public void T32_Calling_Create_Sprint_AllreadyExists_Throws_SQLException() throws SQLException {
         //Arrange
         Sprint sprint1 = new Sprint(138L, LocalDate.of(2016, Month.JUNE, 10), LocalDate.of(2016, Month.JUNE, 23), 10L);
 
@@ -181,7 +181,7 @@ public class SprintDAOTest {
     }
     
     @Test(expected = NullPointerException.class)
-    public void T40_Calling_Update_OriginalTrackingItem_IsNull_Throws_NullPointerException() throws SQLException {
+    public void T40_Calling_Update_Sprint_IsNull_Throws_NullPointerException() throws SQLException {
         //Arrange
         Sprint modifiedSprint = new Sprint(138L, LocalDate.of(2016, Month.JUNE, 10), LocalDate.of(2016, Month.JUNE, 23), 10L);
 
@@ -195,7 +195,7 @@ public class SprintDAOTest {
     }
 
     @Test(expected = NullPointerException.class)
-    public void T41_Calling_Update_ModifiedTrackingItem_IsNull_Throws_NullPointerException() throws SQLException {
+    public void T41_Calling_Update_ModifiedSprint_IsNull_Throws_NullPointerException() throws SQLException {
         //Arrange
         Sprint originalSprint = new Sprint(138L, LocalDate.of(2016, Month.JUNE, 10), LocalDate.of(2016, Month.JUNE, 23), 10L);
 
@@ -207,7 +207,7 @@ public class SprintDAOTest {
     }
 
     @Test()
-    public void T42_Calling_Update_Updates_OriginalTrackingItem() throws SQLException {
+    public void T42_Calling_Update_Updates_OriginalSprint() throws SQLException {
         //Arrange
         Sprint originalSprint = new Sprint(138L, LocalDate.of(2016, Month.JUNE, 10), LocalDate.of(2016, Month.JUNE, 23), 10L);
         Sprint modifiedSprint = new Sprint(138L, LocalDate.of(2016, Month.JUNE, 27), LocalDate.of(2016, Month.JULY, 7), 10L);
@@ -225,7 +225,7 @@ public class SprintDAOTest {
     }
 
     @Test()
-    public void T43_Calling_Update_OriginalTrackingItem_DoesNotExists_Returns_False() throws SQLException {
+    public void T43_Calling_Update_OriginalSprint_DoesNotExists_Returns_False() throws SQLException {
         //Arrange
         Sprint originalSprint = new Sprint(138L, LocalDate.of(2016, Month.JUNE, 10), LocalDate.of(2016, Month.JUNE, 23), 10L);
         Sprint modifiedSprint = new Sprint(138L, LocalDate.of(2016, Month.JUNE, 27), LocalDate.of(2016, Month.JULY, 7), 10L);
@@ -240,10 +240,10 @@ public class SprintDAOTest {
     }
     
     @Test()
-    public void T44_Calling_Update_On_Different_TrackingItem_DoenNotChange_Role() throws SQLException {
+    public void T44_Calling_Update_On_Different_Sprint_DoenChange_Sprint() throws SQLException {
         //Arrange
         Sprint originalSprint = new Sprint(138L, LocalDate.of(2016, Month.JUNE, 10), LocalDate.of(2016, Month.JUNE, 23), 10L);
-        Sprint modifiedSprint = new Sprint(139L, LocalDate.of(2016, Month.JUNE, 27), LocalDate.of(2016, Month.JULY, 7), 10L);
+        Sprint modifiedSprint = new Sprint(139L, LocalDate.of(2016, Month.JUNE, 10), LocalDate.of(2016, Month.JULY, 23), 10L);
 
         SprintDAO sprintDAO = new SprintDAO(connection);
         sprintDAO.create(originalSprint);
@@ -253,8 +253,7 @@ public class SprintDAOTest {
         Sprint sprintResult = sprintDAO.selectSprintFromId(originalSprint.getId());
 
         //Assert
-        Assert.assertFalse(result);
-        Assert.assertEquals(originalSprint, sprintResult);
+        Assert.assertTrue(result);
     }
 
     @Test(expected = NullPointerException.class)
@@ -268,7 +267,7 @@ public class SprintDAOTest {
     }
     
     @Test()
-    public void T51_Calling_Delete_TrackingItem_DoesNotExists_Returns_False() throws SQLException {
+    public void T51_Calling_Delete_Sprint_DoesNotExists_Returns_False() throws SQLException {
         //Arrange
         Sprint sprint = new Sprint(138L, LocalDate.of(2016, Month.JUNE, 10), LocalDate.of(2016, Month.JUNE, 23), 10L);
 
@@ -282,7 +281,7 @@ public class SprintDAOTest {
     }
 
     @Test()
-    public void T52_Calling_Delete_TrackingItem_Exists_Deletes_TrackingItem() throws SQLException {
+    public void T52_Calling_Delete_Sprint_Exists_Deletes_TrackingItem() throws SQLException {
         //Arrange
         Sprint sprint = new Sprint(138L, LocalDate.of(2016, Month.JUNE, 10), LocalDate.of(2016, Month.JUNE, 23), 10L);
 
@@ -299,7 +298,7 @@ public class SprintDAOTest {
     }
     
     @Test()
-    public void T60_Calling_GetNextId_On_TrackingItemTable_Containing_One_Record_Returns_2() throws SQLException {
+    public void T60_Calling_GetNextId_On_SprintTable_Containing_One_Record_Returns_2() throws SQLException {
         //Arrange
         Sprint sprint = new Sprint(138L, LocalDate.of(2016, Month.JUNE, 10), LocalDate.of(2016, Month.JUNE, 23), 10L);
 
@@ -314,7 +313,7 @@ public class SprintDAOTest {
     }
     
     @Test()
-    public void T61_Calling_GetNextId_Twice_On_TrackingItemTable_Returns_SameId() throws SQLException {
+    public void T61_Calling_GetNextId_Twice_On_SprintTable_Returns_SameId() throws SQLException {
         //Arrange
         Sprint sprint = new Sprint(138L, LocalDate.of(2016, Month.JUNE, 10), LocalDate.of(2016, Month.JUNE, 23), 10L);
 

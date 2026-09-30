@@ -68,6 +68,10 @@ public class UserInfoViewController implements Initializable, IViewController, I
     private final String worklocationResourceKey = "Worklocation";
     private final String selectedWorklocationResourceKey = "SelectedWorklocation";
     
+    private final String selectedSprintResourceKey = "SelectedSprint";
+    
+    private final String userWorkitemsInfoResourceKey = "UserWorkitemsInfo";
+    
     private final String userChangedEvent = "UserChanged";
     
     private final String newWorkrecordEvent = "NewWorkrecord";
@@ -78,6 +82,10 @@ public class UserInfoViewController implements Initializable, IViewController, I
     private final String editWorkLocationEvent = "EditWorkLocation";
     private final String deleteWorkLocationEvent = "DeleteWorkLocation";
 
+    private final String newSprintEvent = "NewSprint";
+    private final String editSprintEvent = "EditSprint";
+    private final String deleteSprintEvent = "DeleteSprint";
+    
     private final String defaultOvertimeThreshold = "PT00H";
     private final String thresholdExceededResourceKey = "ThresholdExceeded";
     
@@ -115,7 +123,7 @@ public class UserInfoViewController implements Initializable, IViewController, I
     private Label addressLabel;
     @FXML
     private Label addressLabelValue;
-       
+
     @FXML
     @SuppressWarnings("unused")
     private GridPane userWorktimeInfoGridPane;
@@ -203,6 +211,13 @@ public class UserInfoViewController implements Initializable, IViewController, I
     @FXML
     private Label workdaysLabelValue;
     
+    @FXML
+    private TitledPane userWorkitemsInfoTitledPane;
+    @FXML
+    private GridPane userWorkitemsInfoGridPane;
+    @FXML
+    private ChoiceBox<Sprint> sprintChoiceBox;
+    
     @SuppressWarnings("unused")
     private Stage primaryStage;
     @SuppressWarnings("unused")
@@ -218,9 +233,11 @@ public class UserInfoViewController implements Initializable, IViewController, I
     private final WorkRecordViewController workRecordViewController;
     private final HolydayDAO holydayDao;
     private ObservableList<Holyday> holydayData;
-    private ObservableList<Worklocation> worklocationData;  
+    private ObservableList<Worklocation> worklocationData;
+    private ObservableList<Sprint> sprintData;
     private final WorkrecordDAO workrecordDao;
     private final WorklocationDAO worklocationDao;
+    private final SprintDAO sprintDao;
     private EventManager eventManager;
     
     public UserInfoViewController(ControllerRepository controllerRepository, LanguageService languageService, Connection connection, UndoService undoService, PropertiesService propertiesService) throws SQLException {
@@ -234,9 +251,11 @@ public class UserInfoViewController implements Initializable, IViewController, I
 
         this.holydayDao = new HolydayDAO(connection);
         this.worklocationDao = new WorklocationDAO(connection);
+        this.sprintDao = new SprintDAO(connection);
         
         this.holydayData = FXCollections.observableArrayList(this.holydayDao.selectAll());
         this.worklocationData = FXCollections.observableArrayList(this.worklocationDao.selectAll());
+        this.sprintData = FXCollections.observableArrayList(this.sprintDao.selectAll());
         
         this.workrecordDao = new WorkrecordDAO(connection);
             
@@ -250,6 +269,10 @@ public class UserInfoViewController implements Initializable, IViewController, I
         this.eventManager.registerEventType(newWorkLocationEvent);
         this.eventManager.registerEventType(editWorkLocationEvent);
         this.eventManager.registerEventType(deleteWorkLocationEvent);    
+
+        this.eventManager.registerEventType(newSprintEvent);
+        this.eventManager.registerEventType(editSprintEvent);
+        this.eventManager.registerEventType(deleteSprintEvent);    
     }
 
     @Override
@@ -268,6 +291,8 @@ public class UserInfoViewController implements Initializable, IViewController, I
                 worklocationsChoiceBox.setItems(worklocationData);
                 setLastSelectedWorkLocation(worklocationsChoiceBox);
                 refreshWorkdaysLabelValue(selectedUser, (Worklocation)worklocationsChoiceBox.getValue());
+                sprintChoiceBox.setItems(sprintData);
+                setLastSelectedSprint(sprintChoiceBox);
             } catch (SQLException ex) {
                 log.error("Refresh of user worktime information failed!");
             }
@@ -277,6 +302,12 @@ public class UserInfoViewController implements Initializable, IViewController, I
             if(newValue != null) {
                 propertiesService.setProperty(selectedWorklocationResourceKey, ((Worklocation)newValue).getName());
                 refreshWorkdaysLabelValue(selectedUser, newValue);
+            }
+        });
+        
+        sprintChoiceBox.valueProperty().addListener((ObservableValue<? extends Sprint> observable, Sprint oldValue, Sprint newValue) -> {
+            if(newValue != null) {
+                propertiesService.setProperty(selectedSprintResourceKey, ((Sprint)newValue).getId().toString());
             }
         });
     }
@@ -315,6 +346,8 @@ public class UserInfoViewController implements Initializable, IViewController, I
         
         userWorkdaysInfoTitledPane.setText(rb.getString(userWorkdaysInfoResourceKey));
         workdaysLabel.setText(rb.getString(workdaysResourceKey));  
+    
+        userWorkitemsInfoTitledPane.setText(rb.getString(userWorkitemsInfoResourceKey));
     }
 
     @Override
@@ -359,7 +392,9 @@ public class UserInfoViewController implements Initializable, IViewController, I
             case newWorkLocationEvent, editWorkLocationEvent, deleteWorkLocationEvent -> {
                 refreshWorkrecordLocationChoiceBox();
             }
-            
+            case newSprintEvent, editSprintEvent, deleteSprintEvent -> {
+                refreshSprintChoiceBox();
+            }
         }
         refreshUserInfos(user);
         refreshWorkdaysLabelValue(user, (Worklocation)worklocationsChoiceBox.getValue());
@@ -373,6 +408,17 @@ public class UserInfoViewController implements Initializable, IViewController, I
             worklocationsChoiceBox.getSelectionModel().select(selectedWorklocation);
         } catch (SQLException ex) {
             log.fatal("Worklocation choicebox could not be refreshed");
+        }
+    }
+    
+    private void refreshSprintChoiceBox() {
+        try {
+            Sprint selectedSprint = (Sprint)sprintChoiceBox.getSelectionModel().getSelectedItem();
+            sprintChoiceBox.getItems().clear();
+            sprintChoiceBox.getItems().addAll(sprintDao.selectAll());
+            sprintChoiceBox.getSelectionModel().select(selectedSprint);
+        } catch (SQLException ex) {
+            log.fatal("Sprint choicebox could not be refreshed");
         }
     }
     
@@ -662,5 +708,17 @@ public class UserInfoViewController implements Initializable, IViewController, I
             }
         }        
     }
-    
+ 
+    private void setLastSelectedSprint(ChoiceBox<Sprint> selectedSprintChoiceBox) {
+        String lastSelectedSprint = propertiesService.getProperty(selectedSprintResourceKey);
+        ObservableList<Sprint> sprintList = sprintChoiceBox.getItems();
+        for(Sprint sprint : sprintList) {
+            Long id = sprint.getId();
+            Long lastSelectedSprintAsLong = Long.valueOf(lastSelectedSprint);
+            if(id.equals(lastSelectedSprintAsLong)) {
+                selectedSprintChoiceBox.getSelectionModel().select(sprint);
+                break;
+            }
+        }        
+    }
 }

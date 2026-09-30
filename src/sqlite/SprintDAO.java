@@ -109,11 +109,6 @@ public class SprintDAO {
     public synchronized boolean update(Sprint original, Sprint modified) throws SQLException {
         if(original == null) throw new NullPointerException("original");
         if(modified == null) throw new NullPointerException("modified");
-
-        if(!Objects.equals(original.getId(), modified.getId())) {
-            log.warn("Update: " + original.toString() + " with " + modified.toString() + "not possible, as Id different");
-            return false;
-        }
         
         StringBuilder statement = new StringBuilder();
         statement.append("UPDATE sprint ");

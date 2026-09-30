@@ -224,6 +224,10 @@ public class SprintViewController implements Initializable, IViewController {
     public void preCloseAction() {
 
     }
+
+    public EventManager getEventManager() {
+        return eventManager;
+    }
     
     private void showSprintDetails(Sprint sprint) {
         if(sprint != null) {

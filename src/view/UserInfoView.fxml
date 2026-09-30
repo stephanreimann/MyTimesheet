@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml">
+<VBox xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <GridPane>
         <columnConstraints>
@@ -211,7 +211,7 @@
                         </GridPane>
                      </content>
                 </TitledPane>
-                  <TitledPane id="UserWorkdaysInfoPane" fx:id="userWorkdaysInfoTitledPane" animated="false" text="%UserWorkdaysInfo">
+                <TitledPane id="UserWorkdaysInfoPane" fx:id="userWorkdaysInfoTitledPane" animated="false" text="%UserWorkdaysInfo">
                      <content>
                         <GridPane hgap="5.0" vgap="5.0">
                           <columnConstraints>
@@ -220,13 +220,29 @@
                           </columnConstraints>
                           <rowConstraints>
                             <RowConstraints />
-                            <RowConstraints vgrow="SOMETIMES" />
-                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints prefHeight="30.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
-                              <Label fx:id="workdaysLabel" text="%Workdays" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" />
-                              <Label fx:id="workdaysLabelValue" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                               <ChoiceBox fx:id="worklocationsChoiceBox" GridPane.columnSpan="2147483647" GridPane.hgrow="ALWAYS" />
+                              <Label fx:id="workdaysLabel" text="%Workdays" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" />
+                              <Label fx:id="workdaysLabelValue" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                           </children>
+                        </GridPane>
+                     </content>
+                  </TitledPane>
+                <TitledPane id="UserWorkitemsInfoTitledPane" fx:id="userWorkitemsInfoTitledPane" animated="false" text="%UserWorkitemsInfo">
+                     <content>
+                        <GridPane fx:id="userWorkitemsInfoGridPane" hgap="5.0" vgap="5.0">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="ALWAYS" />
+                            <ColumnConstraints hgrow="ALWAYS" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints />
+                            <RowConstraints prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <ChoiceBox fx:id="sprintChoiceBox" prefWidth="150.0" />
                            </children>
                         </GridPane>
                      </content>
