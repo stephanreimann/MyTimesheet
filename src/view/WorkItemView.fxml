@@ -31,7 +31,7 @@
                   <Label fx:id="sprintNumberLabelValue" />
                </items>
             </ToolBar>
-            <SplitPane dividerPositions="0.5" orientation="VERTICAL">
+            <SplitPane fx:id="trackingItemSplitPane" dividerPositions="0.5" orientation="VERTICAL">
                <items>
       
                   <TableView fx:id="trackingItemTableView" minHeight="100.0">

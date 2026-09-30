@@ -11,6 +11,7 @@ import java.net.URL;
 import java.sql.*;
 import java.time.*;
 import java.util.*;
+import javafx.application.Platform;
 import javafx.collections.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.*;
@@ -30,6 +31,10 @@ import utils.*;
  */
 public class WorkItemViewController implements Initializable, IViewController, IEventListener {
 
+    private final String dividerPositionTrackingItemSplitPaneResourceKey = "DividerPositionTrackingItemSplitPane";
+    private final String dividerPositionTrackingItemSplitPaneDefaultValue = "0.25";
+    private double dividerPosition;
+    
     private static final String COLOR_LIGHT_RED = "Red";
     private final String timeNowIcon = "icons/timeNow.png";
     
@@ -70,6 +75,8 @@ public class WorkItemViewController implements Initializable, IViewController, I
     @FXML private DatePicker selectedDateDatePicker;
     @FXML private Label sprintLabel;
     @FXML private Label sprintNumberLabelValue;
+    
+    @FXML SplitPane trackingItemSplitPane;
     
     @FXML private TableView<WorkItem> trackingItemTableView;
     @FXML private TableColumn<WorkItem, String> trackingItemShortcutTableColumn;
@@ -295,6 +302,12 @@ public class WorkItemViewController implements Initializable, IViewController, I
         initTrackingItemChoiceBox();
         trackingItemSumValueLabel.setText("00:00");
         
+        Platform.runLater(() -> {
+            String dividerPositionAsString = propertiesService.getProperty(dividerPositionTrackingItemSplitPaneResourceKey, dividerPositionTrackingItemSplitPaneDefaultValue);
+            dividerPosition = Double.parseDouble(dividerPositionAsString);
+            trackingItemSplitPane.setDividerPositions(dividerPosition);
+        });
+        
         try {
             if (selectedWorkrecord != null) {
                 List<WorkItem> workItems = workItemDao.selectAll(selectedWorkrecord.getId());
@@ -327,6 +340,8 @@ public class WorkItemViewController implements Initializable, IViewController, I
 
     @Override
     public void preCloseAction() {
+        propertiesService.setProperty(dividerPositionTrackingItemSplitPaneResourceKey, Double.toString(dividerPosition));
+
         MainToolBarViewController mainToolBarViewController = (MainToolBarViewController) controllerRepository.get(MainToolBarViewController.class.getName());
         if (mainToolBarViewController != null) {
             mainToolBarViewController.getWorkItemButton().disableProperty().set(false);
@@ -490,6 +505,11 @@ public class WorkItemViewController implements Initializable, IViewController, I
         
         trackingItemDescriptionValue.textProperty().addListener((obs, oldVal, newVal) -> {
             refreshButtonState();
+        });
+        
+        trackingItemSplitPane.getDividers().get(0).positionProperty().addListener((obs, oldVal, newVal) -> {
+            System.out.println("Divider moved from " + oldVal + " to " + newVal);
+            dividerPosition = (double)newVal;
         });
     }
 
