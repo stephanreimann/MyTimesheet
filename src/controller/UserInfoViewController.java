@@ -690,6 +690,9 @@ public class UserInfoViewController implements Initializable, IViewController, I
             case "UserWorkdaysInfoPane" -> {
                 userAccordion.setExpandedPane(userWorkdaysInfoTitledPane);
             }
+            case "UserWorkitemsInfoPane" -> {
+                userAccordion.setExpandedPane(userWorkitemsInfoTitledPane);
+            }
         }
     }
     
