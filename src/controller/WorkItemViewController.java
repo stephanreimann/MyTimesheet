@@ -300,13 +300,9 @@ public class WorkItemViewController implements Initializable, IViewController, I
         initListeners();
         initDatePickerBySelectedWorkrecord(selectedWorkrecord);
         initTrackingItemChoiceBox();
+        initDividerPositionTrackingItemSplitPane();
         trackingItemSumValueLabel.setText("00:00");
         
-        Platform.runLater(() -> {
-            String dividerPositionAsString = propertiesService.getProperty(dividerPositionTrackingItemSplitPaneResourceKey, dividerPositionTrackingItemSplitPaneDefaultValue);
-            dividerPosition = Double.parseDouble(dividerPositionAsString);
-            trackingItemSplitPane.setDividerPositions(dividerPosition);
-        });
         
         try {
             if (selectedWorkrecord != null) {
@@ -552,6 +548,14 @@ public class WorkItemViewController implements Initializable, IViewController, I
         } catch (SQLException ex) {
             log.fatal("No TrackingItems could be loaded!", ex);
         }
+    }
+
+    private void initDividerPositionTrackingItemSplitPane() {
+        Platform.runLater(() -> {
+            String dividerPositionAsString = propertiesService.getProperty(dividerPositionTrackingItemSplitPaneResourceKey, dividerPositionTrackingItemSplitPaneDefaultValue);
+            dividerPosition = Double.parseDouble(dividerPositionAsString);
+            trackingItemSplitPane.setDividerPositions(dividerPosition);
+        });
     }
 
     public void selectTrackingItemAndRefreshDetails() {
