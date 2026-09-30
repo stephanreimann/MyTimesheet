@@ -340,6 +340,7 @@ public class WorkItemViewController implements Initializable, IViewController, I
 
     @Override
     public void preCloseAction() {
+        dividerPosition = MathUtilities.round(dividerPosition, 2);
         propertiesService.setProperty(dividerPositionTrackingItemSplitPaneResourceKey, Double.toString(dividerPosition));
 
         MainToolBarViewController mainToolBarViewController = (MainToolBarViewController) controllerRepository.get(MainToolBarViewController.class.getName());
@@ -508,7 +509,6 @@ public class WorkItemViewController implements Initializable, IViewController, I
         });
         
         trackingItemSplitPane.getDividers().get(0).positionProperty().addListener((obs, oldVal, newVal) -> {
-            System.out.println("Divider moved from " + oldVal + " to " + newVal);
             dividerPosition = (double)newVal;
         });
     }
