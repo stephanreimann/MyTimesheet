@@ -58,11 +58,13 @@ public class UserInfoViewController implements Initializable, IViewController, I
     private final String vacationdaysResourceKey = "Vacationdays"; 
     private final String vacationReconciliationDateResourceKey = "VacationReconciliationDate";
     private final String vacationLeftResourceKey = "UserVacationLeft";
+    @SuppressWarnings("unused")
     private final String vacationCorrectionResourceKey = "VacationCorrection";
     private final String vacationCorrectionTypeResourceKey = "VacationCorrectionType";
     
     private final String userWorkdaysInfoResourceKey = "UserWorkdaysInfo";
     private final String workdaysResourceKey = "Workdays";
+    @SuppressWarnings("unused")
     private final String worklocationResourceKey = "Worklocation";
     private final String selectedWorklocationResourceKey = "SelectedWorklocation";
     
@@ -115,6 +117,7 @@ public class UserInfoViewController implements Initializable, IViewController, I
     private Label addressLabelValue;
        
     @FXML
+    @SuppressWarnings("unused")
     private GridPane userWorktimeInfoGridPane;
     @FXML
     private TitledPane userWorktimeInfoTitledPane;
@@ -170,6 +173,7 @@ public class UserInfoViewController implements Initializable, IViewController, I
     private ImageView overallOvertimeImageView;
     
     @FXML
+    @SuppressWarnings("unused")
     private GridPane userVacationInfoGridPane;
     @FXML
     private TitledPane userVacationInfoTitledPane;
@@ -199,10 +203,15 @@ public class UserInfoViewController implements Initializable, IViewController, I
     @FXML
     private Label workdaysLabelValue;
     
+    @SuppressWarnings("unused")
     private Stage primaryStage;
+    @SuppressWarnings("unused")
     private final ControllerRepository controllerRepository;    
+    @SuppressWarnings("unused")
     private final LanguageService languageService;
+    @SuppressWarnings("unused")
     private final Connection connection;
+    @SuppressWarnings("unused")
     private final UndoService undoService;
     private final PropertiesService propertiesService;
     private ResourceBundle rb;
@@ -570,8 +579,6 @@ public class UserInfoViewController implements Initializable, IViewController, I
         
         for(Workrecord workrecord : workrecordDao.selectAll(user)) {
             if("true".equals(workrecord.getProject().getIsWorktimeRelevant().toLowerCase())) {
-                String overtime = workrecord.getOvertime();
-                String overtimeCorrection = workrecord.getOvertimecorrection();
                 overallOvertime += TimeConverter.hoursAndMinutesToLong(workrecord.getOvertime());
                 overallOvertime += TimeConverter.hoursAndMinutesToLong(workrecord.getOvertimecorrection());
             }
