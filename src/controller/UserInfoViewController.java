@@ -718,7 +718,6 @@ public class UserInfoViewController implements Initializable, IViewController, I
             return;
         }
 
-        // 1. Determine the target ID once outside the loop
         String propValue = propertiesService.getProperty(selectedSprintResourceKey);
         Long targetId;
         if (propValue != null && !propValue.isBlank()) {
@@ -727,7 +726,6 @@ public class UserInfoViewController implements Initializable, IViewController, I
             targetId = sprintList.getLast().getId();
         }
 
-        // 2. Find and select the matching sprint cleanly using streams
         sprintList.stream()
                 .filter(sprint -> sprint.getId().equals(targetId))
                 .findFirst()
