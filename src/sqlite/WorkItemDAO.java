@@ -77,10 +77,34 @@ public class WorkItemDAO {
         return resultList;
     }
 
-    public String calculateTrackingItemSumTime(User user, String shortcut, Sprint sprint) {
-        String calculatedTrackigItemSumTime = "00:00"; 
+    public String calculateTrackingItemSumTime(User user, String shortcut, Sprint sprint) throws SQLException {
+        Duration duration = Duration.ZERO;
         
-        return calculatedTrackigItemSumTime;
+        StringBuilder statement = new StringBuilder();
+        statement.append("SELECT workitem.Starttime, workitem.Endtime ");
+        statement.append("FROM workitem ");
+        statement.append("JOIN workrecord ON workitem.WorkrecordId = workrecord.Id ");
+        statement.append("WHERE workitem.SprintId = ? ");
+        statement.append("AND workrecord.UserId = ? ");
+        statement.append("AND workitem.Shortcut = ?;");
+        
+        try(PreparedStatement dbStatement = connection.prepareStatement(statement.toString())) {
+            dbStatement.setLong(1, sprint.getId());
+            dbStatement.setLong(2, user.getId());
+            dbStatement.setString(3, shortcut);
+            Instant start = Instant.now();
+            ResultSet rs = dbStatement.executeQuery();
+            while(rs.next()) {
+                LocalTime starttime = LocalTime.parse(rs.getString("Starttime"));
+                LocalTime endtime = LocalTime.parse(rs.getString("Endtime"));
+                duration = duration.plus(Duration.between(starttime, endtime));
+            }
+            Instant finish = Instant.now();
+            long timeElapsed = Duration.between(start, finish).toMillis();
+            log.debug(String.format("WorkItemDAO.calculateTrackingItemSumTime(%s).", shortcut));
+            log.debug("Elapsed time: " + timeElapsed + "ms");        
+        }
+        return String.format("%02d:%02d", duration.toHours(), duration.toMinutesPart());
     }
     
     private WorkItem createWorkItemFromResultSetEntry(ResultSet resultSet) throws SQLException {

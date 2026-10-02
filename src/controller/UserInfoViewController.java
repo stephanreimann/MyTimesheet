@@ -91,7 +91,11 @@ public class UserInfoViewController implements Initializable, IViewController, I
     private final String newSprintEvent = "NewSprint";
     private final String editSprintEvent = "EditSprint";
     private final String deleteSprintEvent = "DeleteSprint";
-    
+
+    private final String newTrackingItemEvent = "NewTrackingItem";
+    private final String editTrackingItemEvent = "EditTrackingItem";
+    private final String deleteTrackingItemEvent = "DeleteTrackingItem";
+        
     private final String defaultOvertimeThreshold = "PT00H";
     private final String thresholdExceededResourceKey = "ThresholdExceeded";
     
@@ -405,7 +409,7 @@ public class UserInfoViewController implements Initializable, IViewController, I
     
     @Override
     public void update(String eventType, Object source) {
-        User user = null;
+        User user = workRecordViewController.getSelectedUser();
         switch (eventType) {
             case userChangedEvent -> {
                 user = (User)source;
@@ -423,6 +427,9 @@ public class UserInfoViewController implements Initializable, IViewController, I
             }
             case newSprintEvent, editSprintEvent, deleteSprintEvent -> {
                 refreshSprintChoiceBox();
+            }
+            case newTrackingItemEvent, editTrackingItemEvent, deleteTrackingItemEvent -> {
+                refreshTrackingItemInfos(user,  sprintChoiceBox.getSelectionModel().getSelectedItem());
             }
         }
         refreshUserInfos(user);
@@ -461,10 +468,15 @@ public class UserInfoViewController implements Initializable, IViewController, I
     }
     
     private void refreshUserInfos(User user) {
+        if(user == null) {
+            return;
+        }
+        
         try {
             refreshUserGeneralInfos(user);
             refreshUserWorktimeInfos(user);
             refreshUserVacationInfos(user);
+            refreshTrackingItemInfos(user, sprintChoiceBox.getSelectionModel().getSelectedItem());
         } catch (SQLException ex) {
             log.error("Refresh of user information failed!");
         }
@@ -581,6 +593,7 @@ public class UserInfoViewController implements Initializable, IViewController, I
     
     private void refreshTrackingItemInfos(User user, Sprint sprint) {
         try {
+            trackingItemTableView.getItems().clear();
             List<TrackingItem> trackingItems = trackingItemDAO.selectAll();
             String[][] data = new String[trackingItems.size()][3];
             for(int idx=0; idx < trackingItems.size(); idx++) {

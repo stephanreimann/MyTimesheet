@@ -77,6 +77,10 @@ public class MainMenuBarViewController implements Initializable, IViewController
     private final String deleteHolydayEvent = "DeleteHolyday";
     private final String importHolydayEvent = "ImportHolyday";
     
+    private final String newTrackingItemEvent = "NewTrackingItem";
+    private final String editTrackingItemEvent = "EditTrackingItem";
+    private final String deleteTrackingItemEvent = "DeleteTrackingItem";
+    
     private final Logger log = LogManager.getLogger(PropertiesService.class.getName());
 
     private Stage primaryStage;    
@@ -559,6 +563,11 @@ public class MainMenuBarViewController implements Initializable, IViewController
         if(trackingItemViewController == null) {
             trackingItemViewController = new TrackingItemViewController(controllerRepository, languageService, connection, undoService, propertiesService);
             controllerRepository.put(TrackingItemViewController.class.getName(), trackingItemViewController);
+            UserInfoViewController userInfoViewController = (UserInfoViewController)this.controllerRepository.get(UserInfoViewController.class.getName());
+            trackingItemViewController.getEventManager().subscribeEventToListener(newTrackingItemEvent, userInfoViewController);
+            trackingItemViewController.getEventManager().subscribeEventToListener(editTrackingItemEvent, userInfoViewController);
+            trackingItemViewController.getEventManager().subscribeEventToListener(deleteTrackingItemEvent, userInfoViewController);   
+            
         }
 
         DialogFactory dialogFactory = new DialogFactory(
