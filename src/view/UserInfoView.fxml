@@ -5,11 +5,14 @@
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
@@ -232,19 +235,30 @@
                   </TitledPane>
                 <TitledPane id="UserWorkitemsInfoPane" fx:id="userWorkitemsInfoTitledPane" text="%UserWorkitemsInfo">
                      <content>
-                        <GridPane fx:id="userWorkitemsInfoGridPane" hgap="5.0" vgap="5.0">
-                          <columnConstraints>
-                            <ColumnConstraints hgrow="ALWAYS" />
-                            <ColumnConstraints hgrow="ALWAYS" />
-                          </columnConstraints>
-                          <rowConstraints>
-                            <RowConstraints />
-                            <RowConstraints prefHeight="30.0" vgrow="SOMETIMES" />
-                          </rowConstraints>
+                        <VBox>
                            <children>
-                              <ChoiceBox fx:id="sprintChoiceBox" prefWidth="150.0" />
+                              <HBox>
+                                 <VBox.margin>
+                                    <Insets bottom="5.0" />
+                                 </VBox.margin>
+                                 <children>
+                                    <Label fx:id="sprintChoiceBoxLabel" alignment="CENTER" contentDisplay="CENTER" prefHeight="24.0" prefWidth="39.0" text="%Sprint" textAlignment="CENTER">
+                                       <HBox.margin>
+                                          <Insets right="5.0" />
+                                       </HBox.margin>
+                                    </Label>
+                                    <ChoiceBox fx:id="sprintChoiceBox" />
+                                 </children>
+                              </HBox>
+                              <TableView fx:id="trackingItemTableView" prefHeight="200.0" prefWidth="200.0">
+                                <columns>
+                                  <TableColumn fx:id="trackingItemShortcutTableColumn" prefWidth="75.0" text="%TrackingItemShortcut" />
+                                  <TableColumn fx:id="trackingItemNameTableColumn" prefWidth="75.0" text="%TrackingItemName" />
+                                    <TableColumn fx:id="trackingItemTimeTableColumn" prefWidth="75.0" text="%TrackingItemTime" />
+                                </columns>
+                              </TableView>
                            </children>
-                        </GridPane>
+                        </VBox>
                      </content>
                   </TitledPane>
               </panes>

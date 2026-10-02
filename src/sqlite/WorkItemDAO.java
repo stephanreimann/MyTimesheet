@@ -7,6 +7,8 @@ package sqlite;
 import java.sql.*;
 import java.time.*;
 import java.util.*;
+import model.Sprint;
+import model.User;
 import model.WorkItem;
 import org.apache.logging.log4j.*;
 
@@ -75,6 +77,12 @@ public class WorkItemDAO {
         return resultList;
     }
 
+    public String calculateTrackingItemSumTime(User user, String shortcut, Sprint sprint) {
+        String calculatedTrackigItemSumTime = "00:00"; 
+        
+        return calculatedTrackigItemSumTime;
+    }
+    
     private WorkItem createWorkItemFromResultSetEntry(ResultSet resultSet) throws SQLException {
         long rsId = resultSet.getLong("id");
         long rsWorkrecordId = resultSet.getLong("workrecordid");

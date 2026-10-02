@@ -10,6 +10,7 @@ import java.text.MessageFormat;
 import java.time.*;
 import java.util.*;
 import java.util.ResourceBundle;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.*;
 import javafx.collections.*;
 import javafx.fxml.*;
@@ -17,6 +18,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import model.*;
 import org.apache.logging.log4j.*;
 import service.*;
@@ -70,7 +72,11 @@ public class UserInfoViewController implements Initializable, IViewController, I
     
     private final String selectedSprintResourceKey = "SelectedSprint";
     
+    private final String sprintResourceKey = "Sprint";
     private final String userWorkitemsInfoResourceKey = "UserWorkitemsInfo";
+    private final String trackingItemShortcutResourceKey = "TrackingItemShortcut";
+    private final String trackingItemNameResourceKey = "TrackingItemName";
+    private final String trackingItemTimeResourceKey = "TrackingItemTime";
     
     private final String userChangedEvent = "UserChanged";
     
@@ -214,9 +220,17 @@ public class UserInfoViewController implements Initializable, IViewController, I
     @FXML
     private TitledPane userWorkitemsInfoTitledPane;
     @FXML
-    private GridPane userWorkitemsInfoGridPane;
+    private Label sprintChoiceBoxLabel;
     @FXML
     private ChoiceBox<Sprint> sprintChoiceBox;
+    @FXML 
+    private TableView<String[]> trackingItemTableView;
+    @FXML 
+    private TableColumn<String[], String> trackingItemShortcutTableColumn;
+    @FXML 
+    private TableColumn<String[], String> trackingItemNameTableColumn;
+    @FXML 
+    private TableColumn<String[], String> trackingItemTimeTableColumn;
     
     @SuppressWarnings("unused")
     private Stage primaryStage;
@@ -239,7 +253,9 @@ public class UserInfoViewController implements Initializable, IViewController, I
     private final WorklocationDAO worklocationDao;
     private final SprintDAO sprintDao;
     private EventManager eventManager;
-    
+    private final TrackingItemDAO trackingItemDAO;
+    private final WorkItemDAO workitemDAO;
+
     public UserInfoViewController(ControllerRepository controllerRepository, LanguageService languageService, Connection connection, UndoService undoService, PropertiesService propertiesService) throws SQLException {
         if(controllerRepository == null) throw new NullPointerException("controllerRepository");
         if(languageService == null) throw new NullPointerException("languageService");
@@ -252,13 +268,14 @@ public class UserInfoViewController implements Initializable, IViewController, I
         this.holydayDao = new HolydayDAO(connection);
         this.worklocationDao = new WorklocationDAO(connection);
         this.sprintDao = new SprintDAO(connection);
-        
+        this.trackingItemDAO = new TrackingItemDAO(connection);
+        this.workitemDAO = new WorkItemDAO(connection);
+        this.workrecordDao = new WorkrecordDAO(connection);
+
         this.holydayData = FXCollections.observableArrayList(this.holydayDao.selectAll());
         this.worklocationData = FXCollections.observableArrayList(this.worklocationDao.selectAll());
         this.sprintData = FXCollections.observableArrayList(this.sprintDao.selectAll());
-        
-        this.workrecordDao = new WorkrecordDAO(connection);
-            
+           
         this.controllerRepository = controllerRepository;
         this.languageService = languageService;
         this.connection = connection;
@@ -272,7 +289,7 @@ public class UserInfoViewController implements Initializable, IViewController, I
 
         this.eventManager.registerEventType(newSprintEvent);
         this.eventManager.registerEventType(editSprintEvent);
-        this.eventManager.registerEventType(deleteSprintEvent);    
+        this.eventManager.registerEventType(deleteSprintEvent);
     }
 
     @Override
@@ -288,11 +305,18 @@ public class UserInfoViewController implements Initializable, IViewController, I
             try {
                 refreshUserWorktimeInfos(selectedUser);
                 refreshUserVacationInfos(selectedUser);
+                
                 worklocationsChoiceBox.setItems(worklocationData);
                 setLastSelectedWorkLocation(worklocationsChoiceBox);
+                
                 refreshWorkdaysLabelValue(selectedUser, (Worklocation)worklocationsChoiceBox.getValue());
+                
                 sprintChoiceBox.setItems(sprintData);
                 setLastSelectedSprint(sprintChoiceBox);
+                trackingItemShortcutTableColumn.setCellValueFactory(cellValue(0));
+                trackingItemNameTableColumn.setCellValueFactory(cellValue(1));
+                trackingItemTimeTableColumn.setCellValueFactory(cellValue(2));
+                refreshTrackingItemInfos(selectedUser, sprintChoiceBox.getSelectionModel().getSelectedItem());
             } catch (SQLException ex) {
                 log.error("Refresh of user worktime information failed!");
             }
@@ -348,6 +372,11 @@ public class UserInfoViewController implements Initializable, IViewController, I
         workdaysLabel.setText(rb.getString(workdaysResourceKey));  
     
         userWorkitemsInfoTitledPane.setText(rb.getString(userWorkitemsInfoResourceKey));
+        sprintChoiceBoxLabel.setText(rb.getString(sprintResourceKey));
+        trackingItemShortcutTableColumn.setText(rb.getString(trackingItemShortcutResourceKey));
+        trackingItemNameTableColumn.setText(rb.getString(trackingItemNameResourceKey));
+        trackingItemTimeTableColumn.setText(rb.getString(trackingItemTimeResourceKey));
+
     }
 
     @Override
@@ -550,6 +579,22 @@ public class UserInfoViewController implements Initializable, IViewController, I
         }
     }
     
+    private void refreshTrackingItemInfos(User user, Sprint sprint) {
+        try {
+            List<TrackingItem> trackingItems = trackingItemDAO.selectAll();
+            String[][] data = new String[trackingItems.size()][3];
+            for(int idx=0; idx < trackingItems.size(); idx++) {
+                String shortcut = trackingItems.get(idx).getShortcut();
+                String name = trackingItems.get(idx).getName();
+                String time = workitemDAO.calculateTrackingItemSumTime(user, shortcut, sprint);
+                data[idx] = new String[] {shortcut, name, time};
+            }
+            trackingItemTableView.getItems().addAll(Arrays.asList(data));
+        } catch (SQLException ex) {
+            
+        }
+    }
+    
     private String formatAddressInfo(Address address) {
         StringBuilder sb = new StringBuilder();
         sb.append(address.getStreetname()).append(" ");
@@ -731,4 +776,12 @@ public class UserInfoViewController implements Initializable, IViewController, I
                 .findFirst()
                 .ifPresent(selectedSprintChoiceBox.getSelectionModel()::select);
     }
+
+    private Callback<TableColumn.CellDataFeatures<String[], String>, ObservableValue<String>> cellValue(int index) {
+        return p -> {
+            String[] x = p.getValue();
+            String val = (x != null && x.length > index) ? x[index] : "";
+            return new SimpleStringProperty(val);
+        };
+    }    
 }
