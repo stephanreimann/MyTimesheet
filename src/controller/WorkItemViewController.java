@@ -400,9 +400,7 @@ public class WorkItemViewController implements Initializable, IViewController, I
         if (!trackingItemTableView.getSortOrder().contains(trackingItemStartTimeTableColumn)) {
             trackingItemTableView.getSortOrder().setAll(trackingItemStartTimeTableColumn);
         }
-        trackingItemTableView.sort();
-        
-        // Update the sum whenever the list is sorted (which happens after every data change)
+        trackingItemTableView.sort();        
         calculateAndDisplaySum();
     }
     
