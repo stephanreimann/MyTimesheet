@@ -336,6 +336,7 @@ public class UserInfoViewController implements Initializable, IViewController, I
         sprintChoiceBox.valueProperty().addListener((ObservableValue<? extends Sprint> observable, Sprint oldValue, Sprint newValue) -> {
             if(newValue != null) {
                 propertiesService.setProperty(selectedSprintResourceKey, ((Sprint)newValue).getId().toString());
+                refreshTrackingItemInfos(selectedUser, newValue);
             }
         });
     }
