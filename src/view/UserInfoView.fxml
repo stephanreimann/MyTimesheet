@@ -252,9 +252,9 @@
                               </HBox>
                               <TableView fx:id="trackingItemTableView" prefHeight="200.0" prefWidth="200.0">
                                 <columns>
-                                  <TableColumn fx:id="trackingItemShortcutTableColumn" prefWidth="75.0" text="%TrackingItemShortcut" />
-                                  <TableColumn fx:id="trackingItemNameTableColumn" prefWidth="75.0" text="%TrackingItemName" />
-                                    <TableColumn fx:id="trackingItemTimeTableColumn" prefWidth="75.0" text="%TrackingItemTime" />
+                                  <TableColumn fx:id="trackingItemShortcutTableColumn" maxWidth="30.0" prefWidth="30.0" text="%TrackingItemShortcut" />
+                                  <TableColumn fx:id="trackingItemNameTableColumn" maxWidth="300.0" minWidth="190.0" prefWidth="190.0" text="%TrackingItemName" />
+                                    <TableColumn fx:id="trackingItemTimeTableColumn" prefWidth="60.0" text="%TrackingItemTime" />
                                 </columns>
                               </TableView>
                            </children>

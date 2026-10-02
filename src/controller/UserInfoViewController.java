@@ -378,7 +378,8 @@ public class UserInfoViewController implements Initializable, IViewController, I
     
         userWorkitemsInfoTitledPane.setText(rb.getString(userWorkitemsInfoResourceKey));
         sprintChoiceBoxLabel.setText(rb.getString(sprintResourceKey));
-        trackingItemShortcutTableColumn.setText(rb.getString(trackingItemShortcutResourceKey));
+        //trackingItemShortcutTableColumn.setText(rb.getString(trackingItemShortcutResourceKey));
+        trackingItemShortcutTableColumn.setText("");
         trackingItemNameTableColumn.setText(rb.getString(trackingItemNameResourceKey));
         trackingItemTimeTableColumn.setText(rb.getString(trackingItemTimeResourceKey));
 
