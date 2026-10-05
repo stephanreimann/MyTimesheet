@@ -11,7 +11,6 @@ import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.*;
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.*;
 import javafx.scene.control.*;
@@ -20,7 +19,6 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import properties.TranslationStringProperty;
 import service.*;
-import utils.ControllerUtilities;
 import utils.DialogFactory;
 import utils.EventManager;
 
