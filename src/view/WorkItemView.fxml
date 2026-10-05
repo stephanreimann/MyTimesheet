@@ -44,9 +44,9 @@
                   </TableView>
                   <GridPane fx:id="trackingItemDetailsGridPane">
                      <columnConstraints>
-                        <ColumnConstraints halignment="LEFT" maxWidth="187.0" minWidth="171.0" prefWidth="187.0" />
-                        <ColumnConstraints halignment="CENTER" />
-                        <ColumnConstraints minWidth="250.0" prefWidth="289.0" />
+                        <ColumnConstraints halignment="LEFT" hgrow="NEVER" maxWidth="187.0" minWidth="171.0" prefWidth="187.0" />
+                        <ColumnConstraints halignment="CENTER" hgrow="NEVER" />
+                        <ColumnConstraints hgrow="ALWAYS" minWidth="250.0" prefWidth="289.0" />
                      </columnConstraints>
                      <rowConstraints>
                         <RowConstraints vgrow="NEVER" />
@@ -109,7 +109,7 @@
                            </GridPane.margin>
                         </ChoiceBox>
       
-                        <TextArea fx:id="trackingItemDescriptionValue" GridPane.columnSpan="3" GridPane.rowIndex="7">
+                        <TextArea fx:id="trackingItemDescriptionValue" GridPane.columnSpan="3" GridPane.hgrow="ALWAYS" GridPane.rowIndex="7" GridPane.vgrow="ALWAYS">
                            <GridPane.margin>
                               <Insets bottom="5.0" top="5.0" />
                            </GridPane.margin>

@@ -34,13 +34,13 @@ public class DialogFactory {
         this.dialogController = dialogController;
     }
     
-    public Stage create(Modality modality) throws IOException {
+    public Stage create(Modality modality, StageStyle stageStyle, boolean resizable) throws IOException {
         Stage stage = new Stage();
         stage.initModality(modality);
         stage.initOwner(primaryStage);        
         stage.setAlwaysOnTop(true);
-        stage.setResizable(false);
-        stage.initStyle(StageStyle.UTILITY);
+        stage.setResizable(resizable);
+        stage.initStyle(stageStyle);
         stage.setTitle(this.rb.getString(dialogTitleResourceKey));
         stage.getIcons().add(new Image(dialogIconPath));
         AnchorPane anchorPane = (AnchorPane)ControllerUtilities.load(this.getClass(), dialogResource, rb, dialogController);

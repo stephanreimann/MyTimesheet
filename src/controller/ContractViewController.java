@@ -293,7 +293,7 @@ public class ContractViewController implements Initializable, IViewController {
             contractDetailsViewResource, 
             rb, 
             contractDetailsViewController);
-        contractDetailsViewDialog = dialogFactory.create(Modality.WINDOW_MODAL);
+        contractDetailsViewDialog = dialogFactory.create(Modality.WINDOW_MODAL, StageStyle.UTILITY, false);
         contractDetailsViewDialog.setWidth(400);
         contractDetailsViewDialog.setHeight(450);
         

@@ -20,6 +20,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import model.Sprint;
 import org.apache.logging.log4j.*;
 import service.*;
@@ -258,7 +259,7 @@ public class SprintViewController implements Initializable, IViewController {
             sprintDetailsViewResource, 
             rb, 
             sprintDetailsViewController);
-        sprintDetailsViewDialog = dialogFactory.create(Modality.WINDOW_MODAL);
+        sprintDetailsViewDialog = dialogFactory.create(Modality.WINDOW_MODAL, StageStyle.UTILITY, false);
         sprintDetailsViewDialog.setWidth(400);
         sprintDetailsViewDialog.setHeight(350);
                 
