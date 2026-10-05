@@ -205,35 +205,31 @@ public class MainToolBarViewController implements Initializable, IViewController
             workItemViewController);
         workItemTrackingToolViewDialog = dialogFactory.create(Modality.NONE, StageStyle.DECORATED, true);
         
-        Platform.runLater(() -> {
-            String workItemTrackingToolViewDialogWidth = propertiesService.getProperty(workItemTrackingToolViewDialogWidthResourceKey, workItemTrackingToolViewDialogWidthDefaultValue);
-            Double dialogWidth = Double.valueOf(workItemTrackingToolViewDialogWidth);
-            workItemTrackingToolViewDialog.setWidth(dialogWidth);
-            String workItemTrackingToolViewDialogHeight = propertiesService.getProperty(workItemTrackingToolViewDialogHeightResourceKey, workItemTrackingToolViewDialogHeightDefaultValue);
-            Double dialogHeight = Double.valueOf(workItemTrackingToolViewDialogHeight);
-            workItemTrackingToolViewDialog.setHeight(dialogHeight);
-            String workItemTrackingToolViewDialogXPos = propertiesService.getProperty(workItemTrackingToolViewDialogXPosResourceKey, workItemTrackingToolViewDialogXPosDefaultValue);
-            Double dialogXPos = Double.valueOf(workItemTrackingToolViewDialogXPos);
-            workItemTrackingToolViewDialog.setX(dialogXPos);
-            String workItemTrackingToolViewDialogYPos = propertiesService.getProperty(workItemTrackingToolViewDialogYPosResourceKey, workItemTrackingToolViewDialogYPosDefaultValue);
-            Double dialogYPos = Double.valueOf(workItemTrackingToolViewDialogYPos);
-            workItemTrackingToolViewDialog.setY(dialogYPos);
-        });
+        String workItemTrackingToolViewDialogWidth = propertiesService.getProperty(workItemTrackingToolViewDialogWidthResourceKey, workItemTrackingToolViewDialogWidthDefaultValue);
+        Double dialogWidth = Double.valueOf(workItemTrackingToolViewDialogWidth);
+        workItemTrackingToolViewDialog.setWidth(dialogWidth);
+        String workItemTrackingToolViewDialogHeight = propertiesService.getProperty(workItemTrackingToolViewDialogHeightResourceKey, workItemTrackingToolViewDialogHeightDefaultValue);
+        Double dialogHeight = Double.valueOf(workItemTrackingToolViewDialogHeight);
+        workItemTrackingToolViewDialog.setHeight(dialogHeight);
+        String workItemTrackingToolViewDialogXPos = propertiesService.getProperty(workItemTrackingToolViewDialogXPosResourceKey, workItemTrackingToolViewDialogXPosDefaultValue);
+        Double dialogXPos = Double.valueOf(workItemTrackingToolViewDialogXPos);
+        workItemTrackingToolViewDialog.setX(dialogXPos);
+        String workItemTrackingToolViewDialogYPos = propertiesService.getProperty(workItemTrackingToolViewDialogYPosResourceKey, workItemTrackingToolViewDialogYPosDefaultValue);
+        Double dialogYPos = Double.valueOf(workItemTrackingToolViewDialogYPos);
+        workItemTrackingToolViewDialog.setY(dialogYPos);
             
-        ControllerUtilities.CenterOnDialog(primaryStage, workItemTrackingToolViewDialog);
-        
         if(!workItemTrackingToolViewDialog.isShowing()) {
             workItemButton.disableProperty().set(true);
             workItemTrackingToolViewDialog.showAndWait();        
         }
 
-        Double dialogWidth = workItemTrackingToolViewDialog.getWidth();
+        dialogWidth = workItemTrackingToolViewDialog.getWidth();
         propertiesService.setProperty(workItemTrackingToolViewDialogWidthResourceKey, dialogWidth.toString());
-        Double dialogHeight = workItemTrackingToolViewDialog.getHeight();
+        dialogHeight = workItemTrackingToolViewDialog.getHeight();
         propertiesService.setProperty(workItemTrackingToolViewDialogHeightResourceKey, dialogHeight.toString());
-        Double dialogXPos = workItemTrackingToolViewDialog.getX();
+        dialogXPos = workItemTrackingToolViewDialog.getX();
         propertiesService.setProperty(workItemTrackingToolViewDialogXPosResourceKey, dialogXPos.toString());
-        Double dialogYPos = workItemTrackingToolViewDialog.getY();
+        dialogYPos = workItemTrackingToolViewDialog.getY();
         propertiesService.setProperty(workItemTrackingToolViewDialogYPosResourceKey, dialogYPos.toString());
         
         if(controllerRepository.contains(WorkItemViewController.class.getName())) {
