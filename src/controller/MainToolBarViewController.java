@@ -3,6 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package controller;
 
 import commands.ChangeLanguageCommand;
@@ -28,36 +33,27 @@ import utils.EventManager;
  */
 public class MainToolBarViewController implements Initializable, IViewController {
 
-    private final String workItemTrackingToolViewDialogWidthResourceKey = "WorkItemTrackingToolViewDialogWidth";
-    private final String workItemTrackingToolViewDialogWidthDefaultValue = "512";
-    private final String workItemTrackingToolViewDialogHeightResourceKey = "WorkItemTrackingToolViewDialogHeight";
-    private final String workItemTrackingToolViewDialogHeightDefaultValue = "850";
-    private final String workItemTrackingToolViewDialogXPosResourceKey = "WorkItemTrackingToolViewDialogXPos";
-    private final String workItemTrackingToolViewDialogXPosDefaultValue = "0.0";
-    private final String workItemTrackingToolViewDialogYPosResourceKey = "WorkItemTrackingToolViewDialogYPos";
-    private final String workItemTrackingToolViewDialogYPosDefaultValue = "0.0";
+    private static final String PREF_WIDTH_KEY = "WorkItemTrackingToolViewDialogWidth";
+    private static final String PREF_WIDTH_DEFAULT = "512";
+    private static final String PREF_HEIGHT_KEY = "WorkItemTrackingToolViewDialogHeight";
+    private static final String PREF_HEIGHT_DEFAULT = "850";
+    private static final String PREF_XPOS_KEY = "WorkItemTrackingToolViewDialogXPos";
+    private static final String PREF_XPOS_DEFAULT = "0.0";
+    private static final String PREF_YPOS_KEY = "WorkItemTrackingToolViewDialogYPos";
+    private static final String PREF_YPOS_DEFAULT = "0.0";
     
-    private final String languageSelectorinfoResourceKey = "languageSelectorButton";
-    private final String languageDeResourceKey = "LanguageDE";
-    private final String languageEnResourceKey = "LanguageEN";
-    private final String languageEsResourceKey = "LanguageES";
-    private final String languageFrResourceKey = "LanguageFR";
-    private final String languageItResourceKey = "LanguageIT";
-    private final String undoResourceKey = "Undo";
-    private final String redoResourceKey = "Redo";
-    private final String workItemResourceKey = "WorkItemToolTip";
+    private static final String LANG_SELECTOR_KEY = "languageSelectorButton";
+    private static final String WORK_ITEM_TOOLTIP_KEY = "WorkItemToolTip";
+    private static final String WORK_ITEM_TITLE_KEY = "WorkItemViewTitle";
+    private static final String WORK_ITEM_RESOURCE = "/view/WorkItemView.fxml";
+    private static final String WORK_ITEM_ICON = "icons/app-maid.png";
     
-    private final String workItemTrackingToolViewDialogIcon = "icons/app-maid.png";
-    private final String workItemViewTitleResourceKey = "WorkItemViewTitle";
-    private final String workItemViewResource = "/view/WorkItemView.fxml";
-    
-    private final String workItemDateChangedEvent = "WorkItemDateChanged";
-    private final String selectedWorkRecordChangedEvent = "SelectedWorkRecordChanged";
+    private static final String EVENT_DATE_CHANGED = "WorkItemDateChanged";
+    private static final String EVENT_SELECTED_RECORD_CHANGED = "SelectedWorkRecordChanged";
+    private static final String EVENT_NEW_ITEM = "NewTrackingItem";
+    private static final String EVENT_EDIT_ITEM = "EditTrackingItem";
+    private static final String EVENT_DELETE_ITEM = "DeleteTrackingItem";
 
-    private final String newTrackingItemEvent = "NewTrackingItem";
-    private final String editTrackingItemEvent = "EditTrackingItem";
-    private final String deleteTrackingItemEvent = "DeleteTrackingItem";
-    
     private Stage primaryStage;
     private Stage workItemTrackingToolViewDialog;
     private final LanguageService languageService;
@@ -70,43 +66,27 @@ public class MainToolBarViewController implements Initializable, IViewController
     @SuppressWarnings("unused")
     private final EventManager eventManager;
     
-    @FXML
-    private Button undoButton;
-    @FXML
-    private Tooltip undoTooltip;
-    @FXML
-    private Button redoButton;
-    @FXML
-    private Tooltip redoTooltip;
-    @FXML
-    private SplitMenuButton languageSelectorButton;
-    @FXML
-    private MenuItem languageDE;
-    @FXML
-    private MenuItem languageEN;
-    @FXML
-    private MenuItem languageES;
-    @FXML
-    private MenuItem languageFR;
-    @FXML
-    private MenuItem languageIT;
-    @FXML
-    private Button workItemButton;
-    @FXML
-    private Tooltip workItemTooltip;
+    @FXML private Button undoButton;
+    @FXML private Tooltip undoTooltip;
+    @FXML private Button redoButton;
+    @FXML private Tooltip redoTooltip;
+    @FXML private SplitMenuButton languageSelectorButton;
+    @FXML private MenuItem languageDE;
+    @FXML private MenuItem languageEN;
+    @FXML private MenuItem languageES;
+    @FXML private MenuItem languageFR;
+    @FXML private MenuItem languageIT;
+    @FXML private Button workItemButton;
+    @FXML private Tooltip workItemTooltip;
     
     public TranslationStringProperty undoButtonText;
 
-    public MainToolBarViewController(LanguageService languageService, Connection connection, UndoService undoService, PropertiesService propertiesService) {
-        if(languageService == null) throw new NullPointerException("languageService");
-        if(connection == null) throw new NullPointerException("connection");
-        if(undoService == null) throw new NullPointerException("undoService");
-        if(propertiesService == null) throw new NullPointerException("propertiesService");
-        
-        this.languageService = languageService;
-        this.connection = connection;        
-        this.undoService = undoService;
-        this.propertiesService = propertiesService;
+    public MainToolBarViewController(LanguageService languageService, Connection connection, 
+                                     UndoService undoService, PropertiesService propertiesService) {
+        this.languageService = Objects.requireNonNull(languageService, "languageService");
+        this.connection = Objects.requireNonNull(connection, "connection");
+        this.undoService = Objects.requireNonNull(undoService, "undoService");
+        this.propertiesService = Objects.requireNonNull(propertiesService, "propertiesService");
         this.controllerRepository = ControllerRepository.getInstance();
         this.eventManager = new EventManager();
     }
@@ -119,21 +99,30 @@ public class MainToolBarViewController implements Initializable, IViewController
 
     @Override
     public void updateGuiItems() {
+        if (rb == null) return;
+        
         toggleUndoRedoButtons();
         toggleMenuItemsForLanguageSelection(rb.getLocale());
-        languageSelectorButton.setText(rb.getString(languageSelectorinfoResourceKey));
-        languageDE.setText(rb.getString(languageDeResourceKey));
-        languageEN.setText(rb.getString(languageEnResourceKey));
-        languageES.setText(rb.getString(languageEsResourceKey));
-        languageFR.setText(rb.getString(languageFrResourceKey));
-        languageIT.setText(rb.getString(languageItResourceKey));
-        undoButton.setText(rb.getString(undoResourceKey));
-        undoTooltip.setText(rb.getString(undoResourceKey));
-        redoButton.setText(rb.getString(redoResourceKey));
-        redoTooltip.setText(rb.getString(redoResourceKey));
-        workItemTooltip.setText(rb.getString(workItemResourceKey));
-        if(workItemTrackingToolViewDialog != null) {
-            workItemTrackingToolViewDialog.setTitle(rb.getString(workItemViewTitleResourceKey));
+        
+        languageSelectorButton.setText(rb.getString(LANG_SELECTOR_KEY));
+        languageDE.setText(rb.getString("LanguageDE"));
+        languageEN.setText(rb.getString("LanguageEN"));
+        languageES.setText(rb.getString("LanguageES"));
+        languageFR.setText(rb.getString("LanguageFR"));
+        languageIT.setText(rb.getString("LanguageIT"));
+        
+        String undoText = rb.getString("Undo");
+        undoButton.setText(undoText);
+        undoTooltip.setText(undoText);
+        
+        String redoText = rb.getString("Redo");
+        redoButton.setText(redoText);
+        redoTooltip.setText(redoText);
+        
+        workItemTooltip.setText(rb.getString(WORK_ITEM_TOOLTIP_KEY));
+        
+        if (workItemTrackingToolViewDialog != null) {
+            workItemTrackingToolViewDialog.setTitle(rb.getString(WORK_ITEM_TITLE_KEY));
         }
     }
 
@@ -146,107 +135,99 @@ public class MainToolBarViewController implements Initializable, IViewController
     }
     
     public void toggleUndoRedoButtons() {
-        undoButton.disableProperty().set(undoService.isUndoStackEmpty());
-        redoButton.disableProperty().set(undoService.isRedoStackEmpty());
+        undoButton.setDisable(undoService.isUndoStackEmpty());
+        redoButton.setDisable(undoService.isRedoStackEmpty());
     }
 
     @FXML
-    @SuppressWarnings("unused")
     private void undoAction(ActionEvent event) {
         undoService.undo();
     }
 
     @FXML
-    @SuppressWarnings("unused")
     private void redoAction(ActionEvent event) {
         undoService.redo();
     }
 
     @FXML
-    @SuppressWarnings("unused")
     private void changeLanguageAction(ActionEvent event) {
         Locale newLocale = getLocale(event);
         Locale oldLocale = getLocale(activeMenuItem);
-        ChangeLanguageCommand cmd = new ChangeLanguageCommand(oldLocale, newLocale, languageService, controllerRepository);
-        undoService.execute(cmd);
+        undoService.execute(new ChangeLanguageCommand(oldLocale, newLocale, languageService, controllerRepository));
     }
 
     @FXML
-    @SuppressWarnings("unused")
     private void workItemAction(ActionEvent event) throws IOException, SQLException {      
-        WorkItemViewController workItemViewController = new WorkItemViewController(controllerRepository, languageService, connection, undoService, propertiesService);
+        WorkItemViewController workItemViewController = new WorkItemViewController(
+                controllerRepository, languageService, connection, undoService, propertiesService);
         controllerRepository.put(WorkItemViewController.class.getName(), workItemViewController);
             
-        //This controller will be informed about the date changed action
-        workItemViewController.getEventManager().registerEventType(workItemDateChangedEvent);
-        WorkRecordDetailsViewController workRecordDetailsViewController = (WorkRecordDetailsViewController)this.controllerRepository.get(WorkRecordDetailsViewController.class.getName());
-        workItemViewController.getEventManager().subscribeEventToListener(workItemDateChangedEvent, workRecordDetailsViewController);
+        // Event registrations
+        var workItemEventManager = workItemViewController.getEventManager();
+        workItemEventManager.registerEventType(EVENT_DATE_CHANGED);
+        
+        WorkRecordDetailsViewController detailsController = 
+                (WorkRecordDetailsViewController) controllerRepository.get(WorkRecordDetailsViewController.class.getName());
+        workItemEventManager.subscribeEventToListener(EVENT_DATE_CHANGED, detailsController);
 
-        //Register WorkItemTrackingToolViewController for selectedWorkRecordChangedEvent
-        WorkRecordViewController workRecordViewController = (WorkRecordViewController)controllerRepository.get(WorkRecordViewController.class.getName());
-        workRecordViewController.getEventManager().subscribeEventToListener(selectedWorkRecordChangedEvent, workItemViewController);            
+        WorkRecordViewController recordController = 
+                (WorkRecordViewController) controllerRepository.get(WorkRecordViewController.class.getName());
+        recordController.getEventManager().subscribeEventToListener(EVENT_SELECTED_RECORD_CHANGED, workItemViewController);            
 
-        //Register WorkItemTrackingToolViewController for newTrackingItemEvent, editTrackingItemEvent, deleteTrackingItemEvent
-        TrackingItemViewController trackingItemViewController = (TrackingItemViewController)controllerRepository.get(TrackingItemViewController.class.getName());
-        if(trackingItemViewController != null) {
-            trackingItemViewController.getEventManager().subscribeEventToListener(newTrackingItemEvent, workItemViewController);
-            trackingItemViewController.getEventManager().subscribeEventToListener(editTrackingItemEvent, workItemViewController);
-            trackingItemViewController.getEventManager().subscribeEventToListener(deleteTrackingItemEvent, workItemViewController);
+        TrackingItemViewController trackingController = 
+                (TrackingItemViewController) controllerRepository.get(TrackingItemViewController.class.getName());
+        if (trackingController != null) {
+            trackingController.getEventManager().subscribeEventToListener(EVENT_NEW_ITEM, workItemViewController);
+            trackingController.getEventManager().subscribeEventToListener(EVENT_EDIT_ITEM, workItemViewController);
+            trackingController.getEventManager().subscribeEventToListener(EVENT_DELETE_ITEM, workItemViewController);
         }
             
         DialogFactory dialogFactory = new DialogFactory(
-            primaryStage, 
-            workItemViewTitleResourceKey, 
-            workItemTrackingToolViewDialogIcon, 
-            workItemViewResource, 
-            rb, 
-            workItemViewController);
+            primaryStage, WORK_ITEM_TITLE_KEY, WORK_ITEM_ICON, WORK_ITEM_RESOURCE, rb, workItemViewController);
         workItemTrackingToolViewDialog = dialogFactory.create(Modality.NONE, StageStyle.DECORATED, true);
         
-        String workItemTrackingToolViewDialogWidth = propertiesService.getProperty(workItemTrackingToolViewDialogWidthResourceKey, workItemTrackingToolViewDialogWidthDefaultValue);
-        Double dialogWidth = Double.valueOf(workItemTrackingToolViewDialogWidth);
-        workItemTrackingToolViewDialog.setWidth(dialogWidth);
-        String workItemTrackingToolViewDialogHeight = propertiesService.getProperty(workItemTrackingToolViewDialogHeightResourceKey, workItemTrackingToolViewDialogHeightDefaultValue);
-        Double dialogHeight = Double.valueOf(workItemTrackingToolViewDialogHeight);
-        workItemTrackingToolViewDialog.setHeight(dialogHeight);
-        String workItemTrackingToolViewDialogXPos = propertiesService.getProperty(workItemTrackingToolViewDialogXPosResourceKey, workItemTrackingToolViewDialogXPosDefaultValue);
-        Double dialogXPos = Double.valueOf(workItemTrackingToolViewDialogXPos);
-        workItemTrackingToolViewDialog.setX(dialogXPos);
-        String workItemTrackingToolViewDialogYPos = propertiesService.getProperty(workItemTrackingToolViewDialogYPosResourceKey, workItemTrackingToolViewDialogYPosDefaultValue);
-        Double dialogYPos = Double.valueOf(workItemTrackingToolViewDialogYPos);
-        workItemTrackingToolViewDialog.setY(dialogYPos);
-            
-        if(!workItemTrackingToolViewDialog.isShowing()) {
-            workItemButton.disableProperty().set(true);
+        applyStageDimensions();
+        
+        if (!workItemTrackingToolViewDialog.isShowing()) {
+            workItemButton.setDisable(true);
             workItemTrackingToolViewDialog.showAndWait();        
         }
 
-        dialogWidth = workItemTrackingToolViewDialog.getWidth();
-        propertiesService.setProperty(workItemTrackingToolViewDialogWidthResourceKey, dialogWidth.toString());
-        dialogHeight = workItemTrackingToolViewDialog.getHeight();
-        propertiesService.setProperty(workItemTrackingToolViewDialogHeightResourceKey, dialogHeight.toString());
-        dialogXPos = workItemTrackingToolViewDialog.getX();
-        propertiesService.setProperty(workItemTrackingToolViewDialogXPosResourceKey, dialogXPos.toString());
-        dialogYPos = workItemTrackingToolViewDialog.getY();
-        propertiesService.setProperty(workItemTrackingToolViewDialogYPosResourceKey, dialogYPos.toString());
+        saveStageDimensions();
         
-        if(controllerRepository.contains(WorkItemViewController.class.getName())) {
+        if (controllerRepository.contains(WorkItemViewController.class.getName())) {
             controllerRepository.remove(WorkItemViewController.class.getName());
         }
     }
 
+    private void applyStageDimensions() {
+        workItemTrackingToolViewDialog.setWidth(getDoubleProperty(PREF_WIDTH_KEY, PREF_WIDTH_DEFAULT));
+        workItemTrackingToolViewDialog.setHeight(getDoubleProperty(PREF_HEIGHT_KEY, PREF_HEIGHT_DEFAULT));
+        workItemTrackingToolViewDialog.setX(getDoubleProperty(PREF_XPOS_KEY, PREF_XPOS_DEFAULT));
+        workItemTrackingToolViewDialog.setY(getDoubleProperty(PREF_YPOS_KEY, PREF_YPOS_DEFAULT));
+    }
+
+    private void saveStageDimensions() {
+        propertiesService.setProperty(PREF_WIDTH_KEY, String.valueOf(workItemTrackingToolViewDialog.getWidth()));
+        propertiesService.setProperty(PREF_HEIGHT_KEY, String.valueOf(workItemTrackingToolViewDialog.getHeight()));
+        propertiesService.setProperty(PREF_XPOS_KEY, String.valueOf(workItemTrackingToolViewDialog.getX()));
+        propertiesService.setProperty(PREF_YPOS_KEY, String.valueOf(workItemTrackingToolViewDialog.getY()));
+    }
+
+    private double getDoubleProperty(String key, String defaultValue) {
+        return Double.parseDouble(propertiesService.getProperty(key, defaultValue));
+    }
+
     private Locale getLocale(ActionEvent event) {
-        return createLocaleBy((MenuItem)event.getSource());
+        return event != null && event.getSource() instanceof MenuItem mi ? createLocaleBy(mi) : Locale.ROOT;
     }
     
     private Locale getLocale(MenuItem menuItem) {
-        return createLocaleBy(menuItem);
+        return menuItem != null ? createLocaleBy(menuItem) : Locale.ROOT;
     }
 
     private Locale createLocaleBy(MenuItem menuItem) {
-        Locale locale;
-        
-        locale = switch (menuItem.getId()) {
+        return switch (menuItem.getId()) {
             case "changeToGerman" -> Locale.of("de", "DE");
             case "changeToEnglish" -> Locale.of("en", "EN");
             case "changeToSpanish" -> Locale.of("es", "ES");
@@ -254,53 +235,28 @@ public class MainToolBarViewController implements Initializable, IViewController
             case "changeToItalian" -> Locale.of("it", "IT");
             default -> Locale.ROOT;
         };
-        return locale;
     }
     
     private void toggleMenuItemsForLanguageSelection(Locale locale) {
-        switch (locale.toLanguageTag()) {
-            case "de" -> {
-                SetActiveMenuItem(languageDE);
-                languageDE.setDisable(true);
-                languageEN.setDisable(false);
-                languageES.setDisable(false);
-                languageFR.setDisable(false);
-                languageIT.setDisable(false);
-            }
-            case "en" -> {
-                languageDE.setDisable(false);
-                SetActiveMenuItem(languageEN);
-                languageEN.setDisable(true);
-                languageES.setDisable(false);
-                languageFR.setDisable(false);
-                languageIT.setDisable(false);
-            }
-            case "es" -> {
-                languageDE.setDisable(false);
-                languageEN.setDisable(false);
-                SetActiveMenuItem(languageES);
-                languageES.setDisable(true);
-                languageFR.setDisable(false);
-                languageIT.setDisable(false);
-            }
-            case "fr" -> {
-                languageDE.setDisable(false);
-                languageEN.setDisable(false);
-                languageES.setDisable(false);
-                SetActiveMenuItem(languageFR);
-                languageFR.setDisable(true);
-                languageIT.setDisable(false);
-            }
-            case "it" -> {
-                languageDE.setDisable(false);
-                languageEN.setDisable(false);
-                languageES.setDisable(false);
-                languageFR.setDisable(false);
-                SetActiveMenuItem(languageIT);
-                languageIT.setDisable(true);
-            }
-            default -> {
-            }
+        String langTag = locale != null ? locale.toLanguageTag() : "";
+        
+        languageDE.setDisable("de".equals(langTag));
+        languageEN.setDisable("en".equals(langTag));
+        languageES.setDisable("es".equals(langTag));
+        languageFR.setDisable("fr".equals(langTag));
+        languageIT.setDisable("it".equals(langTag));
+
+        MenuItem matchedItem = switch (langTag) {
+            case "de" -> languageDE;
+            case "en" -> languageEN;
+            case "es" -> languageES;
+            case "fr" -> languageFR;
+            case "it" -> languageIT;
+            default -> null;
+        };
+        
+        if (matchedItem != null) {
+            SetActiveMenuItem(matchedItem);
         }
     }
 
@@ -325,7 +281,6 @@ public class MainToolBarViewController implements Initializable, IViewController
 
     @Override
     public void preCloseAction() {
-
+        // No-op
     }
-    
 }
