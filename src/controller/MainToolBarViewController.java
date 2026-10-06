@@ -54,6 +54,10 @@ public class MainToolBarViewController implements Initializable, IViewController
     private static final String EVENT_EDIT_ITEM = "EditTrackingItem";
     private static final String EVENT_DELETE_ITEM = "DeleteTrackingItem";
 
+    private static final String EVENT_NEW_WORKITEM = "NewWorkItem";
+    private static final String EVENT_EDIT_WORKITEM = "EditWorkItem";
+    private static final String EVENT_DELETE_WORKITEM = "DeleteWorkItem";
+
     private Stage primaryStage;
     private Stage workItemTrackingToolViewDialog;
     private final LanguageService languageService;
@@ -158,30 +162,36 @@ public class MainToolBarViewController implements Initializable, IViewController
 
     @FXML
     private void workItemAction(ActionEvent event) throws IOException, SQLException {      
-        WorkItemViewController workItemViewController = new WorkItemViewController(
-                controllerRepository, languageService, connection, undoService, propertiesService);
+        WorkItemViewController workItemViewController = new WorkItemViewController(controllerRepository, languageService, connection, undoService, propertiesService);
         controllerRepository.put(WorkItemViewController.class.getName(), workItemViewController);
             
         // Event registrations
         var workItemEventManager = workItemViewController.getEventManager();
         workItemEventManager.registerEventType(EVENT_DATE_CHANGED);
+        workItemEventManager.registerEventType(EVENT_NEW_WORKITEM);
+        workItemEventManager.registerEventType(EVENT_EDIT_WORKITEM);
+        workItemEventManager.registerEventType(EVENT_DELETE_WORKITEM);
         
-        WorkRecordDetailsViewController detailsController = 
-                (WorkRecordDetailsViewController) controllerRepository.get(WorkRecordDetailsViewController.class.getName());
+        WorkRecordDetailsViewController detailsController = (WorkRecordDetailsViewController) controllerRepository.get(WorkRecordDetailsViewController.class.getName());
         workItemEventManager.subscribeEventToListener(EVENT_DATE_CHANGED, detailsController);
 
-        WorkRecordViewController recordController = 
-                (WorkRecordViewController) controllerRepository.get(WorkRecordViewController.class.getName());
+        WorkRecordViewController recordController = (WorkRecordViewController) controllerRepository.get(WorkRecordViewController.class.getName());
         recordController.getEventManager().subscribeEventToListener(EVENT_SELECTED_RECORD_CHANGED, workItemViewController);            
 
-        TrackingItemViewController trackingController = 
-                (TrackingItemViewController) controllerRepository.get(TrackingItemViewController.class.getName());
+        TrackingItemViewController trackingController = (TrackingItemViewController) controllerRepository.get(TrackingItemViewController.class.getName());
         if (trackingController != null) {
             trackingController.getEventManager().subscribeEventToListener(EVENT_NEW_ITEM, workItemViewController);
             trackingController.getEventManager().subscribeEventToListener(EVENT_EDIT_ITEM, workItemViewController);
             trackingController.getEventManager().subscribeEventToListener(EVENT_DELETE_ITEM, workItemViewController);
         }
-            
+
+        UserInfoViewController userInfoController = (UserInfoViewController) controllerRepository.get(UserInfoViewController.class.getName());
+        if (userInfoController != null) {
+            workItemEventManager.subscribeEventToListener(EVENT_NEW_WORKITEM, userInfoController);
+            workItemEventManager.subscribeEventToListener(EVENT_EDIT_WORKITEM, userInfoController);
+            workItemEventManager.subscribeEventToListener(EVENT_DELETE_WORKITEM, userInfoController);
+        }
+        
         DialogFactory dialogFactory = new DialogFactory(
             primaryStage, WORK_ITEM_TITLE_KEY, WORK_ITEM_ICON, WORK_ITEM_RESOURCE, rb, workItemViewController);
         workItemTrackingToolViewDialog = dialogFactory.create(Modality.NONE, StageStyle.DECORATED, true);

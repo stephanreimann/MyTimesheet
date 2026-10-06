@@ -95,7 +95,11 @@ public class UserInfoViewController implements Initializable, IViewController, I
     private final String newTrackingItemEvent = "NewTrackingItem";
     private final String editTrackingItemEvent = "EditTrackingItem";
     private final String deleteTrackingItemEvent = "DeleteTrackingItem";
-        
+    
+    private final String newWorkItemEvent = "NewWorkItem";
+    private final String editWorkItemEvent = "EditWorkItem";
+    private final String deleteWorkItemEvent = "DeleteWorkItem";
+    
     private final String defaultOvertimeThreshold = "PT00H";
     private final String thresholdExceededResourceKey = "ThresholdExceeded";
     
@@ -294,6 +298,10 @@ public class UserInfoViewController implements Initializable, IViewController, I
         this.eventManager.registerEventType(newSprintEvent);
         this.eventManager.registerEventType(editSprintEvent);
         this.eventManager.registerEventType(deleteSprintEvent);
+        
+        this.eventManager.registerEventType(newWorkItemEvent);
+        this.eventManager.registerEventType(editWorkItemEvent);
+        this.eventManager.registerEventType(deleteWorkItemEvent);
     }
 
     @Override
@@ -431,6 +439,9 @@ public class UserInfoViewController implements Initializable, IViewController, I
                 refreshSprintChoiceBox();
             }
             case newTrackingItemEvent, editTrackingItemEvent, deleteTrackingItemEvent -> {
+                refreshTrackingItemInfos(user,  sprintChoiceBox.getSelectionModel().getSelectedItem());
+            }
+            case newWorkItemEvent, editWorkItemEvent, deleteWorkItemEvent -> {
                 refreshTrackingItemInfos(user,  sprintChoiceBox.getSelectionModel().getSelectedItem());
             }
         }
