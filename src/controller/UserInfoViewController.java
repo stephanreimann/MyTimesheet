@@ -74,6 +74,7 @@ public class UserInfoViewController implements Initializable, IViewController, I
     
     private final String sprintResourceKey = "Sprint";
     private final String userWorkitemsInfoResourceKey = "UserWorkitemsInfo";
+    @SuppressWarnings("unused")
     private final String trackingItemShortcutResourceKey = "TrackingItemShortcut";
     private final String trackingItemNameResourceKey = "TrackingItemName";
     private final String trackingItemTimeResourceKey = "TrackingItemTime";

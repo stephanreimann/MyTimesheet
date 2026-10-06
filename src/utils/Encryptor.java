@@ -4,8 +4,6 @@
  */
 package utils;
 
-import adapter.Log4jAdapter;
-import controller.UserViewController;
 import java.io.UnsupportedEncodingException;
 import java.security.*;
 import java.util.Base64;
