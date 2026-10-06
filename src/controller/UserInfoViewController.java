@@ -607,6 +607,10 @@ public class UserInfoViewController implements Initializable, IViewController, I
     
     private void refreshTrackingItemInfos(User user, Sprint sprint) {
         try {
+            if(user == null || sprint == null) {
+                return;
+            }
+            
             trackingItemTableView.getItems().clear();
             List<TrackingItem> trackingItems = trackingItemDAO.selectAll();
             String[][] data = new String[trackingItems.size()][3];
