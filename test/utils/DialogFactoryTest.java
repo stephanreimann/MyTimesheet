@@ -5,6 +5,8 @@
 package utils;
 
 import controller.IViewController;
+import controller.MainToolBarViewController;
+import java.sql.Connection;
 import javafx.application.Platform;
 import javafx.stage.Stage;
 import org.junit.BeforeClass;
@@ -18,7 +20,9 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.fail;
-import static org.mockito.Mockito.*;
+import service.LanguageService;
+import service.PropertiesService;
+import service.UndoService;
 
 public class DialogFactoryTest {
 
@@ -73,7 +77,28 @@ public class DialogFactoryTest {
                     }
                 };
 
-                IViewController mockController = mock(IViewController.class);
+                // 1. Stub LanguageService via an anonymous subclass to avoid JDK 26 inline-mock restrictions
+                var languageService = new LanguageService() {
+                    @Override
+                    public void updateGuiItems() {
+                        // No-op stub for testing
+                    }
+                };
+
+                // 2. Provide a lightweight proxy stub for java.sql.Connection
+                var connection = (Connection) java.lang.reflect.Proxy.newProxyInstance(
+                    Connection.class.getClassLoader(),
+                    new Class<?>[]{Connection.class},
+                    (proxy, method, args) -> null
+                );
+
+                // 3. Real instance of UndoService
+                var undoService = new UndoService();
+
+                // 4. Mock properties service using Mockito
+                var propertiesService = PropertiesService.getInstance();
+                
+                IViewController controller = new MainToolBarViewController(languageService, connection, undoService, propertiesService);
 
                 String titleKey = "dialog.title";
                 String dialogResource = "/fxml/dummy.fxml";
@@ -85,7 +110,7 @@ public class DialogFactoryTest {
                         iconPath,
                         dialogResource,
                         mockRb,
-                        mockController
+                        controller
                 );
 
                 // If you call factory.create(...) here, it will also need to run on this FX thread 
