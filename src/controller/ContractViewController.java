@@ -195,7 +195,7 @@ public class ContractViewController implements Initializable, IViewController {
         contractNameTableColumn.setCellValueFactory(cellData -> cellData.getValue().getNameProperty());
         
         Optional<Contract> firstContract = contractData.stream().findAny();
-        if(firstContract != null) {
+        if(!firstContract.isEmpty()) {
             showContractDetails(firstContract.get());
             contractTableView.getSelectionModel().select(0);
         } else {

@@ -171,7 +171,7 @@ public class ProjectViewController implements Initializable, IViewController {
         projectNameTableColumn.prefWidthProperty().bind(projectTableView.widthProperty().multiply(0.3));
 
         Optional<Project> firstProject = projectData.stream().findFirst();
-        if(firstProject != null) {
+        if(!firstProject.isEmpty()) {
             showProjectDetails(firstProject.get());
             projectTableView.getSelectionModel().select(0);
         } else {

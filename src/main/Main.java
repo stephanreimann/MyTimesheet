@@ -17,6 +17,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.stage.*;
+import model.User;
 import org.apache.logging.log4j.*;
 import service.*;
 import sqlite.*;
@@ -583,10 +584,13 @@ public class Main extends Application {
     
     private void createWorkrecordAutomaticallyIfNotExist() throws SQLException {
         WorkrecordDAO workrecordDao = new WorkrecordDAO(connection);
-        boolean workrecordsDoNotExist = workrecordDao.selectAll(workRecordViewController.getSelectedUser(), LocalDate.now()).isEmpty();
-        boolean workrecordAutomaticCreation = Boolean.parseBoolean(propertiesService.getProperty(workrecordAutomaticCreationKey, falseKey));
-        if(workrecordsDoNotExist && workrecordAutomaticCreation) {
-            workRecordDetailsViewController.createWorkrecordAutomatically();            
+        User selectedUser = workRecordViewController.getSelectedUser();
+        if(selectedUser != null) {
+            boolean workrecordsDoNotExist = workrecordDao.selectAll(selectedUser, LocalDate.now()).isEmpty();
+            boolean workrecordAutomaticCreation = Boolean.parseBoolean(propertiesService.getProperty(workrecordAutomaticCreationKey, falseKey));
+            if(workrecordsDoNotExist && workrecordAutomaticCreation) {
+                workRecordDetailsViewController.createWorkrecordAutomatically();            
+            }
         }
     }
 

@@ -162,7 +162,7 @@ public class WorkLocationViewController implements Initializable, IViewControlle
         worklocationDescriptionTableColumn.prefWidthProperty().bind(worklocationTableView.widthProperty().multiply(0.7));
 
         Optional<Worklocation> firstWorklocation = worklocationData.stream().findFirst();
-        if(firstWorklocation != null) {
+        if(!firstWorklocation.isEmpty()) {
             showWorklocationDetails(firstWorklocation.get());
             worklocationTableView.getSelectionModel().select(0);
         } else {

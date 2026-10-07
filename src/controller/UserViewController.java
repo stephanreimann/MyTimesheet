@@ -187,7 +187,7 @@ public class UserViewController implements Initializable, IViewController {
         userLastNameTableColumn.prefWidthProperty().bind(userTableView.widthProperty().multiply(0.5));
             
         Optional<User> firstUser = userData.stream().findFirst();
-        if(firstUser != null) {
+        if(!firstUser.isEmpty()) {
             showUserDetails(firstUser.get());
             userTableView.getSelectionModel().select(0);
         } else {

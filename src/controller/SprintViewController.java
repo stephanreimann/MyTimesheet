@@ -183,7 +183,7 @@ public class SprintViewController implements Initializable, IViewController {
         sprintTableView.sort();
 
         Optional<Sprint> firstSprint = sprintData.stream().findFirst();
-        if(firstSprint != null) {
+        if(!firstSprint.isEmpty()) {
             showSprintDetails(firstSprint.get());
             sprintTableView.getSelectionModel().select(0);
         } else {

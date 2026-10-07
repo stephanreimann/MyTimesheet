@@ -185,7 +185,7 @@ public class TrackingItemViewController implements Initializable, IViewControlle
         trackingItemNameTableColumn.setCellValueFactory(cellData -> cellData.getValue().getNameProperty());
         
         Optional<TrackingItem> firstTrackingItem = trackingItemData.stream().findFirst();
-        if(firstTrackingItem != null) {
+        if(!firstTrackingItem.isEmpty()) {
             showTrackingItemDetails(firstTrackingItem.get());
             trackingItemTableView.getSelectionModel().select(0);
         } else {

@@ -156,7 +156,7 @@ public class RoleViewController implements Initializable, IViewController {
         roleDescriptionTableColumn.prefWidthProperty().bind(roleTableView.widthProperty().multiply(0.7));
 
         Optional<Role> firstRole = roleData.stream().findFirst();
-        if(firstRole != null) {
+        if(!firstRole.isEmpty()) {
             showRoleDetails(firstRole.get());
             roleTableView.getSelectionModel().select(0);
         } else {

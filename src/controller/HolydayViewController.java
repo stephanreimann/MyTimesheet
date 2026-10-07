@@ -186,7 +186,7 @@ public class HolydayViewController implements Initializable, IViewController {
         holydayStateTableColumn.setSortable(false);
         
         Optional<Holyday> firstHolyday = holydayData.stream().findFirst();
-        if(firstHolyday != null) {
+        if(!firstHolyday.isEmpty()) {
             showHolydayDetails(firstHolyday.get());
             holydayTableView.getSelectionModel().select(0);
         } else {

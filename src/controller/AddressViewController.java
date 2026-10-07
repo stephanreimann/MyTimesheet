@@ -187,7 +187,7 @@ public class AddressViewController implements Initializable, IViewController {
         addressTableColumn.setCellValueFactory(cellData -> cellData.getValue().getAddressProperty());
         
         Optional<Address> firstAddress = addressData.stream().findAny();
-        if(firstAddress != null) {
+        if(!firstAddress.isEmpty()) {
             showAddressDetails(firstAddress.get());
             addressTableView.getSelectionModel().select(0);
         } else {
