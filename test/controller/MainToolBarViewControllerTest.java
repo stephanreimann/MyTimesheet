@@ -167,22 +167,22 @@ public class MainToolBarViewControllerTest {
 
     @Test(expected = NullPointerException.class)
     public void constructor_NullLanguageService_ThrowsNPE() {
-        new MainToolBarViewController(null, connection, new UndoService(), PropertiesService.getInstance());
+        var _ = new MainToolBarViewController(null, connection, new UndoService(), PropertiesService.getInstance());
     }
 
     @Test(expected = NullPointerException.class)
     public void constructor_NullConnection_ThrowsNPE() {
-        new MainToolBarViewController(createLanguageServiceStub(), null, new UndoService(), PropertiesService.getInstance());
+        var _ = new MainToolBarViewController(createLanguageServiceStub(), null, new UndoService(), PropertiesService.getInstance());
     }
 
     @Test(expected = NullPointerException.class)
     public void constructor_NullUndoService_ThrowsNPE() {
-        new MainToolBarViewController(createLanguageServiceStub(), connection, null, PropertiesService.getInstance());
+        var _ = new MainToolBarViewController(createLanguageServiceStub(), connection, null, PropertiesService.getInstance());
     }
 
     @Test(expected = NullPointerException.class)
     public void constructor_NullPropertiesService_ThrowsNPE() {
-        new MainToolBarViewController(createLanguageServiceStub(), connection, new UndoService(), null);
+        var _ = new MainToolBarViewController(createLanguageServiceStub(), connection, new UndoService(), null);
     }
 
     // --- Initialization & GUI Tests ---
