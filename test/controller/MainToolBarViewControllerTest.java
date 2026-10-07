@@ -18,6 +18,8 @@ import service.PropertiesService;
 import service.UndoService;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Proxy;
 import java.sql.Connection;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -29,12 +31,8 @@ import static org.junit.Assert.*;
 
 public class MainToolBarViewControllerTest {
 
-    private LanguageService languageService;
     private Connection connection;
-    private UndoService undoService;
-    private PropertiesService propertiesService;
     private ResourceBundle resourceBundle;
-
     private MainToolBarViewController controller;
 
     // FXML injected UI controls
@@ -53,7 +51,6 @@ public class MainToolBarViewControllerTest {
 
     @BeforeClass
     public static void initJfx() throws InterruptedException {
-        // Initialize JavaFX toolkit safely for headless/test execution
         CountDownLatch latch = new CountDownLatch(1);
         try {
             Platform.startup(latch::countDown);
@@ -65,29 +62,40 @@ public class MainToolBarViewControllerTest {
 
     @Before
     public void setUp() throws Exception {
-        // 1. Stub LanguageService via an anonymous subclass to avoid JDK 26 inline-mock restrictions
-        languageService = new LanguageService() {
+        LanguageService languageService = createLanguageServiceStub();
+        connection = createConnectionProxyStub();
+        UndoService undoService = new UndoService();
+        PropertiesService propertiesService = PropertiesService.getInstance();
+
+        resourceBundle = createResourceBundleStub();
+
+        controller = new MainToolBarViewController(languageService, connection, undoService, propertiesService);
+
+        setupUiControls();
+        injectUiFields();
+    }
+
+    // --- Extraction Helpers for setUp() ---
+
+    private LanguageService createLanguageServiceStub() {
+        return new LanguageService() {
             @Override
             public void updateGuiItems() {
                 // No-op stub for testing
             }
         };
+    }
 
-        // 2. Provide a lightweight proxy stub for java.sql.Connection
-        connection = (Connection) java.lang.reflect.Proxy.newProxyInstance(
-            Connection.class.getClassLoader(),
-            new Class<?>[]{Connection.class},
-            (proxy, method, args) -> null
+    private Connection createConnectionProxyStub() {
+        return (Connection) Proxy.newProxyInstance(
+                Connection.class.getClassLoader(),
+                new Class<?>[]{Connection.class},
+                (proxy, method, args) -> null
         );
+    }
 
-        // 3. Real instance of UndoService
-        undoService = new UndoService();
-
-        // 4. Mock properties service using Mockito
-        propertiesService = PropertiesService.getInstance();
-
-        // 5. Provide a custom anonymous subclass of ResourceBundle to avoid mocking abstract JDK classes on Java 26
-        resourceBundle = new ResourceBundle() {
+    private ResourceBundle createResourceBundleStub() {
+        return new ResourceBundle() {
             @Override
             protected Object handleGetObject(String key) {
                 return switch (key) {
@@ -115,77 +123,78 @@ public class MainToolBarViewControllerTest {
                 return Locale.GERMAN;
             }
         };
+    }
 
-        controller = new MainToolBarViewController(languageService, connection, undoService, propertiesService);
-
-        // Instantiate JavaFX UI controls and assign proper IDs for locale lookup
+    private void setupUiControls() {
         undoButton = new Button();
         undoTooltip = new Tooltip();
         redoButton = new Button();
         redoTooltip = new Tooltip();
         languageSelectorButton = new SplitMenuButton();
-        
-        languageDE = new MenuItem();
-        languageDE.setId("changeToGerman");
-        
-        languageEN = new MenuItem();
-        languageEN.setId("changeToEnglish"); // Fixed: set ID so getLocale() works properly
-        
-        languageES = new MenuItem();
-        languageES.setId("changeToSpanish");
-        
-        languageFR = new MenuItem();
-        languageFR.setId("changeToFrench");
-        
-        languageIT = new MenuItem();
-        languageIT.setId("changeToItalian");
-        
+
+        languageDE = createMenuItem("changeToGerman");
+        languageEN = createMenuItem("changeToEnglish");
+        languageES = createMenuItem("changeToSpanish");
+        languageFR = createMenuItem("changeToFrench");
+        languageIT = createMenuItem("changeToItalian");
+
         workItemButton = new Button();
         workItemTooltip = new Tooltip();
+    }
 
-        // Inject private FXML fields via reflection
-        setField(controller, "undoButton", undoButton);
-        setField(controller, "undoTooltip", undoTooltip);
-        setField(controller, "redoButton", redoButton);
-        setField(controller, "redoTooltip", redoTooltip);
-        setField(controller, "languageSelectorButton", languageSelectorButton);
-        setField(controller, "languageDE", languageDE);
-        setField(controller, "languageEN", languageEN);
-        setField(controller, "languageES", languageES);
-        setField(controller, "languageFR", languageFR);
-        setField(controller, "languageIT", languageIT);
-        setField(controller, "workItemButton", workItemButton);
-        setField(controller, "workItemTooltip", workItemTooltip);
+    private MenuItem createMenuItem(String id) {
+        MenuItem item = new MenuItem();
+        item.setId(id);
+        return item;
+    }
+
+    private void injectUiFields() throws Exception {
+        setField("undoButton", undoButton);
+        setField("undoTooltip", undoTooltip);
+        setField("redoButton", redoButton);
+        setField("redoTooltip", redoTooltip);
+        setField("languageSelectorButton", languageSelectorButton);
+        setField("languageDE", languageDE);
+        setField("languageEN", languageEN);
+        setField("languageES", languageES);
+        setField("languageFR", languageFR);
+        setField("languageIT", languageIT);
+        setField("workItemButton", workItemButton);
+        setField("workItemTooltip", workItemTooltip);
+    }
+
+    // --- Constructor & Validation Tests ---
+
+    @Test(expected = NullPointerException.class)
+    public void constructor_NullLanguageService_ThrowsNPE() {
+        new MainToolBarViewController(null, connection, new UndoService(), PropertiesService.getInstance());
     }
 
     @Test(expected = NullPointerException.class)
-    public void constructorShouldThrowNullPointerExceptionWhenLanguageServiceIsNull() {
-        var _ = new MainToolBarViewController(null, connection, undoService, propertiesService);
+    public void constructor_NullConnection_ThrowsNPE() {
+        new MainToolBarViewController(createLanguageServiceStub(), null, new UndoService(), PropertiesService.getInstance());
     }
 
     @Test(expected = NullPointerException.class)
-    public void constructorShouldThrowNullPointerExceptionWhenConnectionIsNull() {
-        var _ = new MainToolBarViewController(languageService, null, undoService, propertiesService);
+    public void constructor_NullUndoService_ThrowsNPE() {
+        new MainToolBarViewController(createLanguageServiceStub(), connection, null, PropertiesService.getInstance());
     }
 
     @Test(expected = NullPointerException.class)
-    public void constructorShouldThrowNullPointerExceptionWhenUndoServiceIsNull() {
-        var _ = new MainToolBarViewController(languageService, connection, null, propertiesService);
+    public void constructor_NullPropertiesService_ThrowsNPE() {
+        new MainToolBarViewController(createLanguageServiceStub(), connection, new UndoService(), null);
     }
 
-    @Test(expected = NullPointerException.class)
-    public void constructorShouldThrowNullPointerExceptionWhenPropertiesServiceIsNull() {
-        var _ = new MainToolBarViewController(languageService, connection, undoService, null);
-    }
+    // --- Initialization & GUI Tests ---
 
     @Test
-    public void initializeShouldStoreResourceBundleAndUpdateGuiItems() {
+    public void initialize_ValidResourceBundle_StoresBundle() {
         controller.initialize(null, resourceBundle);
         assertEquals(resourceBundle, controller.getResourceBundle());
     }
 
     @Test
-    public void updateGuiItemsShouldUpdateButtonsAndTooltipsForGermanLocale() {
+    public void updateGuiItems_GermanLocale_UpdatesComponentsCorrectly() {
         controller.setResourceBundle(resourceBundle);
         controller.updateGuiItems();
 
@@ -203,61 +212,58 @@ public class MainToolBarViewControllerTest {
     }
 
     @Test
-    public void toggleUndoRedoButtonsShouldReflectStackStatus() {
+    public void toggleUndoRedoButtons_ReflectsStackStatus() {
         controller.toggleUndoRedoButtons();
         assertTrue(undoButton.isDisable());
         assertTrue(redoButton.isDisable());
     }
 
+    // --- Action & Event Tests ---
+
     @Test
-    public void undoActionShouldInvokeUndoOnService() throws Exception {
-        var method = MainToolBarViewController.class.getDeclaredMethod("undoAction", ActionEvent.class);
-        method.setAccessible(true);
-        method.invoke(controller, new ActionEvent());
+    public void undoAction_InvokesSuccessfully() throws Exception {
+        invokePrivateMethod("undoAction", new ActionEvent());
     }
 
     @Test
-    public void redoActionShouldInvokeRedoOnService() throws Exception {
-        var method = MainToolBarViewController.class.getDeclaredMethod("redoAction", ActionEvent.class);
-        method.setAccessible(true);
-        method.invoke(controller, new ActionEvent());
+    public void redoAction_InvokesSuccessfully() throws Exception {
+        invokePrivateMethod("redoAction", new ActionEvent());
     }
 
     @Test
-    public void changeLanguageActionShouldExecuteCommand() throws Exception {
-        // Set active menu item to English
-        setField(controller, "activeMenuItem", languageEN);
+    public void changeLanguageAction_ExecutesCommand() throws Exception {
+        setField("activeMenuItem", languageEN);
         controller.setResourceBundle(resourceBundle);
 
-        // Action event originates from German menu item ("changeToGerman")
         ActionEvent event = new ActionEvent(languageDE, null);
 
-        var method = MainToolBarViewController.class.getDeclaredMethod("changeLanguageAction", ActionEvent.class);
-        method.setAccessible(true);
-        
         try {
-            method.invoke(controller, event);
-        } catch (java.lang.reflect.InvocationTargetException e) {
-            // If ChangeLanguageCommand triggers internal updates requiring a populated ControllerRepository,
-            // we catch or verify the invocation outcome accordingly.
+            invokePrivateMethod("changeLanguageAction", event);
+        } catch (InvocationTargetException e) {
             if (!(e.getTargetException() instanceof NullPointerException)) {
-                throw e; // rethrow if it's an unexpected failure
+                throw e; // Rethrow if unexpected
             }
         }
 
-        // Verify command execution attempt or undo stack status if command succeeded
         assertNotNull(controller.GetActiveMenuItem());
     }
 
     @Test
-    public void getWorkItemButtonShouldReturnButton() {
+    public void getWorkItemButton_ReturnsCorrectInstance() {
         assertEquals(workItemButton, controller.getWorkItemButton());
     }
 
-    // Helper method to inject private fields via reflection
-    private void setField(Object target, String fieldName, Object value) throws Exception {
-        Field field = target.getClass().getDeclaredField(fieldName);
+    // --- Reflection Helpers ---
+
+    private void setField(String fieldName, Object value) throws Exception {
+        Field field = MainToolBarViewController.class.getDeclaredField(fieldName);
         field.setAccessible(true);
-        field.set(target, value);
+        field.set(controller, value);
+    }
+
+    private void invokePrivateMethod(String methodName, ActionEvent event) throws Exception {
+        var method = MainToolBarViewController.class.getDeclaredMethod(methodName, ActionEvent.class);
+        method.setAccessible(true);
+        method.invoke(controller, event);
     }
 }
