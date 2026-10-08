@@ -5,7 +5,6 @@
 package testhelper;
 
 import controller.IViewController;
-import controller.MainToolBarViewController;
 import java.lang.reflect.Field;
 import javafx.event.ActionEvent;
 
