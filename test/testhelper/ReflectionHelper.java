@@ -16,13 +16,13 @@ import javafx.event.ActionEvent;
 public class ReflectionHelper {
     
     public void setField(IViewController controller, String fieldName, Object value) throws Exception {
-        Field field = MainToolBarViewController.class.getDeclaredField(fieldName);
+        Field field = controller.getClass().getDeclaredField(fieldName);
         field.setAccessible(true);
         field.set(controller, value);
     }
 
     public void invokePrivateMethod(IViewController controller, String methodName, ActionEvent event) throws Exception {
-        var method = MainToolBarViewController.class.getDeclaredMethod(methodName, ActionEvent.class);
+        var method = controller.getClass().getDeclaredMethod(methodName, ActionEvent.class);
         method.setAccessible(true);
         method.invoke(controller, event);
     }

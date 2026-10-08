@@ -369,7 +369,6 @@ public class AddressDAOTest {
         }
         
         statement = new StringBuilder();        
-        //statement.append("UPDATE SQLITE_SEQUENCE SET seq = 0 WHERE name='Address'");
         statement.append("DELETE FROM SQLITE_SEQUENCE WHERE name='Address'");
         try {
             PreparedStatement dbStatement = connection.prepareStatement(statement.toString());
