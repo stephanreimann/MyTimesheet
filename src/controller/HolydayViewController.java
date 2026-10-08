@@ -307,7 +307,7 @@ public class HolydayViewController implements Initializable, IViewController {
         controllerRepository.remove(HolydayDetailsViewController.class.getName());
     }
 
-    private boolean isHolydayValid(Holyday holyday) {
+    public boolean isHolydayValid(Holyday holyday) {
         return !ControllerUtilities.isNullOrEmpty(holyday.getName()) &&
                !ControllerUtilities.isNullOrEmpty(holyday.getDate().toString()) &&
                !ControllerUtilities.isNullOrEmpty(holyday.getState());
