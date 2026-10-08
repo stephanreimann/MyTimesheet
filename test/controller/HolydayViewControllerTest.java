@@ -260,6 +260,7 @@ public class HolydayViewControllerTest {
         boolean isValid = controller.isHolydayValid(validHolyday);
         assertTrue(isValid);
     }
+    
     @Test
     public void isHolydayValid_EmptyField_ReturnsFalse() {
         Holyday invalidHolyday = new Holyday(1L, LocalDate.of(2026, 1, 1), "", "Bayern"); // Empty name
