@@ -802,10 +802,12 @@ public class UserInfoViewController implements Initializable, IViewController, I
             targetId = sprintList.getLast().getId();
         }
 
-        sprintList.stream()
-                .filter(sprint -> sprint.getId().equals(targetId))
-                .findFirst()
-                .ifPresent(selectedSprintChoiceBox.getSelectionModel()::select);
+        for (Sprint sprint : sprintList) {
+            if (sprint.getId().equals(targetId)) {
+                selectedSprintChoiceBox.getSelectionModel().select(sprint);
+                break;
+            }
+        }
     }
 
     private Callback<TableColumn.CellDataFeatures<String[], String>, ObservableValue<String>> cellValue(int index) {
