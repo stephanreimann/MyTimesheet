@@ -165,25 +165,25 @@ public class SprintDetailsViewControllerTest {
     // --- Constructor & Validation Tests ---
 
     @Test(expected = NullPointerException.class)
-    public void constructor_NullLanguageService_ThrowsNPE() {
+    public void constructor_NullLanguageService_ThrowsNPE() throws Exception {
         var _ = new SprintDetailsViewController(null, connection, undoService, sprintData);
     }
 
     @Test(expected = NullPointerException.class)
-    public void constructor_NullConnection_ThrowsNPE() {
+    public void constructor_NullConnection_ThrowsNPE() throws Exception {
         var _ = new SprintDetailsViewController(languageService, null, undoService, sprintData);
     }
 
     @Test(expected = NullPointerException.class)
-    public void constructor_NullUndoService_ThrowsNPE() {
+    public void constructor_NullUndoService_ThrowsNPE() throws Exception {
         var _ = new SprintDetailsViewController(languageService, connection, null, sprintData);
     }
 
     @Test(expected = NullPointerException.class)
-    public void constructor_NullSprintData_ThrowsNPE() {
+    public void constructor_NullSprintData_ThrowsNPE() throws Exception {
         var _ = new SprintDetailsViewController(languageService, connection, undoService, null);
     }
-
+    
     // --- Initialization & GUI Tests ---
 
     @Test
@@ -221,7 +221,7 @@ public class SprintDetailsViewControllerTest {
     @Test
     public void acceptAction_PopulatesAndCloses() throws Exception {
         controller.setResourceBundle(resourceBundle);
-        controller.setAction(SprintViewController.DataAction.NEW);
+        controller.setAction(SprintViewController.DataAction.EDIT);
 
         Sprint sprint = new Sprint(1L);
         controller.showSprintDetails(sprint);
@@ -241,6 +241,29 @@ public class SprintDetailsViewControllerTest {
         assertEquals(Long.valueOf(1), sprint.getId());
         assertEquals(startDate, sprint.getStartDate());
         assertEquals(endDate, sprint.getEndDate());
+    }
+
+    @Test
+    public void editSprint_KeepingSameId_EnablesAcceptButton() throws Exception {
+        // Prepare an existing sprint in the list
+        Sprint existingSprint = new Sprint(1L, LocalDate.of(2026, 6, 1), LocalDate.of(2026, 6, 14), 10L);
+        sprintData.add(existingSprint);
+
+        controller.setResourceBundle(resourceBundle);
+        controller.setAction(SprintViewController.DataAction.EDIT);
+
+        // Open details for the existing sprint
+        CountDownLatch latch = new CountDownLatch(1);
+        Platform.runLater(() -> {
+            controller.showSprintDetails(existingSprint);
+            // Change the end date (keeping ID 1L the same)
+            sprintEndDatePicker.setValue(LocalDate.of(2026, 6, 15));
+            latch.countDown();
+        });
+        latch.await();
+
+        // The Accept button should NOT be disabled because input changed and ID is valid (it's our own ID)
+        assertTrue("Accept button should be enabled when editing an existing sprint with the same ID", acceptButton.isDisable());
     }
 
     @Test

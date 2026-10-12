@@ -130,7 +130,7 @@ public class SprintViewController implements Initializable, IViewController {
     @SuppressWarnings("unused")
     private void newSprintAction(ActionEvent event) throws SQLException, IOException {
         Sprint newSprint = new Sprint(sprintDao.getNextId());
-        openSprintDetailsDialog(newSprint, DataAction.NEW);
+        openSprintDetailsDialog(sprintData, newSprint, DataAction.NEW);
         if(isSprintValid(newSprint)) {
             NewSprintCommand cmd = new NewSprintCommand(controllerRepository,eventManager, sprintTableView, newSprint, sprintDao);
             undoService.execute(cmd);
@@ -144,7 +144,7 @@ public class SprintViewController implements Initializable, IViewController {
         Sprint selectedSprint = sprintTableView.getSelectionModel().getSelectedItem();
         if(selectedSprint != null) {
             Sprint originalSprint = new Sprint(selectedSprint);
-            openSprintDetailsDialog(selectedSprint, DataAction.EDIT);
+            openSprintDetailsDialog(sprintData, selectedSprint, DataAction.EDIT);
             showSprintDetails(selectedSprint);
             if(!originalSprint.equals(selectedSprint)) {
                 EditSprintCommand cmd = new EditSprintCommand(controllerRepository, eventManager, sprintTableView, originalSprint, selectedSprint, sprintDao);
@@ -248,7 +248,7 @@ public class SprintViewController implements Initializable, IViewController {
         }
     }
 
-    private void openSprintDetailsDialog(Sprint sprint, DataAction dataAction) throws IOException {
+    private void openSprintDetailsDialog(ObservableList<Sprint> sprintData, Sprint sprint, DataAction dataAction) throws IOException, SQLException {
         SprintDetailsViewController sprintDetailsViewController = (SprintDetailsViewController)controllerRepository.get(SprintDetailsViewController.class.getName());
         if(sprintDetailsViewController == null) {
             sprintDetailsViewController = new SprintDetailsViewController(languageService, connection, undoService, sprintData);

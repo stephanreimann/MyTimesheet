@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -27,12 +28,15 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
+import model.Holyday;
 import model.Sprint;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import service.LanguageService;
 import service.UndoService;
+import sqlite.HolydayDAO;
 import utils.ControllerUtilities;
+import utils.DateChecker;
 import utils.DateConverter;
 import utils.EventManager;
 
@@ -73,6 +77,8 @@ public class SprintDetailsViewController implements Initializable, IViewControll
     @SuppressWarnings("unused")
     private final ControllerRepository controllerRepository;
     private final ObservableList<Sprint> sprintData;
+    private final HolydayDAO holydayDao;
+    private final ObservableList<Holyday> holydayData;
     private DataAction dataAction;
     
     private Long oldSprintId;
@@ -111,7 +117,7 @@ public class SprintDetailsViewController implements Initializable, IViewControll
     @FXML
     private Button cancelButton;
     
-    public SprintDetailsViewController(LanguageService languageService, Connection connection, UndoService undoService, ObservableList<Sprint> sprintData) {
+    public SprintDetailsViewController(LanguageService languageService, Connection connection, UndoService undoService, ObservableList<Sprint> sprintData) throws SQLException {
         if(languageService == null) throw new NullPointerException("languageService");
         if(connection == null) throw new NullPointerException("connection");
         if(undoService == null) throw new NullPointerException("undoService");
@@ -123,6 +129,8 @@ public class SprintDetailsViewController implements Initializable, IViewControll
         this.controllerRepository = ControllerRepository.getInstance();
         
         this.sprintData = sprintData;
+        this.holydayDao = new HolydayDAO(connection);
+        this.holydayData = FXCollections.observableArrayList(this.holydayDao.selectAll());
         this.eventManager = new EventManager();
         this.eventManager.registerEventType(newSprintEvent);
         this.eventManager.registerEventType(editSprintEvent);
@@ -260,23 +268,40 @@ public class SprintDetailsViewController implements Initializable, IViewControll
         String idAsString = sprint.getId().toString();
         sprintIdLabelValue.setText(idAsString);
         
-        LocalDate startDate;
-        if(sprint.getStartDate() == null) {
-            startDate = LocalDate.now();
-        } else {
-            startDate = sprint.getStartDate();
-        }
-        sprintStartDatePicker.setValue(startDate);
+        LocalDate startDate = LocalDate.now();
+        LocalDate endDate = startDate.plusDays(10);
         
-        LocalDate endDate;
-        if(sprint.getEndDate() == null) {
-            endDate = startDate.plusDays(1);
-        } else {
-            endDate = sprint.getEndDate();
-        }
+        switch(dataAction) {
+            case DataAction.NEW -> {
+                startDate = sprintData.getLast().getEndDate().plusDays(1);
+                endDate = calculateSprintEndDate(startDate, 10);
+                break;
+            }
+            case DataAction.EDIT -> {
+                startDate = sprint.getStartDate();
+                endDate = sprint.getEndDate();
+                break;
+            }
+        } 
+        
+        sprintStartDatePicker.setValue(startDate);
         sprintEndDatePicker.setValue(endDate);
+        
         String numberOfSprintDaysAsString = calculateNumberOfSprintDays().toString();
         numberOfSprintDaysLabelValue.setText(numberOfSprintDaysAsString);
+    }
+
+    private LocalDate calculateSprintEndDate(LocalDate startDate, int workingDaysNeeded) {
+        LocalDate currentDate = startDate;
+        int workingDaysAdded = 0;
+        while (workingDaysAdded < workingDaysNeeded-1) {
+            currentDate = currentDate.plusDays(1);
+            // Check if it's a working day (Not Saturday, Not Sunday, Not a Holiday)
+            if (!DateChecker.isWeekend(currentDate) && !DateChecker.isHolyday(holydayData, currentDate)) {
+                workingDaysAdded++;
+            }
+        }
+        return currentDate;
     }
 
     private void initStartDateCellFactory() {
