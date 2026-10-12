@@ -166,7 +166,6 @@ public class SprintDetailsViewController implements Initializable, IViewControll
             try {
                 newSprintId = Long.valueOf(newValue);
             } catch (NumberFormatException ex) {
-                //sprintIdLabelValue.setText(newValue.replaceAll("[^\\d]", ""));
                 acceptButton.setDisable(true);
             }
             validateInput();
@@ -255,7 +254,7 @@ public class SprintDetailsViewController implements Initializable, IViewControll
         this.sprint = sprint;
         
         //We save the actual sprint information to be able to 
-        //check for changes of each Information at validation of Innput.
+        //check for changes of each Information at validation of Input.
         saveActualSprintInformation(sprint);
         
         String idAsString = sprint.getId().toString();
