@@ -447,13 +447,13 @@ public class WorkItemDAOTest {
         Long workrecordId = 1L;
         Long sprintId = 1L;
         Long trackingItemId1 = 1L;
-        Long trackingItemId2 = 2L;
+        Long trackingItemId2 = 1L;
         LocalTime starttime = LocalTime.of(1, 0);
         LocalTime endtime = LocalTime.of(1, 0);
         String description1 = "Bug 123456 - The first test bug for searching for term";
         String description2 = "Bug 789012 - The second test bug for searching for term";
-        String shortcut = "";
-        String name = "";
+        String shortcut = "BF";
+        String name = "Bug Fixing";
 
         TrackingItem trackingItem1 = new TrackingItem(1L, "Bug Fixing", "BF", "All task related to bug fixing activities");
         TrackingItemDAO trackingItemDAO = new TrackingItemDAO(connection);
@@ -480,13 +480,13 @@ public class WorkItemDAOTest {
         Long workrecordId = 1L;
         Long sprintId = 1L;
         Long trackingItemId1 = 1L;
-        Long trackingItemId2 = 2L;
+        Long trackingItemId2 = 1L;
         LocalTime starttime = LocalTime.of(1, 0);
         LocalTime endtime = LocalTime.of(1, 0);
         String description1 = "Bug 123456 - The first test bug for searching for term";
         String description2 = "Bug 789012 - The second test bug for searching for term";
-        String shortcut = "";
-        String name = "";
+        String shortcut = "BF";
+        String name = "Bug Fixing";
 
         TrackingItem trackingItem1 = new TrackingItem(1L, "Bug Fixing", "BF", "All task related to bug fixing activities");
         TrackingItemDAO trackingItemDAO = new TrackingItemDAO(connection);
@@ -514,13 +514,13 @@ public class WorkItemDAOTest {
         Long workrecordId = 1L;
         Long sprintId = 1L;
         Long trackingItemId1 = 1L;
-        Long trackingItemId2 = 2L;
+        Long trackingItemId2 = 1L;
         LocalTime starttime = LocalTime.of(1, 0);
         LocalTime endtime = LocalTime.of(1, 0);
         String description1 = "Bug 123456 - The first test bug for searching for term";
         String description2 = "Bug 789012 - The second test bug for searching for term";
-        String shortcut = "";
-        String name = "";
+        String shortcut = "BF";
+        String name = "Bug Fixing";
 
         TrackingItem trackingItem1 = new TrackingItem(1L, "Bug Fixing", "BF", "All task related to bug fixing activities");
         TrackingItemDAO trackingItemDAO = new TrackingItemDAO(connection);

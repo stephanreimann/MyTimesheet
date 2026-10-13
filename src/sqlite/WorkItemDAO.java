@@ -81,8 +81,9 @@ public class WorkItemDAO {
         List<WorkItem> resultList = new ArrayList<>();
   
         StringBuilder statement = new StringBuilder();
-        statement.append("SELECT id, workrecordid, sprintid, trackingitemid, starttime, endtime, description, '', '' ");
+        statement.append("SELECT workitem.id, workitem.workrecordid, workitem.sprintid, workitem.trackingitemid, workitem.starttime, workitem.endtime, workitem.description, trackingitem.shortcut, trackingitem.name ");
         statement.append("FROM workitem ");
+        statement.append("JOIN trackingitem ");
         statement.append("WHERE workitem.description LIKE '%");
         statement.append(searchTerm);
         statement.append("%';");
@@ -91,7 +92,7 @@ public class WorkItemDAO {
             Instant start = Instant.now();
             ResultSet rs = dbStatement.executeQuery();
             while(rs.next()) {
-                resultList.add(createWorkItemFromSearchSetEntry(rs));
+                resultList.add(createWorkItemFromResultSetEntry(rs));
             }
             Instant finish = Instant.now();
             long timeElapsed = Duration.between(start, finish).toMillis();
@@ -145,18 +146,6 @@ public class WorkItemDAO {
         return new WorkItem(rsId, rsWorkrecordId, rsSprintId, rsTrackingItemId, rsStartTime, rsEndTime, rsDescription, rsShortcut, rsName);
     }
     
-    private WorkItem createWorkItemFromSearchSetEntry(ResultSet resultSet) throws SQLException {
-        long rsId = resultSet.getLong("id");
-        long rsWorkrecordId = resultSet.getLong("workrecordid");
-        long rsSprintId = resultSet.getLong("sprintid");
-        long rsTrackingItemId = resultSet.getLong("trackingitemid");
-        LocalTime rsStartTime = LocalTime.parse(resultSet.getString("starttime"));
-        LocalTime rsEndTime = LocalTime.parse(resultSet.getString("endtime"));
-        String rsDescription = resultSet.getString("description");
-
-        return new WorkItem(rsId, rsWorkrecordId, rsSprintId, rsTrackingItemId, rsStartTime, rsEndTime, rsDescription, "", "");
-    }
-
     public boolean create(WorkItem workItem) throws SQLException {
         if(workItem == null) throw new NullPointerException("workItem");
 
