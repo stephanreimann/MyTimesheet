@@ -67,7 +67,7 @@ public class WorkItemDAOTest {
         //Arrange
         //Act
         //Assert
-        WorkItemDAO workItemDAO = new WorkItemDAO(null);
+        WorkItemDAO _ = new WorkItemDAO(null);
     }
     
     @Test()
@@ -131,7 +131,7 @@ public class WorkItemDAOTest {
 
         //Act
         //Assert
-        boolean result = workItemDAO.create(null);
+        boolean _ = workItemDAO.create(null);
     }
     
     @Test()
@@ -283,7 +283,7 @@ public class WorkItemDAOTest {
 
         //Act
         boolean result = workItemDAO.update(originalWorkItem, modifiedWorkItem);
-        List<WorkItem> workItemResult = workItemDAO.selectAll();
+        List<WorkItem> _ = workItemDAO.selectAll();
         
         //Assert
         Assert.assertFalse(result);
@@ -329,7 +329,7 @@ public class WorkItemDAOTest {
 
         //Act
         //Assert
-        boolean result = workItemDAO.delete(null);
+        boolean _ = workItemDAO.delete(null);
     }
     
     @Test()
