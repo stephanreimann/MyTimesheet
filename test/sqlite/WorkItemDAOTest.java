@@ -441,6 +441,105 @@ public class WorkItemDAOTest {
         Assert.assertEquals(0L, resultId);
     }
     
+    @Test()
+    public void T70_Calling_SearchForTerm_Returns_The_WorkItems_Where_The_Term_Is_Found_In_Description() throws SQLException {
+        //Arrange
+        Long workrecordId = 1L;
+        Long sprintId = 1L;
+        Long trackingItemId1 = 1L;
+        Long trackingItemId2 = 2L;
+        LocalTime starttime = LocalTime.of(1, 0);
+        LocalTime endtime = LocalTime.of(1, 0);
+        String description1 = "Bug 123456 - The first test bug for searching for term";
+        String description2 = "Bug 789012 - The second test bug for searching for term";
+        String shortcut = "";
+        String name = "";
+
+        TrackingItem trackingItem1 = new TrackingItem(1L, "Bug Fixing", "BF", "All task related to bug fixing activities");
+        TrackingItemDAO trackingItemDAO = new TrackingItemDAO(connection);
+        trackingItemDAO.create(trackingItem1);     
+        
+        WorkItem workItem1 = new WorkItem(1L, workrecordId, sprintId, trackingItemId1, starttime, endtime, description1, shortcut, name);        
+        WorkItem workItem2 = new WorkItem(2L, workrecordId, sprintId, trackingItemId2, starttime, endtime, description2, shortcut, name);        
+
+        WorkItemDAO workItemDAO = new WorkItemDAO(connection);
+        workItemDAO.create(workItem1);
+        workItemDAO.create(workItem2);
+        
+        //Act
+        List<WorkItem> workItems = workItemDAO.searchForTerm("123456");
+        
+        //Assert
+        Assert.assertEquals(1, workItems.size());
+        Assert.assertEquals(workItem1, workItems.get(0));
+    }    
+    
+    @Test()
+    public void T71_Calling_SearchForTerm_Returns_All_WorkItems_Where_The_Term_Is_Found_In_Description() throws SQLException {
+        //Arrange
+        Long workrecordId = 1L;
+        Long sprintId = 1L;
+        Long trackingItemId1 = 1L;
+        Long trackingItemId2 = 2L;
+        LocalTime starttime = LocalTime.of(1, 0);
+        LocalTime endtime = LocalTime.of(1, 0);
+        String description1 = "Bug 123456 - The first test bug for searching for term";
+        String description2 = "Bug 789012 - The second test bug for searching for term";
+        String shortcut = "";
+        String name = "";
+
+        TrackingItem trackingItem1 = new TrackingItem(1L, "Bug Fixing", "BF", "All task related to bug fixing activities");
+        TrackingItemDAO trackingItemDAO = new TrackingItemDAO(connection);
+        trackingItemDAO.create(trackingItem1);     
+        
+        WorkItem workItem1 = new WorkItem(1L, workrecordId, sprintId, trackingItemId1, starttime, endtime, description1, shortcut, name);        
+        WorkItem workItem2 = new WorkItem(2L, workrecordId, sprintId, trackingItemId2, starttime, endtime, description2, shortcut, name);        
+
+        WorkItemDAO workItemDAO = new WorkItemDAO(connection);
+        workItemDAO.create(workItem1);
+        workItemDAO.create(workItem2);
+        
+        //Act
+        List<WorkItem> workItems = workItemDAO.searchForTerm("Bug");
+        
+        //Assert
+        Assert.assertEquals(2, workItems.size());
+        Assert.assertEquals(workItem1, workItems.get(0));
+        Assert.assertEquals(workItem2, workItems.get(1));
+    }    
+
+    @Test()
+    public void T72_Calling_SearchForTerm_Returns_No_WorkItems_When_The_Term_Is_NotFound_In_Description() throws SQLException {
+        //Arrange
+        Long workrecordId = 1L;
+        Long sprintId = 1L;
+        Long trackingItemId1 = 1L;
+        Long trackingItemId2 = 2L;
+        LocalTime starttime = LocalTime.of(1, 0);
+        LocalTime endtime = LocalTime.of(1, 0);
+        String description1 = "Bug 123456 - The first test bug for searching for term";
+        String description2 = "Bug 789012 - The second test bug for searching for term";
+        String shortcut = "";
+        String name = "";
+
+        TrackingItem trackingItem1 = new TrackingItem(1L, "Bug Fixing", "BF", "All task related to bug fixing activities");
+        TrackingItemDAO trackingItemDAO = new TrackingItemDAO(connection);
+        trackingItemDAO.create(trackingItem1);     
+        
+        WorkItem workItem1 = new WorkItem(1L, workrecordId, sprintId, trackingItemId1, starttime, endtime, description1, shortcut, name);        
+        WorkItem workItem2 = new WorkItem(2L, workrecordId, sprintId, trackingItemId2, starttime, endtime, description2, shortcut, name);        
+
+        WorkItemDAO workItemDAO = new WorkItemDAO(connection);
+        workItemDAO.create(workItem1);
+        workItemDAO.create(workItem2);
+        
+        //Act
+        List<WorkItem> workItems = workItemDAO.searchForTerm("Not existing term");
+        
+        //Assert
+        Assert.assertEquals(0, workItems.size());
+    }    
+
     private synchronized boolean truncateTable() {
         
         boolean result = false;

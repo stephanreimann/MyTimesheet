@@ -77,6 +77,30 @@ public class WorkItemDAO {
         return resultList;
     }
 
+    public List<WorkItem> searchForTerm(String searchTerm) throws SQLException {
+        List<WorkItem> resultList = new ArrayList<>();
+  
+        StringBuilder statement = new StringBuilder();
+        statement.append("SELECT id, workrecordid, sprintid, trackingitemid, starttime, endtime, description, '', '' ");
+        statement.append("FROM workitem ");
+        statement.append("WHERE workitem.description LIKE '%");
+        statement.append(searchTerm);
+        statement.append("%';");
+
+        try(PreparedStatement dbStatement = connection.prepareStatement(statement.toString())) {
+            Instant start = Instant.now();
+            ResultSet rs = dbStatement.executeQuery();
+            while(rs.next()) {
+                resultList.add(createWorkItemFromSearchSetEntry(rs));
+            }
+            Instant finish = Instant.now();
+            long timeElapsed = Duration.between(start, finish).toMillis();
+            log.debug(String.format("WorkItemDAO.searchForTerm(%s) returns %d workItems.", searchTerm, resultList.size()));
+            log.debug("Elapsed time: " + timeElapsed + "ms");        
+        }
+        return resultList;
+    }
+    
     public String calculateTrackingItemSumTime(User user, String shortcut, Sprint sprint) throws SQLException {
         Duration duration = Duration.ZERO;
         
@@ -121,6 +145,18 @@ public class WorkItemDAO {
         return new WorkItem(rsId, rsWorkrecordId, rsSprintId, rsTrackingItemId, rsStartTime, rsEndTime, rsDescription, rsShortcut, rsName);
     }
     
+    private WorkItem createWorkItemFromSearchSetEntry(ResultSet resultSet) throws SQLException {
+        long rsId = resultSet.getLong("id");
+        long rsWorkrecordId = resultSet.getLong("workrecordid");
+        long rsSprintId = resultSet.getLong("sprintid");
+        long rsTrackingItemId = resultSet.getLong("trackingitemid");
+        LocalTime rsStartTime = LocalTime.parse(resultSet.getString("starttime"));
+        LocalTime rsEndTime = LocalTime.parse(resultSet.getString("endtime"));
+        String rsDescription = resultSet.getString("description");
+
+        return new WorkItem(rsId, rsWorkrecordId, rsSprintId, rsTrackingItemId, rsStartTime, rsEndTime, rsDescription, "", "");
+    }
+
     public boolean create(WorkItem workItem) throws SQLException {
         if(workItem == null) throw new NullPointerException("workItem");
 

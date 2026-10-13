@@ -144,16 +144,19 @@ public class MainToolBarViewController implements Initializable, IViewController
     }
 
     @FXML
+    @SuppressWarnings("unused")
     private void undoAction(ActionEvent event) {
         undoService.undo();
     }
 
     @FXML
+    @SuppressWarnings("unused")
     private void redoAction(ActionEvent event) {
         undoService.redo();
     }
 
     @FXML
+    @SuppressWarnings("unused")
     private void changeLanguageAction(ActionEvent event) {
         Locale newLocale = getLocale(event);
         Locale oldLocale = getLocale(activeMenuItem);
@@ -161,6 +164,7 @@ public class MainToolBarViewController implements Initializable, IViewController
     }
 
     @FXML
+    @SuppressWarnings("unused")
     private void workItemAction(ActionEvent event) throws IOException, SQLException {      
         WorkItemViewController workItemViewController = new WorkItemViewController(controllerRepository, languageService, connection, undoService, propertiesService);
         controllerRepository.put(WorkItemViewController.class.getName(), workItemViewController);
