@@ -294,7 +294,7 @@ public class SprintDetailsViewController implements Initializable, IViewControll
     private LocalDate calculateSprintEndDate(LocalDate startDate, int workingDaysNeeded) {
         LocalDate currentDate = startDate;
         int workingDaysAdded = 0;
-        while (workingDaysAdded < workingDaysNeeded-1) {
+        while (workingDaysAdded < workingDaysNeeded-2) {
             currentDate = currentDate.plusDays(1);
             // Check if it's a working day (Not Saturday, Not Sunday, Not a Holiday)
             if (!DateChecker.isWeekend(currentDate) && !DateChecker.isHolyday(holydayData, currentDate)) {
