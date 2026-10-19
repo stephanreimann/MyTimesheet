@@ -173,6 +173,7 @@ public class WorkItemViewController implements Initializable, IViewController, I
         WorkItem newWorkItem = buildWorkItemFromCurrentInput(workItemDao.getNextId());
         undoService.execute(new NewWorkItemCommand(controllerRepository, eventManager, trackingItemTableView, newWorkItem, workItemDao));
         sortWorkItems();
+        trackingItemTableView.getSelectionModel().select(newWorkItem);
         refreshStartTimeButtonTooltip();
     }
     
@@ -186,6 +187,7 @@ public class WorkItemViewController implements Initializable, IViewController, I
             undoService.execute(new EditWorkItemCommand(controllerRepository, eventManager, trackingItemTableView, selectedWorkItem, modifiedWorkItem, workItemDao));
             sortWorkItems();
             refreshStartTimeButtonTooltip();
+            trackingItemTableView.getSelectionModel().select(modifiedWorkItem);
         } else if (selectedWorkItem == null) {
             ControllerUtilities.showNoItemSelectedAlert(primaryStage, rb, ALERT_TITLE, ALERT_HEADER, ALERT_CONTENT);
         }
