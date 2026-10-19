@@ -68,7 +68,7 @@ public class WorkItemViewController implements Initializable, IViewController, I
     private static final String ALERT_CONTENT = "NoWorkItemSelectionAlertContent";
     
     // FXML Members
-    @FXML private ToolBar trackingItemToolBar;
+    @FXML @SuppressWarnings("unused") private ToolBar trackingItemToolBar;
     @FXML private Label selectedDateLabel;
     @FXML private DatePicker selectedDateDatePicker;
     @FXML private Label sprintLabel;
@@ -92,7 +92,7 @@ public class WorkItemViewController implements Initializable, IViewController, I
     @FXML private Label trackingItemDescriptionLabel;
     @FXML private ChoiceBox<TrackingItem> trackingItemChoiceBox;
     @FXML private TextArea trackingItemDescriptionValue;
-    @FXML private Label trackingItemSumLabel;
+    @FXML @SuppressWarnings("unused") private Label trackingItemSumLabel;
     @FXML private Label trackingItemSumValueLabel;
     
     @FXML private Button newButton;
@@ -104,6 +104,7 @@ public class WorkItemViewController implements Initializable, IViewController, I
     private Stage primaryStage;
     private final ControllerRepository controllerRepository;
     private final LanguageService languageService;
+    @SuppressWarnings("unused") 
     private final Connection connection;
     private final UndoService undoService;
     private final PropertiesService propertiesService;
@@ -165,6 +166,7 @@ public class WorkItemViewController implements Initializable, IViewController, I
     }
     
     @FXML
+    @SuppressWarnings("unused") 
     private void newAction(ActionEvent event) throws SQLException, IOException {
         if (!isInputValid(true) || selectedWorkrecord == null || sprint == null) return;
 
@@ -175,6 +177,7 @@ public class WorkItemViewController implements Initializable, IViewController, I
     }
     
     @FXML
+    @SuppressWarnings("unused") 
     private void editAction(ActionEvent event) throws SQLException, IOException {
         WorkItem selectedWorkItem = trackingItemTableView.getSelectionModel().getSelectedItem();
 
@@ -189,6 +192,7 @@ public class WorkItemViewController implements Initializable, IViewController, I
     }
 
     @FXML
+    @SuppressWarnings("unused") 
     private void deleteAction(ActionEvent event) throws SQLException, IOException {
         WorkItem selectedWorkItem = trackingItemTableView.getSelectionModel().getSelectedItem();
 
@@ -202,6 +206,7 @@ public class WorkItemViewController implements Initializable, IViewController, I
     }
 
     @FXML
+    @SuppressWarnings("unused") 
     private void handleOnSelectedDateChangedAction(ActionEvent event) throws SQLException, IOException {
         DatePicker datePicker = (DatePicker) event.getSource();
         selectedWorkrecord = getWorkrecordOfDate(datePicker.getValue());
@@ -210,6 +215,7 @@ public class WorkItemViewController implements Initializable, IViewController, I
     }
     
     @FXML
+    @SuppressWarnings("unused") 
     private void handleOnSetStartTimeButtonClickAction(ActionEvent event) {
         LocalTime newEndtime = workItemData.isEmpty() ? LocalTime.now() : workItemData.get(workItemData.size() - 1).getEndTime();
         trackingItemStartTimeTimeSpinner.getValueFactory().setValue(
@@ -218,6 +224,7 @@ public class WorkItemViewController implements Initializable, IViewController, I
     }
 
     @FXML
+    @SuppressWarnings("unused") 
     private void handleOnSetEndTimeButtonClickAction(ActionEvent event) {
         LocalTime timeToSet = trackingItemStartTimeTimeSpinner.getValue();
 
@@ -525,6 +532,7 @@ public class WorkItemViewController implements Initializable, IViewController, I
         return true;
     }
 
+    @SuppressWarnings("null")
     private boolean hasWorkItemChanged() {
         if (!isWorkItemSelected()) return false;
         
