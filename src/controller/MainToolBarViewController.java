@@ -43,10 +43,16 @@ public class MainToolBarViewController implements Initializable, IViewController
     private static final String PREF_YPOS_DEFAULT = "0.0";
     
     private static final String LANG_SELECTOR_KEY = "languageSelectorButton";
+    
     private static final String WORK_ITEM_TOOLTIP_KEY = "WorkItemToolTip";
     private static final String WORK_ITEM_TITLE_KEY = "WorkItemViewTitle";
     private static final String WORK_ITEM_RESOURCE = "/view/WorkItemView.fxml";
     private static final String WORK_ITEM_ICON = "icons/app-maid.png";
+    
+    private static final String WORK_ITEM_SEARCH_TOOLTIP_KEY = "WorkItemSearchToolTip";
+    private static final String WORK_ITEM_SEARCH_TITLE_KEY = "WorkItemSearchViewTitle";
+    private static final String WORK_ITEM_SEARCH_RESOURCE = "/view/WorkItemSearchView.fxml";
+    private static final String WORK_ITEM_SEARCH_ICON = "icons/app-maid.png";
     
     private static final String EVENT_DATE_CHANGED = "WorkItemDateChanged";
     private static final String EVENT_SELECTED_RECORD_CHANGED = "SelectedWorkRecordChanged";
@@ -82,6 +88,8 @@ public class MainToolBarViewController implements Initializable, IViewController
     @FXML private MenuItem languageIT;
     @FXML private Button workItemButton;
     @FXML private Tooltip workItemTooltip;
+    @FXML private Button workItemSearchButton;
+    @FXML private Tooltip workItemSearchTooltip;
     
     public TranslationStringProperty undoButtonText;
 
@@ -124,6 +132,7 @@ public class MainToolBarViewController implements Initializable, IViewController
         redoTooltip.setText(redoText);
         
         workItemTooltip.setText(rb.getString(WORK_ITEM_TOOLTIP_KEY));
+        workItemSearchTooltip.setText(rb.getString(WORK_ITEM_SEARCH_TOOLTIP_KEY));
         
         if (workItemTrackingToolViewDialog != null) {
             workItemTrackingToolViewDialog.setTitle(rb.getString(WORK_ITEM_TITLE_KEY));
@@ -138,6 +147,10 @@ public class MainToolBarViewController implements Initializable, IViewController
         return workItemButton;
     }
     
+    public Button getWorkItemSearchButton() {
+        return workItemSearchButton;
+    }
+
     public void toggleUndoRedoButtons() {
         undoButton.setDisable(undoService.isUndoStackEmpty());
         redoButton.setDisable(undoService.isRedoStackEmpty());
@@ -214,6 +227,17 @@ public class MainToolBarViewController implements Initializable, IViewController
         }
     }
 
+    @FXML
+    @SuppressWarnings("unused")
+    private void workItemSearchAction(ActionEvent event) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.initOwner(primaryStage);
+        alert.setTitle(rb.getString("UnderConstructionTitle"));
+        alert.setHeaderText("");
+        alert.setContentText(rb.getString("UnderConstructionDetails"));
+        alert.showAndWait();                
+    }
+    
     private void applyStageDimensions() {
         workItemTrackingToolViewDialog.setWidth(getDoubleProperty(PREF_WIDTH_KEY, PREF_WIDTH_DEFAULT));
         workItemTrackingToolViewDialog.setHeight(getDoubleProperty(PREF_HEIGHT_KEY, PREF_HEIGHT_DEFAULT));
