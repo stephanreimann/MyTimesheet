@@ -46,6 +46,7 @@ public class ProjectViewController implements Initializable, IViewController {
     private final String editProjectEvent = "EditProject";
     private final String deleteProjectEvent = "DeleteProject";
     
+    @SuppressWarnings("unused")
     private final Logger log = LogManager.getLogger(RoleViewController.class.getName());
     
     private Stage primaryStage;
@@ -53,6 +54,7 @@ public class ProjectViewController implements Initializable, IViewController {
     private final LanguageService languageService;
     private final Connection connection;
     private final UndoService undoService;
+    @SuppressWarnings("unused")
     private final PropertiesService propertiesService;
     private ResourceBundle rb;
     private final ProjectDAO projectDao;
@@ -125,6 +127,7 @@ public class ProjectViewController implements Initializable, IViewController {
     }
     
     @FXML
+    @SuppressWarnings("unused")
     private void newProjectAction(ActionEvent event) throws SQLException, IOException {
         Project newProject = new Project(projectDao.getNextId());
         openProjectDetailsDialog(newProject, DataAction.NEW);
@@ -135,6 +138,7 @@ public class ProjectViewController implements Initializable, IViewController {
     }
     
     @FXML
+    @SuppressWarnings("unused")
     private void editProjectAction(ActionEvent event) throws SQLException, IOException {
         Project selectedProject = projectTableView.getSelectionModel().getSelectedItem();
         if(selectedProject != null) {
@@ -151,6 +155,7 @@ public class ProjectViewController implements Initializable, IViewController {
     }
 
     @FXML
+    @SuppressWarnings("unused")
     private void deleteProjectAction(ActionEvent event) throws SQLException {
         Project selectedProject = projectTableView.getSelectionModel().getSelectedItem();
         if(selectedProject != null) {

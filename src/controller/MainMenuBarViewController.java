@@ -81,6 +81,7 @@ public class MainMenuBarViewController implements Initializable, IViewController
     private final String editTrackingItemEvent = "EditTrackingItem";
     private final String deleteTrackingItemEvent = "DeleteTrackingItem";
     
+    @SuppressWarnings("unused")
     private final Logger log = LogManager.getLogger(PropertiesService.class.getName());
 
     private Stage primaryStage;    
@@ -215,11 +216,13 @@ public class MainMenuBarViewController implements Initializable, IViewController
     }
 
     @FXML
+    @SuppressWarnings("unused")
     private void exitAction(ActionEvent event) throws Exception {
         application.stop();
     }
     
     @FXML
+    @SuppressWarnings("unused")
     private void exportReferencedata(ActionEvent event) throws Exception {
         Database database = new Database(rb, log4jAdapter);
         
@@ -230,6 +233,7 @@ public class MainMenuBarViewController implements Initializable, IViewController
     }
 
     @FXML
+    @SuppressWarnings("unused")
     private void exportWorkrecords(ActionEvent event) throws Exception {
         Database database = new Database(rb, log4jAdapter);
         
@@ -240,6 +244,7 @@ public class MainMenuBarViewController implements Initializable, IViewController
     }
 
     @FXML
+    @SuppressWarnings("unused")
     private void importReferencedata(ActionEvent event) throws Exception {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.initOwner(primaryStage);
@@ -250,6 +255,7 @@ public class MainMenuBarViewController implements Initializable, IViewController
     }
 
     @FXML
+    @SuppressWarnings("unused")
     private void importWorkrecords(ActionEvent event) throws Exception {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.initOwner(primaryStage);
@@ -260,16 +266,19 @@ public class MainMenuBarViewController implements Initializable, IViewController
     }
 
     @FXML
+    @SuppressWarnings("unused")
     private void undoAction(ActionEvent event) {
         undoService.undo();
     }
 
     @FXML
+    @SuppressWarnings("unused")
     private void redoAction(ActionEvent event) {
         undoService.redo();
     }
 
     @FXML
+    @SuppressWarnings("unused")
     private void openSettingsDialog(ActionEvent event) throws IOException {
         WorkRecordDetailsViewController workRecordDetailsViewController = (WorkRecordDetailsViewController) controllerRepository.get(WorkRecordDetailsViewController.class.getName());
         SettingsViewController settingsViewController = (SettingsViewController) controllerRepository.get(SettingsViewController.class.getName());
@@ -295,6 +304,7 @@ public class MainMenuBarViewController implements Initializable, IViewController
     }
 
     @FXML
+    @SuppressWarnings("unused")
     private void openXmlEditor(ActionEvent event) throws IOException {
         XmlEditorViewController xmlEditorViewController = new XmlEditorViewController(languageService, undoService);
 
@@ -316,6 +326,7 @@ public class MainMenuBarViewController implements Initializable, IViewController
     }
     
     @FXML
+    @SuppressWarnings("unused")
     private void openUserDialog(ActionEvent event) throws IOException, SQLException
     {
         UserViewController userViewController = (UserViewController) controllerRepository.get(UserViewController.class.getName());
@@ -345,6 +356,7 @@ public class MainMenuBarViewController implements Initializable, IViewController
     }
     
     @FXML
+    @SuppressWarnings("unused")
     private void openRoleDialog(ActionEvent event) throws IOException, SQLException
     {
         RoleViewController roleViewController = (RoleViewController) controllerRepository.get(RoleViewController.class.getName());
@@ -372,6 +384,7 @@ public class MainMenuBarViewController implements Initializable, IViewController
     }
     
     @FXML
+    @SuppressWarnings("unused")
     private void openAddressDialog(ActionEvent event) throws SQLException, IOException
     {
         AddressViewController addressViewController = (AddressViewController) controllerRepository.get(AddressViewController.class.getName());
@@ -399,6 +412,7 @@ public class MainMenuBarViewController implements Initializable, IViewController
     }
     
     @FXML
+    @SuppressWarnings("unused")
     private void openContractDialog(ActionEvent event) throws SQLException, IOException
     {
         ContractViewController contractViewController = (ContractViewController) controllerRepository.get(ContractViewController.class.getName());
@@ -430,6 +444,7 @@ public class MainMenuBarViewController implements Initializable, IViewController
     }
 
     @FXML
+    @SuppressWarnings("unused")
     private void openHolydayDialog(ActionEvent event) throws SQLException, IOException
     {
         HolydayViewController holydayViewController = (HolydayViewController) controllerRepository.get(HolydayViewController.class.getName());
@@ -462,6 +477,7 @@ public class MainMenuBarViewController implements Initializable, IViewController
     }
 
     @FXML
+    @SuppressWarnings("unused")
     private void openProjectDialog(ActionEvent event) throws SQLException, IOException
     {
         ProjectViewController projectViewController = (ProjectViewController) controllerRepository.get(ProjectViewController.class.getName());
@@ -493,6 +509,7 @@ public class MainMenuBarViewController implements Initializable, IViewController
     }
 
     @FXML
+    @SuppressWarnings("unused")
     private void openWorklocationDialog(ActionEvent event) throws IOException, SQLException
     {
         WorkLocationViewController worklocationViewController = (WorkLocationViewController) controllerRepository.get(WorkLocationViewController.class.getName());
@@ -529,6 +546,7 @@ public class MainMenuBarViewController implements Initializable, IViewController
     }
 
     @FXML
+    @SuppressWarnings("unused")
     private void openSprintDialog(ActionEvent event) throws IOException, SQLException {
         SprintViewController sprintViewController = (SprintViewController) controllerRepository.get(SprintViewController.class.getName());
         if(sprintViewController == null) {
@@ -558,6 +576,7 @@ public class MainMenuBarViewController implements Initializable, IViewController
     }
             
     @FXML
+    @SuppressWarnings("unused")
     private void openTrackingItemDialog(ActionEvent event) throws IOException, SQLException {
         TrackingItemViewController trackingItemViewController = (TrackingItemViewController) controllerRepository.get(TrackingItemViewController.class.getName());
         if(trackingItemViewController == null) {

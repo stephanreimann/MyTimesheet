@@ -42,6 +42,7 @@ public class RoleViewController implements Initializable, IViewController {
     private final String editRoleEvent = "EditRole";
     private final String deleteRoleEvent = "DeleteRole";
     
+    @SuppressWarnings("unused")
     private final Logger log = LogManager.getLogger(RoleViewController.class.getName());
     
     private Stage primaryStage;
@@ -49,6 +50,7 @@ public class RoleViewController implements Initializable, IViewController {
     private final LanguageService languageService;
     private final Connection connection;
     private final UndoService undoService;
+    @SuppressWarnings("unused")
     private final PropertiesService propertiesService;
     private ResourceBundle rb;
     private final RoleDAO roleDao;
@@ -107,6 +109,7 @@ public class RoleViewController implements Initializable, IViewController {
     }
 
     @FXML
+    @SuppressWarnings("unused")
     private void newRoleAction(ActionEvent event) throws SQLException, IOException {
         Role newRole = new Role(roleDao.getNextId());
         openRoleDetailsDialog(newRole, DataAction.NEW);
@@ -117,6 +120,7 @@ public class RoleViewController implements Initializable, IViewController {
     }
     
     @FXML
+    @SuppressWarnings("unused")
     private void editRoleAction(ActionEvent event) throws SQLException, IOException {
         Role selectedRole = roleTableView.getSelectionModel().getSelectedItem();
         if(selectedRole != null) {
@@ -133,6 +137,7 @@ public class RoleViewController implements Initializable, IViewController {
     }
 
     @FXML
+    @SuppressWarnings("unused")
     private void deleteRoleAction(ActionEvent event) throws SQLException {
         Role selectedRole = roleTableView.getSelectionModel().getSelectedItem();
         if(selectedRole != null) {

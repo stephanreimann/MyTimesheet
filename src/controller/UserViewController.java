@@ -49,6 +49,7 @@ public class UserViewController implements Initializable, IViewController {
     private final String editUserEvent = "EditUser";
     private final String deleteUserEvent = "DeleteUser";
    
+    @SuppressWarnings("unused")
     private final Logger log = LogManager.getLogger(UserViewController.class.getName());
     
     private Stage primaryStage;
@@ -56,6 +57,7 @@ public class UserViewController implements Initializable, IViewController {
     private final LanguageService languageService;
     private final Connection connection;
     private final UndoService undoService;
+    @SuppressWarnings("unused")
     private final PropertiesService propertiesService;
     private ResourceBundle rb;
     private final UserDAO userDao;
@@ -138,6 +140,7 @@ public class UserViewController implements Initializable, IViewController {
     }
     
     @FXML
+    @SuppressWarnings("unused")
     private void newUserAction(ActionEvent event) throws SQLException, IOException {
         User newUser = new User(userDao.getNextId());
         openUserDetailsDialog(newUser, DataAction.NEW);
@@ -148,6 +151,7 @@ public class UserViewController implements Initializable, IViewController {
     }
     
     @FXML
+    @SuppressWarnings("unused")
     private void editUserAction(ActionEvent event) throws SQLException, IOException {        
         User selectedUser = userTableView.getSelectionModel().getSelectedItem();
         if(selectedUser != null) {
@@ -164,6 +168,7 @@ public class UserViewController implements Initializable, IViewController {
     }
 
     @FXML
+    @SuppressWarnings("unused")
     private void deleteUserAction(ActionEvent event) throws SQLException {
         User selectedUser = userTableView.getSelectionModel().getSelectedItem();
         if(selectedUser != null) {

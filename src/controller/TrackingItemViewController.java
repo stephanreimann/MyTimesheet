@@ -35,6 +35,7 @@ public class TrackingItemViewController implements Initializable, IViewControlle
     private final String editResourceKey = "Edit";
     private final String deleteResourceKey = "Delete";
     
+    @SuppressWarnings("unused")
     private final String trackingItemDetailsLabelResourceKey = "TrackingItemDetailsLabel";
     
     private final String trackingItemIdResourceKey = "TrackingItemId";
@@ -61,6 +62,7 @@ public class TrackingItemViewController implements Initializable, IViewControlle
     @FXML
     private TableColumn<TrackingItem, String> trackingItemNameTableColumn;
     @FXML
+    @SuppressWarnings("unused")
     private Label trackingItemDetailsLabel;
     @FXML
     private Label trackingItemIdLabel;
@@ -86,6 +88,7 @@ public class TrackingItemViewController implements Initializable, IViewControlle
     @FXML
     private Button deleteButton;
 
+    @SuppressWarnings("unused")
     private final Logger log = LogManager.getLogger(TrackingItemViewController.class.getName());
     
     private Stage primaryStage;
@@ -93,6 +96,7 @@ public class TrackingItemViewController implements Initializable, IViewControlle
     private final LanguageService languageService;
     private final Connection connection;
     private final UndoService undoService;
+    @SuppressWarnings("unused")
     private final PropertiesService propertiesService;
     private ResourceBundle rb;
     private EventManager eventManager;
@@ -131,6 +135,7 @@ public class TrackingItemViewController implements Initializable, IViewControlle
     }
 
     @FXML
+    @SuppressWarnings("unused")
     private void newTrackingItemAction(ActionEvent event) throws SQLException, IOException {
         TrackingItem newTrackingItem = new TrackingItem(trackingItemDao.getNextId());
         openTrackingItemDetailsDialog(newTrackingItem, DataAction.NEW);
@@ -142,6 +147,7 @@ public class TrackingItemViewController implements Initializable, IViewControlle
     }
     
     @FXML
+    @SuppressWarnings("unused")
     private void editTrackingItemAction(ActionEvent event) throws SQLException, IOException {
         TrackingItem selectedTrackingItem = trackingItemTableView.getSelectionModel().getSelectedItem();
         if(selectedTrackingItem != null) {
@@ -159,6 +165,7 @@ public class TrackingItemViewController implements Initializable, IViewControlle
     }
 
     @FXML
+    @SuppressWarnings("unused")
     private void deleteTrackingItemAction(ActionEvent event) throws SQLException, IOException {
         TrackingItem selectedTrackingItem = trackingItemTableView.getSelectionModel().getSelectedItem();
         if(selectedTrackingItem != null) {

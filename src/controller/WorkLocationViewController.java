@@ -50,6 +50,7 @@ public class WorkLocationViewController implements Initializable, IViewControlle
     private final String editWorkLocationEvent = "EditWorkLocation";
     private final String deleteWorkLocationEvent = "DeleteWorkLocation";
     
+    @SuppressWarnings("unused")
     private final Logger log = LogManager.getLogger(WorkLocationViewController.class.getName());
     
     private Stage primaryStage;
@@ -57,6 +58,7 @@ public class WorkLocationViewController implements Initializable, IViewControlle
     private final LanguageService languageService;
     private final Connection connection;
     private final UndoService undoService;
+    @SuppressWarnings("unused")
     private final PropertiesService propertiesService;
     private ResourceBundle rb;
     private EventManager eventManager;
@@ -113,6 +115,7 @@ public class WorkLocationViewController implements Initializable, IViewControlle
     }
 
     @FXML
+    @SuppressWarnings("unused")
     private void newWorklocationAction(ActionEvent event) throws SQLException, IOException {
         Worklocation newWorklocation = new Worklocation(worklocationDao.getNextId());
         openWorklocationDetailsDialog(newWorklocation, DataAction.NEW);
@@ -123,6 +126,7 @@ public class WorkLocationViewController implements Initializable, IViewControlle
     }
     
     @FXML
+    @SuppressWarnings("unused")
     private void editWorklocationAction(ActionEvent event) throws SQLException, IOException {
         Worklocation selectedWorklocation = worklocationTableView.getSelectionModel().getSelectedItem();
         if(selectedWorklocation != null) {
@@ -139,6 +143,7 @@ public class WorkLocationViewController implements Initializable, IViewControlle
     }
 
     @FXML
+    @SuppressWarnings("unused")
     private void deleteWorklocationAction(ActionEvent event) throws SQLException {
         Worklocation selectedWorklocation = worklocationTableView.getSelectionModel().getSelectedItem();
         if(selectedWorklocation != null) {

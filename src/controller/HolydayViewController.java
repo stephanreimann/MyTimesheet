@@ -35,6 +35,7 @@ public class HolydayViewController implements Initializable, IViewController {
     public enum DataAction { NEW, EDIT, DELETE };
     
     private final String holydayResourceKey = "Holyday";
+    @SuppressWarnings("unused")
     private final String holydayDetailsResourceKey = "HolydayDetails";    
     private final String holydayDateResourceKey = "HolydayDate";
     private final String holydayNameResourceKey = "HolydayName";
@@ -51,6 +52,7 @@ public class HolydayViewController implements Initializable, IViewController {
     private final String deleteHolydayEvent = "DeleteHolyday";
     private final String importHolydayEvent = "ImportHolyday";
 
+    @SuppressWarnings("unused")
     private final Logger log = LogManager.getLogger(HolydayViewController.class.getName());
     
     private Stage primaryStage;
@@ -58,6 +60,7 @@ public class HolydayViewController implements Initializable, IViewController {
     private final LanguageService languageService;
     private final Connection connection;
     private final UndoService undoService;
+    @SuppressWarnings("unused")
     private final PropertiesService propertiesService;
     private ResourceBundle rb;
     private final HolydayDAO holydayDao;
@@ -130,11 +133,13 @@ public class HolydayViewController implements Initializable, IViewController {
     }
     
     @FXML
+    @SuppressWarnings("unused")
     private void importHolydayAction(ActionEvent event) throws SQLException, IOException {
         openImportHolydaysDialog();
     }
 
     @FXML
+    @SuppressWarnings("unused")
     private void newHolydayAction(ActionEvent event) throws SQLException, IOException {
         Holyday newHolyday = new Holyday(holydayDao.getNextId());
         openHolydayDetailsDialog(newHolyday, DataAction.NEW);
@@ -145,6 +150,7 @@ public class HolydayViewController implements Initializable, IViewController {
     }
     
     @FXML
+    @SuppressWarnings("unused")
     private void editHolydayAction(ActionEvent event) throws SQLException, IOException {
         Holyday selectedHolyday = holydayTableView.getSelectionModel().getSelectedItem();
         if(selectedHolyday != null) {
@@ -161,6 +167,7 @@ public class HolydayViewController implements Initializable, IViewController {
     }
 
     @FXML
+    @SuppressWarnings("unused")
     private void deleteHolydayAction(ActionEvent event) throws SQLException, IOException {
         Holyday selectedHolyday = holydayTableView.getSelectionModel().getSelectedItem();
         if(selectedHolyday != null) {

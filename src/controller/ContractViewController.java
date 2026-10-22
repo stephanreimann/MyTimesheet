@@ -51,6 +51,7 @@ public class ContractViewController implements Initializable, IViewController {
     private final String editContractEvent = "EditContract";
     private final String deleteContractEvent = "DeleteContract";
    
+    @SuppressWarnings("unused")
     private final Logger log = LogManager.getLogger(ContractViewController.class.getName());
     
     private Stage primaryStage;    
@@ -58,6 +59,7 @@ public class ContractViewController implements Initializable, IViewController {
     private final LanguageService languageService;
     private final Connection connection;
     private final UndoService undoService;
+    @SuppressWarnings("unused")
     private final PropertiesService propertiesService;    
     private ResourceBundle rb;
     private final ContractDAO contractDao;
@@ -150,6 +152,7 @@ public class ContractViewController implements Initializable, IViewController {
     }
 
     @FXML
+    @SuppressWarnings("unused")
     private void newContractAction(ActionEvent event) throws SQLException, IOException {
         Contract newContract = new Contract(contractDao.getNextId());
         openContractDetailsDialog(newContract, DataAction.NEW);
@@ -160,6 +163,7 @@ public class ContractViewController implements Initializable, IViewController {
     }
     
     @FXML
+    @SuppressWarnings("unused")
     private void editContractAction(ActionEvent event) throws SQLException, IOException {
         Contract selectedContract = contractTableView.getSelectionModel().getSelectedItem();
         if(selectedContract != null) {
@@ -176,6 +180,7 @@ public class ContractViewController implements Initializable, IViewController {
     }
 
     @FXML
+    @SuppressWarnings("unused")
     private void deleteContractAction(ActionEvent event) throws SQLException, IOException {
         Contract selectedContract = contractTableView.getSelectionModel().getSelectedItem();
         if(selectedContract != null) {

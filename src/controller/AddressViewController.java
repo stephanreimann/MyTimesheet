@@ -50,6 +50,7 @@ public class AddressViewController implements Initializable, IViewController {
     private final String editAddressEvent = "EditAddress";
     private final String deleteAddressEvent = "DeleteAddress";
 
+    @SuppressWarnings("unused")
     private final Logger log = LogManager.getLogger(AddressViewController.class.getName());
 
     private Stage primaryStage;
@@ -57,6 +58,7 @@ public class AddressViewController implements Initializable, IViewController {
     private final LanguageService languageService;
     private final Connection connection;
     private final UndoService undoService;
+    @SuppressWarnings("unused")
     private final PropertiesService propertiesService;
     private ResourceBundle rb;
     private final AddressDAO addressDao;
@@ -142,6 +144,7 @@ public class AddressViewController implements Initializable, IViewController {
     }
 
     @FXML
+    @SuppressWarnings("unused")
     private void newAddressAction(ActionEvent event) throws SQLException, IOException {
         Address newAddress = new Address(addressDao.getNextId());
         openAddressDetailsDialog(newAddress, DataAction.NEW);
@@ -152,6 +155,7 @@ public class AddressViewController implements Initializable, IViewController {
     }
     
     @FXML
+    @SuppressWarnings("unused")
     private void editAddressAction(ActionEvent event) throws SQLException, IOException {
         Address selectedAddress = addressTableView.getSelectionModel().getSelectedItem();
         if(selectedAddress != null) {
@@ -168,6 +172,7 @@ public class AddressViewController implements Initializable, IViewController {
     }
 
     @FXML
+    @SuppressWarnings("unused")
     private void deleteAddressAction(ActionEvent event) throws SQLException {
         Address selectedAddress = addressTableView.getSelectionModel().getSelectedItem();
         if(selectedAddress != null) {
