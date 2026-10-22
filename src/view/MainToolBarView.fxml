@@ -10,7 +10,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.GridPane?>
 
-<ToolBar xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml">
+<ToolBar xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1">
     <items>
         <Button fx:id="undoButton" onAction="#undoAction" text="">
             <graphic>
@@ -104,6 +104,18 @@
          </graphic>
          <tooltip>
             <Tooltip fx:id="workItemTooltip" />
+         </tooltip>
+      </Button>
+      <Button fx:id="workItemSearchButton" mnemonicParsing="false" onAction="#workItemSearchAction">
+         <graphic>
+            <ImageView fitHeight="35.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../icons/search.png" />
+               </image>
+            </ImageView>
+         </graphic>
+         <tooltip>
+            <Tooltip fx:id="workItemSearchTooltip" text="Empty Tooltip" />
          </tooltip>
       </Button>
     </items>
