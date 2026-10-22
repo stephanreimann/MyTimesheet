@@ -248,6 +248,14 @@
                                        </HBox.margin>
                                     </Label>
                                     <ChoiceBox fx:id="sprintChoiceBox" />
+                                    <Label fx:id="sprintDurationLabel" alignment="CENTER" contentDisplay="CENTER" prefHeight="24.0" textAlignment="CENTER">
+                                       <HBox.margin>
+                                          <Insets left="10.0" />
+                                       </HBox.margin>
+                                       <padding>
+                                          <Insets left="5.0" right="5.0" />
+                                       </padding>
+                                    </Label>
                                  </children>
                               </HBox>
                               <TableView fx:id="trackingItemTableView" prefHeight="200.0" prefWidth="200.0">

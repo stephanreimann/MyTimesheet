@@ -8,6 +8,8 @@ import java.net.URL;
 import java.sql.*;
 import java.text.MessageFormat;
 import java.time.*;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.*;
 import java.util.ResourceBundle;
 import javafx.beans.property.SimpleStringProperty;
@@ -232,6 +234,8 @@ public class UserInfoViewController implements Initializable, IViewController, I
     private Label sprintChoiceBoxLabel;
     @FXML
     private ChoiceBox<Sprint> sprintChoiceBox;
+    @FXML
+    private Label sprintDurationLabel;
     @FXML 
     private TableView<String[]> trackingItemTableView;
     @FXML 
@@ -345,6 +349,10 @@ public class UserInfoViewController implements Initializable, IViewController, I
         sprintChoiceBox.valueProperty().addListener((ObservableValue<? extends Sprint> observable, Sprint oldValue, Sprint newValue) -> {
             if(newValue != null) {
                 propertiesService.setProperty(selectedSprintResourceKey, ((Sprint)newValue).getId().toString());
+                
+                String[] value = getFormatedSprintStartAndEndDate(newValue);
+                sprintDurationLabel.setText(value[0] + " -> " + value[1]);
+        
                 refreshTrackingItemInfos(selectedUser, newValue);
             }
         });
@@ -387,13 +395,24 @@ public class UserInfoViewController implements Initializable, IViewController, I
     
         userWorkitemsInfoTitledPane.setText(rb.getString(userWorkitemsInfoResourceKey));
         sprintChoiceBoxLabel.setText(rb.getString(sprintResourceKey));
+
+        Sprint selectedSprint = sprintChoiceBox.getSelectionModel().getSelectedItem();
+        String[] value = getFormatedSprintStartAndEndDate(selectedSprint);
+        sprintDurationLabel.setText(value[0] + " -> " + value[1]);
         //trackingItemShortcutTableColumn.setText(rb.getString(trackingItemShortcutResourceKey));
         trackingItemShortcutTableColumn.setText("");
         trackingItemNameTableColumn.setText(rb.getString(trackingItemNameResourceKey));
         trackingItemTimeTableColumn.setText(rb.getString(trackingItemTimeResourceKey));
-
     }
 
+    private String[] getFormatedSprintStartAndEndDate(Sprint sprint) {
+        LocalDate sprintStartDate = sprint.getStartDate();
+        LocalDate sprintEndDate = sprint.getEndDate();
+        String formatedSprintStartDate = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT).format(sprintStartDate);
+        String formatedSprintEndDate = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT).format(sprintEndDate);
+        return new String[]{ formatedSprintStartDate, formatedSprintEndDate };
+    }
+    
     @Override
     public ResourceBundle getResourceBundle() {
         return rb;
