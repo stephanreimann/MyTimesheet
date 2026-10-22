@@ -260,7 +260,7 @@ public class TrackingItemViewController implements Initializable, IViewControlle
             trackingItemDetailsViewResource, 
             rb, 
             trackingItemDetailsViewController);
-        trackingItemDetailsViewDialog = dialogFactory.create(Modality.WINDOW_MODAL, StageStyle.UTILITY, false);
+        trackingItemDetailsViewDialog = dialogFactory.create(Modality.WINDOW_MODAL, StageStyle.UTILITY, false, true);
         trackingItemDetailsViewDialog.setWidth(400);
         trackingItemDetailsViewDialog.setHeight(350);
                 

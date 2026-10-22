@@ -272,7 +272,7 @@ public class AddressViewController implements Initializable, IViewController {
             addressDetailsViewResource, 
             rb, 
             addressDetailsViewController);
-        addressDetailsViewDialog = dialogFactory.create(Modality.WINDOW_MODAL, StageStyle.UTILITY, false);
+        addressDetailsViewDialog = dialogFactory.create(Modality.WINDOW_MODAL, StageStyle.UTILITY, false, true);
         addressDetailsViewDialog.setWidth(400);
         addressDetailsViewDialog.setHeight(350);
 

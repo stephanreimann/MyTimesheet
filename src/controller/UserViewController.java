@@ -297,7 +297,7 @@ public class UserViewController implements Initializable, IViewController {
             userDetailsViewResource, 
             rb, 
             userDetailsViewController);
-        userDetailsViewDialog = dialogFactory.create(Modality.WINDOW_MODAL, StageStyle.UTILITY, false);
+        userDetailsViewDialog = dialogFactory.create(Modality.WINDOW_MODAL, StageStyle.UTILITY, false, true);
         userDetailsViewDialog.setWidth(400);
         userDetailsViewDialog.setHeight(350);
         

@@ -34,11 +34,11 @@ public class DialogFactory {
         this.dialogController = dialogController;
     }
     
-    public Stage create(Modality modality, StageStyle stageStyle, boolean resizable) throws IOException {
+    public Stage create(Modality modality, StageStyle stageStyle, boolean resizable, boolean alwaysOnTop) throws IOException {
         Stage stage = new Stage();
         stage.initModality(modality);
         stage.initOwner(primaryStage);        
-        stage.setAlwaysOnTop(true);
+        stage.setAlwaysOnTop(alwaysOnTop);
         stage.setResizable(resizable);
         stage.initStyle(stageStyle);
         stage.setTitle(this.rb.getString(dialogTitleResourceKey));

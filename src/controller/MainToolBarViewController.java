@@ -211,7 +211,7 @@ public class MainToolBarViewController implements Initializable, IViewController
         
         DialogFactory dialogFactory = new DialogFactory(
             primaryStage, WORK_ITEM_TITLE_KEY, WORK_ITEM_ICON, WORK_ITEM_RESOURCE, rb, workItemViewController);
-        workItemTrackingToolViewDialog = dialogFactory.create(Modality.NONE, StageStyle.DECORATED, true);
+        workItemTrackingToolViewDialog = dialogFactory.create(Modality.NONE, StageStyle.DECORATED, true, true);
         
         applyStageDimensions();
         

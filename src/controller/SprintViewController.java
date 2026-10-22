@@ -262,7 +262,7 @@ public class SprintViewController implements Initializable, IViewController {
             sprintDetailsViewResource, 
             rb, 
             sprintDetailsViewController);
-        sprintDetailsViewDialog = dialogFactory.create(Modality.WINDOW_MODAL, StageStyle.UTILITY, false);
+        sprintDetailsViewDialog = dialogFactory.create(Modality.WINDOW_MODAL, StageStyle.UTILITY, false, true);
         sprintDetailsViewDialog.setWidth(400);
         sprintDetailsViewDialog.setHeight(350);
                 
