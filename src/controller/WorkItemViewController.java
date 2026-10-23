@@ -527,7 +527,6 @@ public class WorkItemViewController implements Initializable, IViewController, I
                 continue;
             }
             if (startTime.isBefore(item.getEndTime()) && endTime.isAfter(item.getStartTime())) {
-                log.info("Overlap detected with existing item: {}", item.getName());
                 return false; 
             }
         }
