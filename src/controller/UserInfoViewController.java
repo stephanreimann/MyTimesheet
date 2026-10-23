@@ -356,6 +356,29 @@ public class UserInfoViewController implements Initializable, IViewController, I
                 refreshTrackingItemInfos(selectedUser, newValue);
             }
         });
+
+        trackingItemTableView.setRowFactory(tv -> new TableRow<String[]>() {
+            @Override
+            protected void updateItem(String[] item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setStyle("");
+                } else {
+                    int index = getIndex();
+                    // Check if this is the last row (the summary row)
+                    if (index == trackingItemTableView.getItems().size() - 1) {
+                        // Adds a bold font, light background, and a double top border style for accounting style
+                        setStyle("-fx-font-weight: bold; " +
+                                 "-fx-background-color: #f4f4f4; " +
+                                 "-fx-border-color: black transparent transparent transparent; " +
+                                 "-fx-border-width: 2 0 0 0; " +
+                                 "-fx-border-style: segments(3, 3) solid solid solid;"); // or a solid double look via CSS border
+                    } else {
+                        setStyle("");
+                    }
+                }
+            }
+        });
     }
 
     @Override
@@ -632,16 +655,37 @@ public class UserInfoViewController implements Initializable, IViewController, I
             
             trackingItemTableView.getItems().clear();
             List<TrackingItem> trackingItems = trackingItemDAO.selectAll();
-            String[][] data = new String[trackingItems.size()][3];
+            String[][] data = new String[trackingItems.size() + 1][3];
+            
+            long totalMinutes = 0L;
+            
             for(int idx=0; idx < trackingItems.size(); idx++) {
                 String shortcut = trackingItems.get(idx).getShortcut();
                 String name = trackingItems.get(idx).getName();
                 String time = workitemDAO.calculateTrackingItemSumTime(user, shortcut, sprint);
+                
                 data[idx] = new String[] {shortcut, name, time};
+                
+                // Accumulate total time in minutes if time string is valid
+                if (time != null && !time.isBlank()) {
+                    try {
+                        totalMinutes += TimeConverter.hoursAndMinutesToLong(time);
+                    } catch (Exception e) {
+                        log.warn("Could not parse tracking item time for sum calculation: " + time);
+                    }
+                }
             }
+            
+            // Format total minutes back into a displayable hours & minutes string
+            String totalTimeFormatted = TimeConverter.hoursAndMinutesToString(totalMinutes);
+            
+            // Add summary row as the last row (e.g. shortcut empty, name as "Total", and summed time)
+            String totalLabel = "Total";
+            data[trackingItems.size()] = new String[] { "", totalLabel, totalTimeFormatted };
+            
             trackingItemTableView.getItems().addAll(Arrays.asList(data));
         } catch (SQLException ex) {
-            
+            log.error("Refresh of tracking item infos failed!", ex);
         }
     }
     
