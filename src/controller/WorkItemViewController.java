@@ -172,7 +172,7 @@ public class WorkItemViewController implements Initializable, IViewController, I
 
         WorkItem newWorkItem = buildWorkItemFromCurrentInput(workItemDao.getNextId());
         undoService.execute(new NewWorkItemCommand(controllerRepository, eventManager, trackingItemTableView, newWorkItem, workItemDao));
-        sortWorkItems();
+        sortWorkItemsAndCalculateAndDisplaySum();
         trackingItemTableView.getSelectionModel().select(newWorkItem);
         refreshStartTimeButtonTooltip();
     }
@@ -185,7 +185,7 @@ public class WorkItemViewController implements Initializable, IViewController, I
         if (selectedWorkItem != null && isInputValid(false) && hasWorkItemChanged()) {
             WorkItem modifiedWorkItem = buildWorkItemFromCurrentInput(selectedWorkItem.getId());
             undoService.execute(new EditWorkItemCommand(controllerRepository, eventManager, trackingItemTableView, selectedWorkItem, modifiedWorkItem, workItemDao));
-            sortWorkItems();
+            sortWorkItemsAndCalculateAndDisplaySum();
             refreshStartTimeButtonTooltip();
             trackingItemTableView.getSelectionModel().select(modifiedWorkItem);
         } else if (selectedWorkItem == null) {
@@ -200,7 +200,7 @@ public class WorkItemViewController implements Initializable, IViewController, I
 
         if (selectedWorkItem != null) {
             undoService.execute(new DeleteWorkItemCommand(controllerRepository, eventManager, trackingItemTableView, selectedWorkItem, workItemDao));
-            sortWorkItems();
+            sortWorkItemsAndCalculateAndDisplaySum();
             refreshStartTimeButtonTooltip();
         } else {
             ControllerUtilities.showNoItemSelectedAlert(primaryStage, rb, ALERT_TITLE, ALERT_HEADER, ALERT_CONTENT);
@@ -278,7 +278,7 @@ public class WorkItemViewController implements Initializable, IViewController, I
             log.fatal("No WorkItemData could be loaded!", ex);
         }
         
-        sortWorkItems();
+        sortWorkItemsAndCalculateAndDisplaySum();
         selectTrackingItemAndRefreshDetails();
         refreshButtonState();
         languageService.updateGuiItems();        
@@ -359,7 +359,7 @@ public class WorkItemViewController implements Initializable, IViewController, I
     }
     
     @SuppressWarnings("unchecked")
-    public void sortWorkItems() {
+    public void sortWorkItemsAndCalculateAndDisplaySum() {
         FXCollections.sort(workItemData, Comparator.comparing(WorkItem::getStartTime, Comparator.nullsFirst(Comparator.naturalOrder())));
         if (!trackingItemTableView.getSortOrder().contains(trackingItemStartTimeTableColumn)) {
             trackingItemTableView.getSortOrder().setAll(trackingItemStartTimeTableColumn);
@@ -588,7 +588,7 @@ public class WorkItemViewController implements Initializable, IViewController, I
         if (selectedWorkrecord != null) {
             workItemData.addAll(workItemDao.selectAll(selectedWorkrecord.getId()));
         }
-        sortWorkItems();
+        sortWorkItemsAndCalculateAndDisplaySum();
     }
      
     private boolean isWorkItemSelected() {
@@ -660,10 +660,18 @@ public class WorkItemViewController implements Initializable, IViewController, I
     }
     
     private void calculateAndDisplaySum() {
-        Duration totalDuration = workItemData.stream()
-                .filter(item -> item.getStartTime() != null && item.getEndTime() != null)
-                .map(item -> Duration.between(item.getStartTime(), item.getEndTime()))
-                .reduce(Duration.ZERO, Duration::plus);
+        //Duration totalDuration = workItemData.stream()
+        //        .filter(item -> item.getStartTime() != null && item.getEndTime() != null)
+        //        .map(item -> Duration.between(item.getStartTime(), item.getEndTime()))
+        //        .reduce(Duration.ZERO, Duration::plus);
+        
+        Duration totalDuration = Duration.ZERO;
+        for (WorkItem item : workItemData) {
+            if (item.getStartTime() != null && item.getEndTime() != null) {
+                Duration itemDuration = Duration.between(item.getStartTime(), item.getEndTime());
+                totalDuration = totalDuration.plus(itemDuration);
+            }
+        } 
         
         long hours = totalDuration.toHours();
         long minutes = totalDuration.toMinutes() % 60;
