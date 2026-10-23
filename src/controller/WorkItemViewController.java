@@ -516,20 +516,42 @@ public class WorkItemViewController implements Initializable, IViewController, I
         LocalTime startTime = trackingItemStartTimeTimeSpinner.getValue();
         LocalTime endTime = trackingItemEndTimeTimeSpinner.getValue();
         TrackingItem selectedTracking = trackingItemChoiceBox.getSelectionModel().getSelectedItem();
-        
-        if (selectedTracking == null || startTime == null || endTime == null) return false;
-        if (startTime.equals(LocalTime.MIN) && endTime.equals(LocalTime.MIN)) return false;
-        if (!startTime.isBefore(endTime)) return false;
-        
+
+        // 1. Basic null and empty checks
+        if (selectedTracking == null || startTime == null || endTime == null) {
+            return false;
+        }
+
+        // 2. Midnight / unset check (consider handling this via spinner converters instead)
+        if (startTime.equals(LocalTime.MIN) && endTime.equals(LocalTime.MIN)) {
+            return false;
+        }
+
+        // 3. Chronological check
+        if (!startTime.isBefore(endTime)) {
+            return false;
+        }
+
+        // 4. Overlap check with null-safety
         WorkItem selectedItem = trackingItemTableView.getSelectionModel().getSelectedItem();
+
         for (WorkItem item : workItemData) {
+            if (item == null || item.getStartTime() == null || item.getEndTime() == null) {
+                continue; // Skip malformed items safely
+            }
+
+            // If we are editing an existing item, skip checking against itself
             if (!isNew && selectedItem != null && Objects.equals(item.getId(), selectedItem.getId())) {
                 continue;
             }
-            if (startTime.isBefore(item.getEndTime()) && endTime.isAfter(item.getStartTime())) {
+
+            // Overlap condition: (StartA < EndB) && (EndA > StartB)
+            boolean overlaps = startTime.isBefore(item.getEndTime()) && endTime.isAfter(item.getStartTime());
+            if (overlaps) {
                 return false; 
             }
         }
+
         return true;
     }
 

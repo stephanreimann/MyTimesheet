@@ -26,11 +26,11 @@ import org.apache.logging.log4j.core.config.*;
 import properties.TranslationStringProperty;
 import service.*;
 
-@SuppressWarnings("unused")
 /**
  *
  * @author adrest18
  */
+@SuppressWarnings("unused")
 public class MainInfoViewController implements Initializable, IViewController {
 
     private final String toggleButtonStyle = "-fx-border-radius: 3; "
@@ -165,7 +165,6 @@ public class MainInfoViewController implements Initializable, IViewController {
                 fatalToggleButton.setDisable(false);
                 clearLogListButton.setDisable(false);
                 resetFilterButton.setDisable(false);
-                logMessage.translate("AllButtonEnabled", rb);
             }
             case "TRACE" -> {
                 debugToggleButton.setDisable(false);
@@ -175,7 +174,6 @@ public class MainInfoViewController implements Initializable, IViewController {
                 fatalToggleButton.setDisable(false);
                 clearLogListButton.setDisable(false);
                 resetFilterButton.setDisable(false);
-                logMessage.translate("AllButtonEnabled", rb);
             }
             case "DEBUG" -> {
                 debugToggleButton.setDisable(false);
@@ -185,7 +183,6 @@ public class MainInfoViewController implements Initializable, IViewController {
                 fatalToggleButton.setDisable(false);
                 clearLogListButton.setDisable(false);
                 resetFilterButton.setDisable(false);
-                logMessage.translate("AllButtonEnabled", rb);
             }
             case "INFO" -> {
                 debugToggleButton.setDisable(true);
@@ -195,7 +192,6 @@ public class MainInfoViewController implements Initializable, IViewController {
                 fatalToggleButton.setDisable(false);
                 clearLogListButton.setDisable(false);
                 resetFilterButton.setDisable(false);
-                logMessage.translate("DebugButtonDisabled", rb);
             }
             case "WARN" -> {
                 debugToggleButton.setDisable(true);
@@ -205,7 +201,6 @@ public class MainInfoViewController implements Initializable, IViewController {
                 fatalToggleButton.setDisable(false);
                 clearLogListButton.setDisable(false);
                 resetFilterButton.setDisable(false);
-                logMessage.translate("DebugInfoButtonDisabled", rb);
             }
             case "ERROR" -> {
                 debugToggleButton.setDisable(true);
@@ -215,7 +210,6 @@ public class MainInfoViewController implements Initializable, IViewController {
                 fatalToggleButton.setDisable(false);
                 clearLogListButton.setDisable(false);
                 resetFilterButton.setDisable(false);
-                logMessage.translate("DebugInfoWarningButtonDisabled", rb);
             }
             case "FATAL" -> {
                 debugToggleButton.setDisable(true);
@@ -225,7 +219,6 @@ public class MainInfoViewController implements Initializable, IViewController {
                 fatalToggleButton.setDisable(false);
                 clearLogListButton.setDisable(false);
                 resetFilterButton.setDisable(false);
-                logMessage.translate("DebugInfoWarningErrorButtonDisabled", rb);
             }
             case "OFF" -> {
                 debugToggleButton.setDisable(true);
@@ -235,7 +228,6 @@ public class MainInfoViewController implements Initializable, IViewController {
                 fatalToggleButton.setDisable(true);
                 clearLogListButton.setDisable(true);
                 resetFilterButton.setDisable(true);
-                logMessage.translate("AllButtonDisabled", rb);
             }
             default -> {
                 debugToggleButton.setDisable(false);
@@ -245,7 +237,6 @@ public class MainInfoViewController implements Initializable, IViewController {
                 fatalToggleButton.setDisable(false);
                 clearLogListButton.setDisable(false);
                 resetFilterButton.setDisable(false);
-                logMessage.translate("AllButtonEnabled", rb);
             }
         }        
     }
