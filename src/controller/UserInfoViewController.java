@@ -329,7 +329,7 @@ public class UserInfoViewController implements Initializable, IViewController, I
                 refreshWorkdaysLabelValue(selectedUser, (Worklocation)worklocationsChoiceBox.getValue());
                 
                 sprintChoiceBox.setItems(sprintData);
-                setLastSelectedSprint(sprintChoiceBox);
+                setActualOrLastSelectedSprint(sprintChoiceBox);
                 trackingItemShortcutTableColumn.setCellValueFactory(cellValue(0));
                 trackingItemNameTableColumn.setCellValueFactory(cellValue(1));
                 trackingItemTimeTableColumn.setCellValueFactory(cellValue(2));
@@ -851,7 +851,7 @@ public class UserInfoViewController implements Initializable, IViewController, I
         }        
     }
  
-    private void setLastSelectedSprint(ChoiceBox<Sprint> selectedSprintChoiceBox) throws SQLException {
+    private void setActualOrLastSelectedSprint(ChoiceBox<Sprint> selectedSprintChoiceBox) throws SQLException {
         ObservableList<Sprint> sprintList = selectedSprintChoiceBox.getItems();
         if (sprintList.isEmpty()) {
             return;
