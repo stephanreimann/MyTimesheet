@@ -232,8 +232,9 @@ public class MainToolBarViewController implements Initializable, IViewController
     private void workItemSearchAction(ActionEvent event) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.initOwner(primaryStage);
+        alert.initModality(Modality.WINDOW_MODAL); 
         alert.setTitle(rb.getString("UnderConstructionTitle"));
-        alert.setHeaderText("");
+        alert.setHeaderText("Full-text search");
         alert.setContentText(rb.getString("UnderConstructionDetails"));
         alert.showAndWait();                
     }
