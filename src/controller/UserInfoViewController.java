@@ -429,11 +429,14 @@ public class UserInfoViewController implements Initializable, IViewController, I
     }
 
     private String[] getFormatedSprintStartAndEndDate(Sprint sprint) {
-        LocalDate sprintStartDate = sprint.getStartDate();
-        LocalDate sprintEndDate = sprint.getEndDate();
-        String formatedSprintStartDate = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT).format(sprintStartDate);
-        String formatedSprintEndDate = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT).format(sprintEndDate);
-        return new String[]{ formatedSprintStartDate, formatedSprintEndDate };
+        if(sprint != null) {
+            LocalDate sprintStartDate = sprint.getStartDate();
+            LocalDate sprintEndDate = sprint.getEndDate();
+            String formatedSprintStartDate = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT).format(sprintStartDate);
+            String formatedSprintEndDate = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT).format(sprintEndDate);
+            return new String[]{ formatedSprintStartDate, formatedSprintEndDate };
+        }
+        return new String[]{ "", "" };
     }
     
     @Override
