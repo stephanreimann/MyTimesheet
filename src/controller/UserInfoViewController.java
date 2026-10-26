@@ -851,23 +851,36 @@ public class UserInfoViewController implements Initializable, IViewController, I
         }        
     }
  
-    private void setLastSelectedSprint(ChoiceBox<Sprint> selectedSprintChoiceBox) {
+    private void setLastSelectedSprint(ChoiceBox<Sprint> selectedSprintChoiceBox) throws SQLException {
         ObservableList<Sprint> sprintList = selectedSprintChoiceBox.getItems();
         if (sprintList.isEmpty()) {
             return;
         }
+        
+        Long targetId = null;
+        //1. We try to set the actual sprint of the current date
+        Sprint todaysSprint = sprintDao.selectSprintForDate(LocalDate.now());
+        if(todaysSprint != null) {
+            targetId = todaysSprint.getId();
+        }
+        
+        //2. If this does not work, we try to set the last stored sprint received from properties.xml
+        if(targetId == null) {
+            String propValue = propertiesService.getProperty(selectedSprintResourceKey);
+            if (propValue != null && !propValue.isBlank()) {
+                targetId = Long.valueOf(propValue);
+            }
+        }
 
-        String propValue = propertiesService.getProperty(selectedSprintResourceKey);
-        Long targetId;
-        if (propValue != null && !propValue.isBlank()) {
-            targetId = Long.valueOf(propValue);
-        } else {
+        //3. If this doeas not work we set the last available sprint.
+        if(targetId == null) {
             targetId = sprintList.getLast().getId();
         }
 
         for (Sprint sprint : sprintList) {
             if (sprint.getId().equals(targetId)) {
                 selectedSprintChoiceBox.getSelectionModel().select(sprint);
+                propertiesService.setProperty(selectedSprintResourceKey, sprint.getId().toString());
                 break;
             }
         }
