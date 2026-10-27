@@ -340,7 +340,7 @@ public class WorkRecordDetailsViewController implements Initializable, IViewCont
             }
         });
         workrecordProjectChoiceBox.valueProperty().addListener((ObservableValue<? extends Project> obs, Project oldValue, Project newValue) ->  {
-            if(selectedUser != null) {
+            if(selectedUser != null && newValue != null) {
                 if((newValue).getIsComptimeRelevant().equalsIgnoreCase("true")) {
                     setWorkrecordLocationChoiceBox("Out of Office");
                     workrecordStartTimeTimeSpinner.getValueFactory().setValue(LocalTime.of(7, 0));
