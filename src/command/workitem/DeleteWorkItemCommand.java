@@ -82,6 +82,7 @@ public class DeleteWorkItemCommand implements ICommand {
                 return false;
             } else {
                 mainToolBarViewController.toggleUndoRedoButtons();
+                mainInfoViewController.toggleUndoRedoButtons();
                 mainMenuBarViewController.toggleUndoRedoMenuItems();
                 workItemViewController.refreshWorkItemData();
                 workItemViewController.selectTrackingItemAndRefreshDetails();

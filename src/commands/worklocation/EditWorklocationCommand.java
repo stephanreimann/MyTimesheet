@@ -23,6 +23,7 @@ public class EditWorklocationCommand implements ICommand {
     
     private final MainToolBarViewController mainToolBarViewController;
     private final MainMenuBarViewController mainMenuBarViewController;
+    private final MainInfoViewController mainInfoViewController;
     private final EventManager events;
     private TableView<Worklocation> worklocationTableView;
     private final Worklocation originalWorklocation;
@@ -40,6 +41,7 @@ public class EditWorklocationCommand implements ICommand {
         
         this.mainToolBarViewController = (MainToolBarViewController) controllerRepository.get(MainToolBarViewController.class.getName());
         this.mainMenuBarViewController = (MainMenuBarViewController) controllerRepository.get(MainMenuBarViewController.class.getName());
+        this.mainInfoViewController = (MainInfoViewController) controllerRepository.get(MainInfoViewController.class.getName());    
         
         this.events = events;
         this.worklocationTableView = worklocationTableView;
@@ -58,6 +60,7 @@ public class EditWorklocationCommand implements ICommand {
                 return false;
             } else {
                 mainToolBarViewController.toggleUndoRedoButtons();
+                mainInfoViewController.toggleUndoRedoButtons();
                 mainMenuBarViewController.toggleUndoRedoMenuItems();
                 worklocationTableView.getSelectionModel().select(modifiedWorklocation);
                 events.notifyListenerOfEvent(editWorkLocationEvent, this);                
@@ -79,6 +82,7 @@ public class EditWorklocationCommand implements ICommand {
                 return false;
             } else {
                 mainToolBarViewController.toggleUndoRedoButtons();
+                mainInfoViewController.toggleUndoRedoButtons();
                 mainMenuBarViewController.toggleUndoRedoMenuItems();
                 worklocationTableView.getSelectionModel().select(originalWorklocation);
                 events.notifyListenerOfEvent(editWorkLocationEvent, this);                
@@ -100,6 +104,7 @@ public class EditWorklocationCommand implements ICommand {
                 return false;
             } else {
                 mainToolBarViewController.toggleUndoRedoButtons();
+                mainInfoViewController.toggleUndoRedoButtons();
                 mainMenuBarViewController.toggleUndoRedoMenuItems();
                 worklocationTableView.getSelectionModel().select(modifiedWorklocation);
                 events.notifyListenerOfEvent(editWorkLocationEvent, this);                

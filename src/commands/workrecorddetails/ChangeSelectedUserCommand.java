@@ -20,6 +20,7 @@ public class ChangeSelectedUserCommand implements ICommand {
 
     private final MainToolBarViewController mainToolBarViewController;
     private final MainMenuBarViewController mainMenuBarViewController;
+    private final MainInfoViewController mainInfoViewController;
     private final ChangeListener<User> selectedUserChangedListener;
     private final ComboBox<User> selectedUserComboBox;
     private User oldSelectedUser;
@@ -35,6 +36,7 @@ public class ChangeSelectedUserCommand implements ICommand {
 
         this.mainToolBarViewController = (MainToolBarViewController) controllerRepository.get(MainToolBarViewController.class.getName());
         this.mainMenuBarViewController = (MainMenuBarViewController) controllerRepository.get(MainMenuBarViewController.class.getName());
+        this.mainInfoViewController = (MainInfoViewController) controllerRepository.get(MainInfoViewController.class.getName());    
         
         this.selectedUserChangedListener = selectedUserChangedListener;
         this.selectedUserComboBox = selectedUserComboBox;
@@ -48,6 +50,7 @@ public class ChangeSelectedUserCommand implements ICommand {
         selectedUserComboBox.getSelectionModel().select(newSelectedUser);
         selectedUserComboBox.getSelectionModel().selectedItemProperty().addListener(selectedUserChangedListener);
         mainToolBarViewController.toggleUndoRedoButtons();
+        mainInfoViewController.toggleUndoRedoButtons();
         mainMenuBarViewController.toggleUndoRedoMenuItems();
         return true;
     }
@@ -58,6 +61,7 @@ public class ChangeSelectedUserCommand implements ICommand {
         selectedUserComboBox.getSelectionModel().select(oldSelectedUser);
         selectedUserComboBox.getSelectionModel().selectedItemProperty().addListener(selectedUserChangedListener);
         mainToolBarViewController.toggleUndoRedoButtons();
+        mainInfoViewController.toggleUndoRedoButtons();
         mainMenuBarViewController.toggleUndoRedoMenuItems();
         return true;
     }

@@ -23,6 +23,7 @@ public class DeleteUserCommand implements ICommand {
     
     private final MainToolBarViewController mainToolBarViewController;
     private final MainMenuBarViewController mainMenuBarViewController;
+    private final MainInfoViewController mainInfoViewController;
     private final EventManager events;    
     private TableView<User> userTableView;
     private User selectedUser;
@@ -38,6 +39,7 @@ public class DeleteUserCommand implements ICommand {
 
         this.mainToolBarViewController = (MainToolBarViewController) controllerRepository.get(MainToolBarViewController.class.getName());
         this.mainMenuBarViewController = (MainMenuBarViewController) controllerRepository.get(MainMenuBarViewController.class.getName());
+        this.mainInfoViewController = (MainInfoViewController) controllerRepository.get(MainInfoViewController.class.getName());    
         
         this.events = events;
         this.userTableView = userTableView;
@@ -54,6 +56,7 @@ public class DeleteUserCommand implements ICommand {
                 return false;
             } else {
                 mainToolBarViewController.toggleUndoRedoButtons();
+                mainInfoViewController.toggleUndoRedoButtons();
                 mainMenuBarViewController.toggleUndoRedoMenuItems();
                 events.notifyListenerOfEvent(deleteUserEvent, this);
                 return true;
@@ -73,6 +76,7 @@ public class DeleteUserCommand implements ICommand {
                 return false;
             } else {
                 mainToolBarViewController.toggleUndoRedoButtons();
+                mainInfoViewController.toggleUndoRedoButtons();
                 mainMenuBarViewController.toggleUndoRedoMenuItems();
                 userTableView.getSelectionModel().select(selectedUser);
                 events.notifyListenerOfEvent(deleteUserEvent, this);

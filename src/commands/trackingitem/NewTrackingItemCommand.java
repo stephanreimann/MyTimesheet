@@ -23,6 +23,7 @@ public class NewTrackingItemCommand implements ICommand {
     
     private final MainToolBarViewController mainToolBarViewController;
     private final MainMenuBarViewController mainMenuBarViewController;
+    private final MainInfoViewController mainInfoViewController;
     private final EventManager events;
     private TableView<TrackingItem> trackingItemTableView;
     private TrackingItemDAO trackingItemDao;
@@ -38,6 +39,7 @@ public class NewTrackingItemCommand implements ICommand {
         
         this.mainToolBarViewController = (MainToolBarViewController) controllerRepository.get(MainToolBarViewController.class.getName());
         this.mainMenuBarViewController = (MainMenuBarViewController) controllerRepository.get(MainMenuBarViewController.class.getName());
+        this.mainInfoViewController = (MainInfoViewController) controllerRepository.get(MainInfoViewController.class.getName());    
         
         this.events = events;        
         this.trackingItemTableView = trackingItemTableView;
@@ -54,6 +56,7 @@ public class NewTrackingItemCommand implements ICommand {
                 return false;
             } else {
                 mainToolBarViewController.toggleUndoRedoButtons();
+                mainInfoViewController.toggleUndoRedoButtons();
                 mainMenuBarViewController.toggleUndoRedoMenuItems();
                 events.notifyListenerOfEvent(newTrackingItemEvent, this);                
                 return true;
@@ -73,6 +76,7 @@ public class NewTrackingItemCommand implements ICommand {
                 return false;
             } else {
                 mainToolBarViewController.toggleUndoRedoButtons();
+                mainInfoViewController.toggleUndoRedoButtons();
                 mainMenuBarViewController.toggleUndoRedoMenuItems();
                 events.notifyListenerOfEvent(newTrackingItemEvent, this);                
                 return true;

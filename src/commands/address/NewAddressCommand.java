@@ -23,6 +23,7 @@ public class NewAddressCommand implements ICommand {
     
     private final MainToolBarViewController mainToolBarViewController;
     private final MainMenuBarViewController mainMenuBarViewController;
+    private final MainInfoViewController mainInfoViewController;
     private final EventManager events;
     private TableView<Address> addressTableView;
     private AddressDAO addressDao;
@@ -38,6 +39,7 @@ public class NewAddressCommand implements ICommand {
         
         this.mainToolBarViewController = (MainToolBarViewController) controllerRepository.get(MainToolBarViewController.class.getName());
         this.mainMenuBarViewController = (MainMenuBarViewController) controllerRepository.get(MainMenuBarViewController.class.getName());
+        this.mainInfoViewController = (MainInfoViewController) controllerRepository.get(MainInfoViewController.class.getName());    
         
         this.events = events;
         this.addressTableView = addressTableView;
@@ -54,6 +56,7 @@ public class NewAddressCommand implements ICommand {
                 return false;
             } else {
                 mainToolBarViewController.toggleUndoRedoButtons();
+                mainInfoViewController.toggleUndoRedoButtons();
                 mainMenuBarViewController.toggleUndoRedoMenuItems();
                 addressTableView.getSelectionModel().select(newAddress);
                 events.notifyListenerOfEvent(newAddressEvent, this);
@@ -74,6 +77,7 @@ public class NewAddressCommand implements ICommand {
                 return false;
             } else {
                 mainToolBarViewController.toggleUndoRedoButtons();
+                mainInfoViewController.toggleUndoRedoButtons();
                 mainMenuBarViewController.toggleUndoRedoMenuItems();
                 events.notifyListenerOfEvent(newAddressEvent, this);
                 return true;

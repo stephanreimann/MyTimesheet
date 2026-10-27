@@ -23,6 +23,7 @@ public class EditRoleCommand implements ICommand {
     
     private final MainToolBarViewController mainToolBarViewController;
     private final MainMenuBarViewController mainMenuBarViewController;
+    private final MainInfoViewController mainInfoViewController;
     private final EventManager events;
     private TableView<Role> roleTableView;
     private final Role originalRole;
@@ -40,6 +41,7 @@ public class EditRoleCommand implements ICommand {
         
         this.mainToolBarViewController = (MainToolBarViewController) controllerRepository.get(MainToolBarViewController.class.getName());
         this.mainMenuBarViewController = (MainMenuBarViewController) controllerRepository.get(MainMenuBarViewController.class.getName());
+        this.mainInfoViewController = (MainInfoViewController) controllerRepository.get(MainInfoViewController.class.getName());    
         
         this.events = events;        
         this.roleTableView = roleTableView;
@@ -58,6 +60,7 @@ public class EditRoleCommand implements ICommand {
                 return false;
             } else {
                 mainToolBarViewController.toggleUndoRedoButtons();
+                mainInfoViewController.toggleUndoRedoButtons();
                 mainMenuBarViewController.toggleUndoRedoMenuItems();
                 roleTableView.getSelectionModel().select(modifiedRole);
                 events.notifyListenerOfEvent(editRoleEvent, this);                
@@ -79,6 +82,7 @@ public class EditRoleCommand implements ICommand {
                 return false;
             } else {
                 mainToolBarViewController.toggleUndoRedoButtons();
+                mainInfoViewController.toggleUndoRedoButtons();
                 mainMenuBarViewController.toggleUndoRedoMenuItems();
                 roleTableView.getSelectionModel().select(originalRole);
                 events.notifyListenerOfEvent(editRoleEvent, this);                
@@ -100,6 +104,7 @@ public class EditRoleCommand implements ICommand {
                 return false;
             } else {
                 mainToolBarViewController.toggleUndoRedoButtons();
+                mainInfoViewController.toggleUndoRedoButtons();
                 mainMenuBarViewController.toggleUndoRedoMenuItems();
                 roleTableView.getSelectionModel().select(modifiedRole);
                 events.notifyListenerOfEvent(editRoleEvent, this);                

@@ -23,6 +23,7 @@ public class EditAddressCommand implements ICommand {
     
     private final MainToolBarViewController mainToolBarViewController;
     private final MainMenuBarViewController mainMenuBarViewController;
+    private final MainInfoViewController mainInfoViewController;
     private final EventManager events;
     private TableView<Address> addressTableView;
     private final Address originalAddress;
@@ -40,6 +41,7 @@ public class EditAddressCommand implements ICommand {
         
         this.mainToolBarViewController = (MainToolBarViewController) controllerRepository.get(MainToolBarViewController.class.getName());
         this.mainMenuBarViewController = (MainMenuBarViewController) controllerRepository.get(MainMenuBarViewController.class.getName());
+        this.mainInfoViewController = (MainInfoViewController) controllerRepository.get(MainInfoViewController.class.getName());    
         
         this.events = events;
         this.addressTableView = addressTableView;
@@ -58,6 +60,7 @@ public class EditAddressCommand implements ICommand {
                 return false;
             } else {
                 mainToolBarViewController.toggleUndoRedoButtons();
+                mainInfoViewController.toggleUndoRedoButtons();
                 mainMenuBarViewController.toggleUndoRedoMenuItems();
                 addressTableView.getSelectionModel().select(modifiedAddress);
                 events.notifyListenerOfEvent(editAddressEvent, this);
@@ -79,6 +82,7 @@ public class EditAddressCommand implements ICommand {
                 return false;
             } else {
                 mainToolBarViewController.toggleUndoRedoButtons();
+                mainInfoViewController.toggleUndoRedoButtons();
                 mainMenuBarViewController.toggleUndoRedoMenuItems();
                 addressTableView.getSelectionModel().select(originalAddress);
                 events.notifyListenerOfEvent(editAddressEvent, this);
@@ -100,6 +104,7 @@ public class EditAddressCommand implements ICommand {
                 return false;
             } else {
                 mainToolBarViewController.toggleUndoRedoButtons();
+                mainInfoViewController.toggleUndoRedoButtons();
                 mainMenuBarViewController.toggleUndoRedoMenuItems();
                 addressTableView.getSelectionModel().select(modifiedAddress);
                 events.notifyListenerOfEvent(editAddressEvent, this);

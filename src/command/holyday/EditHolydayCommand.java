@@ -23,6 +23,7 @@ public class EditHolydayCommand implements ICommand {
 
     private final MainToolBarViewController mainToolBarViewController;
     private final MainMenuBarViewController mainMenuBarViewController;
+    private final MainInfoViewController mainInfoViewController;
     private final EventManager eventManager;
     private TableView<Holyday> holydayTableView;
     private final Holyday originalHolyday;
@@ -40,6 +41,7 @@ public class EditHolydayCommand implements ICommand {
         
         this.mainToolBarViewController = (MainToolBarViewController) controllerRepository.get(MainToolBarViewController.class.getName());
         this.mainMenuBarViewController = (MainMenuBarViewController) controllerRepository.get(MainMenuBarViewController.class.getName());
+        this.mainInfoViewController = (MainInfoViewController) controllerRepository.get(MainInfoViewController.class.getName());    
         
         this.eventManager = eventManager;
         this.holydayTableView = holydayTableView;
@@ -58,6 +60,7 @@ public class EditHolydayCommand implements ICommand {
                 return false;
             } else {
                 mainToolBarViewController.toggleUndoRedoButtons();
+                mainInfoViewController.toggleUndoRedoButtons();
                 mainMenuBarViewController.toggleUndoRedoMenuItems();
                 holydayTableView.getSelectionModel().select(modifiedHolyday);
                 eventManager.notifyListenerOfEvent(editHolydayEvent, this);                
@@ -79,6 +82,7 @@ public class EditHolydayCommand implements ICommand {
                 return false;
             } else {
                 mainToolBarViewController.toggleUndoRedoButtons();
+                mainInfoViewController.toggleUndoRedoButtons();
                 mainMenuBarViewController.toggleUndoRedoMenuItems();
                 holydayTableView.getSelectionModel().select(originalHolyday);
                 eventManager.notifyListenerOfEvent(editHolydayEvent, this);                
@@ -100,6 +104,7 @@ public class EditHolydayCommand implements ICommand {
                 return false;
             } else {
                 mainToolBarViewController.toggleUndoRedoButtons();
+                mainInfoViewController.toggleUndoRedoButtons();
                 mainMenuBarViewController.toggleUndoRedoMenuItems();
                 holydayTableView.getSelectionModel().select(modifiedHolyday);
                 eventManager.notifyListenerOfEvent(editHolydayEvent, this);                

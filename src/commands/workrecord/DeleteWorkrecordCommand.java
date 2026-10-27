@@ -24,6 +24,7 @@ public class DeleteWorkrecordCommand implements ICommand {
     private final MainToolBarViewController mainToolBarViewController;
     private final MainMenuBarViewController mainMenuBarViewController;
     private final WorkRecordViewController workRecordViewController;    
+    private final MainInfoViewController mainInfoViewController;
     private final EventManager events;    
     private TableView<Workrecord> workrecordTableView;
     private Workrecord selectedWorkrecord;
@@ -40,6 +41,7 @@ public class DeleteWorkrecordCommand implements ICommand {
         this.mainToolBarViewController = (MainToolBarViewController) controllerRepository.get(MainToolBarViewController.class.getName());
         this.mainMenuBarViewController = (MainMenuBarViewController) controllerRepository.get(MainMenuBarViewController.class.getName());
         this.workRecordViewController = (WorkRecordViewController)controllerRepository.get(WorkRecordViewController.class.getName());
+        this.mainInfoViewController = (MainInfoViewController) controllerRepository.get(MainInfoViewController.class.getName());    
         
         this.events = events;
         this.workrecordTableView = workrecordTableView;
@@ -56,6 +58,7 @@ public class DeleteWorkrecordCommand implements ICommand {
                 return false;
             } else {
                 mainToolBarViewController.toggleUndoRedoButtons();
+                mainInfoViewController.toggleUndoRedoButtons();
                 mainMenuBarViewController.toggleUndoRedoMenuItems();
                 workRecordViewController.selectWorkrecordOf(selectedWorkrecord.getDate());
                 events.notifyListenerOfEvent(deleteWorkrecordEvent, selectedWorkrecord);                
@@ -76,6 +79,7 @@ public class DeleteWorkrecordCommand implements ICommand {
                 return false;
             } else {
                 mainToolBarViewController.toggleUndoRedoButtons();
+                mainInfoViewController.toggleUndoRedoButtons();
                 mainMenuBarViewController.toggleUndoRedoMenuItems();
                 workRecordViewController.selectWorkrecordOf(selectedWorkrecord.getDate());
                 events.notifyListenerOfEvent(deleteWorkrecordEvent, this);                

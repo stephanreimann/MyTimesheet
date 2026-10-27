@@ -23,6 +23,7 @@ public class DeleteSprintCommand implements ICommand {
     
     private final MainToolBarViewController mainToolBarViewController;
     private final MainMenuBarViewController mainMenuBarViewController;
+    private final MainInfoViewController mainInfoViewController;
     private final EventManager events;
     private TableView<Sprint> sprintTableView;
     private Sprint selectedSprint;
@@ -38,6 +39,7 @@ public class DeleteSprintCommand implements ICommand {
 
         this.mainToolBarViewController = (MainToolBarViewController) controllerRepository.get(MainToolBarViewController.class.getName());
         this.mainMenuBarViewController = (MainMenuBarViewController) controllerRepository.get(MainMenuBarViewController.class.getName());
+        this.mainInfoViewController = (MainInfoViewController) controllerRepository.get(MainInfoViewController.class.getName());    
         
         this.events = events;
         this.sprintTableView = sprintTableView;
@@ -54,6 +56,7 @@ public class DeleteSprintCommand implements ICommand {
                 return false;
             } else {
                 mainToolBarViewController.toggleUndoRedoButtons();
+                mainInfoViewController.toggleUndoRedoButtons();
                 mainMenuBarViewController.toggleUndoRedoMenuItems();
                 events.notifyListenerOfEvent(deleteSprintEvent, this);                
                 return true;
@@ -73,6 +76,7 @@ public class DeleteSprintCommand implements ICommand {
                 return false;
             } else {
                 mainToolBarViewController.toggleUndoRedoButtons();
+                mainInfoViewController.toggleUndoRedoButtons();
                 mainMenuBarViewController.toggleUndoRedoMenuItems();
                 sprintTableView.getSelectionModel().select(selectedSprint);
                 events.notifyListenerOfEvent(deleteSprintEvent, this);                

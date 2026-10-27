@@ -23,6 +23,7 @@ public class EditUserCommand implements ICommand {
     
     private final MainToolBarViewController mainToolBarViewController;
     private final MainMenuBarViewController mainMenuBarViewController;
+    private final MainInfoViewController mainInfoViewController;
     private final EventManager events;
     private TableView<User> userTableView;
     private final User originalUser;
@@ -40,6 +41,7 @@ public class EditUserCommand implements ICommand {
         
         this.mainToolBarViewController = (MainToolBarViewController) controllerRepository.get(MainToolBarViewController.class.getName());
         this.mainMenuBarViewController = (MainMenuBarViewController) controllerRepository.get(MainMenuBarViewController.class.getName());
+        this.mainInfoViewController = (MainInfoViewController) controllerRepository.get(MainInfoViewController.class.getName());    
         
         this.events = events;
         this.userTableView = userTableView;
@@ -58,6 +60,7 @@ public class EditUserCommand implements ICommand {
                 return false;
             } else {
                 mainToolBarViewController.toggleUndoRedoButtons();
+                mainInfoViewController.toggleUndoRedoButtons();
                 mainMenuBarViewController.toggleUndoRedoMenuItems();
                 userTableView.getSelectionModel().select(modifiedUser);
                 events.notifyListenerOfEvent(editUserEvent, this);
@@ -79,6 +82,7 @@ public class EditUserCommand implements ICommand {
                 return false;
             } else {
                 mainToolBarViewController.toggleUndoRedoButtons();
+                mainInfoViewController.toggleUndoRedoButtons();
                 mainMenuBarViewController.toggleUndoRedoMenuItems();
                 userTableView.getSelectionModel().select(originalUser);
                 events.notifyListenerOfEvent(editUserEvent, this);
@@ -100,6 +104,7 @@ public class EditUserCommand implements ICommand {
                 return false;
             } else {
                 mainToolBarViewController.toggleUndoRedoButtons();
+                mainInfoViewController.toggleUndoRedoButtons();
                 mainMenuBarViewController.toggleUndoRedoMenuItems();
                 userTableView.getSelectionModel().select(modifiedUser);
                 events.notifyListenerOfEvent(editUserEvent, this);

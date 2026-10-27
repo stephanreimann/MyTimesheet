@@ -20,6 +20,7 @@ public class ChangeLanguageCommand implements ICommand {
     private final MainStatusBarViewController mainStatusBarViewController;
     private final MainToolBarViewController mainToolBarViewController;
     private final MainMenuBarViewController mainMenuBarViewController;
+    private final MainInfoViewController mainInfoViewController;    
     
     public ChangeLanguageCommand(Locale oldValue, Locale newValue, LanguageService languageService, ControllerRepository controllerRepository) {        
         if(oldValue == null) throw new NullPointerException("oldValue");
@@ -35,6 +36,7 @@ public class ChangeLanguageCommand implements ICommand {
         this.mainStatusBarViewController = (MainStatusBarViewController)this.controllerRepository.get(MainStatusBarViewController.class.getName());
         this.mainToolBarViewController = (MainToolBarViewController)this.controllerRepository.get(MainToolBarViewController.class.getName());
         this.mainMenuBarViewController = (MainMenuBarViewController)this.controllerRepository.get(MainMenuBarViewController.class.getName());
+        this.mainInfoViewController = (MainInfoViewController) controllerRepository.get(MainInfoViewController.class.getName());    
     }
 
     @Override
@@ -64,6 +66,7 @@ public class ChangeLanguageCommand implements ICommand {
         languageService.setResourceBundle(bundle);
         languageService.updateGuiItems();
         mainToolBarViewController.toggleUndoRedoButtons();
+        mainInfoViewController.toggleUndoRedoButtons();
         mainMenuBarViewController.toggleUndoRedoMenuItems();
         return true;
     }

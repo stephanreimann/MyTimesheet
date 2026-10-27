@@ -49,6 +49,7 @@ public class ClearLogListCommand implements ICommand {
         infoViewEntries.clear();
         translationStringProperty.translate(this.infoViewClearedResourceKey, this.resourceBundle);
         mainToolBarViewController.toggleUndoRedoButtons();
+        mainInfoViewController.toggleUndoRedoButtons();
         mainMenuBarViewController.toggleUndoRedoMenuItems();
         return true;
     }
@@ -60,6 +61,7 @@ public class ClearLogListCommand implements ICommand {
         translationStringProperty.translate(this.infoViewRestoredResourceKey, this.resourceBundle);
         oldInfoViewEntries.clear();
         mainToolBarViewController.toggleUndoRedoButtons();
+        mainInfoViewController.toggleUndoRedoButtons();
         mainMenuBarViewController.toggleUndoRedoMenuItems();
         return true;
     }

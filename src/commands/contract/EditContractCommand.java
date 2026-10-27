@@ -23,6 +23,7 @@ public class EditContractCommand implements ICommand {
     
     private final MainToolBarViewController mainToolBarViewController;
     private final MainMenuBarViewController mainMenuBarViewController;
+    private final MainInfoViewController mainInfoViewController;
     private final EventManager events;
     private TableView<Contract> contractTableView;
     private final Contract originalContract;
@@ -40,6 +41,7 @@ public class EditContractCommand implements ICommand {
         
         this.mainToolBarViewController = (MainToolBarViewController) controllerRepository.get(MainToolBarViewController.class.getName());
         this.mainMenuBarViewController = (MainMenuBarViewController) controllerRepository.get(MainMenuBarViewController.class.getName());
+        this.mainInfoViewController = (MainInfoViewController) controllerRepository.get(MainInfoViewController.class.getName());    
         
         this.events = events;
         this.contractTableView = contractTableView;
@@ -58,6 +60,7 @@ public class EditContractCommand implements ICommand {
                 return false;
             } else {
                 mainToolBarViewController.toggleUndoRedoButtons();
+                mainInfoViewController.toggleUndoRedoButtons();
                 mainMenuBarViewController.toggleUndoRedoMenuItems();
                 contractTableView.getSelectionModel().select(modifiedContract);
                 events.notifyListenerOfEvent(editContractEvent, modifiedContract);                
@@ -79,6 +82,7 @@ public class EditContractCommand implements ICommand {
                 return false;
             } else {
                 mainToolBarViewController.toggleUndoRedoButtons();
+                mainInfoViewController.toggleUndoRedoButtons();
                 mainMenuBarViewController.toggleUndoRedoMenuItems();
                 contractTableView.getSelectionModel().select(originalContract);
                 events.notifyListenerOfEvent(editContractEvent, modifiedContract);                
@@ -100,6 +104,7 @@ public class EditContractCommand implements ICommand {
                 return false;
             } else {
                 mainToolBarViewController.toggleUndoRedoButtons();
+                mainInfoViewController.toggleUndoRedoButtons();
                 mainMenuBarViewController.toggleUndoRedoMenuItems();
                 contractTableView.getSelectionModel().select(modifiedContract);
                 events.notifyListenerOfEvent(editContractEvent, modifiedContract);                

@@ -57,6 +57,7 @@ public class ResetFilterCommand implements ICommand {
         mainInfoViewController.setFatalToggleButtonState(Boolean.FALSE);
         translationStringProperty.translate(this.resetFilterExecutedResourceKey, this.resourceBundle);
         mainToolBarViewController.toggleUndoRedoButtons();
+        mainInfoViewController.toggleUndoRedoButtons();
         mainMenuBarViewController.toggleUndoRedoMenuItems();
         return true;
     }
@@ -70,6 +71,7 @@ public class ResetFilterCommand implements ICommand {
         mainInfoViewController.setFatalToggleButtonState(fatalToggleButtonState);
         translationStringProperty.translate(this.resetFilterRestoredResourceKey, this.resourceBundle);
         mainToolBarViewController.toggleUndoRedoButtons();
+        mainInfoViewController.toggleUndoRedoButtons();
         mainMenuBarViewController.toggleUndoRedoMenuItems();
         return true;
     }

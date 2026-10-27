@@ -23,6 +23,7 @@ public class EditProjectCommand implements ICommand {
     
     private final MainToolBarViewController mainToolBarViewController;
     private final MainMenuBarViewController mainMenuBarViewController;
+    private final MainInfoViewController mainInfoViewController;
     private final EventManager events;
     private TableView<Project> projectTableView;
     private final Project originalProject;
@@ -40,6 +41,7 @@ public class EditProjectCommand implements ICommand {
         
         this.mainToolBarViewController = (MainToolBarViewController) controllerRepository.get(MainToolBarViewController.class.getName());
         this.mainMenuBarViewController = (MainMenuBarViewController) controllerRepository.get(MainMenuBarViewController.class.getName());
+        this.mainInfoViewController = (MainInfoViewController) controllerRepository.get(MainInfoViewController.class.getName());    
         
         this.events = events;
         this.projectTableView = projectTableView;
@@ -58,6 +60,7 @@ public class EditProjectCommand implements ICommand {
                 return false;
             } else {
                 mainToolBarViewController.toggleUndoRedoButtons();
+                mainInfoViewController.toggleUndoRedoButtons();
                 mainMenuBarViewController.toggleUndoRedoMenuItems();
                 projectTableView.getSelectionModel().select(modifiedProject);
                 events.notifyListenerOfEvent(editProjectEvent, this);                
@@ -79,6 +82,7 @@ public class EditProjectCommand implements ICommand {
                 return false;
             } else {
                 mainToolBarViewController.toggleUndoRedoButtons();
+                mainInfoViewController.toggleUndoRedoButtons();
                 mainMenuBarViewController.toggleUndoRedoMenuItems();
                 projectTableView.getSelectionModel().select(originalProject);
                 events.notifyListenerOfEvent(editProjectEvent, this);                
@@ -100,6 +104,7 @@ public class EditProjectCommand implements ICommand {
                 return false;
             } else {
                 mainToolBarViewController.toggleUndoRedoButtons();
+                mainInfoViewController.toggleUndoRedoButtons();
                 mainMenuBarViewController.toggleUndoRedoMenuItems();
                 projectTableView.getSelectionModel().select(modifiedProject);
                 events.notifyListenerOfEvent(editProjectEvent, this);                

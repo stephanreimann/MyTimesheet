@@ -58,8 +58,8 @@ public class NewWorkrecordCommand implements ICommand {
                 return false;
             } else {
                 mainToolBarViewController.toggleUndoRedoButtons();
-                mainMenuBarViewController.toggleUndoRedoMenuItems();
                 mainInfoViewController.toggleUndoRedoButtons();
+                mainMenuBarViewController.toggleUndoRedoMenuItems();
                 workRecordViewController.selectWorkrecordOf(newWorkrecord.getDate());
                 events.notifyListenerOfEvent(newWorkrecordEvent, newWorkrecord);                
                 return true;
@@ -79,6 +79,7 @@ public class NewWorkrecordCommand implements ICommand {
                 return false;
             } else {
                 mainToolBarViewController.toggleUndoRedoButtons();
+                mainInfoViewController.toggleUndoRedoButtons();
                 mainMenuBarViewController.toggleUndoRedoMenuItems();
                 workRecordViewController.selectWorkrecordOf(newWorkrecord.getDate());
                 events.notifyListenerOfEvent(newWorkrecordEvent, newWorkrecord);                

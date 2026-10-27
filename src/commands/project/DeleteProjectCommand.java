@@ -23,6 +23,7 @@ public class DeleteProjectCommand implements ICommand {
     
     private final MainToolBarViewController mainToolBarViewController;
     private final MainMenuBarViewController mainMenuBarViewController;
+    private final MainInfoViewController mainInfoViewController;
     private final EventManager events;
     private TableView<Project> projectTableView;
     private Project selectedProject;
@@ -38,6 +39,7 @@ public class DeleteProjectCommand implements ICommand {
 
         this.mainToolBarViewController = (MainToolBarViewController) controllerRepository.get(MainToolBarViewController.class.getName());
         this.mainMenuBarViewController = (MainMenuBarViewController) controllerRepository.get(MainMenuBarViewController.class.getName());
+        this.mainInfoViewController = (MainInfoViewController) controllerRepository.get(MainInfoViewController.class.getName());    
         
         this.events = events;
         this.projectTableView = projectTableView;
@@ -54,6 +56,7 @@ public class DeleteProjectCommand implements ICommand {
                 return false;
             } else {
                 mainToolBarViewController.toggleUndoRedoButtons();
+                mainInfoViewController.toggleUndoRedoButtons();
                 mainMenuBarViewController.toggleUndoRedoMenuItems();
                 events.notifyListenerOfEvent(deleteProjectEvent, this);                
                 return true;
@@ -73,6 +76,7 @@ public class DeleteProjectCommand implements ICommand {
                 return false;
             } else {
                 mainToolBarViewController.toggleUndoRedoButtons();
+                mainInfoViewController.toggleUndoRedoButtons();
                 mainMenuBarViewController.toggleUndoRedoMenuItems();
                 projectTableView.getSelectionModel().select(selectedProject);
                 events.notifyListenerOfEvent(deleteProjectEvent, this);                

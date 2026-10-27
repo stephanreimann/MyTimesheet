@@ -23,6 +23,7 @@ public class EditSprintCommand implements ICommand {
     
     private final MainToolBarViewController mainToolBarViewController;
     private final MainMenuBarViewController mainMenuBarViewController;
+    private final MainInfoViewController mainInfoViewController;
     private final EventManager events;
     private TableView<Sprint> sprintTableView;
     private final Sprint originalSprint;
@@ -40,6 +41,7 @@ public class EditSprintCommand implements ICommand {
         
         this.mainToolBarViewController = (MainToolBarViewController) controllerRepository.get(MainToolBarViewController.class.getName());
         this.mainMenuBarViewController = (MainMenuBarViewController) controllerRepository.get(MainMenuBarViewController.class.getName());
+        this.mainInfoViewController = (MainInfoViewController) controllerRepository.get(MainInfoViewController.class.getName());    
         
         this.events = events;        
         this.sprintTableView = sprintTableView;
@@ -58,6 +60,7 @@ public class EditSprintCommand implements ICommand {
                 return false;
             } else {
                 mainToolBarViewController.toggleUndoRedoButtons();
+                mainInfoViewController.toggleUndoRedoButtons();
                 mainMenuBarViewController.toggleUndoRedoMenuItems();
                 sprintTableView.getSelectionModel().select(modifiedSprint);
                 events.notifyListenerOfEvent(editSprintEvent, this);                
@@ -79,6 +82,7 @@ public class EditSprintCommand implements ICommand {
                 return false;
             } else {
                 mainToolBarViewController.toggleUndoRedoButtons();
+                mainInfoViewController.toggleUndoRedoButtons();
                 mainMenuBarViewController.toggleUndoRedoMenuItems();
                 sprintTableView.getSelectionModel().select(originalSprint);
                 events.notifyListenerOfEvent(editSprintEvent, this);                
@@ -100,6 +104,7 @@ public class EditSprintCommand implements ICommand {
                 return false;
             } else {
                 mainToolBarViewController.toggleUndoRedoButtons();
+                mainInfoViewController.toggleUndoRedoButtons();
                 mainMenuBarViewController.toggleUndoRedoMenuItems();
                 sprintTableView.getSelectionModel().select(modifiedSprint);
                 events.notifyListenerOfEvent(editSprintEvent, this);                

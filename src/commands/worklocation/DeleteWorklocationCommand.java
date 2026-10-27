@@ -23,6 +23,7 @@ public class DeleteWorklocationCommand implements ICommand {
     
     private final MainToolBarViewController mainToolBarViewController;
     private final MainMenuBarViewController mainMenuBarViewController;
+    private final MainInfoViewController mainInfoViewController;
     private final EventManager events;    
     private TableView<Worklocation> worklocationTableView;
     private Worklocation selectedWorklocation;
@@ -38,6 +39,7 @@ public class DeleteWorklocationCommand implements ICommand {
 
         this.mainToolBarViewController = (MainToolBarViewController) controllerRepository.get(MainToolBarViewController.class.getName());
         this.mainMenuBarViewController = (MainMenuBarViewController) controllerRepository.get(MainMenuBarViewController.class.getName());
+        this.mainInfoViewController = (MainInfoViewController) controllerRepository.get(MainInfoViewController.class.getName());    
         
         this.events = events;
         this.worklocationTableView = roleTableView;
@@ -54,6 +56,7 @@ public class DeleteWorklocationCommand implements ICommand {
                 return false;
             } else {
                 mainToolBarViewController.toggleUndoRedoButtons();
+                mainInfoViewController.toggleUndoRedoButtons();
                 mainMenuBarViewController.toggleUndoRedoMenuItems();
                 events.notifyListenerOfEvent(deleteWorkLocationEvent, this);                
                 return true;
@@ -73,6 +76,7 @@ public class DeleteWorklocationCommand implements ICommand {
                 return false;
             } else {
                 mainToolBarViewController.toggleUndoRedoButtons();
+                mainInfoViewController.toggleUndoRedoButtons();
                 mainMenuBarViewController.toggleUndoRedoMenuItems();
                 worklocationTableView.getSelectionModel().select(selectedWorklocation);
                 events.notifyListenerOfEvent(deleteWorkLocationEvent, this);                

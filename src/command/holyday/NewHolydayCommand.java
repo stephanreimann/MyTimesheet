@@ -23,6 +23,7 @@ public class NewHolydayCommand implements ICommand {
     
     private final MainToolBarViewController mainToolBarViewController;
     private final MainMenuBarViewController mainMenuBarViewController;
+    private final MainInfoViewController mainInfoViewController;
     private final EventManager eventManager;
     private TableView<Holyday> holydayTableView;
     private HolydayDAO holydayDao;
@@ -38,6 +39,7 @@ public class NewHolydayCommand implements ICommand {
         
         this.mainToolBarViewController = (MainToolBarViewController) controllerRepository.get(MainToolBarViewController.class.getName());
         this.mainMenuBarViewController = (MainMenuBarViewController) controllerRepository.get(MainMenuBarViewController.class.getName());
+        this.mainInfoViewController = (MainInfoViewController) controllerRepository.get(MainInfoViewController.class.getName());    
         
         this.eventManager = eventManager;
         this.holydayTableView = holydayTableView;
@@ -54,6 +56,7 @@ public class NewHolydayCommand implements ICommand {
                 return false;
             } else {
                 mainToolBarViewController.toggleUndoRedoButtons();
+                mainInfoViewController.toggleUndoRedoButtons();
                 mainMenuBarViewController.toggleUndoRedoMenuItems();
                 holydayTableView.getSelectionModel().select(newHolyday);
                 eventManager.notifyListenerOfEvent(newHolydayEvent, this);                
@@ -74,6 +77,7 @@ public class NewHolydayCommand implements ICommand {
                 return false;
             } else {
                 mainToolBarViewController.toggleUndoRedoButtons();
+                mainInfoViewController.toggleUndoRedoButtons();
                 mainMenuBarViewController.toggleUndoRedoMenuItems();
                 eventManager.notifyListenerOfEvent(newHolydayEvent, this);                                
                 return true;

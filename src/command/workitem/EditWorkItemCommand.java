@@ -86,6 +86,7 @@ public class EditWorkItemCommand implements ICommand {
                 return false;
             } else {
                 mainToolBarViewController.toggleUndoRedoButtons();
+                mainInfoViewController.toggleUndoRedoButtons();
                 mainMenuBarViewController.toggleUndoRedoMenuItems();
                 workItemViewController.refreshWorkItemData();
                 workItemViewController.selectTrackingItemAndRefreshDetails();
@@ -109,6 +110,7 @@ public class EditWorkItemCommand implements ICommand {
                 return false;
             } else {
                 mainToolBarViewController.toggleUndoRedoButtons();
+                mainInfoViewController.toggleUndoRedoButtons();
                 mainMenuBarViewController.toggleUndoRedoMenuItems();
                 workItemViewController.refreshWorkItemData();
                 workItemViewController.selectTrackingItemAndRefreshDetails();
