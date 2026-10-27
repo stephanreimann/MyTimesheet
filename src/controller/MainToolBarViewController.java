@@ -33,14 +33,14 @@ import utils.EventManager;
  */
 public class MainToolBarViewController implements Initializable, IViewController {
 
-    private static final String PREF_WIDTH_KEY = "WorkItemTrackingToolViewDialogWidth";
-    private static final String PREF_WIDTH_DEFAULT = "512";
-    private static final String PREF_HEIGHT_KEY = "WorkItemTrackingToolViewDialogHeight";
-    private static final String PREF_HEIGHT_DEFAULT = "850";
-    private static final String PREF_XPOS_KEY = "WorkItemTrackingToolViewDialogXPos";
-    private static final String PREF_XPOS_DEFAULT = "0.0";
-    private static final String PREF_YPOS_KEY = "WorkItemTrackingToolViewDialogYPos";
-    private static final String PREF_YPOS_DEFAULT = "0.0";
+    private static final String PREF_WORKITEM_TRACKING_TOOL_VIEW_DIALOG_WIDTH_KEY = "WorkItemTrackingToolViewDialogWidth";
+    private static final String PREF_WORKITEM_TRACKING_TOOL_VIEW_DIALOG_WIDTH_DEFAULT = "512";
+    private static final String PREF_WORKITEM_TRACKING_TOOL_VIEW_DIALOG_HEIGHT_KEY = "WorkItemTrackingToolViewDialogHeight";
+    private static final String PREF_WORKITEM_TRACKING_TOOL_VIEW_DIALOG_HEIGHT_DEFAULT = "850";
+    private static final String PREF_WORKITEM_TRACKING_TOOL_VIEW_DIALOG_XPOS_KEY = "WorkItemTrackingToolViewDialogXPos";
+    private static final String PREF_WORKITEM_TRACKING_TOOL_VIEW_DIALOG_XPOS_DEFAULT = "0.0";
+    private static final String PREF_WORKITEM_TRACKING_TOOL_VIEW_DIALOG_YPOS_KEY = "WorkItemTrackingToolViewDialogYPos";
+    private static final String PREF_WORKITEM_TRACKING_TOOL_VIEW_DIALOG_YPOS_DEFAULT = "0.0";
     
     private static final String LANG_SELECTOR_KEY = "languageSelectorButton";
     
@@ -240,17 +240,17 @@ public class MainToolBarViewController implements Initializable, IViewController
     }
     
     private void applyStageDimensions() {
-        workItemTrackingToolViewDialog.setWidth(getDoubleProperty(PREF_WIDTH_KEY, PREF_WIDTH_DEFAULT));
-        workItemTrackingToolViewDialog.setHeight(getDoubleProperty(PREF_HEIGHT_KEY, PREF_HEIGHT_DEFAULT));
-        workItemTrackingToolViewDialog.setX(getDoubleProperty(PREF_XPOS_KEY, PREF_XPOS_DEFAULT));
-        workItemTrackingToolViewDialog.setY(getDoubleProperty(PREF_YPOS_KEY, PREF_YPOS_DEFAULT));
+        workItemTrackingToolViewDialog.setWidth(getDoubleProperty(PREF_WORKITEM_TRACKING_TOOL_VIEW_DIALOG_WIDTH_KEY, PREF_WORKITEM_TRACKING_TOOL_VIEW_DIALOG_WIDTH_DEFAULT));
+        workItemTrackingToolViewDialog.setHeight(getDoubleProperty(PREF_WORKITEM_TRACKING_TOOL_VIEW_DIALOG_HEIGHT_KEY, PREF_WORKITEM_TRACKING_TOOL_VIEW_DIALOG_HEIGHT_DEFAULT));
+        workItemTrackingToolViewDialog.setX(getDoubleProperty(PREF_WORKITEM_TRACKING_TOOL_VIEW_DIALOG_XPOS_KEY, PREF_WORKITEM_TRACKING_TOOL_VIEW_DIALOG_XPOS_DEFAULT));
+        workItemTrackingToolViewDialog.setY(getDoubleProperty(PREF_WORKITEM_TRACKING_TOOL_VIEW_DIALOG_YPOS_KEY, PREF_WORKITEM_TRACKING_TOOL_VIEW_DIALOG_YPOS_DEFAULT));
     }
 
     private void saveStageDimensions() {
-        propertiesService.setProperty(PREF_WIDTH_KEY, String.valueOf(workItemTrackingToolViewDialog.getWidth()));
-        propertiesService.setProperty(PREF_HEIGHT_KEY, String.valueOf(workItemTrackingToolViewDialog.getHeight()));
-        propertiesService.setProperty(PREF_XPOS_KEY, String.valueOf(workItemTrackingToolViewDialog.getX()));
-        propertiesService.setProperty(PREF_YPOS_KEY, String.valueOf(workItemTrackingToolViewDialog.getY()));
+        propertiesService.setProperty(PREF_WORKITEM_TRACKING_TOOL_VIEW_DIALOG_WIDTH_KEY, String.valueOf(workItemTrackingToolViewDialog.getWidth()));
+        propertiesService.setProperty(PREF_WORKITEM_TRACKING_TOOL_VIEW_DIALOG_HEIGHT_KEY, String.valueOf(workItemTrackingToolViewDialog.getHeight()));
+        propertiesService.setProperty(PREF_WORKITEM_TRACKING_TOOL_VIEW_DIALOG_XPOS_KEY, String.valueOf(workItemTrackingToolViewDialog.getX()));
+        propertiesService.setProperty(PREF_WORKITEM_TRACKING_TOOL_VIEW_DIALOG_YPOS_KEY, String.valueOf(workItemTrackingToolViewDialog.getY()));
     }
 
     private double getDoubleProperty(String key, String defaultValue) {

@@ -23,7 +23,8 @@ public class EditWorkItemCommand implements ICommand {
 
     private final MainToolBarViewController mainToolBarViewController;
     private final MainMenuBarViewController mainMenuBarViewController;
-    private final WorkItemViewController workItemViewController;    
+    private final WorkItemViewController workItemViewController;
+    private final MainInfoViewController mainInfoViewController;
     private final EventManager events;
     private TableView<WorkItem> trackingItemTableView;
     private final WorkItem originalWorkItem;
@@ -42,6 +43,7 @@ public class EditWorkItemCommand implements ICommand {
         this.mainToolBarViewController = (MainToolBarViewController) controllerRepository.get(MainToolBarViewController.class.getName());
         this.mainMenuBarViewController = (MainMenuBarViewController) controllerRepository.get(MainMenuBarViewController.class.getName());
         this.workItemViewController = (WorkItemViewController) controllerRepository.get(WorkItemViewController.class.getName());
+        this.mainInfoViewController = (MainInfoViewController) controllerRepository.get(MainInfoViewController.class.getName());    
         
         this.events = events;
         this.trackingItemTableView = trackingItemTableView;
@@ -60,6 +62,7 @@ public class EditWorkItemCommand implements ICommand {
                 return false;
             } else {
                 mainToolBarViewController.toggleUndoRedoButtons();
+                mainInfoViewController.toggleUndoRedoButtons();
                 mainMenuBarViewController.toggleUndoRedoMenuItems();
                 workItemViewController.refreshWorkItemData();
                 workItemViewController.selectTrackingItemAndRefreshDetails();
