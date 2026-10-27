@@ -145,6 +145,7 @@ public class MainInfoViewController implements Initializable, IViewController {
 
         undoListView.setItems(undoService.getUndoStackComments());
         redoListView.setItems(undoService.getRedoStackComments());
+        toggleUndoRedoButtons();
     }
 
     private Level getRootLoggerLevel() {
@@ -285,6 +286,7 @@ public class MainInfoViewController implements Initializable, IViewController {
         undoService.execute(cmd);
         toggleUndoRedoButtons();
     }
+    
     @FXML
     void handleResetFilter(ActionEvent event) {
         ResetFilterCommand cmd = new ResetFilterCommand(controllerRepository, log4jAdapter);
