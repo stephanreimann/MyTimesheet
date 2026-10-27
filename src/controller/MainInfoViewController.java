@@ -308,7 +308,6 @@ public class MainInfoViewController implements Initializable, IViewController {
     
     @Override
     public void updateGuiItems() {
-        toggleUndoRedoButtons();
         generalInfoTab.setText(rb.getString(infoResourceKey));
         clearLogListButton.setText(rb.getString(clearLogResourceKey));
         filterLable.setText(rb.getString(filterResourceKey));
@@ -320,6 +319,7 @@ public class MainInfoViewController implements Initializable, IViewController {
         undoTooltip.setText(rb.getString(undoResourceKey));
         redoButton.setText(rb.getString(redoResourceKey));
         redoTooltip.setText(rb.getString(redoResourceKey));        
+        toggleUndoRedoButtons();
     }
 
     @Override
