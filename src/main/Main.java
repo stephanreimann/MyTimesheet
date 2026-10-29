@@ -319,6 +319,7 @@ public class Main extends Application {
 
         javafx.application.Platform.runLater(() -> {
             workRecordViewController.getEventManager().subscribeEventToListener(selectedWorkRecordChangedEvent, workRecordDetailsViewController);
+            workRecordViewController.getEventManager().subscribeEventToListener(selectedWorkRecordChangedEvent, userInfoViewController);
             workRecordViewController.getEventManager().subscribeEventToListener(startDateChangedEvent, workRecordDetailsViewController);
             workRecordViewController.getEventManager().subscribeEventToListener(endDateChangedEvent, workRecordDetailsViewController);
             workRecordViewController.getEventManager().subscribeEventToListener(userChangedEvent, workRecordDetailsViewController);

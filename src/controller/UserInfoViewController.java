@@ -103,6 +103,8 @@ public class UserInfoViewController implements Initializable, IViewController, I
     private final String editWorkItemEvent = "EditWorkItem";
     private final String deleteWorkItemEvent = "DeleteWorkItem";
     
+    private final String selectedWorkRecordChangedEvent = "SelectedWorkRecordChanged";
+    
     private final String defaultOvertimeThreshold = "PT00H";
     private final String thresholdExceededResourceKey = "ThresholdExceeded";
     
@@ -307,6 +309,8 @@ public class UserInfoViewController implements Initializable, IViewController, I
         this.eventManager.registerEventType(newWorkItemEvent);
         this.eventManager.registerEventType(editWorkItemEvent);
         this.eventManager.registerEventType(deleteWorkItemEvent);
+        
+        this.eventManager.registerEventType(selectedWorkRecordChangedEvent);
     }
 
     @Override
@@ -319,6 +323,7 @@ public class UserInfoViewController implements Initializable, IViewController, I
         User selectedUser = workRecordViewController.getSelectedUser();
         if(selectedUser != null) {
             refreshUserGeneralInfos(selectedUser);
+            
             try {
                 refreshUserWorktimeInfos(selectedUser);
                 refreshUserVacationInfos(selectedUser);
@@ -464,7 +469,7 @@ public class UserInfoViewController implements Initializable, IViewController, I
     }
     
     @Override
-    public void update(String eventType, Object source) {
+    public void update(String eventType, Object source){
         User user = workRecordViewController.getSelectedUser();
         switch (eventType) {
             case userChangedEvent -> {
@@ -489,6 +494,24 @@ public class UserInfoViewController implements Initializable, IViewController, I
             }
             case newWorkItemEvent, editWorkItemEvent, deleteWorkItemEvent -> {
                 refreshTrackingItemInfos(user,  sprintChoiceBox.getSelectionModel().getSelectedItem());
+            }
+            case selectedWorkRecordChangedEvent -> {
+                try {        
+                    Workrecord workrecord = (Workrecord)source;
+                    if(workrecord != null) {
+                        LocalDate date = workrecord.getDate();
+                        Sprint sprint = sprintDao.selectSprintForDate(date);
+                        sprintChoiceBox.getSelectionModel().select(sprint);
+                        String[] value = getFormatedSprintStartAndEndDate(sprint);
+                        sprintDurationLabel.setText(value[0] + " -> " + value[1]);
+                        trackingItemShortcutTableColumn.setCellValueFactory(cellValue(0));
+                        trackingItemNameTableColumn.setCellValueFactory(cellValue(1));
+                        trackingItemTimeTableColumn.setCellValueFactory(cellValue(2));
+                        refreshTrackingItemInfos(user, sprint);
+                    }
+                } catch (SQLException ex) {
+                    log.fatal("TrackingItem infos could not be refreshed");
+                }
             }
         }
         refreshUserInfos(user);
