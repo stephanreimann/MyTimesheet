@@ -124,24 +124,24 @@ public class WorkItemSearchViewController implements Initializable, IViewControl
      * @return 
      */
     public RadioButton setupManualExclusiveGroup(RadioButton rb1, RadioButton rb2, RadioButton rb3) {
-        RadioButton[] buttons = {rb1, rb2, rb3};
+        RadioButton[] radioButtons = {rb1, rb2, rb3};
         // Optional: set default active one
         rb1.setSelected(true);
         activeRadioButton = rb1;
-        for (RadioButton rb : buttons) {
-            rb.setOnAction((ActionEvent event) -> {
+        for (RadioButton radioButton : radioButtons) {
+            radioButton.setOnAction((ActionEvent event) -> {
                 // If the user clicks the already selected one, keep it selected
-                if (!rb.isSelected()) {
-                    rb.setSelected(true);
+                if (!radioButton.isSelected()) {
+                    radioButton.setSelected(true);
                     return;
                 }
                 // Unselect all other buttons and update the active one
-                for (RadioButton other : buttons) {
-                    if (other != rb) {
+                for (RadioButton other : radioButtons) {
+                    if (other != radioButton) {
                         other.setSelected(false);
                     }
                 }
-                activeRadioButton = rb;
+                activeRadioButton = radioButton;
             });
         }
         return activeRadioButton;
