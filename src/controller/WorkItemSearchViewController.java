@@ -26,6 +26,9 @@ import service.UndoService;
  */
 public class WorkItemSearchViewController implements Initializable, IViewController {
 
+    private static final String PREF_WORKITEM_SEARCH_TOOL_VIEW_DIALOG_SELECTED_RADIOBUTTON_KEY = "WorkItemSearchToolViewDialogSelectedRadioButton";
+    private static final String PREF_WORKITEM_SEARCH_TOOL_VIEW_DIALOG_SELECTED_RADIOBUTTON_DEFAULT = "WorkrecordRadioButton";
+    
     private final String searchForLabelTextResourceKey = "SearchForLabelText";
     private final String searchForTextFieldResourceKey = "SearchForTextFieldText";
     private final String searchButtonTextResourceKey = "SearchButtonText";
@@ -56,7 +59,7 @@ public class WorkItemSearchViewController implements Initializable, IViewControl
     @SuppressWarnings("unused") 
     private final PropertiesService propertiesService;
     private ResourceBundle rb;
-    private RadioButton activeRadioButton;
+    private RadioButton selectedRadioButton;
     
     public WorkItemSearchViewController(ControllerRepository controllerRepository, LanguageService languageService, 
                                         Connection connection, UndoService undoService, PropertiesService propertiesService) {
@@ -115,19 +118,29 @@ public class WorkItemSearchViewController implements Initializable, IViewControl
         }
     }
     
-    /**
-     * Wires up 3 radio buttons so only one is active at a time 
-     * and keeps track of the active one.
-     * @param rb1
-     * @param rb2
-     * @param rb3
-     * @return 
-     */
-    public RadioButton setupManualExclusiveGroup(RadioButton rb1, RadioButton rb2, RadioButton rb3) {
+    public void setupManualExclusiveGroup(RadioButton rb1, RadioButton rb2, RadioButton rb3) {
         RadioButton[] radioButtons = {rb1, rb2, rb3};
-        // Optional: set default active one
-        rb1.setSelected(true);
-        activeRadioButton = rb1;
+        
+        String selectedRadionButton = propertiesService.getProperty(PREF_WORKITEM_SEARCH_TOOL_VIEW_DIALOG_SELECTED_RADIOBUTTON_KEY, PREF_WORKITEM_SEARCH_TOOL_VIEW_DIALOG_SELECTED_RADIOBUTTON_DEFAULT);
+        switch(selectedRadionButton) {
+            case "RadioButton[id=workrecordRadioButton, styleClass=radio-button]'Workrecord'" -> {
+                workrecordRadioButton.setSelected(true);
+                selectedRadioButton = workrecordRadioButton;
+            }
+            case "RadioButton[id=sprintRadioButton, styleClass=radio-button]'Sprint'" -> {
+                sprintRadioButton.setSelected(true);
+                selectedRadioButton = sprintRadioButton;
+            }
+            case "RadioButton[id=overallRadioButton, styleClass=radio-button]'Overall'" -> {
+                overallRadioButton.setSelected(true);
+                selectedRadioButton = overallRadioButton;
+            }
+            default -> {
+                workrecordRadioButton.setSelected(true);
+                selectedRadioButton = workrecordRadioButton;
+            }
+
+        }
         for (RadioButton radioButton : radioButtons) {
             radioButton.setOnAction((ActionEvent event) -> {
                 // If the user clicks the already selected one, keep it selected
@@ -141,10 +154,13 @@ public class WorkItemSearchViewController implements Initializable, IViewControl
                         other.setSelected(false);
                     }
                 }
-                activeRadioButton = radioButton;
+                selectedRadioButton = radioButton;
             });
         }
-        return activeRadioButton;
     }
     
+    public RadioButton getSelectedRadioButton() {
+        return selectedRadioButton;
+    }
+
 }
