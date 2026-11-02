@@ -41,6 +41,15 @@ public class MainToolBarViewController implements Initializable, IViewController
     private static final String PREF_WORKITEM_TRACKING_TOOL_VIEW_DIALOG_XPOS_DEFAULT = "0.0";
     private static final String PREF_WORKITEM_TRACKING_TOOL_VIEW_DIALOG_YPOS_KEY = "WorkItemTrackingToolViewDialogYPos";
     private static final String PREF_WORKITEM_TRACKING_TOOL_VIEW_DIALOG_YPOS_DEFAULT = "0.0";
+
+    private static final String PREF_WORKITEM_SEARCH_TOOL_VIEW_DIALOG_WIDTH_KEY = "WorkItemSearchToolViewDialogWidth";
+    private static final String PREF_WORKITEM_SEARCH_TOOL_VIEW_DIALOG_WIDTH_DEFAULT = "512";
+    private static final String PREF_WORKITEM_SEARCH_TOOL_VIEW_DIALOG_HEIGHT_KEY = "WorkItemSearchToolViewDialogHeight";
+    private static final String PREF_WORKITEM_SEARCH_TOOL_VIEW_DIALOG_HEIGHT_DEFAULT = "850";
+    private static final String PREF_WORKITEM_SEARCH_TOOL_VIEW_DIALOG_XPOS_KEY = "WorkItemSearchToolViewDialogXPos";
+    private static final String PREF_WORKITEM_SEARCH_TOOL_VIEW_DIALOG_XPOS_DEFAULT = "0.0";
+    private static final String PREF_WORKITEM_SEARCH_TOOL_VIEW_DIALOG_YPOS_KEY = "WorkItemSearchToolViewDialogYPos";
+    private static final String PREF_WORKITEM_SEARCH_TOOL_VIEW_DIALOG_YPOS_DEFAULT = "0.0";
     
     private static final String LANG_SELECTOR_KEY = "languageSelectorButton";
     
@@ -241,12 +250,14 @@ public class MainToolBarViewController implements Initializable, IViewController
             primaryStage, WORK_ITEM_SEARCH_TITLE_KEY, WORK_ITEM_SEARCH_ICON, WORK_ITEM_SEARCH_RESOURCE, rb, workItemSearchViewController);
         workItemSearchToolViewDialog = dialogFactory.create(Modality.NONE, StageStyle.DECORATED, true, true);
         
+        applyWorkItemSearchToolViewDialogDimensions();
+
         if (!workItemSearchToolViewDialog.isShowing()) {
             workItemSearchButton.setDisable(true);
             workItemSearchToolViewDialog.showAndWait();        
         }
 
-        
+        saveWorkItemSearchToolViewDimensions();
         
         if (controllerRepository.contains(WorkItemSearchViewController.class.getName())) {
             controllerRepository.remove(WorkItemSearchViewController.class.getName());
@@ -265,6 +276,20 @@ public class MainToolBarViewController implements Initializable, IViewController
         propertiesService.setProperty(PREF_WORKITEM_TRACKING_TOOL_VIEW_DIALOG_HEIGHT_KEY, String.valueOf(workItemTrackingToolViewDialog.getHeight()));
         propertiesService.setProperty(PREF_WORKITEM_TRACKING_TOOL_VIEW_DIALOG_XPOS_KEY, String.valueOf(workItemTrackingToolViewDialog.getX()));
         propertiesService.setProperty(PREF_WORKITEM_TRACKING_TOOL_VIEW_DIALOG_YPOS_KEY, String.valueOf(workItemTrackingToolViewDialog.getY()));
+    }
+
+    private void applyWorkItemSearchToolViewDialogDimensions() {
+        workItemSearchToolViewDialog.setWidth(getDoubleProperty(PREF_WORKITEM_SEARCH_TOOL_VIEW_DIALOG_WIDTH_KEY, PREF_WORKITEM_SEARCH_TOOL_VIEW_DIALOG_WIDTH_DEFAULT));
+        workItemSearchToolViewDialog.setHeight(getDoubleProperty(PREF_WORKITEM_SEARCH_TOOL_VIEW_DIALOG_HEIGHT_KEY, PREF_WORKITEM_SEARCH_TOOL_VIEW_DIALOG_HEIGHT_DEFAULT));
+        workItemSearchToolViewDialog.setX(getDoubleProperty(PREF_WORKITEM_SEARCH_TOOL_VIEW_DIALOG_XPOS_KEY, PREF_WORKITEM_SEARCH_TOOL_VIEW_DIALOG_XPOS_DEFAULT));
+        workItemSearchToolViewDialog.setY(getDoubleProperty(PREF_WORKITEM_SEARCH_TOOL_VIEW_DIALOG_YPOS_KEY, PREF_WORKITEM_SEARCH_TOOL_VIEW_DIALOG_YPOS_DEFAULT));
+    }
+
+    private void saveWorkItemSearchToolViewDimensions() {
+        propertiesService.setProperty(PREF_WORKITEM_SEARCH_TOOL_VIEW_DIALOG_WIDTH_KEY, String.valueOf(workItemSearchToolViewDialog.getWidth()));
+        propertiesService.setProperty(PREF_WORKITEM_SEARCH_TOOL_VIEW_DIALOG_HEIGHT_KEY, String.valueOf(workItemSearchToolViewDialog.getHeight()));
+        propertiesService.setProperty(PREF_WORKITEM_SEARCH_TOOL_VIEW_DIALOG_XPOS_KEY, String.valueOf(workItemSearchToolViewDialog.getX()));
+        propertiesService.setProperty(PREF_WORKITEM_SEARCH_TOOL_VIEW_DIALOG_YPOS_KEY, String.valueOf(workItemSearchToolViewDialog.getY()));
     }
 
     private double getDoubleProperty(String key, String defaultValue) {
