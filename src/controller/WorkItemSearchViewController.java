@@ -23,14 +23,18 @@ import service.UndoService;
  */
 public class WorkItemSearchViewController implements Initializable, IViewController {
 
+    @SuppressWarnings("unused") 
     private final Logger log = LogManager.getLogger(WorkItemSearchViewController.class);
 
+    @SuppressWarnings("unused") 
     private Stage primaryStage;
     private final ControllerRepository controllerRepository;
     private final LanguageService languageService;
     @SuppressWarnings("unused") 
     private final Connection connection;
+    @SuppressWarnings("unused") 
     private final UndoService undoService;
+    @SuppressWarnings("unused") 
     private final PropertiesService propertiesService;
     private ResourceBundle rb;
     
@@ -46,6 +50,8 @@ public class WorkItemSearchViewController implements Initializable, IViewControl
     
     /**
      * Initializes the controller class.
+     * @param location
+     * @param rb
      */
     @Override
     public void initialize(URL location, ResourceBundle rb) {
