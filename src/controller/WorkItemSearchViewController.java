@@ -146,13 +146,5 @@ public class WorkItemSearchViewController implements Initializable, IViewControl
         }
         return activeRadioButton;
     }
-
-    /**
-     * Getter to retrieve the currently active RadioButton at any time.
-     * @return 
-     */
-    public RadioButton getActiveRadioButton() {
-        return activeRadioButton;
-    }
     
 }
