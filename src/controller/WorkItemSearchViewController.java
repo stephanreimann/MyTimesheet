@@ -8,6 +8,7 @@ import java.net.URL;
 import java.sql.Connection;
 import java.util.Objects;
 import java.util.ResourceBundle;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -55,6 +56,7 @@ public class WorkItemSearchViewController implements Initializable, IViewControl
     @SuppressWarnings("unused") 
     private final PropertiesService propertiesService;
     private ResourceBundle rb;
+    private RadioButton activeRadioButton;
     
     public WorkItemSearchViewController(ControllerRepository controllerRepository, LanguageService languageService, 
                                         Connection connection, UndoService undoService, PropertiesService propertiesService) {
@@ -74,7 +76,8 @@ public class WorkItemSearchViewController implements Initializable, IViewControl
     @Override
     public void initialize(URL location, ResourceBundle rb) {
         this.rb = rb;
-
+        setupManualExclusiveGroup(workrecordRadioButton, sprintRadioButton, overallRadioButton);
+        
         languageService.updateGuiItems();          
     }    
 
@@ -110,6 +113,46 @@ public class WorkItemSearchViewController implements Initializable, IViewControl
         if (mainController != null) {
             mainController.getWorkItemSearchButton().setDisable(false);
         }
+    }
+    
+    /**
+     * Wires up 3 radio buttons so only one is active at a time 
+     * and keeps track of the active one.
+     * @param rb1
+     * @param rb2
+     * @param rb3
+     * @return 
+     */
+    public RadioButton setupManualExclusiveGroup(RadioButton rb1, RadioButton rb2, RadioButton rb3) {
+        RadioButton[] buttons = {rb1, rb2, rb3};
+        // Optional: set default active one
+        rb1.setSelected(true);
+        activeRadioButton = rb1;
+        for (RadioButton rb : buttons) {
+            rb.setOnAction((ActionEvent event) -> {
+                // If the user clicks the already selected one, keep it selected
+                if (!rb.isSelected()) {
+                    rb.setSelected(true);
+                    return;
+                }
+                // Unselect all other buttons and update the active one
+                for (RadioButton other : buttons) {
+                    if (other != rb) {
+                        other.setSelected(false);
+                    }
+                }
+                activeRadioButton = rb;
+            });
+        }
+        return activeRadioButton;
+    }
+
+    /**
+     * Getter to retrieve the currently active RadioButton at any time.
+     * @return 
+     */
+    public RadioButton getActiveRadioButton() {
+        return activeRadioButton;
     }
     
 }
