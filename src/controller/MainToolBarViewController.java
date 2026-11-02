@@ -66,6 +66,7 @@ public class MainToolBarViewController implements Initializable, IViewController
 
     private Stage primaryStage;
     private Stage workItemTrackingToolViewDialog;
+    private Stage workItemSearchToolViewDialog;
     private final LanguageService languageService;
     private final Connection connection;
     private final UndoService undoService;
@@ -136,6 +137,9 @@ public class MainToolBarViewController implements Initializable, IViewController
         
         if (workItemTrackingToolViewDialog != null) {
             workItemTrackingToolViewDialog.setTitle(rb.getString(WORK_ITEM_TITLE_KEY));
+        }
+        if (workItemSearchToolViewDialog != null) {
+            workItemSearchToolViewDialog.setTitle(rb.getString(WORK_ITEM_SEARCH_TITLE_KEY));
         }
     }
 
@@ -213,14 +217,14 @@ public class MainToolBarViewController implements Initializable, IViewController
             primaryStage, WORK_ITEM_TITLE_KEY, WORK_ITEM_ICON, WORK_ITEM_RESOURCE, rb, workItemViewController);
         workItemTrackingToolViewDialog = dialogFactory.create(Modality.NONE, StageStyle.DECORATED, true, true);
         
-        applyStageDimensions();
+        applyWorkItemTrackingToolViewDialogDimensions();
         
         if (!workItemTrackingToolViewDialog.isShowing()) {
             workItemButton.setDisable(true);
             workItemTrackingToolViewDialog.showAndWait();        
         }
 
-        saveStageDimensions();
+        saveWorkItemTrackingToolViewDimensions();
         
         if (controllerRepository.contains(WorkItemViewController.class.getName())) {
             controllerRepository.remove(WorkItemViewController.class.getName());
@@ -229,24 +233,34 @@ public class MainToolBarViewController implements Initializable, IViewController
 
     @FXML
     @SuppressWarnings("unused")
-    private void workItemSearchAction(ActionEvent event) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.initOwner(primaryStage);
-        alert.initModality(Modality.WINDOW_MODAL); 
-        alert.setTitle(rb.getString("UnderConstructionTitle"));
-        alert.setHeaderText("Full-text search");
-        alert.setContentText(rb.getString("UnderConstructionDetails"));
-        alert.showAndWait();                
+    private void workItemSearchAction(ActionEvent event) throws IOException {
+        WorkItemSearchViewController workItemSearchViewController = new WorkItemSearchViewController(controllerRepository, languageService, connection, undoService, propertiesService);
+        controllerRepository.put(WorkItemSearchViewController.class.getName(), workItemSearchViewController);
+        
+        DialogFactory dialogFactory = new DialogFactory(
+            primaryStage, WORK_ITEM_SEARCH_TITLE_KEY, WORK_ITEM_SEARCH_ICON, WORK_ITEM_SEARCH_RESOURCE, rb, workItemSearchViewController);
+        workItemSearchToolViewDialog = dialogFactory.create(Modality.NONE, StageStyle.DECORATED, true, true);
+        
+        if (!workItemSearchToolViewDialog.isShowing()) {
+            workItemSearchButton.setDisable(true);
+            workItemSearchToolViewDialog.showAndWait();        
+        }
+
+        
+        
+        if (controllerRepository.contains(WorkItemSearchViewController.class.getName())) {
+            controllerRepository.remove(WorkItemSearchViewController.class.getName());
+        }
     }
     
-    private void applyStageDimensions() {
+    private void applyWorkItemTrackingToolViewDialogDimensions() {
         workItemTrackingToolViewDialog.setWidth(getDoubleProperty(PREF_WORKITEM_TRACKING_TOOL_VIEW_DIALOG_WIDTH_KEY, PREF_WORKITEM_TRACKING_TOOL_VIEW_DIALOG_WIDTH_DEFAULT));
         workItemTrackingToolViewDialog.setHeight(getDoubleProperty(PREF_WORKITEM_TRACKING_TOOL_VIEW_DIALOG_HEIGHT_KEY, PREF_WORKITEM_TRACKING_TOOL_VIEW_DIALOG_HEIGHT_DEFAULT));
         workItemTrackingToolViewDialog.setX(getDoubleProperty(PREF_WORKITEM_TRACKING_TOOL_VIEW_DIALOG_XPOS_KEY, PREF_WORKITEM_TRACKING_TOOL_VIEW_DIALOG_XPOS_DEFAULT));
         workItemTrackingToolViewDialog.setY(getDoubleProperty(PREF_WORKITEM_TRACKING_TOOL_VIEW_DIALOG_YPOS_KEY, PREF_WORKITEM_TRACKING_TOOL_VIEW_DIALOG_YPOS_DEFAULT));
     }
 
-    private void saveStageDimensions() {
+    private void saveWorkItemTrackingToolViewDimensions() {
         propertiesService.setProperty(PREF_WORKITEM_TRACKING_TOOL_VIEW_DIALOG_WIDTH_KEY, String.valueOf(workItemTrackingToolViewDialog.getWidth()));
         propertiesService.setProperty(PREF_WORKITEM_TRACKING_TOOL_VIEW_DIALOG_HEIGHT_KEY, String.valueOf(workItemTrackingToolViewDialog.getHeight()));
         propertiesService.setProperty(PREF_WORKITEM_TRACKING_TOOL_VIEW_DIALOG_XPOS_KEY, String.valueOf(workItemTrackingToolViewDialog.getX()));
