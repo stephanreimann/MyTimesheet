@@ -6,7 +6,6 @@
 package controller;
 
 import java.net.URL;
-import java.sql.Connection;
 import java.util.ResourceBundle;
 import javafx.fxml.*;
 import javafx.scene.control.SplitPane;
@@ -24,7 +23,6 @@ public class MainViewController implements Initializable, IViewController {
     
     private Stage primaryStage;
     private final LanguageService languageService;
-    private final Connection connection;
     private ResourceBundle rb;
 
     @FXML
@@ -40,12 +38,10 @@ public class MainViewController implements Initializable, IViewController {
     @FXML
     private SplitPane centerBorderPaneSplitPane;
 
-    public MainViewController(LanguageService languageService, Connection connection) {
+    public MainViewController(LanguageService languageService) {
         if(languageService == null) throw new NullPointerException("languageService");
-        if(connection == null) throw new NullPointerException("connection");
 
         this.languageService = languageService;
-        this.connection = connection;
     }
 
     @Override

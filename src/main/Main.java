@@ -415,7 +415,7 @@ public class Main extends Application {
     }
     
     private void initMainView(ResourceBundle rb) throws IOException {
-        mainViewController = new MainViewController(languageService, connection);
+        mainViewController = new MainViewController(languageService);
         mainViewController.setResourceBundle(rb);
         mainViewController.setPrimaryStage(primaryStage);
         controllerRepository.put(MainViewController.class.getName(), mainViewController);
