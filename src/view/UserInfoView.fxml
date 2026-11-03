@@ -29,7 +29,7 @@
           <RowConstraints vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Label fx:id="userInfoHeaderLabel" text="%UserInfoHeader" textAlignment="CENTER" GridPane.columnSpan="2147483647">
+            <Label fx:id="userInfoHeaderLabel" text="%UserInfoHeader" textAlignment="CENTER" GridPane.columnSpan="2147483647" GridPane.hgrow="ALWAYS">
                <GridPane.margin>
                   <Insets bottom="10.0" left="5.0" right="5.0" top="10.0" />
                </GridPane.margin>
@@ -37,7 +37,7 @@
                   <Font size="14.0" />
                </font>
             </Label>
-            <Accordion fx:id="userAccordion" GridPane.columnSpan="2147483647" GridPane.rowIndex="1">
+            <Accordion fx:id="userAccordion" GridPane.columnSpan="2147483647" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1">
               <panes>
                 <TitledPane id="UserGeneralInfoPane" fx:id="userGeneralInfoTitledPane" text="%UserGeneralInfo">
                   <content>
@@ -226,8 +226,8 @@
                             <RowConstraints prefHeight="30.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
-                              <ChoiceBox fx:id="worklocationsChoiceBox" GridPane.columnSpan="2147483647" GridPane.hgrow="ALWAYS" />
-                              <Label fx:id="workdaysLabel" text="%Workdays" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" />
+                              <ChoiceBox fx:id="worklocationsChoiceBox" GridPane.columnSpan="2147483647" />
+                              <Label fx:id="workdaysLabel" text="%Workdays" GridPane.rowIndex="1" />
                               <Label fx:id="workdaysLabelValue" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                            </children>
                         </GridPane>
@@ -235,17 +235,24 @@
                   </TitledPane>
                 <TitledPane id="UserWorkitemsInfoPane" fx:id="userWorkitemsInfoTitledPane" text="%UserWorkitemsInfo">
                      <content>
-                        <VBox>
+                        <GridPane>
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
                            <children>
                               <HBox>
-                                 <VBox.margin>
-                                    <Insets bottom="5.0" />
-                                 </VBox.margin>
                                  <children>
-                                    <Label fx:id="sprintChoiceBoxLabel" alignment="CENTER" contentDisplay="CENTER" prefHeight="24.0" prefWidth="39.0" text="%Sprint" textAlignment="CENTER">
+                                    <Label fx:id="sprintChoiceBoxLabel" alignment="CENTER" contentDisplay="CENTER" prefHeight="24.0" text="%Sprint" textAlignment="CENTER">
                                        <HBox.margin>
-                                          <Insets right="5.0" />
+                                          <Insets />
                                        </HBox.margin>
+                                       <padding>
+                                          <Insets left="5.0" right="5.0" />
+                                       </padding>
                                     </Label>
                                     <ChoiceBox fx:id="sprintChoiceBox" />
                                     <Label fx:id="sprintDurationLabel" alignment="CENTER" contentDisplay="CENTER" prefHeight="24.0" textAlignment="CENTER">
@@ -258,15 +265,18 @@
                                     </Label>
                                  </children>
                               </HBox>
-                              <TableView fx:id="trackingItemTableView" prefHeight="200.0" prefWidth="200.0">
+                              <TableView fx:id="trackingItemTableView" prefHeight="200.0" prefWidth="200.0" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1">
                                 <columns>
-                                  <TableColumn fx:id="trackingItemShortcutTableColumn" maxWidth="30.0" prefWidth="30.0" text="%TrackingItemShortcut" />
+                                  <TableColumn fx:id="trackingItemShortcutTableColumn" maxWidth="30.0" prefWidth="25.0" text="%TrackingItemShortcut" />
                                   <TableColumn fx:id="trackingItemNameTableColumn" maxWidth="300.0" minWidth="190.0" prefWidth="190.0" text="%TrackingItemName" />
-                                    <TableColumn fx:id="trackingItemTimeTableColumn" prefWidth="60.0" text="%TrackingItemTime" />
+                                    <TableColumn fx:id="trackingItemTimeTableColumn" prefWidth="55.0" text="%TrackingItemTime" />
                                 </columns>
+                                 <GridPane.margin>
+                                    <Insets top="5.0" />
+                                 </GridPane.margin>
                               </TableView>
                            </children>
-                        </VBox>
+                        </GridPane>
                      </content>
                   </TitledPane>
               </panes>
