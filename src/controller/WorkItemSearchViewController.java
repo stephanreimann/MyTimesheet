@@ -6,18 +6,25 @@ package controller;
 
 import java.net.URL;
 import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import model.WorkItem;
+import model.Workrecord;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import service.LanguageService;
 import service.PropertiesService;
 import service.UndoService;
+import sqlite.WorkItemDAO;
+import sqlite.WorkrecordDAO;
 
 /**
  * FXML Controller class
@@ -44,7 +51,8 @@ public class WorkItemSearchViewController implements Initializable, IViewControl
     @FXML private RadioButton workrecordRadioButton;
     @FXML private RadioButton sprintRadioButton;
     @FXML private RadioButton overallRadioButton;
-            
+    @FXML private TextArea searchResultTextArea;
+    
     @SuppressWarnings("unused") 
     private final Logger log = LogManager.getLogger(WorkItemSearchViewController.class);
 
@@ -60,6 +68,8 @@ public class WorkItemSearchViewController implements Initializable, IViewControl
     private final PropertiesService propertiesService;
     private ResourceBundle rb;
     private RadioButton selectedRadioButton;
+    private final WorkItemDAO workitemDAO;
+    private final WorkrecordDAO workrecordDAO;
     
     public WorkItemSearchViewController(ControllerRepository controllerRepository, LanguageService languageService, 
                                         Connection connection, UndoService undoService, PropertiesService propertiesService) {
@@ -69,6 +79,8 @@ public class WorkItemSearchViewController implements Initializable, IViewControl
         this.undoService = Objects.requireNonNull(undoService, "undoService");
         this.propertiesService = Objects.requireNonNull(propertiesService, "propertiesService");
         
+        this.workitemDAO = new WorkItemDAO(connection);
+        this.workrecordDAO = new WorkrecordDAO(connection);
     }
     
     /**
@@ -115,6 +127,28 @@ public class WorkItemSearchViewController implements Initializable, IViewControl
         MainToolBarViewController mainController = (MainToolBarViewController) controllerRepository.get(MainToolBarViewController.class.getName());
         if (mainController != null) {
             mainController.getWorkItemSearchButton().setDisable(false);
+        }
+    }
+    
+    @FXML private void searchAction(ActionEvent event) throws SQLException {
+        searchResultTextArea.clear();
+        String searchText = searchForTextField.getText();
+        List<WorkItem> workItemsFound = workitemDAO.searchForTerm(searchText);
+        StringBuilder formatedText = new StringBuilder();
+        if(!workItemsFound.isEmpty()) {
+            for(WorkItem workItem : workItemsFound) {
+                Optional<Workrecord> workrecord = workrecordDAO.selectWorkrecordFromId(workItem.getWorkrecordId());
+                if(!workrecord.isEmpty()) {
+                    formatedText.append("Date: ").append(workrecord.get().getDate()).append(System.lineSeparator());
+                    formatedText.append("Sprint: ").append(workItem.getSprintId()).append(System.lineSeparator());
+                    formatedText.append("Workitem: ").append(workItem.getName()).append(System.lineSeparator());
+                    formatedText.append("Shortcut: ").append(workItem.getShortcut()).append(System.lineSeparator());
+                    formatedText.append("Starttime: ").append(workItem.getStartTime()).append(System.lineSeparator());
+                    formatedText.append("Endtime: ").append(workItem.getEndTime()).append(System.lineSeparator());
+                    formatedText.append("Description: ").append(workItem.getDescription()).append(System.lineSeparator());
+                }
+            }
+            searchResultTextArea.setText(formatedText.toString());
         }
     }
     

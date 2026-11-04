@@ -83,8 +83,8 @@ public class WorkItemDAO {
         StringBuilder statement = new StringBuilder();
         statement.append("SELECT workitem.id, workitem.workrecordid, workitem.sprintid, workitem.trackingitemid, workitem.starttime, workitem.endtime, workitem.description, trackingitem.shortcut, trackingitem.name ");
         statement.append("FROM workitem ");
-        statement.append("JOIN trackingitem ");
-        statement.append("WHERE workitem.description LIKE '%");
+        statement.append("JOIN trackingitem ON workitem.trackingitemid = trackingitem.id ");
+        statement.append("AND workitem.description LIKE '%");
         statement.append(searchTerm);
         statement.append("%';");
 
