@@ -139,13 +139,11 @@ public class WorkItemSearchViewController implements Initializable, IViewControl
             for(WorkItem workItem : workItemsFound) {
                 Optional<Workrecord> workrecord = workrecordDAO.selectWorkrecordFromId(workItem.getWorkrecordId());
                 if(!workrecord.isEmpty()) {
-                    formatedText.append("Date: ").append(workrecord.get().getDate()).append(System.lineSeparator());
                     formatedText.append("Sprint: ").append(workItem.getSprintId()).append(System.lineSeparator());
-                    formatedText.append("Workitem: ").append(workItem.getName()).append(System.lineSeparator());
-                    formatedText.append("Shortcut: ").append(workItem.getShortcut()).append(System.lineSeparator());
-                    formatedText.append("Starttime: ").append(workItem.getStartTime()).append(System.lineSeparator());
-                    formatedText.append("Endtime: ").append(workItem.getEndTime()).append(System.lineSeparator());
-                    formatedText.append("Description: ").append(workItem.getDescription()).append(System.lineSeparator());
+                    formatedText.append("Date: ").append(workrecord.get().getDate()).append(System.lineSeparator());
+                    formatedText.append("Workitem: ").append(workItem.getName()).append(" (").append(workItem.getShortcut()).append(")").append(System.lineSeparator());
+                    formatedText.append("Start: ").append(workItem.getStartTime()).append(" End: ").append(workItem.getEndTime()).append(System.lineSeparator());
+                    formatedText.append("Description: ").append(System.lineSeparator()).append(workItem.getDescription()).append(System.lineSeparator()).append(System.lineSeparator());
                 }
             }
             searchResultTextArea.setText(formatedText.toString());
