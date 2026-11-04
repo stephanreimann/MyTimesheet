@@ -130,6 +130,7 @@ public class WorkItemSearchViewController implements Initializable, IViewControl
         }
     }
     
+    @SuppressWarnings("unused") 
     @FXML private void searchAction(ActionEvent event) throws SQLException {
         searchResultTextArea.clear();
         String searchText = searchForTextField.getText();
