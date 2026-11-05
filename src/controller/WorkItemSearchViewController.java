@@ -24,7 +24,6 @@ import org.apache.logging.log4j.Logger;
 import service.LanguageService;
 import service.PropertiesService;
 import service.UndoService;
-import sqlite.UserDAO;
 import sqlite.WorkItemDAO;
 import sqlite.WorkrecordDAO;
 
