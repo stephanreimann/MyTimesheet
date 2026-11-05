@@ -76,31 +76,6 @@ public class WorkItemDAO {
         }
         return resultList;
     }
-
-    public List<WorkItem> searchForTerm(String searchTerm) throws SQLException {
-        List<WorkItem> resultList = new ArrayList<>();
-  
-        StringBuilder statement = new StringBuilder();
-        statement.append("SELECT workitem.id, workitem.workrecordid, workitem.sprintid, workitem.trackingitemid, workitem.starttime, workitem.endtime, workitem.description, trackingitem.shortcut, trackingitem.name ");
-        statement.append("FROM workitem ");
-        statement.append("JOIN trackingitem ON workitem.trackingitemid = trackingitem.id ");
-        statement.append("AND workitem.description LIKE '%");
-        statement.append(searchTerm);
-        statement.append("%';");
-
-        try(PreparedStatement dbStatement = connection.prepareStatement(statement.toString())) {
-            Instant start = Instant.now();
-            ResultSet rs = dbStatement.executeQuery();
-            while(rs.next()) {
-                resultList.add(createWorkItemFromResultSetEntry(rs));
-            }
-            Instant finish = Instant.now();
-            long timeElapsed = Duration.between(start, finish).toMillis();
-            log.debug(String.format("WorkItemDAO.searchForTerm(%s) returns %d workItems.", searchTerm, resultList.size()));
-            log.debug("Elapsed time: " + timeElapsed + "ms");        
-        }
-        return resultList;
-    }
     
     public String calculateTrackingItemSumTime(User user, String shortcut, Sprint sprint) throws SQLException {
         Duration duration = Duration.ZERO;

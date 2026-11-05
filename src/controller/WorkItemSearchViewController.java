@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -23,6 +24,7 @@ import org.apache.logging.log4j.Logger;
 import service.LanguageService;
 import service.PropertiesService;
 import service.UndoService;
+import sqlite.UserDAO;
 import sqlite.WorkItemDAO;
 import sqlite.WorkrecordDAO;
 
@@ -54,7 +56,7 @@ public class WorkItemSearchViewController implements Initializable, IViewControl
     @FXML private TextArea searchResultTextArea;
     
     @SuppressWarnings("unused") 
-    private final Logger log = LogManager.getLogger(WorkItemSearchViewController.class);
+    private Logger log = LogManager.getLogger(WorkItemSearchViewController.class);
 
     @SuppressWarnings("unused") 
     private Stage primaryStage;
@@ -70,6 +72,7 @@ public class WorkItemSearchViewController implements Initializable, IViewControl
     private RadioButton selectedRadioButton;
     private final WorkItemDAO workitemDAO;
     private final WorkrecordDAO workrecordDAO;
+    private List<WorkItem> workItemsFound;
     
     public WorkItemSearchViewController(ControllerRepository controllerRepository, LanguageService languageService, 
                                         Connection connection, UndoService undoService, PropertiesService propertiesService) {
@@ -78,7 +81,9 @@ public class WorkItemSearchViewController implements Initializable, IViewControl
         this.connection = Objects.requireNonNull(connection, "connection");
         this.undoService = Objects.requireNonNull(undoService, "undoService");
         this.propertiesService = Objects.requireNonNull(propertiesService, "propertiesService");
-        
+
+        this.log = LogManager.getLogger(WorkItemSearchViewController.class.getName());
+
         this.workitemDAO = new WorkItemDAO(connection);
         this.workrecordDAO = new WorkrecordDAO(connection);
     }
@@ -93,6 +98,12 @@ public class WorkItemSearchViewController implements Initializable, IViewControl
         this.rb = rb;
         setupManualExclusiveGroup(workrecordRadioButton, sprintRadioButton, overallRadioButton);
         
+        try {
+            workItemsFound = workitemDAO.selectAll();
+        } catch (SQLException ex) {
+            log.warn(String.format("WorkItemDAO.selectAll() returns %d workItems.", workItemsFound.size()));
+        }
+
         languageService.updateGuiItems();          
     }    
 
@@ -134,10 +145,15 @@ public class WorkItemSearchViewController implements Initializable, IViewControl
     @FXML private void searchAction(ActionEvent event) throws SQLException {
         searchResultTextArea.clear();
         String searchText = searchForTextField.getText();
-        List<WorkItem> workItemsFound = workitemDAO.searchForTerm(searchText);
+                
+        List<WorkItem> filteredItems = workItemsFound.stream()
+            .filter(w -> w.getDescription() != null && 
+                         w.getDescription().contains(searchText))
+            .collect(Collectors.toList());                
+        
         StringBuilder formatedText = new StringBuilder();
-        if(!workItemsFound.isEmpty()) {
-            for(WorkItem workItem : workItemsFound) {
+        if(!filteredItems.isEmpty()) {
+            for(WorkItem workItem : filteredItems) {
                 Optional<Workrecord> workrecord = workrecordDAO.selectWorkrecordFromId(workItem.getWorkrecordId());
                 if(!workrecord.isEmpty()) {
                     formatedText.append("Sprint: ").append(workItem.getSprintId()).append(System.lineSeparator());
