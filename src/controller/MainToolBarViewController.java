@@ -248,6 +248,9 @@ public class MainToolBarViewController implements Initializable, IViewController
         WorkItemSearchViewController workItemSearchViewController = new WorkItemSearchViewController(controllerRepository, languageService, connection, undoService, propertiesService);
         controllerRepository.put(WorkItemSearchViewController.class.getName(), workItemSearchViewController);
         
+        WorkRecordViewController recordController = (WorkRecordViewController) controllerRepository.get(WorkRecordViewController.class.getName());
+        recordController.getEventManager().subscribeEventToListener(EVENT_SELECTED_RECORD_CHANGED, workItemSearchViewController);            
+        
         DialogFactory dialogFactory = new DialogFactory(
             primaryStage, WORK_ITEM_SEARCH_TITLE_KEY, WORK_ITEM_SEARCH_ICON, WORK_ITEM_SEARCH_RESOURCE, rb, workItemSearchViewController);
         workItemSearchToolViewDialog = dialogFactory.create(Modality.NONE, StageStyle.DECORATED, true, true);

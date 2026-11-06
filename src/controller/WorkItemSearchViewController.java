@@ -21,6 +21,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import model.WorkItem;
+import model.Workrecord;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import service.LanguageService;
@@ -28,13 +29,17 @@ import service.PropertiesService;
 import service.UndoService;
 import sqlite.WorkItemDAO;
 import sqlite.WorkrecordDAO;
+import utils.EventManager;
+import utils.IEventListener;
 
 /**
  * FXML Controller class
  *
  * @author adrest18
  */
-public class WorkItemSearchViewController implements Initializable, IViewController {
+public class WorkItemSearchViewController implements Initializable, IViewController, IEventListener {
+
+    private static final String EVENT_SELECTED_RECORD_CHANGED = "SelectedWorkRecordChanged";
 
     private static final String PREF_WORKITEM_SEARCH_TOOL_VIEW_DIALOG_SELECTED_RADIOBUTTON_KEY = "WorkItemSearchToolViewDialogSelectedRadioButton";
     private static final String PREF_WORKITEM_SEARCH_TOOL_VIEW_DIALOG_SELECTED_RADIOBUTTON_DEFAULT = "Workrecord";
@@ -74,6 +79,8 @@ public class WorkItemSearchViewController implements Initializable, IViewControl
     private final WorkItemDAO workitemDAO;
     private final WorkrecordDAO workrecordDAO;
     private List<WorkItem> workItemsFound;
+    private EventManager eventManager;
+
     
     public WorkItemSearchViewController(ControllerRepository controllerRepository, LanguageService languageService, 
                                         Connection connection, UndoService undoService, PropertiesService propertiesService) {
@@ -154,6 +161,15 @@ public class WorkItemSearchViewController implements Initializable, IViewControl
         }
     }
     
+    @Override
+    public void update(String eventType, Object source) {
+        switch (eventType) {
+            case EVENT_SELECTED_RECORD_CHANGED -> {
+                searchInDescription();
+            }
+        }
+    }
+
     @SuppressWarnings("unused") 
     @FXML private void searchAction(ActionEvent event) {
         searchInDescription();
