@@ -163,7 +163,7 @@ public class WorkItemSearchViewController implements Initializable, IViewControl
     public void update(String eventType, Object source) {
         switch (eventType) {
             case EVENT_SELECTED_RECORD_CHANGED -> {
-                searchInDescription();
+                searchResultTextArea.clear();
             }
         }
     }
