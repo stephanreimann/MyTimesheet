@@ -7,11 +7,14 @@ package controller;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -34,7 +37,7 @@ import sqlite.WorkrecordDAO;
 public class WorkItemSearchViewController implements Initializable, IViewController {
 
     private static final String PREF_WORKITEM_SEARCH_TOOL_VIEW_DIALOG_SELECTED_RADIOBUTTON_KEY = "WorkItemSearchToolViewDialogSelectedRadioButton";
-    private static final String PREF_WORKITEM_SEARCH_TOOL_VIEW_DIALOG_SELECTED_RADIOBUTTON_DEFAULT = "WorkrecordRadioButton";
+    private static final String PREF_WORKITEM_SEARCH_TOOL_VIEW_DIALOG_SELECTED_RADIOBUTTON_DEFAULT = "Workrecord";
     
     private final String searchForLabelTextResourceKey = "SearchForLabelText";
     private final String searchForTextFieldResourceKey = "SearchForTextFieldText";
@@ -102,6 +105,17 @@ public class WorkItemSearchViewController implements Initializable, IViewControl
             log.warn(String.format("WorkItemDAO.selectAll() returns %d workItems.", workItemsFound.size()));
         }
 
+        ToggleGroup group = new ToggleGroup();
+        workrecordRadioButton.setToggleGroup(group);
+        sprintRadioButton.setToggleGroup(group);
+        overallRadioButton.setToggleGroup(group);
+        
+        group.selectedToggleProperty().addListener((ObservableValue<? extends Toggle> ov, Toggle old_toggle, Toggle new_toggle) -> {
+            if (group.getSelectedToggle() != null) {
+                searchResultTextArea.clear();
+            }
+        });
+        
         languageService.updateGuiItems();          
     }    
 
@@ -114,6 +128,7 @@ public class WorkItemSearchViewController implements Initializable, IViewControl
         workrecordRadioButton.setText(rb.getString(workrecordRadioButtonTextResourceKey));
         sprintRadioButton.setText(rb.getString(sprintRadioButtonTextResourceKey));
         overallRadioButton.setText(rb.getString(overallRadioButtonTextResourceKey));
+        searchInDescription();
     }
 
     @Override
@@ -140,13 +155,62 @@ public class WorkItemSearchViewController implements Initializable, IViewControl
     }
     
     @SuppressWarnings("unused") 
-    @FXML private void searchAction(ActionEvent event) throws SQLException {
+    @FXML private void searchAction(ActionEvent event) {
+        searchInDescription();
+    }
+
+    private void setupManualExclusiveGroup(RadioButton rb1, RadioButton rb2, RadioButton rb3) {
+        RadioButton[] radioButtons = {rb1, rb2, rb3};
+        
+        String selectedRadionButton = propertiesService.getProperty(PREF_WORKITEM_SEARCH_TOOL_VIEW_DIALOG_SELECTED_RADIOBUTTON_KEY, PREF_WORKITEM_SEARCH_TOOL_VIEW_DIALOG_SELECTED_RADIOBUTTON_DEFAULT);
+        switch(selectedRadionButton) {
+            case "Workrecord" -> {
+                workrecordRadioButton.setSelected(true);
+                selectedRadioButton = workrecordRadioButton;
+            }
+            case "Sprint" -> {
+                sprintRadioButton.setSelected(true);
+                selectedRadioButton = sprintRadioButton;
+            }
+            case "Overall" -> {
+                overallRadioButton.setSelected(true);
+                selectedRadioButton = overallRadioButton;
+            }
+            default -> {
+                workrecordRadioButton.setSelected(true);
+                selectedRadioButton = workrecordRadioButton;
+            }
+
+        }
+        for (RadioButton radioButton : radioButtons) {
+            radioButton.setOnAction((ActionEvent event) -> {
+                // If the user clicks the already selected one, keep it selected
+                if (!radioButton.isSelected()) {
+                    radioButton.setSelected(true);
+                    return;
+                }
+                // Unselect all other buttons and update the active one
+                for (RadioButton other : radioButtons) {
+                    if (other != radioButton) {
+                        other.setSelected(false);
+                    }
+                }
+                selectedRadioButton = radioButton;
+            });
+        }
+    }
+    
+    private void searchInDescription() {
         searchResultTextArea.clear();
 
         String searchText = searchForTextField.getText();
         if (searchText == null) searchText = "";
         final String queryText = searchText;
-
+        
+        if(queryText.isEmpty()) {
+            return;
+        }
+        
         List<WorkItem> filteredItems = switch (selectedRadioButton != null && selectedRadioButton.getId() != null ? selectedRadioButton.getId() : "") {
             case "Workrecord" -> {
                 WorkRecordDetailsViewController vc = (WorkRecordDetailsViewController) controllerRepository.get(WorkRecordDetailsViewController.class.getName());
@@ -186,57 +250,20 @@ public class WorkItemSearchViewController implements Initializable, IViewControl
         formattedText.append("Elements found: ").append(filteredItems.size()).append(System.lineSeparator());
 
         for (WorkItem workItem : filteredItems) {
-            workrecordDAO.selectWorkrecordFromId(workItem.getWorkrecordId()).ifPresent(workrecord -> {
-                formattedText.append("Sprint: ").append(workItem.getSprintId()).append(System.lineSeparator());
-                formattedText.append("Date: ").append(workrecord.getDate()).append(System.lineSeparator());
-                formattedText.append("Workitem: ").append(workItem.getName()).append(" (").append(workItem.getShortcut()).append(")").append(System.lineSeparator());
-                formattedText.append("Start: ").append(workItem.getStartTime()).append(" End: ").append(workItem.getEndTime()).append(System.lineSeparator());
-                formattedText.append("Description: ").append(System.lineSeparator()).append(workItem.getDescription()).append(System.lineSeparator()).append(System.lineSeparator());
-            });
+            try {
+                workrecordDAO.selectWorkrecordFromId(workItem.getWorkrecordId()).ifPresent(workrecord -> {
+                    formattedText.append("Sprint: ").append(workItem.getSprintId()).append(System.lineSeparator());
+                    formattedText.append("Date: ").append(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT).format(workrecord.getDate())).append(System.lineSeparator());
+                    formattedText.append("Workitem: ").append(workItem.getName()).append(" (").append(workItem.getShortcut()).append(")").append(System.lineSeparator());
+                    formattedText.append("Start: ").append(workItem.getStartTime()).append(" End: ").append(workItem.getEndTime()).append(System.lineSeparator());
+                    formattedText.append("Description: ").append(System.lineSeparator()).append(workItem.getDescription()).append(System.lineSeparator()).append(System.lineSeparator());
+                });
+            } catch (SQLException ex) {
+                log.warn("SelectWorkrecordFromId does not return a workrecord!");
+            }
         }
 
         searchResultTextArea.setText(formattedText.toString());
-    }
-
-    public void setupManualExclusiveGroup(RadioButton rb1, RadioButton rb2, RadioButton rb3) {
-        RadioButton[] radioButtons = {rb1, rb2, rb3};
-        
-        String selectedRadionButton = propertiesService.getProperty(PREF_WORKITEM_SEARCH_TOOL_VIEW_DIALOG_SELECTED_RADIOBUTTON_KEY, PREF_WORKITEM_SEARCH_TOOL_VIEW_DIALOG_SELECTED_RADIOBUTTON_DEFAULT);
-        switch(selectedRadionButton) {
-            case "RadioButton[id=workrecordRadioButton, styleClass=radio-button]'Workrecord'" -> {
-                workrecordRadioButton.setSelected(true);
-                selectedRadioButton = workrecordRadioButton;
-            }
-            case "RadioButton[id=sprintRadioButton, styleClass=radio-button]'Sprint'" -> {
-                sprintRadioButton.setSelected(true);
-                selectedRadioButton = sprintRadioButton;
-            }
-            case "RadioButton[id=overallRadioButton, styleClass=radio-button]'Overall'" -> {
-                overallRadioButton.setSelected(true);
-                selectedRadioButton = overallRadioButton;
-            }
-            default -> {
-                workrecordRadioButton.setSelected(true);
-                selectedRadioButton = workrecordRadioButton;
-            }
-
-        }
-        for (RadioButton radioButton : radioButtons) {
-            radioButton.setOnAction((ActionEvent event) -> {
-                // If the user clicks the already selected one, keep it selected
-                if (!radioButton.isSelected()) {
-                    radioButton.setSelected(true);
-                    return;
-                }
-                // Unselect all other buttons and update the active one
-                for (RadioButton other : radioButtons) {
-                    if (other != radioButton) {
-                        other.setSelected(false);
-                    }
-                }
-                selectedRadioButton = radioButton;
-            });
-        }
     }
     
     public RadioButton getSelectedRadioButton() {

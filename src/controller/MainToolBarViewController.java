@@ -262,7 +262,7 @@ public class MainToolBarViewController implements Initializable, IViewController
         saveWorkItemSearchToolViewDimensions();
         
         RadioButton selectedRadionButton = workItemSearchViewController.getSelectedRadioButton();
-        propertiesService.setProperty(PREF_WORKITEM_SEARCH_TOOL_VIEW_DIALOG_SELECTED_RADIOBUTTON_KEY, selectedRadionButton.toString());
+        propertiesService.setProperty(PREF_WORKITEM_SEARCH_TOOL_VIEW_DIALOG_SELECTED_RADIOBUTTON_KEY, selectedRadionButton.getId());
         
         if (controllerRepository.contains(WorkItemSearchViewController.class.getName())) {
             controllerRepository.remove(WorkItemSearchViewController.class.getName());
