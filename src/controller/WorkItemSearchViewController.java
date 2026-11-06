@@ -28,7 +28,6 @@ import service.PropertiesService;
 import service.UndoService;
 import sqlite.WorkItemDAO;
 import sqlite.WorkrecordDAO;
-import utils.EventManager;
 import utils.IEventListener;
 
 /**
