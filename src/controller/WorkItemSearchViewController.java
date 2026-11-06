@@ -21,7 +21,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import model.WorkItem;
-import model.Workrecord;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import service.LanguageService;
@@ -79,7 +78,6 @@ public class WorkItemSearchViewController implements Initializable, IViewControl
     private final WorkItemDAO workitemDAO;
     private final WorkrecordDAO workrecordDAO;
     private List<WorkItem> workItemsFound;
-    private EventManager eventManager;
 
     
     public WorkItemSearchViewController(ControllerRepository controllerRepository, LanguageService languageService, 
