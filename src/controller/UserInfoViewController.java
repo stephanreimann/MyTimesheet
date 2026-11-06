@@ -518,6 +518,10 @@ public class UserInfoViewController implements Initializable, IViewController, I
         refreshWorkdaysLabelValue(user, (Worklocation)worklocationsChoiceBox.getValue());
     }
 
+    public Sprint getSelectedSprint() {
+        return sprintChoiceBox.getSelectionModel().getSelectedItem();
+    }
+    
     private void refreshWorkrecordLocationChoiceBox() {
         try {
            Worklocation selectedWorklocation = (Worklocation)worklocationsChoiceBox.getSelectionModel().getSelectedItem();

@@ -49,7 +49,7 @@
             </Label>
             <HBox GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.vgrow="NEVER">
                <children>
-                  <RadioButton fx:id="workrecordRadioButton" mnemonicParsing="false" text="%WorkrecordRadioButtonText" HBox.hgrow="NEVER">
+                  <RadioButton id="Workrecord" fx:id="workrecordRadioButton" mnemonicParsing="false" text="%WorkrecordRadioButtonText" HBox.hgrow="NEVER">
                      <padding>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="7.0" />
                      </padding>
@@ -57,12 +57,12 @@
                         <Insets />
                      </HBox.margin>
                   </RadioButton>
-                  <RadioButton fx:id="sprintRadioButton" mnemonicParsing="false" text="%SprintRadioButtonText" HBox.hgrow="ALWAYS">
+                  <RadioButton id="Sprint" fx:id="sprintRadioButton" mnemonicParsing="false" text="%SprintRadioButtonText" HBox.hgrow="ALWAYS">
                      <padding>
                         <Insets left="5.0" right="5.0" top="7.0" />
                      </padding>
                   </RadioButton>
-                  <RadioButton fx:id="overallRadioButton" mnemonicParsing="false" text="%OverallRadioButtonText" HBox.hgrow="ALWAYS">
+                  <RadioButton id="Overall" fx:id="overallRadioButton" mnemonicParsing="false" text="%OverallRadioButtonText" HBox.hgrow="ALWAYS">
                      <padding>
                         <Insets left="5.0" right="5.0" top="7.0" />
                      </padding>

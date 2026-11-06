@@ -7,6 +7,7 @@ package controller;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -134,7 +135,7 @@ public class WorkItemSearchViewController implements Initializable, IViewControl
 
     @Override
     public void preCloseAction() {
-        MainToolBarViewController mainController = (MainToolBarViewController) controllerRepository.get(MainToolBarViewController.class.getName());
+        MainToolBarViewController mainController = (MainToolBarViewController)controllerRepository.get(MainToolBarViewController.class.getName());
         if (mainController != null) {
             mainController.getWorkItemSearchButton().setDisable(false);
         }
@@ -143,15 +144,50 @@ public class WorkItemSearchViewController implements Initializable, IViewControl
     @SuppressWarnings("unused") 
     @FXML private void searchAction(ActionEvent event) throws SQLException {
         searchResultTextArea.clear();
+        
         String searchText = searchForTextField.getText();
-                
-        List<WorkItem> filteredItems = workItemsFound.stream()
-            .filter(w -> w.getDescription() != null && 
-                         w.getDescription().contains(searchText))
-            .collect(Collectors.toList());                
+        
+        List<WorkItem> filteredItems = new ArrayList<>();
+        
+        switch(selectedRadioButton.getId()) {
+            case "Workrecord" -> {
+                WorkRecordDetailsViewController workRecordDetailsViewController = (WorkRecordDetailsViewController)controllerRepository.get(WorkRecordDetailsViewController.class.getName());
+                if (workRecordDetailsViewController != null) {
+                    Workrecord selectedWorkrecord = workRecordDetailsViewController.getSelectedWorkrecord();
+                    filteredItems = workItemsFound.stream()
+                    .filter(w -> w.getDescription() != null &&
+                                 Objects.equals(w.getWorkrecordId(), selectedWorkrecord.getId()) &&
+                                 w.getDescription().contains(searchText))
+                    .collect(Collectors.toList());                                
+                }
+            }
+            case "Sprint" -> {
+                UserInfoViewController userInfoViewController = (UserInfoViewController)controllerRepository.get(UserInfoViewController.class.getName());
+                if(userInfoViewController != null) {
+                    filteredItems = workItemsFound.stream()
+                    .filter(w -> w.getDescription() != null &&
+                                 Objects.equals(w.getSprintId(), userInfoViewController.getSelectedSprint().getId()) &&
+                                 w.getDescription().contains(searchText))
+                    .collect(Collectors.toList());                                
+                }
+            }
+            case "Overall" -> {
+                filteredItems = workItemsFound.stream()
+                .filter(w -> w.getDescription() != null && 
+                             w.getDescription().contains(searchText))
+                .collect(Collectors.toList());                                
+            }
+            default ->{
+                filteredItems = workItemsFound.stream()
+                .filter(w -> w.getDescription() != null && 
+                             w.getDescription().contains(searchText))
+                .collect(Collectors.toList());                                
+            }
+        }
         
         StringBuilder formatedText = new StringBuilder();
         if(!filteredItems.isEmpty()) {
+            formatedText.append("Elements found: ").append(filteredItems.size()).append(System.lineSeparator());
             for(WorkItem workItem : filteredItems) {
                 Optional<Workrecord> workrecord = workrecordDAO.selectWorkrecordFromId(workItem.getWorkrecordId());
                 if(!workrecord.isEmpty()) {
