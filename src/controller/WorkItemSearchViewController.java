@@ -8,6 +8,7 @@ import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -144,64 +145,62 @@ public class WorkItemSearchViewController implements Initializable, IViewControl
     @SuppressWarnings("unused") 
     @FXML private void searchAction(ActionEvent event) throws SQLException {
         searchResultTextArea.clear();
-        
+
         String searchText = searchForTextField.getText();
-        
-        List<WorkItem> filteredItems = new ArrayList<>();
-        
-        switch(selectedRadioButton.getId()) {
+        if (searchText == null) searchText = "";
+        final String queryText = searchText;
+
+        List<WorkItem> filteredItems = switch (selectedRadioButton != null && selectedRadioButton.getId() != null ? selectedRadioButton.getId() : "") {
             case "Workrecord" -> {
-                WorkRecordDetailsViewController workRecordDetailsViewController = (WorkRecordDetailsViewController)controllerRepository.get(WorkRecordDetailsViewController.class.getName());
-                if (workRecordDetailsViewController != null) {
-                    Workrecord selectedWorkrecord = workRecordDetailsViewController.getSelectedWorkrecord();
-                    filteredItems = workItemsFound.stream()
-                    .filter(w -> w.getDescription() != null &&
-                                 Objects.equals(w.getWorkrecordId(), selectedWorkrecord.getId()) &&
-                                 w.getDescription().contains(searchText))
-                    .collect(Collectors.toList());                                
+                WorkRecordDetailsViewController vc = (WorkRecordDetailsViewController) controllerRepository.get(WorkRecordDetailsViewController.class.getName());
+                if (vc != null && vc.getSelectedWorkrecord() != null) {
+                    Long workrecordId = vc.getSelectedWorkrecord().getId();
+                    yield workItemsFound.stream()
+                        .filter(w -> w.getDescription() != null &&
+                                     Objects.equals(w.getWorkrecordId(), workrecordId) &&
+                                     w.getDescription().contains(queryText))
+                        .collect(Collectors.toList());
                 }
+                yield Collections.emptyList();
             }
             case "Sprint" -> {
-                UserInfoViewController userInfoViewController = (UserInfoViewController)controllerRepository.get(UserInfoViewController.class.getName());
-                if(userInfoViewController != null) {
-                    filteredItems = workItemsFound.stream()
-                    .filter(w -> w.getDescription() != null &&
-                                 Objects.equals(w.getSprintId(), userInfoViewController.getSelectedSprint().getId()) &&
-                                 w.getDescription().contains(searchText))
-                    .collect(Collectors.toList());                                
+                UserInfoViewController vc = (UserInfoViewController) controllerRepository.get(UserInfoViewController.class.getName());
+                if (vc != null && vc.getSelectedSprint() != null) {
+                    Long sprintId = vc.getSelectedSprint().getId();
+                    yield workItemsFound.stream()
+                        .filter(w -> w.getDescription() != null &&
+                                     Objects.equals(w.getSprintId(), sprintId) &&
+                                     w.getDescription().contains(queryText))
+                        .collect(Collectors.toList());
                 }
+                yield Collections.emptyList();
             }
-            case "Overall" -> {
-                filteredItems = workItemsFound.stream()
+            default -> workItemsFound.stream()
                 .filter(w -> w.getDescription() != null && 
-                             w.getDescription().contains(searchText))
-                .collect(Collectors.toList());                                
-            }
-            default ->{
-                filteredItems = workItemsFound.stream()
-                .filter(w -> w.getDescription() != null && 
-                             w.getDescription().contains(searchText))
-                .collect(Collectors.toList());                                
-            }
+                             w.getDescription().contains(queryText))
+                .collect(Collectors.toList());
+        };
+
+        if (filteredItems.isEmpty()) {
+            return;
         }
-        
-        StringBuilder formatedText = new StringBuilder();
-        if(!filteredItems.isEmpty()) {
-            formatedText.append("Elements found: ").append(filteredItems.size()).append(System.lineSeparator());
-            for(WorkItem workItem : filteredItems) {
-                Optional<Workrecord> workrecord = workrecordDAO.selectWorkrecordFromId(workItem.getWorkrecordId());
-                if(!workrecord.isEmpty()) {
-                    formatedText.append("Sprint: ").append(workItem.getSprintId()).append(System.lineSeparator());
-                    formatedText.append("Date: ").append(workrecord.get().getDate()).append(System.lineSeparator());
-                    formatedText.append("Workitem: ").append(workItem.getName()).append(" (").append(workItem.getShortcut()).append(")").append(System.lineSeparator());
-                    formatedText.append("Start: ").append(workItem.getStartTime()).append(" End: ").append(workItem.getEndTime()).append(System.lineSeparator());
-                    formatedText.append("Description: ").append(System.lineSeparator()).append(workItem.getDescription()).append(System.lineSeparator()).append(System.lineSeparator());
-                }
-            }
-            searchResultTextArea.setText(formatedText.toString());
+
+        StringBuilder formattedText = new StringBuilder();
+        formattedText.append("Elements found: ").append(filteredItems.size()).append(System.lineSeparator());
+
+        for (WorkItem workItem : filteredItems) {
+            workrecordDAO.selectWorkrecordFromId(workItem.getWorkrecordId()).ifPresent(workrecord -> {
+                formattedText.append("Sprint: ").append(workItem.getSprintId()).append(System.lineSeparator());
+                formattedText.append("Date: ").append(workrecord.getDate()).append(System.lineSeparator());
+                formattedText.append("Workitem: ").append(workItem.getName()).append(" (").append(workItem.getShortcut()).append(")").append(System.lineSeparator());
+                formattedText.append("Start: ").append(workItem.getStartTime()).append(" End: ").append(workItem.getEndTime()).append(System.lineSeparator());
+                formattedText.append("Description: ").append(System.lineSeparator()).append(workItem.getDescription()).append(System.lineSeparator()).append(System.lineSeparator());
+            });
         }
+
+        searchResultTextArea.setText(formattedText.toString());
     }
-    
+
     public void setupManualExclusiveGroup(RadioButton rb1, RadioButton rb2, RadioButton rb3) {
         RadioButton[] radioButtons = {rb1, rb2, rb3};
         
