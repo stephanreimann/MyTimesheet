@@ -91,7 +91,7 @@ public class MainViewControllerTest {
         connectionFactory = new ConnectionFactory(resourceBundle, log4jAdapter);
         connection = connectionFactory.getConnection(DATABASE_PATH_AND_FULL_NAME);
 
-        controller = new MainViewController(languageService, connection);
+        controller = new MainViewController(languageService);
 
         CountDownLatch latch = new CountDownLatch(1);
         Platform.runLater(() -> {
@@ -136,12 +136,7 @@ public class MainViewControllerTest {
 
     @Test(expected = NullPointerException.class)
     public void constructor_NullLanguageService_ThrowsNPE() {
-        var _ = new MainViewController(null, connection);
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void constructor_NullConnection_ThrowsNPE() {
-        var _ = new MainViewController(languageService, null);
+        var _ = new MainViewController(null);
     }
 
     // --- Initialization & GUI Tests ---
