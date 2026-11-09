@@ -39,12 +39,15 @@ public class WorkItemSearchViewController implements Initializable, IViewControl
 
     private static final String EVENT_SELECTED_RECORD_CHANGED = "SelectedWorkRecordChanged";
 
-    private static final String PREF_WORKITEM_SEARCH_TOOL_VIEW_DIALOG_SELECTED_RADIOBUTTON_KEY = "WorkItemSearchToolViewDialogSelectedRadioButton";
-    private static final String PREF_WORKITEM_SEARCH_TOOL_VIEW_DIALOG_SELECTED_RADIOBUTTON_DEFAULT = "Workrecord";
+    private static final String SELECTED_RADIOBUTTON_KEY = "WorkItemSearchToolViewDialogSelectedRadioButton";
+    private static final String SELECTED_RADIOBUTTON_DEFAULT = "Workrecord";
+    private static final String CHECKBOX_SELECTED_KEY = "WorkItemSearchToolViewDialogCheckBoxSelected";
+    private static final String CHECKBOX_SELECTED_DEFAULT = "false";
     
     private final String searchForLabelTextResourceKey = "SearchForLabelText";
     private final String searchButtonTextResourceKey = "SearchButtonText";
-    private final String searchInLabelResourceKey = "SearchInLabel";
+    private final String searchOptionResourceKey = "SearchOption";
+    private final String searchLabelResourceKey = "SearchLabel";
     private final String workrecordRadioButtonTextResourceKey = "WorkrecordRadioButtonText";
     private final String sprintRadioButtonTextResourceKey = "SprintRadioButtonText";
     private final String overallRadioButtonTextResourceKey = "OverallRadioButtonText";
@@ -52,7 +55,8 @@ public class WorkItemSearchViewController implements Initializable, IViewControl
     @FXML private Label searchForLabel;
     @FXML private TextField searchForTextField;
     @FXML private Button searchForButton;
-    @FXML private Label searchInLabel;
+    @FXML private CheckBox searchOptionCheckBox;
+    @FXML private Label searchLabel;
     @FXML private RadioButton workrecordRadioButton;
     @FXML private RadioButton sprintRadioButton;
     @FXML private RadioButton overallRadioButton;
@@ -100,7 +104,7 @@ public class WorkItemSearchViewController implements Initializable, IViewControl
     @Override
     public void initialize(URL location, ResourceBundle rb) {
         this.rb = rb;
-        setupManualExclusiveGroup(workrecordRadioButton, sprintRadioButton, overallRadioButton);
+        setupSearchDefinition(searchOptionCheckBox, workrecordRadioButton, sprintRadioButton, overallRadioButton);
         
         try {
             workItemsFound = workitemDAO.selectAll();
@@ -129,6 +133,10 @@ public class WorkItemSearchViewController implements Initializable, IViewControl
             }
         });        
         
+        searchOptionCheckBox.selectedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+            searchResultTextArea.clear();
+        });
+                
         languageService.updateGuiItems();          
     }    
 
@@ -136,7 +144,8 @@ public class WorkItemSearchViewController implements Initializable, IViewControl
     public void updateGuiItems() {
         searchForLabel.setText(rb.getString(searchForLabelTextResourceKey));
         searchForButton.setText(rb.getString(searchButtonTextResourceKey));
-        searchInLabel.setText(rb.getString(searchInLabelResourceKey));
+        searchOptionCheckBox.setText(rb.getString(searchOptionResourceKey));
+        searchLabel.setText(rb.getString(searchLabelResourceKey));
         workrecordRadioButton.setText(rb.getString(workrecordRadioButtonTextResourceKey));
         sprintRadioButton.setText(rb.getString(sprintRadioButtonTextResourceKey));
         overallRadioButton.setText(rb.getString(overallRadioButtonTextResourceKey));
@@ -180,10 +189,13 @@ public class WorkItemSearchViewController implements Initializable, IViewControl
         searchInDescription();
     }
 
-    private void setupManualExclusiveGroup(RadioButton rb1, RadioButton rb2, RadioButton rb3) {
+    private void setupSearchDefinition(CheckBox searchOptionCheckBox, RadioButton rb1, RadioButton rb2, RadioButton rb3) {
+        Boolean caseSensitiveSearch = Boolean.valueOf(propertiesService.getProperty(CHECKBOX_SELECTED_KEY, CHECKBOX_SELECTED_DEFAULT));
+        searchOptionCheckBox.selectedProperty().setValue(caseSensitiveSearch);
+        
         RadioButton[] radioButtons = {rb1, rb2, rb3};
         
-        String selectedRadionButton = propertiesService.getProperty(PREF_WORKITEM_SEARCH_TOOL_VIEW_DIALOG_SELECTED_RADIOBUTTON_KEY, PREF_WORKITEM_SEARCH_TOOL_VIEW_DIALOG_SELECTED_RADIOBUTTON_DEFAULT);
+        String selectedRadionButton = propertiesService.getProperty(SELECTED_RADIOBUTTON_KEY, SELECTED_RADIOBUTTON_DEFAULT);
         switch(selectedRadionButton) {
             case "Workrecord" -> {
                 workrecordRadioButton.setSelected(true);
@@ -225,41 +237,60 @@ public class WorkItemSearchViewController implements Initializable, IViewControl
         searchResultTextArea.clear();
 
         String searchText = searchForTextField.getText();
-        if (searchText == null) searchText = "";
+        if (searchText == null) {
+            searchText = "";
+        }
         final String queryText = searchText;
-        
-        if(queryText.isEmpty()) {
+
+        if (queryText.isEmpty()) {
             return;
         }
-        
-        List<WorkItem> filteredItems = switch (selectedRadioButton != null && selectedRadioButton.getId() != null ? selectedRadioButton.getId() : "") {
+
+        boolean caseSensitive = searchOptionCheckBox != null && 
+                                searchOptionCheckBox.selectedProperty().getValue() != null && 
+                                searchOptionCheckBox.selectedProperty().getValue();
+
+        // Helper predicate to handle case-sensitivity cleanly
+        java.util.function.Predicate<String> descriptionMatcher = desc -> {
+            if (desc == null) return false;
+            if (caseSensitive) {
+                return desc.contains(queryText);
+            } else {
+                return desc.toLowerCase().contains(queryText.toLowerCase());
+            }
+        };
+
+        String selectedId = (selectedRadioButton != null && selectedRadioButton.getId() != null) 
+                            ? selectedRadioButton.getId() 
+                            : "";
+
+        List<WorkItem> filteredItems = switch (selectedId) {
             case "Workrecord" -> {
-                WorkRecordDetailsViewController vc = (WorkRecordDetailsViewController) controllerRepository.get(WorkRecordDetailsViewController.class.getName());
+                WorkRecordDetailsViewController vc = (WorkRecordDetailsViewController) 
+                    controllerRepository.get(WorkRecordDetailsViewController.class.getName());
                 if (vc != null && vc.getSelectedWorkrecord() != null) {
                     Long workrecordId = vc.getSelectedWorkrecord().getId();
                     yield workItemsFound.stream()
-                        .filter(w -> w.getDescription() != null &&
-                                     Objects.equals(w.getWorkrecordId(), workrecordId) &&
-                                     w.getDescription().contains(queryText))
+                        .filter(w -> Objects.equals(w.getWorkrecordId(), workrecordId) &&
+                                     descriptionMatcher.test(w.getDescription()))
                         .collect(Collectors.toList());
                 }
                 yield Collections.emptyList();
             }
             case "Sprint" -> {
-                UserInfoViewController vc = (UserInfoViewController) controllerRepository.get(UserInfoViewController.class.getName());
+                UserInfoViewController vc = (UserInfoViewController) 
+                    controllerRepository.get(UserInfoViewController.class.getName());
                 if (vc != null && vc.getSelectedSprint() != null) {
                     Long sprintId = vc.getSelectedSprint().getId();
                     yield workItemsFound.stream()
-                        .filter(w -> w.getDescription() != null &&
-                                     Objects.equals(w.getSprintId(), sprintId) &&
-                                     w.getDescription().contains(queryText))
+                        .filter(w -> Objects.equals(w.getSprintId(), sprintId) &&
+                                     descriptionMatcher.test(w.getDescription()))
                         .collect(Collectors.toList());
                 }
                 yield Collections.emptyList();
             }
             default -> workItemsFound.stream()
-                .filter(w -> w.getDescription() != null && 
-                             w.getDescription().contains(queryText))
+                .filter(w -> descriptionMatcher.test(w.getDescription()))
                 .collect(Collectors.toList());
         };
 
@@ -280,11 +311,15 @@ public class WorkItemSearchViewController implements Initializable, IViewControl
                     formattedText.append("Description: ").append(System.lineSeparator()).append(workItem.getDescription()).append(System.lineSeparator()).append(System.lineSeparator());
                 });
             } catch (SQLException ex) {
-                log.warn("SelectWorkrecordFromId does not return a workrecord!");
+                log.warn("SelectWorkrecordFromId does not return a workrecord for ID: {}", workItem.getWorkrecordId(), ex);
             }
         }
 
         searchResultTextArea.setText(formattedText.toString());
+    }
+
+    public CheckBox getSearchOptionCheckBox() {
+        return searchOptionCheckBox;
     }
     
     public RadioButton getSelectedRadioButton() {
