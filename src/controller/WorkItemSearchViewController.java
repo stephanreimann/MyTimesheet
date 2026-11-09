@@ -43,7 +43,6 @@ public class WorkItemSearchViewController implements Initializable, IViewControl
     private static final String PREF_WORKITEM_SEARCH_TOOL_VIEW_DIALOG_SELECTED_RADIOBUTTON_DEFAULT = "Workrecord";
     
     private final String searchForLabelTextResourceKey = "SearchForLabelText";
-    private final String searchForTextFieldResourceKey = "SearchForTextFieldText";
     private final String searchButtonTextResourceKey = "SearchButtonText";
     private final String searchInLabelResourceKey = "SearchInLabel";
     private final String workrecordRadioButtonTextResourceKey = "WorkrecordRadioButtonText";
@@ -109,16 +108,26 @@ public class WorkItemSearchViewController implements Initializable, IViewControl
             log.warn(String.format("WorkItemDAO.selectAll() returns %d workItems.", workItemsFound.size()));
         }
 
+        searchForButton.setDisable(true);
+        
         ToggleGroup group = new ToggleGroup();
         workrecordRadioButton.setToggleGroup(group);
         sprintRadioButton.setToggleGroup(group);
         overallRadioButton.setToggleGroup(group);
         
-        group.selectedToggleProperty().addListener((ObservableValue<? extends Toggle> ov, Toggle old_toggle, Toggle new_toggle) -> {
+        group.selectedToggleProperty().addListener((ObservableValue<? extends Toggle> observable, Toggle oldValue, Toggle newValue) -> {
             if (group.getSelectedToggle() != null) {
                 searchResultTextArea.clear();
             }
         });
+        
+        searchForTextField.textProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
+            if(newValue.isBlank()) {
+                searchForButton.setDisable(true);
+            } else {
+                searchForButton.setDisable(false);
+            }
+        });        
         
         languageService.updateGuiItems();          
     }    
@@ -126,7 +135,6 @@ public class WorkItemSearchViewController implements Initializable, IViewControl
     @Override
     public void updateGuiItems() {
         searchForLabel.setText(rb.getString(searchForLabelTextResourceKey));
-        searchForTextField.setPromptText(rb.getString(searchForTextFieldResourceKey));
         searchForButton.setText(rb.getString(searchButtonTextResourceKey));
         searchInLabel.setText(rb.getString(searchInLabelResourceKey));
         workrecordRadioButton.setText(rb.getString(workrecordRadioButtonTextResourceKey));
