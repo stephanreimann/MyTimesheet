@@ -52,10 +52,7 @@ public class MainToolBarViewController implements Initializable, IViewController
     private static final String PREF_WORKITEM_SEARCH_TOOL_VIEW_DIALOG_YPOS_DEFAULT = "0.0";
     
     private static final String CHECKBOX_SELECTED_KEY = "WorkItemSearchToolViewDialogCheckBoxSelected";
-    private static final String CHECKBOX_SELECTED_DEFAULT = "false";
-
     private static final String SELECTED_RADIOBUTTON_KEY = "WorkItemSearchToolViewDialogSelectedRadioButton";
-    private static final String SELECTED_RADIOBUTTON_DEFAULT = "WorkrecordRadioButton";
     
     private static final String LANG_SELECTOR_KEY = "languageSelectorButton";
     
