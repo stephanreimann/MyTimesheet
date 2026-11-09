@@ -257,7 +257,7 @@ public class MainToolBarViewController implements Initializable, IViewController
         workItemSearchToolViewDialog = dialogFactory.create(Modality.NONE, StageStyle.DECORATED, true, true);
         
         applyWorkItemSearchToolViewDialogDimensions();
-
+        
         if (!workItemSearchToolViewDialog.isShowing()) {
             workItemSearchButton.setDisable(true);
             workItemSearchToolViewDialog.showAndWait();        

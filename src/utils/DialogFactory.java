@@ -37,10 +37,10 @@ public class DialogFactory {
     public Stage create(Modality modality, StageStyle stageStyle, boolean resizable, boolean alwaysOnTop) throws IOException {
         Stage stage = new Stage();
         stage.initModality(modality);
-        stage.initOwner(primaryStage);        
-        stage.setAlwaysOnTop(alwaysOnTop);
-        stage.setResizable(resizable);
         stage.initStyle(stageStyle);
+        stage.setResizable(resizable);
+        stage.setAlwaysOnTop(alwaysOnTop);
+        //stage.initOwner(primaryStage);        
         stage.setTitle(this.rb.getString(dialogTitleResourceKey));
         stage.getIcons().add(new Image(dialogIconPath));
         AnchorPane anchorPane = (AnchorPane)ControllerUtilities.load(this.getClass(), dialogResource, rb, dialogController);
@@ -53,6 +53,12 @@ public class DialogFactory {
         dialogController.setPrimaryStage(stage);
         stage.setWidth(800);
         stage.setHeight(500);
+        
+        // Listen to changes in the primary stage's minimized/iconified state
+        primaryStage.iconifiedProperty().addListener((obs, oldVal, isIconified) -> {
+            stage.setIconified(isIconified);
+        });
+        
         return stage;
     }
     

@@ -118,7 +118,7 @@ public class WorkItemSearchViewController implements Initializable, IViewControl
         workrecordRadioButton.setToggleGroup(group);
         sprintRadioButton.setToggleGroup(group);
         overallRadioButton.setToggleGroup(group);
-        
+                
         group.selectedToggleProperty().addListener((ObservableValue<? extends Toggle> observable, Toggle oldValue, Toggle newValue) -> {
             if (group.getSelectedToggle() != null) {
                 searchResultTextArea.clear();
