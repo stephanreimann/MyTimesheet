@@ -40,7 +40,6 @@ public class DialogFactory {
         stage.initStyle(stageStyle);
         stage.setResizable(resizable);
         stage.setAlwaysOnTop(alwaysOnTop);
-        //stage.initOwner(primaryStage);        
         stage.setTitle(this.rb.getString(dialogTitleResourceKey));
         stage.getIcons().add(new Image(dialogIconPath));
         AnchorPane anchorPane = (AnchorPane)ControllerUtilities.load(this.getClass(), dialogResource, rb, dialogController);
