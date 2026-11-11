@@ -35,6 +35,7 @@ public class MainMenuBarViewController implements Initializable, IViewController
     private final String importResourceKey = "Import";
     private final String importReferenceDataResourceKey = "Referencedata";
     private final String importWorkrecordsResourceKey = "Workrecord";
+    private final String startWithANewYearResourceKey = "StartWithANewYear";
     private final String exitResourceKey = "Exit";
     private final String editResourceKey = "Edit";
     private final String undoResourceKey = "Undo";
@@ -142,55 +143,30 @@ public class MainMenuBarViewController implements Initializable, IViewController
     private Stage sprintViewDialog;
     private Stage trackingItemViewDialog;
     
-    @FXML
-    private Menu fileMenu;
-
-    @FXML
-    private Menu exportMenu;
-    @FXML
-    private MenuItem exportReferencedataMenuItem;
-    @FXML
-    private MenuItem exportWorkrecordsMenuItem;
-
-    @FXML
-    private Menu importMenu;
-    @FXML
-    private MenuItem importReferencedataMenuItem;
-    @FXML
-    private MenuItem importWorkrecordsMenuItem;
-
-    @FXML
-    private MenuItem exitMenuItem;
-    @FXML
-    private Menu editMenu;
-    @FXML
-    private MenuItem undoMenuItem;
-    @FXML
-    private MenuItem redoMenuItem;
-    @FXML
-    private MenuItem settingsMenuItem;
-    @FXML
-    private MenuItem openXmlEditorMenuItem;
-    @FXML
-    private MenuItem dataMenu;
-    @FXML
-    private MenuItem userMenuItem;
-    @FXML
-    private MenuItem roleMenuItem;
-    @FXML
-    private MenuItem addressMenuItem;
-    @FXML
-    private MenuItem contractMenuItem;
-    @FXML
-    private MenuItem holydayMenuItem;
-    @FXML
-    private MenuItem projectMenuItem;
-    @FXML
-    private MenuItem worklocationMenuItem;
-    @FXML
-    private MenuItem sprintMenuItem;
-    @FXML
-    private MenuItem trackingItemMenuItem;
+    @FXML private Menu fileMenu;
+    @FXML private Menu exportMenu;
+    @FXML private MenuItem exportReferencedataMenuItem;
+    @FXML private MenuItem exportWorkrecordsMenuItem;
+    @FXML private Menu importMenu;
+    @FXML private MenuItem importReferencedataMenuItem;
+    @FXML private MenuItem importWorkrecordsMenuItem;
+    @FXML private MenuItem startWithANewYear;
+    @FXML private MenuItem exitMenuItem;
+    @FXML private Menu editMenu;
+    @FXML private MenuItem undoMenuItem;
+    @FXML private MenuItem redoMenuItem;
+    @FXML private MenuItem settingsMenuItem;
+    @FXML private MenuItem openXmlEditorMenuItem;
+    @FXML private MenuItem dataMenu;
+    @FXML private MenuItem userMenuItem;
+    @FXML private MenuItem roleMenuItem;
+    @FXML private MenuItem addressMenuItem;
+    @FXML private MenuItem contractMenuItem;
+    @FXML private MenuItem holydayMenuItem;
+    @FXML private MenuItem projectMenuItem;
+    @FXML private MenuItem worklocationMenuItem;
+    @FXML private MenuItem sprintMenuItem;
+    @FXML private MenuItem trackingItemMenuItem;
     
     
     public MainMenuBarViewController(LanguageService languageService, Connection connection, UndoService undoService, Application application, PropertiesService propertiesService, Log4jAdapter log4jAdapter) {
@@ -265,6 +241,15 @@ public class MainMenuBarViewController implements Initializable, IViewController
         alert.showAndWait();        
     }
 
+    @FXML
+    @SuppressWarnings("unused")
+    private void startWithANewYear(ActionEvent event) throws Exception {
+        //1. Backup the actual sqlite db (proddb.sqlite -> path\newName.sqlite
+        //2. Calculate actual Vacation days and save value
+        //3. Calculate actual Overtime [hh:mm] and save value
+        //4. Löschen den Inhalt der Tabelle workrecords (DELETE FROM workrecords;)
+    }
+    
     @FXML
     @SuppressWarnings("unused")
     private void undoAction(ActionEvent event) {
@@ -622,14 +607,14 @@ public class MainMenuBarViewController implements Initializable, IViewController
         importMenu.setText(rb.getString(importResourceKey));
         importReferencedataMenuItem.setText(rb.getString(importReferenceDataResourceKey));
         importWorkrecordsMenuItem.setText(rb.getString(importWorkrecordsResourceKey));
+        startWithANewYear.setText(rb.getString(startWithANewYearResourceKey));
                 
         editMenu.setText(rb.getString(editResourceKey));
         undoMenuItem.setText(rb.getString(undoResourceKey));
         redoMenuItem.setText(rb.getString(redoResourceKey));
         settingsMenuItem.setText(rb.getString(settingsResourceKey));
         openXmlEditorMenuItem.setText(rb.getString(openXmlEditorResourceKey));
-        
-        
+                
         dataMenu.setText(rb.getString(dataResourceKey));
         userMenuItem.setText(rb.getString(userDataResourceKey));
         roleMenuItem.setText(rb.getString(roleDataResourceKey));
