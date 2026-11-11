@@ -244,6 +244,8 @@ public class MainMenuBarViewController implements Initializable, IViewController
     @FXML
     @SuppressWarnings("unused")
     private void startWithANewYear(ActionEvent event) throws Exception {
+        // May it can be implemented as Wizard implementation in JavaFX
+        // https://gist.github.com/jewelsea/2850787
         //1. Backup the actual sqlite db (proddb.sqlite -> path\newName.sqlite
         //2. Calculate actual Vacation days and save value
         //3. Calculate actual Overtime [hh:mm] and save value
