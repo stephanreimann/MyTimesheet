@@ -24,7 +24,11 @@ import utils.CalendarLoader;
 import utils.EventManager;
 
 /**
- *
+ * Import of holydays is only supported for the *.ics file format provided by
+ * https://www.feiertage-kalender.de/
+ * Here download the calender for the country "Bayern"
+ * Currently this load only supports loading holydays of country "Bayern"
+ * See "calendarLoader.loadHolydays(filePathAndName, "Bayern");"
  * @author adrest18
  */
 class ImportHolydaysViewController implements Initializable, IViewController {
@@ -40,34 +44,31 @@ class ImportHolydaysViewController implements Initializable, IViewController {
     
     private final Logger log = LogManager.getLogger(ImportHolydaysViewController.class.getName());
 
-    @FXML
-    TextField filePathAndNameTextFieldValue;
-    @FXML 
-    Button selectButton;
+    @FXML TextField filePathAndNameTextFieldValue;
+    @FXML Button selectButton;
+    @SuppressWarnings("unused") 
     @FXML ListView holydaysListView;
     
-    @FXML
-    private TableView<Holyday> holydayTableView;
-    @FXML
-    private TableColumn<Holyday, LocalDate> holydayDateTableColumn;
-    @FXML
-    private TableColumn<Holyday, String> holydayNameTableColumn;
-    @FXML
-    private TableColumn<Holyday, String> holydayStateTableColumn;
+    @FXML private TableView<Holyday> holydayTableView;
+    @FXML private TableColumn<Holyday, LocalDate> holydayDateTableColumn;
+    @FXML private TableColumn<Holyday, String> holydayNameTableColumn;
+    @FXML private TableColumn<Holyday, String> holydayStateTableColumn;
 
-    @FXML 
-    private Button acceptButton;
-    @FXML
-    private Button cancelButton;
+    @FXML private Button acceptButton;
+    @FXML private Button cancelButton;
     
     private Stage primaryStage;
     private final LanguageService languageService;
+    @SuppressWarnings("unused") 
     private final Connection connection;
+    @SuppressWarnings("unused") 
     private final UndoService undoService;
     private ResourceBundle rb;
+    @SuppressWarnings("unused") 
     private final ControllerRepository controllerRepository;
     private final ObservableList<Holyday> holydayData;
     private final HolydayDAO holydayDao;
+    @SuppressWarnings("unused") 
     private final List<String> holydaysToImport;
     private final EventManager eventManager;
     
@@ -89,6 +90,7 @@ class ImportHolydaysViewController implements Initializable, IViewController {
         this.holydaysToImport = new ArrayList<>();
     }
 
+    @SuppressWarnings("unused") 
     @FXML
     private void selectAction(ActionEvent event) throws IOException, ParserException {
         File choosenFile = initializeFileChooserAndShowIt();
@@ -127,6 +129,7 @@ class ImportHolydaysViewController implements Initializable, IViewController {
         holydayTableView.setItems(holydays);
     }
         
+    @SuppressWarnings("unused") 
     @FXML
     private void acceptAction(ActionEvent event) throws SQLException {
         for(Holyday holyday : holydayTableView.getItems()) {
@@ -144,6 +147,7 @@ class ImportHolydaysViewController implements Initializable, IViewController {
         primaryStage.close();
     }
     
+    @SuppressWarnings("unused") 
     @FXML
     private void cancelAction(ActionEvent event) {
         primaryStage.close();
